@@ -470,15 +470,142 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 .toast.info    { background:#1e3a8a; }
 
 /* Responsive */
-@media(max-width:768px) {
-  .dash-body    { padding:20px 16px; }
-  .dash-header  { padding:0 16px; }
-  .audit-item   { flex-wrap:wrap; gap:12px; }
-  .audit-actions { width:100%; }
-  .btn-action   { flex:1; justify-content:center; }
-  .stats-row    { grid-template-columns:repeat(2,1fr); }
-  .login-card   { padding:36px 28px 32px; margin:16px; }
-  .inst-selector { grid-template-columns:1fr; }
+/* ══════════════════════════════════════════════
+   RESPONSIVE — TABLET
+══════════════════════════════════════════════ */
+@media(max-width:900px) {
+  .dash-body       { padding:24px 20px; }
+  .stats-row       { grid-template-columns:repeat(2,1fr); }
+  .page-title      { font-size:22px; }
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE — SMARTPHONE
+══════════════════════════════════════════════ */
+@media(max-width:640px) {
+
+  /* LOGIN */
+  #screen-login    { align-items:flex-start; padding-top:0; }
+  .login-card      {
+    border-radius:0 0 24px 24px;
+    padding:48px 22px 32px;
+    margin:0;
+    width:100%;
+    max-width:100%;
+    box-shadow:0 8px 40px rgba(0,0,0,0.18);
+  }
+  .login-logo      { margin-bottom:24px; }
+  .login-logo-icon { width:46px; height:46px; border-radius:12px; }
+  .login-logo-icon img { width:26px; height:26px; }
+  .login-brand-name { font-size:21px; }
+  .login-title     { font-size:19px; }
+  .login-desc      { font-size:12px; }
+  .form-input      { padding:12px 14px; font-size:15px; }
+  .login-btn       { padding:15px; font-size:15px; }
+  .forgot-link     { font-size:13px; }
+
+  /* HEADER */
+  .dash-header     {
+    height:auto;
+    padding:12px 16px;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .dash-header::before { height:3px; }
+  .dash-logo       { gap:10px; }
+  .dash-logo-icon  { width:36px; height:36px; border-radius:9px; }
+  .dash-logo-icon img { width:20px; height:20px; }
+  .dash-brand-name { font-size:17px; }
+  .dash-brand-sub  { font-size:8px; }
+  .dash-divider    { display:none; }
+  .dash-user-info  { width:100%; }
+  .dash-user-badge { width:100%; padding:7px 12px; }
+  .dash-user-name  { font-size:12px; }
+  .dash-header-actions { width:100%; }
+  .btn-logout      { width:100%; justify-content:center; padding:8px 12px; font-size:12px; }
+
+  /* BODY */
+  .dash-body       { padding:16px 12px; }
+
+  /* PAGE TITLE */
+  .page-title-row  { flex-direction:column; align-items:flex-start; gap:10px; }
+  .page-title      { font-size:20px; }
+  .page-subtitle   { font-size:12px; }
+  .btn-nueva       { width:100%; justify-content:center; padding:13px 16px; font-size:13px; }
+
+  /* STATS */
+  .stats-row       { grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:20px; }
+  .stat-card       { padding:14px 14px; gap:10px; border-radius:12px; }
+  .stat-icon       { width:38px; height:38px; border-radius:10px; font-size:16px; }
+  .stat-number     { font-size:22px; }
+  .stat-label      { font-size:11px; }
+
+  /* SECTION HEADER */
+  .section-header  { flex-direction:column; align-items:flex-start; gap:10px; }
+  .section-title   { font-size:14px; }
+  .filters         { width:100%; overflow-x:auto; flex-wrap:nowrap; padding-bottom:4px; }
+  .filter-btn      { white-space:nowrap; flex-shrink:0; font-size:11px; padding:6px 12px; }
+
+  /* AUDIT ITEMS — stack vertically on mobile */
+  .audit-list      { gap:10px; }
+  .audit-item      {
+    padding:14px 14px;
+    gap:10px;
+    flex-wrap:wrap;
+    border-radius:12px;
+    align-items:flex-start;
+  }
+  .audit-item:hover { transform:none; }
+  .audit-status-dot { margin-top:4px; }
+  .audit-inst-logo { width:38px; height:38px; border-radius:8px; }
+  .audit-info      { flex:1; min-width:0; }
+  .audit-title     { font-size:13px; margin-bottom:5px; }
+  .audit-meta      { gap:8px; }
+  .audit-meta-item { font-size:11px; }
+  .audit-score     { font-size:20px; min-width:48px; }
+  .audit-score.none { font-size:12px; }
+  .audit-badge     { font-size:10px; padding:3px 8px; }
+  .audit-actions   { width:100%; gap:8px; margin-top:2px; }
+  .btn-action      { flex:1; justify-content:center; padding:10px 12px; font-size:12px; border-radius:8px; }
+
+  /* MODAL NUEVA AUDITORÍA */
+  .modal-overlay   { padding:0; align-items:flex-end; }
+  .modal-box       {
+    border-radius:20px 20px 0 0;
+    max-width:100%;
+    max-height:92vh;
+    overflow-y:auto;
+  }
+  .modal-header    { padding:18px 20px; }
+  .modal-header h2 { font-size:15px; }
+  .modal-body      { padding:20px; }
+  .inst-selector   { grid-template-columns:1fr 1fr; gap:10px; }
+  .inst-option     { padding:12px 8px; }
+  .inst-option img { height:40px; }
+  .inst-option span { font-size:10px; }
+  .modal-footer    { padding:0 20px 28px; }
+  .btn-modal-cancel, .btn-modal-create { padding:13px; font-size:13px; }
+
+  /* TOAST */
+  .toast           { left:12px; right:12px; bottom:16px; max-width:100%; font-size:12px; }
+
+  /* EMPTY STATE */
+  .empty-state     { padding:40px 16px; }
+  .empty-state i   { font-size:36px; }
+  .empty-state h3  { font-size:14px; }
+  .empty-state p   { font-size:12px; }
+
+  /* CONFIRM DELETE POPUP */
+  #confirm-overlay { flex-direction:column; }
+}
+
+/* ── Extra small (iPhone SE, 375px) ────────── */
+@media(max-width:390px) {
+  .stats-row       { grid-template-columns:repeat(2,1fr); gap:8px; }
+  .stat-card       { padding:12px 10px; }
+  .stat-number     { font-size:20px; }
+  .audit-item      { padding:12px 12px; }
+  .login-card      { padding:40px 18px 28px; }
 }
 </style>
 </head>
@@ -689,8 +816,8 @@ const db   = firebase.database();
 
 // URLs de las listas en GitHub Pages
 const LISTA_URLS = {
-  foca: 'https://gcalidad3foca-droid.github.io/Qualisig_Sofware/Lista_Verificacion_FOCA.html',
-  viu:  'https://gcalidad3foca-droid.github.io/Qualisig_Sofware/Lista_Verificacion_VIU.html'
+  foca: 'https://gcalidad3foca-droid.github.io/Modulo_Auditorias/LISTA%20DE%20VERIFICACION%20AUDITORIA%20DE%20SERVICIO%20-%20FOCA..html',
+  viu:  'https://gcalidad3foca-droid.github.io/Modulo_Auditorias/LISTA%20DE%20VERIFICACION%20AUDITORIA%20DE%20SERVICIO%20-%20VIU..html'
 };
 
 const INST_LOGOS = {
@@ -999,7 +1126,15 @@ function confirmarEliminar(e, id, sede) {
   const auditItem = e.target.closest('.audit-item');
   const confirm = document.createElement('div');
   confirm.id = 'confirm-' + id;
-  confirm.style.cssText = `
+  const isMobile = window.innerWidth <= 640;
+  confirm.style.cssText = isMobile ? `
+    position:fixed; left:12px; right:12px; bottom:80px;
+    background:#fff; border:1.5px solid #fecaca; border-radius:14px;
+    padding:16px 18px; box-shadow:0 8px 40px rgba(0,0,0,0.2);
+    display:flex; align-items:center; gap:10px; z-index:200;
+    font-size:13px; font-weight:600; color:#dc2626; flex-wrap:wrap;
+    justify-content:center; text-align:center;
+  ` : `
     position:absolute; right:16px; top:50%; transform:translateY(-50%);
     background:#fff; border:1.5px solid #fecaca; border-radius:10px;
     padding:12px 16px; box-shadow:0 8px 32px rgba(0,0,0,0.15);
