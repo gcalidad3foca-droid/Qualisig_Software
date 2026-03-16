@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qualisig — Módulo de Auditorías</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'Inter', sans-serif; }
+
+/* ── VARIABLES ─────────────────────────────── */
+:root {
+  --blue:    #1e3c72;
+  --blue2:   #2a5298;
+  --accent:  #5B8CD6;
+  --cyan:    #86C5DA;
+  --white:   #ffffff;
+  --gray50:  #f8fafc;
+  --gray100: #f1f5f9;
+  --gray200: #e2e8f0;
+  --gray400: #94a3b8;
+  --gray600: #475569;
+  --gray800: #1e293b;
+  --green:   #22c55e;
+  --orange:  #f59e0b;
+  --red:     #ef4444;
+  --shadow:  0 4px 24px rgba(30,60,114,0.10);
+  --shadow2: 0 8px 40px rgba(30,60,114,0.16);
+}
+
+/* ── SCREENS ───────────────────────────────── */
+.screen { display:none; min-height:100vh; }
+.screen.active { display:flex; }
+
+/* ══════════════════════════════════════════════
+   LOGIN SCREEN
+══════════════════════════════════════════════ */
+#screen-login {
+  background: linear-gradient(135deg, #0a1628 0%, #1e3c72 55%, #2a5298 100%);
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+#screen-login::before {
+  content:'';
+  position:absolute; inset:0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(91,140,214,0.18) 0%, transparent 55%),
+    radial-gradient(circle at 80% 70%, rgba(134,197,218,0.14) 0%, transparent 55%);
+  pointer-events:none;
+}
+
+.login-card {
+  position:relative; z-index:1;
+  background: rgba(255,255,255,0.97);
+  border-radius: 24px;
+  padding: 48px 44px 44px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+}
+.login-logo {
+  display:flex; align-items:center; gap:14px;
+  margin-bottom: 32px;
+}
+.login-logo-icon {
+  width:52px; height:52px;
+  background: linear-gradient(135deg, #5B8CD6, #1e3c72);
+  border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 8px 24px rgba(91,140,214,0.35);
+  overflow:hidden;
+}
+.login-logo-icon img { width:30px; height:30px; object-fit:contain; filter:brightness(0) invert(1); }
+.login-brand { display:flex; flex-direction:column; }
+.login-brand-name { font-size:24px; font-weight:800; color:#1a202c; letter-spacing:-0.5px; }
+.login-brand-sub  { font-size:10px; font-weight:600; color:#94a3b8; letter-spacing:2px; text-transform:uppercase; }
+
+.login-title { font-size:22px; font-weight:700; color:var(--gray800); margin-bottom:6px; }
+.login-desc  { font-size:13px; color:var(--gray400); margin-bottom:28px; }
+
+.form-group { margin-bottom:18px; }
+.form-label { display:block; font-size:12px; font-weight:600; color:var(--gray600); margin-bottom:7px; text-transform:uppercase; letter-spacing:0.6px; }
+.form-input {
+  width:100%; padding:13px 16px;
+  border: 1.5px solid var(--gray200);
+  border-radius:10px;
+  font-size:14px; font-family:inherit;
+  color:var(--gray800);
+  transition: border-color .2s, box-shadow .2s;
+  background:#fff;
+}
+.form-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(91,140,214,0.12); }
+
+.login-btn {
+  width:100%; padding:14px;
+  background: linear-gradient(135deg, #5B8CD6 0%, #1e3c72 100%);
+  color:#fff; border:none; border-radius:11px;
+  font-size:14px; font-weight:700; font-family:inherit;
+  cursor:pointer; letter-spacing:0.5px;
+  transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 8px 24px rgba(91,140,214,0.35);
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  margin-top:8px;
+}
+.login-btn:hover  { transform:translateY(-2px); box-shadow:0 12px 32px rgba(91,140,214,0.45); }
+.login-btn:active { transform:scale(0.98); }
+.login-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+.password-wrapper { position:relative; }
+.password-wrapper .form-input { padding-right:46px; }
+.eye-btn {
+  position:absolute; right:14px; top:50%; transform:translateY(-50%);
+  background:none; border:none; cursor:pointer;
+  color:#94a3b8; font-size:16px; padding:4px;
+  transition:color .2s; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+}
+.eye-btn:hover { color:#5B8CD6; }
+.forgot-link {
+  display:block; text-align:right; margin-top:8px;
+  font-size:12px; font-weight:600; color:#5B8CD6;
+  cursor:pointer; text-decoration:none;
+  transition:color .2s;
+}
+.forgot-link:hover { color:#1e3c72; text-decoration:underline; }
+.forgot-success {
+  background:#f0fdf4; border:1px solid #bbf7d0;
+  color:#15803d; font-size:13px; font-weight:500;
+  padding:11px 14px; border-radius:8px;
+  margin-bottom:16px; display:none;
+  align-items:center; gap:8px;
+}
+.forgot-success.show { display:flex; }
+
+.login-error {
+  background:#fef2f2; border:1px solid #fecaca;
+  color:#dc2626; font-size:13px; font-weight:500;
+  padding:11px 14px; border-radius:8px;
+  margin-bottom:16px; display:none;
+  align-items:center; gap:8px;
+}
+.login-error.show { display:flex; }
+
+/* ══════════════════════════════════════════════
+   DASHBOARD SCREEN
+══════════════════════════════════════════════ */
+#screen-dashboard {
+  flex-direction: column;
+  background: var(--gray50);
+}
+
+/* Header */
+.dash-header {
+  background:#fff;
+  border-bottom:1px solid var(--gray200);
+  padding:0 32px;
+  height:68px;
+  display:flex; align-items:center;
+  gap:20px;
+  box-shadow: 0 1px 12px rgba(0,0,0,0.06);
+  flex-shrink:0;
+  position:relative;
+}
+.dash-header::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:3px;
+  background: linear-gradient(90deg, #5B8CD6, #86C5DA, #4DD0E1, #86C5DA, #5B8CD6);
+  background-size:200% 100%;
+  animation: shimmer 6s linear infinite;
+}
+@keyframes shimmer { 0%{background-position:0%} 100%{background-position:200%} }
+
+.dash-logo { display:flex; align-items:center; gap:12px; }
+.dash-logo-icon {
+  width:42px; height:42px;
+  background: linear-gradient(135deg, #5B8CD6, #1e3c72);
+  border-radius:11px;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 14px rgba(91,140,214,0.3);
+  overflow:hidden;
+}
+.dash-logo-icon img { width:24px; height:24px; object-fit:contain; filter:brightness(0) invert(1); }
+.dash-brand-name { font-size:20px; font-weight:800; color:#1a202c; letter-spacing:-0.4px; }
+.dash-brand-sub  { font-size:9px; font-weight:600; color:#94a3b8; letter-spacing:2px; text-transform:uppercase; }
+.dash-divider    { width:1px; height:30px; background:var(--gray200); }
+
+.dash-user-info  { flex:1; display:flex; align-items:center; gap:10px; }
+.dash-user-badge {
+  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+  border:1.5px solid #c7d2fe;
+  padding:7px 16px; border-radius:9px;
+  display:flex; align-items:center; gap:8px;
+}
+.dash-user-badge i { color:var(--accent); font-size:14px; }
+.dash-user-name   { font-size:13px; font-weight:600; color:#2d3748; }
+
+.dash-header-actions { display:flex; align-items:center; gap:10px; }
+.btn-logout {
+  background:none; border:1.5px solid var(--gray200);
+  color:var(--gray600); padding:7px 16px; border-radius:9px;
+  font-size:12px; font-weight:600; font-family:inherit;
+  cursor:pointer; display:flex; align-items:center; gap:6px;
+  transition:all .2s;
+}
+.btn-logout:hover { border-color:#ef4444; color:#ef4444; background:#fef2f2; }
+
+/* Body */
+.dash-body {
+  flex:1; padding:32px;
+  max-width:1400px; margin:0 auto; width:100%;
+  overflow-y:auto;
+}
+
+/* Page title */
+.page-title-row {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:28px; flex-wrap:wrap; gap:14px;
+}
+.page-title      { font-size:26px; font-weight:800; color:var(--gray800); letter-spacing:-0.5px; }
+.page-subtitle   { font-size:13px; color:var(--gray400); font-weight:500; margin-top:3px; }
+
+/* New audit button */
+.btn-nueva {
+  background: linear-gradient(135deg, #5B8CD6 0%, #1e3c72 100%);
+  color:#fff; border:none; border-radius:11px;
+  padding:12px 22px; font-size:13px; font-weight:700;
+  font-family:inherit; cursor:pointer;
+  display:flex; align-items:center; gap:8px;
+  box-shadow:0 6px 20px rgba(91,140,214,0.35);
+  transition:all .25s;
+}
+.btn-nueva:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(91,140,214,0.45); }
+
+/* Stats row */
+.stats-row {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr));
+  gap:16px; margin-bottom:28px;
+}
+.stat-card {
+  background:#fff; border-radius:14px;
+  padding:20px 22px;
+  border:1px solid var(--gray200);
+  box-shadow:var(--shadow);
+  display:flex; align-items:center; gap:16px;
+}
+.stat-icon {
+  width:46px; height:46px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; flex-shrink:0;
+}
+.stat-icon.blue   { background:#eff6ff; color:#3b82f6; }
+.stat-icon.orange { background:#fffbeb; color:#f59e0b; }
+.stat-icon.green  { background:#f0fdf4; color:#22c55e; }
+.stat-icon.red    { background:#fef2f2; color:#ef4444; }
+.stat-number { font-size:28px; font-weight:800; color:var(--gray800); line-height:1; }
+.stat-label  { font-size:12px; color:var(--gray400); font-weight:500; margin-top:3px; }
+
+/* Section header */
+.section-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:16px;
+}
+.section-title {
+  font-size:15px; font-weight:700; color:var(--gray800);
+  display:flex; align-items:center; gap:8px;
+}
+.section-title i { color:var(--accent); font-size:14px; }
+
+/* Filters */
+.filters { display:flex; gap:8px; flex-wrap:wrap; }
+.filter-btn {
+  background:#fff; border:1.5px solid var(--gray200);
+  color:var(--gray600); padding:6px 14px;
+  border-radius:8px; font-size:12px; font-weight:600;
+  font-family:inherit; cursor:pointer; transition:all .2s;
+}
+.filter-btn:hover  { border-color:var(--accent); color:var(--accent); }
+.filter-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+
+/* Audit list */
+.audit-list { display:flex; flex-direction:column; gap:12px; }
+
+.audit-item {
+  background:#fff; border-radius:14px;
+  border:1.5px solid var(--gray200);
+  padding:20px 24px;
+  display:flex; align-items:center; gap:18px;
+  box-shadow:var(--shadow);
+  transition:all .3s;
+  cursor:pointer;
+}
+.audit-item:hover {
+  transform:translateY(-2px);
+  box-shadow:var(--shadow2);
+  border-color:var(--accent);
+}
+
+.audit-status-dot {
+  width:12px; height:12px; border-radius:50%; flex-shrink:0;
+}
+.audit-status-dot.en-progreso { background:var(--orange); box-shadow:0 0 0 3px rgba(245,158,11,0.2); }
+.audit-status-dot.completada  { background:var(--green);  box-shadow:0 0 0 3px rgba(34,197,94,0.2); }
+.audit-status-dot.pendiente   { background:var(--gray400); }
+
+.audit-inst-logo {
+  width:44px; height:44px; border-radius:10px;
+  overflow:hidden; flex-shrink:0;
+  border:1px solid var(--gray200);
+  display:flex; align-items:center; justify-content:center;
+  background:#f8fafc; padding:4px;
+}
+.audit-inst-logo img { width:100%; height:100%; object-fit:contain; }
+
+.audit-info { flex:1; min-width:0; }
+.audit-title { font-size:14px; font-weight:700; color:var(--gray800); margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.audit-meta  { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.audit-meta-item {
+  font-size:11px; color:var(--gray400); font-weight:500;
+  display:flex; align-items:center; gap:4px;
+}
+.audit-meta-item i { font-size:10px; }
+
+.audit-score {
+  font-size:22px; font-weight:800; flex-shrink:0;
+  min-width:56px; text-align:center;
+}
+.audit-score.high   { color:var(--green); }
+.audit-score.medium { color:var(--orange); }
+.audit-score.low    { color:var(--red); }
+.audit-score.none   { color:var(--gray400); font-size:14px; }
+
+.audit-badge {
+  font-size:11px; font-weight:700; padding:4px 10px; border-radius:6px;
+  flex-shrink:0; text-transform:uppercase; letter-spacing:0.5px;
+}
+.audit-badge.en-progreso { background:#fffbeb; color:#b45309; }
+.audit-badge.completada  { background:#f0fdf4; color:#15803d; }
+.audit-badge.pendiente   { background:var(--gray100); color:var(--gray600); }
+
+.audit-actions { display:flex; gap:8px; flex-shrink:0; }
+.btn-action {
+  padding:8px 16px; border-radius:9px; border:none;
+  font-size:12px; font-weight:700; font-family:inherit;
+  cursor:pointer; display:flex; align-items:center; gap:6px;
+  transition:all .2s;
+}
+.btn-continuar { background: linear-gradient(135deg, #5B8CD6, #1e3c72); color:#fff; box-shadow:0 4px 12px rgba(91,140,214,0.3); }
+.btn-continuar:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(91,140,214,0.4); }
+.btn-ver       { background:var(--gray100); color:var(--gray600); }
+.btn-ver:hover { background:var(--gray200); }
+.btn-delete { background:#fef2f2; color:#ef4444; border:1.5px solid #fecaca; }
+.btn-delete:hover { background:#ef4444; color:#fff; border-color:#ef4444; }
+
+/* Empty state */
+.empty-state {
+  text-align:center; padding:60px 20px;
+  background:#fff; border-radius:14px;
+  border:1.5px dashed var(--gray200);
+}
+.empty-state i    { font-size:48px; color:var(--gray200); margin-bottom:16px; }
+.empty-state h3   { font-size:16px; font-weight:700; color:var(--gray400); margin-bottom:8px; }
+.empty-state p    { font-size:13px; color:var(--gray400); }
+
+/* Loading */
+.loading-state { text-align:center; padding:40px; color:var(--gray400); }
+.spinner-sm {
+  width:24px; height:24px;
+  border:3px solid var(--gray200);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+  display:inline-block; margin-bottom:12px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* Modal — nueva auditoría */
+.modal-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.55);
+  z-index:1000; align-items:center; justify-content:center;
+  padding:20px;
+}
+.modal-overlay.open { display:flex; }
+.modal-box {
+  background:#fff; border-radius:20px;
+  width:100%; max-width:500px;
+  box-shadow:0 24px 80px rgba(0,0,0,0.25);
+  overflow:hidden;
+  animation: modalIn .25s ease;
+}
+@keyframes modalIn { from{transform:translateY(-20px);opacity:0} to{transform:translateY(0);opacity:1} }
+.modal-header {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  padding:22px 28px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.modal-header h2 { font-size:17px; font-weight:700; color:#fff; }
+.modal-close {
+  background:rgba(255,255,255,0.15); border:none; color:#fff;
+  width:32px; height:32px; border-radius:50%;
+  font-size:16px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .2s;
+}
+.modal-close:hover { background:rgba(255,255,255,0.3); }
+.modal-body { padding:28px; }
+
+.inst-selector { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+.inst-option {
+  border:2px solid var(--gray200); border-radius:12px;
+  padding:16px 12px; text-align:center; cursor:pointer;
+  transition:all .2s;
+}
+.inst-option:hover   { border-color:var(--accent); }
+.inst-option.selected { border-color:var(--accent); background:#eef2ff; }
+.inst-option img { width:100%; height:50px; object-fit:contain; margin-bottom:8px; }
+.inst-option span { font-size:11px; font-weight:700; color:var(--gray600); display:block; }
+
+.modal-form-group { margin-bottom:16px; }
+.modal-label { font-size:11px; font-weight:700; color:var(--gray600); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:6px; display:block; }
+.modal-select, .modal-input-field {
+  width:100%; padding:11px 14px;
+  border:1.5px solid var(--gray200); border-radius:9px;
+  font-size:13px; font-family:inherit; color:var(--gray800);
+  background:#fff; transition:border-color .2s;
+}
+.modal-select:focus, .modal-input-field:focus { outline:none; border-color:var(--accent); }
+
+.modal-footer { padding:0 28px 24px; display:flex; gap:10px; }
+.btn-modal-cancel {
+  flex:1; padding:12px; background:var(--gray100);
+  color:var(--gray600); border:none; border-radius:10px;
+  font-size:13px; font-weight:700; font-family:inherit; cursor:pointer;
+}
+.btn-modal-create {
+  flex:2; padding:12px;
+  background: linear-gradient(135deg, #5B8CD6, #1e3c72);
+  color:#fff; border:none; border-radius:10px;
+  font-size:13px; font-weight:700; font-family:inherit; cursor:pointer;
+  box-shadow:0 6px 18px rgba(91,140,214,0.35);
+  transition:all .2s;
+}
+.btn-modal-create:hover { transform:translateY(-1px); }
+.btn-modal-create:disabled { opacity:.6; cursor:not-allowed; }
+
+/* Toast */
+.toast {
+  position:fixed; bottom:24px; right:24px;
+  background:var(--gray800); color:#fff;
+  padding:13px 20px; border-radius:10px;
+  font-size:13px; font-weight:600;
+  display:flex; align-items:center; gap:10px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.25);
+  transform:translateY(80px); opacity:0;
+  transition:all .35s cubic-bezier(.34,1.56,.64,1);
+  z-index:2000; max-width:380px;
+}
+.toast.show { transform:translateY(0); opacity:1; }
+.toast.success { background:#166534; }
+.toast.error   { background:#991b1b; }
+.toast.info    { background:#1e3a8a; }
+
+/* Responsive */
+@media(max-width:768px) {
+  .dash-body    { padding:20px 16px; }
+  .dash-header  { padding:0 16px; }
+  .audit-item   { flex-wrap:wrap; gap:12px; }
+  .audit-actions { width:100%; }
+  .btn-action   { flex:1; justify-content:center; }
+  .stats-row    { grid-template-columns:repeat(2,1fr); }
+  .login-card   { padding:36px 28px 32px; margin:16px; }
+  .inst-selector { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SCREEN: LOGIN ══════════════════════════ -->
+<div id="screen-login" class="screen active">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">
+        <img src="https://i.imgur.com/3WZzeT6.png" alt="Qualisig">
+      </div>
+      <div class="login-brand">
+        <div class="login-brand-name">QUALISIG</div>
+        <div class="login-brand-sub">Gestión de Calidad</div>
+      </div>
+    </div>
+
+    <h2 class="login-title">Bienvenido</h2>
+    <p class="login-desc">Ingresa tus credenciales para acceder al módulo de auditorías</p>
+
+    <div class="login-error" id="login-error">
+      <i class="fas fa-exclamation-circle"></i>
+      <span id="login-error-msg">Correo o contraseña incorrectos</span>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Correo electrónico</label>
+      <input type="email" class="form-input" id="login-email" placeholder="usuario@foca.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Contraseña</label>
+      <div class="password-wrapper">
+        <input type="password" class="form-input" id="login-password" placeholder="••••••••" autocomplete="current-password">
+        <button type="button" class="eye-btn" id="eye-btn" onclick="togglePassword()" tabindex="-1">
+          <i class="fas fa-eye" id="eye-icon"></i>
+        </button>
+      </div>
+      <span class="forgot-link" onclick="doForgotPassword()">¿Olvidaste tu contraseña?</span>
+    </div>
+
+    <div class="forgot-success" id="forgot-success">
+      <i class="fas fa-check-circle"></i>
+      <span id="forgot-success-msg">Se envió un correo para restablecer tu contraseña</span>
+    </div>
+
+    <button class="login-btn" id="btn-login" onclick="doLogin()">
+      <i class="fas fa-sign-in-alt"></i>
+      <span>Iniciar sesión</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══ SCREEN: DASHBOARD ═════════════════════ -->
+<div id="screen-dashboard" class="screen">
+
+  <!-- Header -->
+  <header class="dash-header">
+    <div class="dash-logo">
+      <div class="dash-logo-icon">
+        <img src="https://i.imgur.com/3WZzeT6.png" alt="Qualisig">
+      </div>
+      <div>
+        <div class="dash-brand-name">QUALISIG</div>
+        <div class="dash-brand-sub">Gestión de Calidad</div>
+      </div>
+    </div>
+    <div class="dash-divider"></div>
+    <div class="dash-user-info">
+      <div class="dash-user-badge">
+        <i class="fas fa-user-circle"></i>
+        <span class="dash-user-name" id="dash-user-name">Cargando...</span>
+      </div>
+    </div>
+    <div class="dash-header-actions">
+      <button class="btn-logout" onclick="doLogout()">
+        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+      </button>
+    </div>
+  </header>
+
+  <!-- Body -->
+  <div class="dash-body">
+
+    <!-- Page title -->
+    <div class="page-title-row">
+      <div>
+        <h1 class="page-title">Mis Auditorías</h1>
+        <p class="page-subtitle">Gestiona y continúa tus listas de verificación</p>
+      </div>
+      <button class="btn-nueva" onclick="openNuevaModal()">
+        <i class="fas fa-plus"></i> Nueva Auditoría
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fas fa-clipboard-list"></i></div>
+        <div><div class="stat-number" id="stat-total">0</div><div class="stat-label">Total</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
+        <div><div class="stat-number" id="stat-progreso">0</div><div class="stat-label">En progreso</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+        <div><div class="stat-number" id="stat-completadas">0</div><div class="stat-label">Completadas</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fas fa-chart-line"></i></div>
+        <div><div class="stat-number" id="stat-promedio">—</div><div class="stat-label">Promedio</div></div>
+      </div>
+    </div>
+
+    <!-- Audit list -->
+    <div class="section-header">
+      <div class="section-title"><i class="fas fa-list-check"></i> Auditorías</div>
+      <div class="filters">
+        <button class="filter-btn active" onclick="setFilter('todas', this)">Todas</button>
+        <button class="filter-btn" onclick="setFilter('en-progreso', this)">En progreso</button>
+        <button class="filter-btn" onclick="setFilter('completada', this)">Completadas</button>
+      </div>
+    </div>
+
+    <div class="audit-list" id="audit-list">
+      <div class="loading-state">
+        <div class="spinner-sm"></div>
+        <p>Cargando auditorías...</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ MODAL: NUEVA AUDITORÍA ════════════════ -->
+<div class="modal-overlay" id="modal-nueva">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2><i class="fas fa-plus-circle" style="margin-right:8px"></i>Nueva Auditoría</h2>
+      <button class="modal-close" onclick="closeNuevaModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <label class="modal-label">Institución</label>
+      <div class="inst-selector">
+        <div class="inst-option selected" id="opt-foca" onclick="selectInst('foca')">
+          <img src="https://i.imgur.com/5pNuFBp.png" alt="FOCA">
+          <span>FOCA</span>
+        </div>
+        <div class="inst-option" id="opt-viu" onclick="selectInst('viu')">
+          <img src="https://i.imgur.com/qQ4lN8v.png" alt="VIU">
+          <span>VIU</span>
+        </div>
+      </div>
+
+      <div class="modal-form-group">
+        <label class="modal-label">Sede</label>
+        <select class="modal-select" id="nueva-sede">
+          <option value="">Seleccione la sede</option>
+          <option>FOCA VIVA</option><option>FOCA ALKARAWI</option>
+          <option>FOCA SEDE 2</option><option>FOCA SEDE 51B</option>
+          <option>FOCA ALEGRA</option><option>FOCA VALLEDUPAR</option>
+          <option>FOCA RIOHACHA</option><option>FOCA SANTA MARTA</option>
+          <option>FOCA SANTA MARTA BURANO</option><option>FOCA CARTAGENA</option>
+          <option>FOCA BARANOA</option><option>FOCA GALAPA</option>
+          <option>FOCA SABANALARGA 1</option><option>FOCA SABANALARGA 2</option>
+          <option>FOCA MALAMBO</option>
+        </select>
+      </div>
+
+      <div class="modal-form-group">
+        <label class="modal-label">Fecha de auditoría</label>
+        <input type="date" class="modal-input-field" id="nueva-fecha">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" onclick="closeNuevaModal()">Cancelar</button>
+      <button class="btn-modal-create" id="btn-crear" onclick="crearAuditoria()">
+        <i class="fas fa-rocket"></i> Crear e iniciar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <i class="fas fa-check-circle" id="toast-icon"></i>
+  <span id="toast-msg">Mensaje</span>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// FIREBASE CONFIG
+// ══════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyDdATmr1x7nNObgKjcqKiexbM2YNMP0D9Y",
+  authDomain: "qualisig-auditorias.firebaseapp.com",
+  databaseURL: "https://qualisig-auditorias-default-rtdb.firebaseio.com",
+  projectId: "qualisig-auditorias",
+  storageBucket: "qualisig-auditorias.firebasestorage.app",
+  messagingSenderId: "155027246268",
+  appId: "1:155027246268:web:75a8394fbb0a2a2ccb54b9"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.database();
+
+// URLs de las listas en GitHub Pages
+const LISTA_URLS = {
+  foca: 'https://gcalidad3foca-droid.github.io/Modulo_Auditorias/LISTA%20DE%20VERIFICACION%20AUDITORIA%20DE%20SERVICIO%20-%20FOCA..html',
+  viu:  'https://gcalidad3foca-droid.github.io/Modulo_Auditorias/LISTA%20DE%20VERIFICACION%20AUDITORIA%20DE%20SERVICIO%20-%20VIU..html'
+};
+
+const INST_LOGOS = {
+  foca: 'https://i.imgur.com/5pNuFBp.png',
+  viu:  'https://i.imgur.com/qQ4lN8v.png'
+};
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+let currentUser  = null;
+let allAuditorias = [];
+let currentFilter = 'todas';
+let selectedInst  = 'foca';
+
+// ══════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════
+auth.onAuthStateChanged(user => {
+  if (user) {
+    currentUser = user;
+    showScreen('dashboard');
+    const name = user.email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    document.getElementById('dash-user-name').textContent = name;
+    loadAuditorias();
+  } else {
+    currentUser = null;
+    showScreen('login');
+  }
+});
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-password').value;
+  const btn   = document.getElementById('btn-login');
+  const err   = document.getElementById('login-error');
+
+  if (!email || !pass) { showLoginError('Completa todos los campos'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Ingresando...</span>';
+  err.classList.remove('show');
+
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+  } catch(e) {
+    let msg = 'Correo o contraseña incorrectos';
+    if (e.code === 'auth/too-many-requests') msg = 'Demasiados intentos. Intenta más tarde.';
+    if (e.code === 'auth/user-not-found')    msg = 'Usuario no encontrado.';
+    showLoginError(msg);
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Iniciar sesión</span>';
+  }
+}
+
+function showLoginError(msg) {
+  document.getElementById('login-error-msg').textContent = msg;
+  document.getElementById('login-error').classList.add('show');
+}
+
+function doLogout() {
+  auth.signOut();
+}
+
+function togglePassword() {
+  const input = document.getElementById('login-password');
+  const icon  = document.getElementById('eye-icon');
+  const isHidden = input.type === 'password';
+  input.type  = isHidden ? 'text' : 'password';
+  icon.className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+}
+
+async function doForgotPassword() {
+  const email = document.getElementById('login-email').value.trim();
+  const errEl = document.getElementById('login-error');
+  const sucEl = document.getElementById('forgot-success');
+  const sucMsg = document.getElementById('forgot-success-msg');
+
+  errEl.classList.remove('show');
+  sucEl.classList.remove('show');
+
+  if (!email) {
+    showLoginError('Escribe tu correo electrónico primero');
+    document.getElementById('login-email').focus();
+    return;
+  }
+
+  try {
+    await auth.sendPasswordResetEmail(email);
+    sucMsg.textContent = 'Correo enviado a ' + email + '. Revisa tu bandeja de entrada.';
+    sucEl.classList.add('show');
+    setTimeout(() => sucEl.classList.remove('show'), 6000);
+  } catch(e) {
+    let msg = 'No se pudo enviar el correo. Verifica la dirección.';
+    if (e.code === 'auth/user-not-found') msg = 'No existe una cuenta con ese correo.';
+    if (e.code === 'auth/invalid-email')  msg = 'El correo no tiene un formato válido.';
+    showLoginError(msg);
+  }
+}
+
+// Enter key on login
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('screen-login').classList.contains('active')) {
+    doLogin();
+  }
+});
+
+// ══════════════════════════════════════════════
+// LOAD AUDITORIAS
+// ══════════════════════════════════════════════
+function loadAuditorias() {
+  if (!currentUser) return;
+  const uid = currentUser.uid;
+
+  db.ref('auditorias').orderByChild('uid').equalTo(uid).on('value', snap => {
+    allAuditorias = [];
+    if (snap.exists()) {
+      snap.forEach(child => {
+        allAuditorias.push({ id: child.key, ...child.val() });
+      });
+      // Más recientes primero
+      allAuditorias.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+    }
+    renderStats();
+    renderAuditorias();
+  });
+}
+
+function renderStats() {
+  const total      = allAuditorias.length;
+  const enProgreso = allAuditorias.filter(a => a.estado === 'en-progreso').length;
+  const completadas = allAuditorias.filter(a => a.estado === 'completada').length;
+  const conScore   = allAuditorias.filter(a => a.porcentaje != null);
+  const promedio   = conScore.length
+    ? Math.round(conScore.reduce((s,a) => s + (a.porcentaje||0), 0) / conScore.length)
+    : null;
+
+  document.getElementById('stat-total').textContent      = total;
+  document.getElementById('stat-progreso').textContent   = enProgreso;
+  document.getElementById('stat-completadas').textContent = completadas;
+  document.getElementById('stat-promedio').textContent   = promedio != null ? promedio + '%' : '—';
+}
+
+function renderAuditorias() {
+  const list = document.getElementById('audit-list');
+  let items = allAuditorias;
+
+  if (currentFilter !== 'todas') {
+    items = items.filter(a => a.estado === currentFilter);
+  }
+
+  if (items.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-clipboard"></i>
+        <h3>${currentFilter === 'todas' ? 'Aún no tienes auditorías' : 'Sin auditorías en este estado'}</h3>
+        <p>${currentFilter === 'todas' ? 'Crea tu primera auditoría con el botón "Nueva Auditoría"' : 'Cambia el filtro o crea una nueva auditoría'}</p>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = items.map(a => {
+    const pct     = a.porcentaje != null ? a.porcentaje : null;
+    const scoreClass = pct == null ? 'none' : pct >= 92 ? 'high' : pct >= 85 ? 'medium' : 'low';
+    const scoreText  = pct == null ? 'Sin calificar' : pct + '%';
+    const badgeClass = a.estado || 'en-progreso';
+    const badgeText  = badgeClass === 'en-progreso' ? 'En progreso' : badgeClass === 'completada' ? 'Completada' : 'Pendiente';
+    const dotClass   = badgeClass;
+    const logo       = INST_LOGOS[a.institucion] || INST_LOGOS.foca;
+    const fecha      = a.fecha ? new Date(a.fecha + 'T12:00:00').toLocaleDateString('es-CO', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+    const isComplete = a.estado === 'completada';
+
+    return `
+    <div class="audit-item" data-id="${a.id}">
+      <div class="audit-status-dot ${dotClass}"></div>
+      <div class="audit-inst-logo">
+        <img src="${logo}" alt="${a.institucion}">
+      </div>
+      <div class="audit-info">
+        <div class="audit-title">${a.sede || 'Sin sede'} — ${(a.institucion||'foca').toUpperCase()}</div>
+        <div class="audit-meta">
+          <div class="audit-meta-item"><i class="fas fa-calendar"></i>${fecha}</div>
+          <div class="audit-meta-item"><i class="fas fa-user"></i>${a.auditorNombre || currentUser.email}</div>
+          <div class="audit-meta-item"><i class="fas fa-tag"></i>${a.id}</div>
+        </div>
+      </div>
+      <div class="audit-score ${scoreClass}">${scoreText}</div>
+      <div class="audit-badge ${badgeClass}">${badgeText}</div>
+      <div class="audit-actions">
+        <button class="btn-action btn-continuar" onclick="abrirAuditoria('${a.id}','${a.institucion}')">
+          <i class="fas ${isComplete ? 'fa-folder-open' : 'fa-play'}"></i>
+          ${isComplete ? 'Abrir' : 'Continuar'}
+        </button>
+        <button class="btn-action btn-delete" onclick="confirmarEliminar(event,'${a.id}','${a.sede||'Sin sede'}')">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAuditorias();
+}
+
+// ══════════════════════════════════════════════
+// NUEVA AUDITORÍA
+// ══════════════════════════════════════════════
+function openNuevaModal() {
+  document.getElementById('modal-nueva').classList.add('open');
+  document.getElementById('nueva-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('nueva-sede').value  = '';
+  selectInst('foca');
+}
+
+function closeNuevaModal() {
+  document.getElementById('modal-nueva').classList.remove('open');
+}
+
+function selectInst(inst) {
+  selectedInst = inst;
+  document.getElementById('opt-foca').classList.toggle('selected', inst === 'foca');
+  document.getElementById('opt-viu').classList.toggle('selected',  inst === 'viu');
+
+  // Actualizar opciones de sede según institución
+  const sedeSelect = document.getElementById('nueva-sede');
+  sedeSelect.innerHTML = '<option value="">Seleccione la sede</option>';
+  const sedesFoca = ['FOCA VIVA','FOCA ALKARAWI','FOCA SEDE 2','FOCA SEDE 51B','FOCA ALEGRA',
+    'FOCA VALLEDUPAR','FOCA RIOHACHA','FOCA SANTA MARTA','FOCA SANTA MARTA BURANO',
+    'FOCA CARTAGENA','FOCA BARANOA','FOCA GALAPA','FOCA SABANALARGA 1','FOCA SABANALARGA 2','FOCA MALAMBO'];
+  const sedesViu = ['VIU BARRANQUILLA','VIU BOGOTÁ','VIU MEDELLÍN','VIU CALI','VIU CARTAGENA'];
+  const sedes = inst === 'foca' ? sedesFoca : sedesViu;
+  sedes.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s; opt.textContent = s;
+    sedeSelect.appendChild(opt);
+  });
+}
+
+async function crearAuditoria() {
+  const sede  = document.getElementById('nueva-sede').value;
+  const fecha = document.getElementById('nueva-fecha').value;
+  const btn   = document.getElementById('btn-crear');
+
+  if (!sede)  { showToast('Selecciona una sede', 'error'); return; }
+  if (!fecha) { showToast('Selecciona la fecha', 'error'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
+
+  const ts   = Date.now();
+  const id   = 'AUD-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + ts.toString().slice(-4);
+  const name = currentUser.email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+
+  const newAudit = {
+    uid:           currentUser.uid,
+    email:         currentUser.email,
+    auditorNombre: name,
+    institucion:   selectedInst,
+    sede,
+    fecha,
+    estado:        'en-progreso',
+    porcentaje:    null,
+    createdAt:     ts,
+    updatedAt:     ts
+  };
+
+  try {
+    await db.ref('auditorias/' + id).set(newAudit);
+    closeNuevaModal();
+    showToast('Auditoría creada — abriendo lista...', 'success');
+    setTimeout(() => {
+      const url = LISTA_URLS[selectedInst] + '?auditId=' + id + '&uid=' + currentUser.uid;
+      window.open(url, '_blank');
+    }, 800);
+  } catch(e) {
+    showToast('Error al crear: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-rocket"></i> Crear e iniciar';
+  }
+}
+
+function abrirAuditoria(id, inst) {
+  const url = LISTA_URLS[inst||'foca'] + '?auditId=' + id + '&uid=' + currentUser.uid;
+  window.open(url, '_blank');
+}
+
+// ══════════════════════════════════════════════
+// ELIMINAR AUDITORÍA
+// ══════════════════════════════════════════════
+function confirmarEliminar(e, id, sede) {
+  e.stopPropagation();
+  // Mini confirm inline
+  const existing = document.getElementById('confirm-' + id);
+  if (existing) { existing.remove(); return; }
+
+  const auditItem = e.target.closest('.audit-item');
+  const confirm = document.createElement('div');
+  confirm.id = 'confirm-' + id;
+  confirm.style.cssText = `
+    position:absolute; right:16px; top:50%; transform:translateY(-50%);
+    background:#fff; border:1.5px solid #fecaca; border-radius:10px;
+    padding:12px 16px; box-shadow:0 8px 32px rgba(0,0,0,0.15);
+    display:flex; align-items:center; gap:10px; z-index:100;
+    font-size:12px; font-weight:600; color:#dc2626; white-space:nowrap;
+  `;
+  confirm.innerHTML = `
+    <i class="fas fa-exclamation-triangle"></i>
+    ¿Eliminar "${sede}"?
+    <button onclick="eliminarAuditoria('${id}')" style="background:#ef4444;color:#fff;border:none;border-radius:7px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
+      Sí, eliminar
+    </button>
+    <button onclick="document.getElementById('confirm-${id}').remove()" style="background:#f1f5f9;color:#475569;border:none;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">
+      Cancelar
+    </button>
+  `;
+  auditItem.style.position = 'relative';
+  auditItem.style.overflow = 'visible';
+  auditItem.appendChild(confirm);
+
+  // Auto-close after 5s
+  setTimeout(() => { const el = document.getElementById('confirm-' + id); if(el) el.remove(); }, 5000);
+}
+
+async function eliminarAuditoria(id) {
+  try {
+    await db.ref('auditorias/' + id).remove();
+    showToast('Auditoría eliminada', 'info');
+  } catch(e) {
+    showToast('Error al eliminar: ' + e.message, 'error');
+  }
+}
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+let toastTimer;
+function showToast(msg, type='info') {
+  const t    = document.getElementById('toast');
+  const icon = document.getElementById('toast-icon');
+  document.getElementById('toast-msg').textContent = msg;
+  t.className = 'toast show ' + type;
+  const icons = {success:'fa-check-circle', error:'fa-exclamation-circle', info:'fa-info-circle'};
+  icon.className = 'fas ' + (icons[type]||icons.info);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>
