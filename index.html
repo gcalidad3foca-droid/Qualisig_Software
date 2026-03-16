@@ -48,7 +48,10 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 #screen-login::before {
   content:'';
@@ -67,6 +70,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   width: 100%;
   max-width: 420px;
   box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+  margin: auto;
 }
 .login-logo {
   display:flex; align-items:center; gap:14px;
@@ -485,24 +489,36 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 @media(max-width:640px) {
 
   /* LOGIN */
-  #screen-login    { align-items:flex-start; padding-top:0; }
-  .login-card      {
-    border-radius:0 0 24px 24px;
-    padding:48px 22px 32px;
-    margin:0;
+  #screen-login {
+    align-items:flex-start;
+    justify-content:flex-start;
+    padding:24px 16px 32px;
+    min-height:100vh;
+    min-height:100dvh;
+  }
+  .login-card {
+    border-radius:20px;
+    padding:32px 22px 28px;
+    margin:auto 0;
     width:100%;
     max-width:100%;
-    box-shadow:0 8px 40px rgba(0,0,0,0.18);
+    box-shadow:0 12px 48px rgba(0,0,0,0.28);
+    align-self:center;
   }
-  .login-logo      { margin-bottom:24px; }
-  .login-logo-icon { width:46px; height:46px; border-radius:12px; }
-  .login-logo-icon img { width:26px; height:26px; }
-  .login-brand-name { font-size:21px; }
-  .login-title     { font-size:19px; }
-  .login-desc      { font-size:12px; }
-  .form-input      { padding:12px 14px; font-size:15px; }
-  .login-btn       { padding:15px; font-size:15px; }
-  .forgot-link     { font-size:13px; }
+  .login-logo      { margin-bottom:20px; gap:12px; }
+  .login-logo-icon { width:44px; height:44px; border-radius:11px; flex-shrink:0; }
+  .login-logo-icon img { width:24px; height:24px; }
+  .login-brand-name { font-size:20px; }
+  .login-brand-sub  { font-size:9px; }
+  .login-title     { font-size:18px; margin-bottom:4px; }
+  .login-desc      { font-size:12px; margin-bottom:20px; }
+  .form-group      { margin-bottom:14px; }
+  .form-label      { font-size:11px; margin-bottom:5px; }
+  .form-input      { padding:13px 14px; font-size:16px; border-radius:9px; }
+  .password-wrapper .form-input { padding-right:46px; }
+  .login-btn       { padding:15px; font-size:15px; border-radius:10px; margin-top:6px; }
+  .forgot-link     { font-size:12px; margin-top:7px; }
+  .login-error, .forgot-success { font-size:12px; padding:10px 12px; }
 
   /* HEADER */
   .dash-header     {
@@ -816,8 +832,8 @@ const db   = firebase.database();
 
 // URLs de las listas en GitHub Pages
 const LISTA_URLS = {
-  foca: 'https://gcalidad3foca-droid.github.io/Modulo_Auditorias/LISTA%20DE%20VERIFICACION%20AUDITORIA%20DE%20SERVICIO%20-%20FOCA..html',
-  viu:  'https://gcalidad3foca-droid.github.io/Modulo_Auditorias/LISTA%20DE%20VERIFICACION%20AUDITORIA%20DE%20SERVICIO%20-%20VIU..html'
+  foca: 'https://gcalidad3foca-droid.github.io/Qualisig_Software/Lista_Verificacion_FOCA.html',
+  viu:  'https://gcalidad3foca-droid.github.io/Qualisig_Software/Lista_Verificacion_VIU.html'
 };
 
 const INST_LOGOS = {
@@ -852,6 +868,25 @@ auth.onAuthStateChanged(user => {
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
+  // Reset login form state when returning to login screen
+  if (name === 'login') {
+    const btn = document.getElementById('btn-login');
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Iniciar sesión</span>';
+    }
+    const err = document.getElementById('login-error');
+    if (err) err.classList.remove('show');
+    const suc = document.getElementById('forgot-success');
+    if (suc) suc.classList.remove('show');
+    const passField = document.getElementById('login-password');
+    if (passField) {
+      passField.type = 'password';
+      passField.value = '';
+    }
+    const eyeIcon = document.getElementById('eye-icon');
+    if (eyeIcon) eyeIcon.className = 'fas fa-eye';
+  }
 }
 
 async function doLogin() {
@@ -1185,3 +1220,4 @@ function showToast(msg, type='info') {
 </script>
 </body>
 </html>
+
