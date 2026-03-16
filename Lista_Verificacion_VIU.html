@@ -599,67 +599,46 @@ function handleEvidenceUpload(event) {
 
 // ══════════════════════════════════════════════
 // CLOUDINARY — ALMACENAMIENTO DE FOTOS EN NUBE
-// Sube cada foto a Cloudinary y guarda la URL.
-// Fallback: si falla, guarda el dataUrl local.
 // ══════════════════════════════════════════════
 const _CLD_CLOUD  = 'dqstmx4u8';
 const _CLD_PRESET = 'qualisig_fotos';
-const _CLD_FOLDER = 'auditorias';
-const _CLD_URL    = `https://api.cloudinary.com/v1_1/${_CLD_CLOUD}/image/upload`;
+const _CLD_URL    = 'https://api.cloudinary.com/v1_1/dqstmx4u8/image/upload';
 
-async function uploadToCloudinary(file, itemId) {
+// Sube dataUrl a Cloudinary usando upload preset unsigned
+async function uploadToCloudinary(dataUrl, itemId) {
   try {
-    // Comprimir antes de subir (max 1200px, calidad 82%)
-    const compressed = await _compressImage(file, 1200, 0.82);
-    const folder = _auditId ? `${_CLD_FOLDER}/${_auditId}` : _CLD_FOLDER;
     const fd = new FormData();
-    fd.append('file',           compressed);
-    fd.append('upload_preset',  _CLD_PRESET);
-    fd.append('folder',         folder);
-    fd.append('tags',           itemId);
+    fd.append('file',          dataUrl);        // base64 dataUrl directo
+    fd.append('upload_preset', _CLD_PRESET);    // unsigned preset
+    fd.append('folder',        'auditorias');   // carpeta fija sin subpath
+    fd.append('public_id',     itemId.replace(/[^a-z0-9]/gi,'_') + '_' + Date.now());
 
     const res = await fetch(_CLD_URL, { method: 'POST', body: fd });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error('HTTP ' + res.status + ' — ' + errText.substring(0,200));
+    }
     const data = await res.json();
-    return data.secure_url;   // URL permanente de la foto
+    if (data.error) throw new Error(data.error.message);
+    return data.secure_url;
   } catch(e) {
-    console.warn('Cloudinary upload error:', e);
-    return null;  // señal de fallo → usar dataUrl local
+    console.warn('Cloudinary upload error:', e.message || e);
+    return null;
   }
 }
 
-// Comprime una imagen a maxWidth px y calidad dada
-function _compressImage(file, maxWidth, quality) {
-  return new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const img = new Image();
-      img.onload = () => {
-        const scale = Math.min(1, maxWidth / img.width);
-        const canvas = document.createElement('canvas');
-        canvas.width  = Math.round(img.width  * scale);
-        canvas.height = Math.round(img.height * scale);
-        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob(blob => resolve(blob), 'image/jpeg', quality);
-      };
-      img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-// Indicador de subida en el modal
-function _showUploadProgress(show, msg='Subiendo foto...') {
+// Indicador de subida flotante
+function _showUploadProgress(show, msg) {
   let el = document.getElementById('_cld_progress');
   if (!el) {
     el = document.createElement('div');
     el.id = '_cld_progress';
-    el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e3c72;color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.25);';
-    el.innerHTML = '<i class="fas fa-cloud-upload-alt" style="font-size:15px"></i><span id="_cld_msg">Subiendo foto...</span>';
+    el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e3c72;color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.25);white-space:nowrap;';
+    el.innerHTML = '<i class="fas fa-cloud-upload-alt" style="font-size:15px"></i><span id="_cld_msg"></span>';
     document.body.appendChild(el);
   }
   el.style.display = show ? 'flex' : 'none';
-  if (show) document.getElementById('_cld_msg').textContent = msg;
+  if (show && msg) document.getElementById('_cld_msg').textContent = msg;
 }
 
 function processEvidenceFiles(files) {
@@ -683,7 +662,7 @@ function processEvidenceFiles(files) {
 
       // Subir a Cloudinary en segundo plano
       _showUploadProgress(true, 'Subiendo foto ' + (idx + 1) + '...');
-      const cloudUrl = await uploadToCloudinary(file, itemId);
+      const cloudUrl = await uploadToCloudinary(localDataUrl, itemId);
       _showUploadProgress(false);
 
       if (cloudUrl) {
@@ -710,56 +689,6 @@ function processEvidenceFiles(files) {
     reader.readAsDataURL(file);
   });
 }
-
-function processEvidenceFiles(files) {
-  if (!currentEvidenceItem) return;
-  if (!evidenceStore[currentEvidenceItem]) evidenceStore[currentEvidenceItem] = [];
-  const itemId = currentEvidenceItem;
-
-  Array.from(files).filter(f => f.type.startsWith('image/')).forEach(async file => {
-    // Leer dataUrl local inmediatamente para mostrar preview sin esperar
-    const reader = new FileReader();
-    reader.onload = async ev => {
-      const localDataUrl = ev.target.result;
-      // Agregar con dataUrl local primero — el usuario ve la foto de inmediato
-      const entry = { dataUrl: localDataUrl, title: '', cloudUrl: null, uploading: true };
-      if (!evidenceStore[itemId]) evidenceStore[itemId] = [];
-      const idx = evidenceStore[itemId].length;
-      evidenceStore[itemId].push(entry);
-      if (currentEvidenceItem === itemId) updateEvidencePreview();
-      refreshEvidenceButton(itemId);
-      await saveEvidenceToIDB(itemId);
-
-      // Subir a Cloudinary en segundo plano
-      _showUploadProgress(true, 'Subiendo foto ' + (idx + 1) + '...');
-      const cloudUrl = await uploadToCloudinary(file, itemId);
-      _showUploadProgress(false);
-
-      if (cloudUrl) {
-        // Reemplazar dataUrl pesado por URL ligera de Cloudinary
-        if (evidenceStore[itemId] && evidenceStore[itemId][idx]) {
-          evidenceStore[itemId][idx].cloudUrl  = cloudUrl;
-          evidenceStore[itemId][idx].uploading = false;
-          // Mantener dataUrl como fallback local también
-          await saveEvidenceToIDB(itemId);
-          // Sincronizar URLs en Firebase si está habilitado
-          _fbSaveDraft();
-          if (currentEvidenceItem === itemId) updateEvidencePreview();
-        }
-      } else {
-        // Cloudinary falló — quedarse con dataUrl local
-        if (evidenceStore[itemId] && evidenceStore[itemId][idx]) {
-          evidenceStore[itemId][idx].uploading = false;
-          await saveEvidenceToIDB(itemId);
-          if (currentEvidenceItem === itemId) updateEvidencePreview();
-        }
-        showNotification('Foto guardada localmente (sin conexión a nube)', 'info');
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
 
 function initDropZone() {
   const zone = document.getElementById('dropZone');
@@ -1940,9 +1869,22 @@ function _fbSaveDraft() {
       const draft = JSON.parse(raw);
       const pctEl = document.getElementById('total-pct');
       const pct   = pctEl ? (parseInt(pctEl.textContent) || 0) : 0;
-      // Guardar borrador completo
+
+      // Construir mapa de URLs de Cloudinary (sin dataUrl — son muy pesados para Firebase)
+      const cloudPhotos = {};
+      Object.keys(evidenceStore).forEach(itemId => {
+        const photos = evidenceStore[itemId];
+        if (!photos || !photos.length) return;
+        cloudPhotos[itemId] = photos.map(p => ({
+          cloudUrl: p.cloudUrl || null,
+          title:    p.title    || ''
+        }));
+      });
+
+      // Guardar borrador completo + URLs de fotos
       _fbDB.ref('auditorias/' + _auditId + '/draft').set({
         ...draft,
+        cloudPhotos,
         updatedAt: Date.now()
       });
       // Actualizar porcentaje y estado en el registro raíz
@@ -1962,7 +1904,28 @@ async function _fbLoadDraft() {
     const snap = await _fbDB.ref('auditorias/' + _auditId + '/draft').once('value');
     if (!snap.exists()) return false;
     const draft = snap.val();
-    localStorage.setItem(LS_KEY, JSON.stringify(draft));
+
+    // Restaurar URLs de fotos de Cloudinary en evidenceStore
+    if (draft.cloudPhotos) {
+      Object.keys(draft.cloudPhotos).forEach(itemId => {
+        const photos = draft.cloudPhotos[itemId];
+        if (!photos || !photos.length) return;
+        // Solo restaurar fotos que tienen cloudUrl — las locales no viajan entre dispositivos
+        const validPhotos = photos.filter(p => p.cloudUrl);
+        if (!validPhotos.length) return;
+        evidenceStore[itemId] = validPhotos.map(p => ({
+          dataUrl:   p.cloudUrl,   // usar cloudUrl como src de imagen
+          cloudUrl:  p.cloudUrl,
+          title:     p.title || '',
+          uploading: false
+        }));
+        refreshEvidenceButton(itemId);
+      });
+    }
+
+    // Guardar el resto del borrador en localStorage (sin cloudPhotos — no hace falta)
+    const { cloudPhotos, ...draftSinFotos } = draft;
+    localStorage.setItem(LS_KEY, JSON.stringify(draftSinFotos));
     return true;
   } catch(e) { console.warn('Firebase load error:', e); return false; }
 }
@@ -2236,4 +2199,4 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 });
 </script>
 </body>
-</html>
+</html
