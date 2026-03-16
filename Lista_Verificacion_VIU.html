@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -597,20 +598,169 @@ function handleEvidenceUpload(event) {
   event.target.value = '';
 }
 
-function processEvidenceFiles(files) {
-  if (!currentEvidenceItem) return;
-  if (!evidenceStore[currentEvidenceItem]) evidenceStore[currentEvidenceItem] = [];
-  Array.from(files).filter(f => f.type.startsWith('image/')).forEach(file => {
+// ══════════════════════════════════════════════
+// CLOUDINARY — ALMACENAMIENTO DE FOTOS EN NUBE
+// Sube cada foto a Cloudinary y guarda la URL.
+// Fallback: si falla, guarda el dataUrl local.
+// ══════════════════════════════════════════════
+const _CLD_CLOUD  = 'dqstmx4u8';
+const _CLD_PRESET = 'qualisig_fotos';
+const _CLD_FOLDER = 'auditorias';
+const _CLD_URL    = `https://api.cloudinary.com/v1_1/${_CLD_CLOUD}/image/upload`;
+
+async function uploadToCloudinary(file, itemId) {
+  try {
+    // Comprimir antes de subir (max 1200px, calidad 82%)
+    const compressed = await _compressImage(file, 1200, 0.82);
+    const folder = _auditId ? `${_CLD_FOLDER}/${_auditId}` : _CLD_FOLDER;
+    const fd = new FormData();
+    fd.append('file',           compressed);
+    fd.append('upload_preset',  _CLD_PRESET);
+    fd.append('folder',         folder);
+    fd.append('tags',           itemId);
+
+    const res = await fetch(_CLD_URL, { method: 'POST', body: fd });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    return data.secure_url;   // URL permanente de la foto
+  } catch(e) {
+    console.warn('Cloudinary upload error:', e);
+    return null;  // señal de fallo → usar dataUrl local
+  }
+}
+
+// Comprime una imagen a maxWidth px y calidad dada
+function _compressImage(file, maxWidth, quality) {
+  return new Promise(resolve => {
     const reader = new FileReader();
-    reader.onload = e => {
-      evidenceStore[currentEvidenceItem].push({ dataUrl: e.target.result, title: '' });
-      updateEvidencePreview();
-      refreshEvidenceButton(currentEvidenceItem);
-      saveEvidenceToIDB(currentEvidenceItem);
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width  = Math.round(img.width  * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(blob => resolve(blob), 'image/jpeg', quality);
+      };
+      img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
   });
 }
+
+// Indicador de subida en el modal
+function _showUploadProgress(show, msg='Subiendo foto...') {
+  let el = document.getElementById('_cld_progress');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = '_cld_progress';
+    el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e3c72;color:#fff;padding:10px 22px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.25);';
+    el.innerHTML = '<i class="fas fa-cloud-upload-alt" style="font-size:15px"></i><span id="_cld_msg">Subiendo foto...</span>';
+    document.body.appendChild(el);
+  }
+  el.style.display = show ? 'flex' : 'none';
+  if (show) document.getElementById('_cld_msg').textContent = msg;
+}
+
+function processEvidenceFiles(files) {
+  if (!currentEvidenceItem) return;
+  if (!evidenceStore[currentEvidenceItem]) evidenceStore[currentEvidenceItem] = [];
+  const itemId = currentEvidenceItem;
+
+  Array.from(files).filter(f => f.type.startsWith('image/')).forEach(async file => {
+    // Leer dataUrl local inmediatamente para mostrar preview sin esperar
+    const reader = new FileReader();
+    reader.onload = async ev => {
+      const localDataUrl = ev.target.result;
+      // Agregar con dataUrl local primero — el usuario ve la foto de inmediato
+      const entry = { dataUrl: localDataUrl, title: '', cloudUrl: null, uploading: true };
+      if (!evidenceStore[itemId]) evidenceStore[itemId] = [];
+      const idx = evidenceStore[itemId].length;
+      evidenceStore[itemId].push(entry);
+      if (currentEvidenceItem === itemId) updateEvidencePreview();
+      refreshEvidenceButton(itemId);
+      await saveEvidenceToIDB(itemId);
+
+      // Subir a Cloudinary en segundo plano
+      _showUploadProgress(true, 'Subiendo foto ' + (idx + 1) + '...');
+      const cloudUrl = await uploadToCloudinary(file, itemId);
+      _showUploadProgress(false);
+
+      if (cloudUrl) {
+        // Reemplazar dataUrl pesado por URL ligera de Cloudinary
+        if (evidenceStore[itemId] && evidenceStore[itemId][idx]) {
+          evidenceStore[itemId][idx].cloudUrl  = cloudUrl;
+          evidenceStore[itemId][idx].uploading = false;
+          // Mantener dataUrl como fallback local también
+          await saveEvidenceToIDB(itemId);
+          // Sincronizar URLs en Firebase si está habilitado
+          _fbSaveDraft();
+          if (currentEvidenceItem === itemId) updateEvidencePreview();
+        }
+      } else {
+        // Cloudinary falló — quedarse con dataUrl local
+        if (evidenceStore[itemId] && evidenceStore[itemId][idx]) {
+          evidenceStore[itemId][idx].uploading = false;
+          await saveEvidenceToIDB(itemId);
+          if (currentEvidenceItem === itemId) updateEvidencePreview();
+        }
+        showNotification('Foto guardada localmente (sin conexión a nube)', 'info');
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function processEvidenceFiles(files) {
+  if (!currentEvidenceItem) return;
+  if (!evidenceStore[currentEvidenceItem]) evidenceStore[currentEvidenceItem] = [];
+  const itemId = currentEvidenceItem;
+
+  Array.from(files).filter(f => f.type.startsWith('image/')).forEach(async file => {
+    // Leer dataUrl local inmediatamente para mostrar preview sin esperar
+    const reader = new FileReader();
+    reader.onload = async ev => {
+      const localDataUrl = ev.target.result;
+      // Agregar con dataUrl local primero — el usuario ve la foto de inmediato
+      const entry = { dataUrl: localDataUrl, title: '', cloudUrl: null, uploading: true };
+      if (!evidenceStore[itemId]) evidenceStore[itemId] = [];
+      const idx = evidenceStore[itemId].length;
+      evidenceStore[itemId].push(entry);
+      if (currentEvidenceItem === itemId) updateEvidencePreview();
+      refreshEvidenceButton(itemId);
+      await saveEvidenceToIDB(itemId);
+
+      // Subir a Cloudinary en segundo plano
+      _showUploadProgress(true, 'Subiendo foto ' + (idx + 1) + '...');
+      const cloudUrl = await uploadToCloudinary(file, itemId);
+      _showUploadProgress(false);
+
+      if (cloudUrl) {
+        // Reemplazar dataUrl pesado por URL ligera de Cloudinary
+        if (evidenceStore[itemId] && evidenceStore[itemId][idx]) {
+          evidenceStore[itemId][idx].cloudUrl  = cloudUrl;
+          evidenceStore[itemId][idx].uploading = false;
+          // Mantener dataUrl como fallback local también
+          await saveEvidenceToIDB(itemId);
+          // Sincronizar URLs en Firebase si está habilitado
+          _fbSaveDraft();
+          if (currentEvidenceItem === itemId) updateEvidencePreview();
+        }
+      } else {
+        // Cloudinary falló — quedarse con dataUrl local
+        if (evidenceStore[itemId] && evidenceStore[itemId][idx]) {
+          evidenceStore[itemId][idx].uploading = false;
+          await saveEvidenceToIDB(itemId);
+          if (currentEvidenceItem === itemId) updateEvidencePreview();
+        }
+        showNotification('Foto guardada localmente (sin conexión a nube)', 'info');
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 
 function initDropZone() {
   const zone = document.getElementById('dropZone');
@@ -659,9 +809,16 @@ function updateEvidencePreview() {
   preview.innerHTML = '';
   const evidence = evidenceStore[currentEvidenceItem] || [];
   evidence.forEach((ev, idx) => {
+    const imgSrc = ev.cloudUrl || ev.dataUrl;
+    const cloudBadge = ev.uploading
+      ? '<div style="position:absolute;top:7px;left:7px;background:rgba(30,60,114,0.85);color:#fff;font-size:10px;font-weight:600;padding:3px 8px;border-radius:10px;display:flex;align-items:center;gap:4px;"><i class="fas fa-spinner fa-spin" style="font-size:9px"></i> Subiendo...</div>'
+      : ev.cloudUrl
+        ? '<div style="position:absolute;top:7px;left:7px;background:rgba(76,175,80,0.9);color:#fff;font-size:10px;font-weight:600;padding:3px 8px;border-radius:10px;display:flex;align-items:center;gap:4px;"><i class="fas fa-cloud" style="font-size:9px"></i> Guardada</div>'
+        : '<div style="position:absolute;top:7px;left:7px;background:rgba(245,158,11,0.9);color:#fff;font-size:10px;font-weight:600;padding:3px 8px;border-radius:10px;display:flex;align-items:center;gap:4px;"><i class="fas fa-phone-slash" style="font-size:9px"></i> Local</div>';
     const div = document.createElement('div'); div.className = 'evidence-item';
     div.innerHTML = `
-      <img src="${ev.dataUrl}" alt="Evidencia ${idx+1}">
+      <img src="${imgSrc}" alt="Evidencia ${idx+1}">
+      ${cloudBadge}
       <button class="evidence-remove" onclick="removeEvidence(${idx})"><i class="fas fa-times"></i></button>
       <div class="evidence-title-bar">
         <input class="evidence-title-input" type="text" placeholder="Título de la foto (ej: Baño mujeres)..." value="${ev.title||''}" oninput="saveTitleInStore(${idx},this.value)">
@@ -1399,14 +1556,14 @@ async function generateFullReport(reportFecha, reportMes, auditorLider, oportuni
         for(let i=0;i<secGroup.photos.length;i+=2){
           chk(82);
           const iw=(CW-8)/2, ih=62;
-          try{ const du1=await fixOrientationForPDF(secGroup.photos[i].dataUrl); doc.addImage(du1,'JPEG',M,yPos,iw,ih); }catch(e){}
+          try{ const _src1=secGroup.photos[i].dataUrl; const du1=await fixOrientationForPDF(_src1); doc.addImage(du1,'JPEG',M,yPos,iw,ih); }catch(e){}
           const cap1='Anexo '+globalAnexoNum+': '+(secGroup.photos[i].title||'Evidencia fotográfica');
           doc.setFontSize(7.5); doc.setFont('helvetica','italic'); doc.setTextColor(50,60,80);
           const cap1Lines=doc.splitTextToSize(cap1,iw-2);
           doc.text(cap1Lines,M+iw/2,yPos+ih+5,{align:'center'});
           globalAnexoNum++;
           if(secGroup.photos[i+1]){
-            try{ const du2=await fixOrientationForPDF(secGroup.photos[i+1].dataUrl); doc.addImage(du2,'JPEG',M+iw+8,yPos,iw,ih); }catch(e){}
+            try{ const _src2=secGroup.photos[i+1].dataUrl; const du2=await fixOrientationForPDF(_src2); doc.addImage(du2,'JPEG',M+iw+8,yPos,iw,ih); }catch(e){}
             const cap2='Anexo '+globalAnexoNum+': '+(secGroup.photos[i+1].title||'Evidencia fotográfica');
             doc.setFontSize(7.5); doc.setFont('helvetica','italic'); doc.setTextColor(50,60,80);
             const cap2Lines=doc.splitTextToSize(cap2,iw-2);
@@ -1849,82 +2006,134 @@ function _fbPulse() {
 const LS_KEY = 'viu_auditoria_draft';
 const IDB_NAME = 'viu_evidencias';
 const IDB_STORE = 'fotos';
-let _idb = null;
 
 function idbOpen() {
   return new Promise((resolve, reject) => {
-    if (_idb) { resolve(_idb); return; }
     const req = indexedDB.open(IDB_NAME, 1);
-    req.onupgradeneeded = e => { e.target.result.createObjectStore(IDB_STORE); };
-    req.onsuccess = e => { _idb = e.target.result; resolve(_idb); };
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(IDB_STORE)) {
+        db.createObjectStore(IDB_STORE);
+      }
+    };
+    req.onsuccess = e => resolve(e.target.result);
     req.onerror   = e => reject(e.target.error);
+    req.onblocked = () => reject(new Error('IDB bloqueada'));
   });
 }
+
 async function idbSet(key, value) {
+  let db;
   try {
-    const db = await idbOpen();
-    return new Promise((resolve, reject) => {
+    db = await idbOpen();
+    await new Promise((resolve, reject) => {
       const tx = db.transaction(IDB_STORE, 'readwrite');
-      tx.objectStore(IDB_STORE).put(value, key);
-      tx.oncomplete = resolve;
-      tx.onerror = e => reject(e.target.error);
+      const req = tx.objectStore(IDB_STORE).put(value, key);
+      req.onsuccess = () => resolve();
+      req.onerror   = e => reject(e.target.error);
+      tx.onerror    = e => reject(e.target.error);
     });
-  } catch(e) { console.warn('idbSet error:', e); }
+  } catch(e) {
+    console.warn('idbSet error:', e);
+    try { localStorage.setItem('ev_fallback_' + key, JSON.stringify(value)); }
+    catch(le) { console.warn('localStorage fallback failed:', le); }
+  } finally { if (db) db.close(); }
 }
+
 async function idbGet(key) {
+  let db;
   try {
-    const db = await idbOpen();
-    return new Promise((resolve, reject) => {
+    db = await idbOpen();
+    return await new Promise((resolve, reject) => {
       const tx = db.transaction(IDB_STORE, 'readonly');
       const req = tx.objectStore(IDB_STORE).get(key);
-      req.onsuccess = e => resolve(e.target.result);
+      req.onsuccess = e => resolve(e.target.result ?? null);
       req.onerror   = e => reject(e.target.error);
     });
-  } catch(e) { console.warn('idbGet error:', e); return null; }
+  } catch(e) {
+    console.warn('idbGet error:', e);
+    try {
+      const raw = localStorage.getItem('ev_fallback_' + key);
+      return raw ? JSON.parse(raw) : null;
+    } catch(le) { return null; }
+  } finally { if (db) db.close(); }
 }
+
 async function idbDelete(key) {
+  let db;
   try {
-    const db = await idbOpen();
-    return new Promise((resolve, reject) => {
+    db = await idbOpen();
+    await new Promise((resolve, reject) => {
       const tx = db.transaction(IDB_STORE, 'readwrite');
-      tx.objectStore(IDB_STORE).delete(key);
-      tx.oncomplete = resolve;
-      tx.onerror = e => reject(e.target.error);
+      const req = tx.objectStore(IDB_STORE).delete(key);
+      req.onsuccess = () => resolve();
+      req.onerror   = e => reject(e.target.error);
     });
-  } catch(e) { console.warn('idbDelete error:', e); }
+    localStorage.removeItem('ev_fallback_' + key);
+  } catch(e) {
+    console.warn('idbDelete error:', e);
+    localStorage.removeItem('ev_fallback_' + key);
+  } finally { if (db) db.close(); }
 }
+
 async function idbClear() {
+  let db;
   try {
-    const db = await idbOpen();
-    return new Promise((resolve, reject) => {
+    db = await idbOpen();
+    await new Promise((resolve, reject) => {
       const tx = db.transaction(IDB_STORE, 'readwrite');
-      tx.objectStore(IDB_STORE).clear();
-      tx.oncomplete = resolve;
-      tx.onerror = e => reject(e.target.error);
+      const req = tx.objectStore(IDB_STORE).clear();
+      req.onsuccess = () => resolve();
+      req.onerror   = e => reject(e.target.error);
     });
+    Object.keys(localStorage)
+      .filter(k => k.startsWith('ev_fallback_'))
+      .forEach(k => localStorage.removeItem(k));
   } catch(e) { console.warn('idbClear error:', e); }
+  finally { if (db) db.close(); }
 }
+
 async function saveEvidenceToIDB(itemId) {
   const photos = evidenceStore[itemId];
   if (photos && photos.length > 0) { await idbSet('ev_' + itemId, photos); }
   else { await idbDelete('ev_' + itemId); }
 }
+
 async function restoreEvidenceFromIDB() {
+  let db;
   try {
-    const db = await idbOpen();
+    db = await idbOpen();
     const keys = await new Promise((resolve, reject) => {
       const tx = db.transaction(IDB_STORE, 'readonly');
       const req = tx.objectStore(IDB_STORE).getAllKeys();
-      req.onsuccess = e => resolve(e.target.result);
+      req.onsuccess = e => resolve(e.target.result || []);
       req.onerror   = e => reject(e.target.error);
     });
+    db.close(); db = null;
     for (const key of keys) {
       if (!key.startsWith('ev_')) continue;
       const itemId = key.replace('ev_', '');
       const photos = await idbGet(key);
-      if (photos && photos.length > 0) { evidenceStore[itemId] = photos; refreshEvidenceButton(itemId); }
+      if (photos && photos.length > 0) {
+        evidenceStore[itemId] = photos;
+        refreshEvidenceButton(itemId);
+      }
     }
-  } catch(e) { console.warn('restoreEvidence error:', e); }
+  } catch(e) {
+    console.warn('restoreEvidence error:', e);
+    Object.keys(localStorage)
+      .filter(k => k.startsWith('ev_fallback_ev_'))
+      .forEach(k => {
+        try {
+          const itemId = k.replace('ev_fallback_ev_', '');
+          const photos = JSON.parse(localStorage.getItem(k));
+          if (photos && photos.length > 0) {
+            evidenceStore[itemId] = photos;
+            refreshEvidenceButton(itemId);
+          }
+        } catch(le) {}
+      });
+  } finally { if (db) db.close(); }
 }
 function saveToLocalStorage() {
   try {
