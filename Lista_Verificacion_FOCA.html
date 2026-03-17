@@ -1873,9 +1873,22 @@ function _fbSaveDraft() {
       const draft = JSON.parse(raw);
       const pctEl = document.getElementById('total-pct');
       const pct   = pctEl ? (parseInt(pctEl.textContent) || 0) : 0;
-      // Guardar borrador completo
+
+      // Construir mapa de URLs de Cloudinary (sin dataUrl — son muy pesados para Firebase)
+      const cloudPhotos = {};
+      Object.keys(evidenceStore).forEach(itemId => {
+        const photos = evidenceStore[itemId];
+        if (!photos || !photos.length) return;
+        cloudPhotos[itemId] = photos.map(p => ({
+          cloudUrl: p.cloudUrl || null,
+          title:    p.title    || ''
+        }));
+      });
+
+      // Guardar borrador completo + URLs de fotos
       _fbDB.ref('auditorias/' + _auditId + '/draft').set({
         ...draft,
+        cloudPhotos,
         updatedAt: Date.now()
       });
       // Actualizar porcentaje y estado en el registro raíz
@@ -1895,7 +1908,29 @@ async function _fbLoadDraft() {
     const snap = await _fbDB.ref('auditorias/' + _auditId + '/draft').once('value');
     if (!snap.exists()) return false;
     const draft = snap.val();
-    localStorage.setItem(LS_KEY, JSON.stringify(draft));
+
+    // Restaurar URLs de fotos de Cloudinary en evidenceStore
+    if (draft.cloudPhotos) {
+      Object.keys(draft.cloudPhotos).forEach(itemId => {
+        const photos = draft.cloudPhotos[itemId];
+        if (!photos || !photos.length) return;
+        // Solo restaurar fotos que tienen cloudUrl — las locales no viajan entre dispositivos
+        const validPhotos = photos.filter(p => p.cloudUrl);
+        if (!validPhotos.length) return;
+        evidenceStore[itemId] = validPhotos.map(p => ({
+          dataUrl:   p.cloudUrl,   // usar cloudUrl como src de imagen
+          cloudUrl:  p.cloudUrl,
+          title:     p.title || '',
+          uploading: false
+        }));
+        // No llamar refreshEvidenceButton aquí — el checklist aún no está renderizado
+        // Se llama desde DOMContentLoaded después de renderChecklist()
+      });
+    }
+
+    // Guardar el resto del borrador en localStorage (sin cloudPhotos — no hace falta)
+    const { cloudPhotos, ...draftSinFotos } = draft;
+    localStorage.setItem(LS_KEY, JSON.stringify(draftSinFotos));
     return true;
   } catch(e) { console.warn('Firebase load error:', e); return false; }
 }
@@ -2146,23 +2181,33 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   renderChecklist();
   initDropZone();
 
-  // Si viene del portal, cargar borrador desde Firebase primero
-  // (sobreescribe localStorage con los datos más recientes de la nube)
   if (_fbEnabled) {
+    // Viene del portal: cargar desde Firebase
     await _fbLoadDraft();
-  }
-
-  const restored = restoreFromLocalStorage();
-  if (!restored) {
-    document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+    // Restaurar texto/radios desde localStorage (que _fbLoadDraft acaba de llenar)
+    const restored = restoreFromLocalStorage();
+    if (!restored) {
+      document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+    } else {
+      showNotification('✓ Auditoría cargada desde Qualisig', 'info');
+    }
+    // Refrescar botones de evidencia DESPUÉS de renderChecklist y con evidenceStore ya cargado
+    Object.keys(evidenceStore).forEach(itemId => refreshEvidenceButton(itemId));
+    // NO llamar restoreEvidenceFromIDB — usamos las URLs de Cloudinary de Firebase
   } else {
-    showNotification(_fbEnabled ? '✓ Auditoría cargada desde Qualisig' : 'Borrador restaurado automáticamente ✓', 'info');
+    // Uso directo (sin portal): restaurar desde localStorage e IndexedDB local
+    const restored = restoreFromLocalStorage();
+    if (!restored) {
+      document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+    } else {
+      showNotification('Borrador restaurado automáticamente ✓', 'info');
+    }
+    restoreEvidenceFromIDB();
   }
 
   // Mostrar badge de sincronización si viene del portal
   _fbShowBadge();
 
-  restoreEvidenceFromIDB();
   computeResults();
   initializeCharts();
   document.getElementById('generate-report').addEventListener('click', openReportModal);
