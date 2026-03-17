@@ -1891,10 +1891,15 @@ function _fbSaveDraft() {
         cloudPhotos,
         updatedAt: Date.now()
       });
-      // Actualizar porcentaje y estado en el registro raíz
+      // Actualizar sede, fecha, porcentaje y estado en el registro raíz
+      // Se hace aquí para que el portal siempre refleje lo que el auditor escribió
+      const sedeActual  = document.getElementById('sede')  ? document.getElementById('sede').value  : '';
+      const fechaActual = document.getElementById('fecha') ? document.getElementById('fecha').value : '';
       _fbDB.ref('auditorias/' + _auditId).update({
         porcentaje: pct,
         estado:     'en-progreso',
+        sede:       sedeActual,
+        fecha:      fechaActual,
         updatedAt:  Date.now()
       });
     } catch(e) { console.warn('Firebase save error:', e); }
