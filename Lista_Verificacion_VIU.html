@@ -1919,7 +1919,8 @@ async function _fbLoadDraft() {
           title:     p.title || '',
           uploading: false
         }));
-        refreshEvidenceButton(itemId);
+        // No llamar refreshEvidenceButton aquí — el checklist aún no está renderizado
+        // Se llama desde DOMContentLoaded después de renderChecklist()
       });
     }
 
@@ -2157,23 +2158,33 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   renderChecklist();
   initDropZone();
 
-  // Si viene del portal, cargar borrador desde Firebase primero
-  // (sobreescribe localStorage con los datos más recientes de la nube)
   if (_fbEnabled) {
+    // Viene del portal: cargar desde Firebase
     await _fbLoadDraft();
-  }
-
-  const restored = restoreFromLocalStorage();
-  if (!restored) {
-    document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+    // Restaurar texto/radios desde localStorage (que _fbLoadDraft acaba de llenar)
+    const restored = restoreFromLocalStorage();
+    if (!restored) {
+      document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+    } else {
+      showNotification('✓ Auditoría cargada desde Qualisig', 'info');
+    }
+    // Refrescar botones de evidencia DESPUÉS de renderChecklist y con evidenceStore ya cargado
+    Object.keys(evidenceStore).forEach(itemId => refreshEvidenceButton(itemId));
+    // NO llamar restoreEvidenceFromIDB — usamos las URLs de Cloudinary de Firebase
   } else {
-    showNotification(_fbEnabled ? '✓ Auditoría cargada desde Qualisig' : 'Borrador restaurado automáticamente ✓', 'info');
+    // Uso directo (sin portal): restaurar desde localStorage e IndexedDB local
+    const restored = restoreFromLocalStorage();
+    if (!restored) {
+      document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+    } else {
+      showNotification('Borrador restaurado automáticamente ✓', 'info');
+    }
+    restoreEvidenceFromIDB();
   }
 
   // Mostrar badge de sincronización si viene del portal
   _fbShowBadge();
 
-  restoreEvidenceFromIDB();
   computeResults();
   initializeCharts();
   document.getElementById('generate-report').addEventListener('click', openReportModal);
@@ -2199,4 +2210,4 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 });
 </script>
 </body>
-</html
+</html>
