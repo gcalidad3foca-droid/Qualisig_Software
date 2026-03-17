@@ -389,72 +389,283 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 /* Modal — nueva auditoría */
 .modal-overlay {
   display:none; position:fixed; inset:0;
-  background:rgba(0,0,0,0.55);
+  background:rgba(10,22,40,0.7);
   z-index:1000; align-items:center; justify-content:center;
-  padding:20px;
+  padding:20px; backdrop-filter:blur(4px);
 }
 .modal-overlay.open { display:flex; }
 .modal-box {
-  background:#fff; border-radius:20px;
-  width:100%; max-width:500px;
-  box-shadow:0 24px 80px rgba(0,0,0,0.25);
+  background:#fff; border-radius:24px;
+  width:100%; max-width:560px;
+  box-shadow:0 32px 80px rgba(0,0,0,0.3);
   overflow:hidden;
-  animation: modalIn .25s ease;
+  animation: modalIn .3s cubic-bezier(.34,1.56,.64,1);
 }
-@keyframes modalIn { from{transform:translateY(-20px);opacity:0} to{transform:translateY(0);opacity:1} }
+@keyframes modalIn { from{transform:translateY(30px) scale(0.97);opacity:0} to{transform:translateY(0) scale(1);opacity:1} }
+
+/* ── Modal header refinado ── */
 .modal-header {
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  padding:22px 28px;
-  display:flex; align-items:center; justify-content:space-between;
+  background: linear-gradient(145deg, #0a1628 0%, #1e3c72 55%, #2a5298 100%);
+  padding:28px 28px 24px;
+  position:relative; overflow:hidden;
 }
-.modal-header h2 { font-size:17px; font-weight:700; color:#fff; }
+.modal-header::before {
+  content:''; position:absolute; top:-60%; right:-15%;
+  width:240px; height:240px; border-radius:50%;
+  background:rgba(91,140,214,0.12); pointer-events:none;
+}
+.modal-header::after {
+  content:''; position:absolute; bottom:-40%; left:-10%;
+  width:160px; height:160px; border-radius:50%;
+  background:rgba(134,197,218,0.08); pointer-events:none;
+}
+.modal-doc-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2);
+  color:rgba(255,255,255,0.9); font-size:10px; font-weight:700;
+  padding:5px 12px; border-radius:20px; margin-bottom:14px;
+  letter-spacing:0.3px; position:relative; text-transform:uppercase;
+}
+.modal-doc-badge i { font-size:11px; }
+.modal-header h2 { font-size:19px; font-weight:800; color:#fff; margin-bottom:6px; position:relative; line-height:1.3; letter-spacing:-0.3px; }
+.modal-header p  { font-size:12px; color:rgba(255,255,255,0.55); position:relative; margin:0; }
 .modal-close {
-  background:rgba(255,255,255,0.15); border:none; color:#fff;
+  position:absolute; top:16px; right:16px;
+  background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18); color:rgba(255,255,255,0.8);
   width:32px; height:32px; border-radius:50%;
-  font-size:16px; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition:background .2s;
+  font-size:13px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:all .2s;
+  z-index:2;
 }
-.modal-close:hover { background:rgba(255,255,255,0.3); }
+.modal-close:hover { background:rgba(255,255,255,0.22); color:#fff; }
+
+/* ── Inst cards — estilo premium ── */
 .modal-body { padding:28px; }
-
-.inst-selector { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
-.inst-option {
-  border:2px solid var(--gray200); border-radius:12px;
-  padding:16px 12px; text-align:center; cursor:pointer;
-  transition:all .2s;
+.inst-cards-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:6px; }
+.inst-card {
+  border:2px solid var(--gray200); border-radius:16px;
+  padding:20px 14px 16px; text-align:center; cursor:pointer;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  position:relative; overflow:hidden; background:#fff;
 }
-.inst-option:hover   { border-color:var(--accent); }
-.inst-option.selected { border-color:var(--accent); background:#eef2ff; }
-.inst-option img { width:100%; height:50px; object-fit:contain; margin-bottom:8px; }
-.inst-option span { font-size:11px; font-weight:700; color:var(--gray600); display:block; }
+.inst-card::before {
+  content:''; position:absolute; inset:0;
+  opacity:0; transition:opacity .25s;
+  border-radius:14px;
+}
+.inst-card.foca-card::before { background:linear-gradient(135deg,rgba(91,140,214,0.08),rgba(30,60,114,0.05)); }
+.inst-card.viu-card::before  { background:linear-gradient(135deg,rgba(134,197,218,0.1),rgba(77,208,225,0.05)); }
+.inst-card:hover { transform:translateY(-4px); }
+.inst-card.foca-card:hover { border-color:#5B8CD6; box-shadow:0 12px 32px rgba(91,140,214,0.2); }
+.inst-card.viu-card:hover  { border-color:#86C5DA; box-shadow:0 12px 32px rgba(134,197,218,0.25); }
+.inst-card.selected { transform:translateY(-4px); }
+.inst-card.foca-card.selected { border-color:#5B8CD6; box-shadow:0 12px 32px rgba(91,140,214,0.25); }
+.inst-card.foca-card.selected::before { opacity:1; }
+.inst-card.viu-card.selected  { border-color:#86C5DA; box-shadow:0 12px 32px rgba(134,197,218,0.3); }
+.inst-card.viu-card.selected::before { opacity:1; }
+.inst-card-check {
+  position:absolute; top:10px; right:10px;
+  width:22px; height:22px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; color:#fff; opacity:0; transform:scale(0);
+  transition:all .2s cubic-bezier(.34,1.56,.64,1);
+}
+.inst-card.foca-card .inst-card-check { background:#5B8CD6; }
+.inst-card.viu-card  .inst-card-check { background:#86C5DA; }
+.inst-card.selected .inst-card-check  { opacity:1; transform:scale(1); }
+.inst-card-logo {
+  width:100%; height:80px;
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:14px; position:relative;
+}
+.inst-card-logo img { max-height:72px; max-width:90%; object-fit:contain; transition:transform .25s; }
+.inst-card:hover .inst-card-logo img { transform:scale(1.05); }
+.inst-card.selected .inst-card-logo img { transform:scale(1.05); }
+.inst-card-name { font-size:11px; font-weight:700; color:var(--gray500,#64748b); letter-spacing:1px; text-transform:uppercase; }
+.inst-card-desc { font-size:10px; color:var(--gray400); margin-top:4px; font-weight:400; line-height:1.4; }
+.inst-card-tag {
+  display:inline-block; margin-top:8px;
+  font-size:9px; font-weight:700; letter-spacing:0.8px;
+  padding:3px 8px; border-radius:8px; text-transform:uppercase;
+}
+.foca-card .inst-card-tag { background:#eef2ff; color:#5B8CD6; }
+.viu-card  .inst-card-tag { background:#e0f7fa; color:#0097a7; }
 
+.modal-divider { height:1px; background:var(--gray200); margin:4px 0 20px; }
 .modal-form-group { margin-bottom:16px; }
 .modal-label { font-size:11px; font-weight:700; color:var(--gray600); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:6px; display:block; }
 .modal-select, .modal-input-field {
+  width:100%; padding:12px 14px;
+  border:1.5px solid var(--gray200); border-radius:10px;
+  font-size:14px; font-family:inherit; color:var(--gray800);
+  background:#fff; transition:border-color .2s, box-shadow .2s;
+}
+.modal-select:focus, .modal-input-field:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(91,140,214,0.1); }
+
+.modal-footer { padding:16px 28px 28px; display:flex; gap:10px; }
+.btn-modal-cancel {
+  flex:1; padding:13px; background:var(--gray100);
+  color:var(--gray600); border:none; border-radius:11px;
+  font-size:13px; font-weight:700; font-family:inherit; cursor:pointer;
+  transition:background .2s;
+}
+.btn-modal-cancel:hover { background:var(--gray200); }
+.btn-modal-create {
+  flex:2; padding:13px;
+  background: linear-gradient(135deg, #5B8CD6 0%, #1e3c72 100%);
+  color:#fff; border:none; border-radius:11px;
+  font-size:13px; font-weight:700; font-family:inherit; cursor:pointer;
+  box-shadow:0 8px 24px rgba(91,140,214,0.35);
+  transition:all .25s; display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn-modal-create:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(91,140,214,0.45); }
+.btn-modal-create:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+
+/* ── User profile panel ── */
+.user-profile-panel {
+  background:#fff; border-radius:16px;
+  border:1px solid var(--gray200);
+  padding:20px; margin-bottom:24px;
+  display:flex; align-items:center; gap:16px;
+  box-shadow:var(--shadow);
+  position:relative; overflow:hidden;
+}
+.user-profile-panel::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,#5B8CD6,#86C5DA,#4DD0E1);
+}
+/* Avatar wrapper — clickable to change photo */
+.user-avatar-wrap {
+  position:relative; flex-shrink:0; cursor:pointer;
+}
+.user-avatar {
+  width:64px; height:64px; border-radius:18px;
+  background:linear-gradient(135deg,#1e3c72,#5B8CD6);
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; font-weight:800; color:#fff;
+  box-shadow:0 4px 14px rgba(91,140,214,0.35);
+  letter-spacing:-1px; overflow:hidden;
+  transition:filter .2s;
+}
+.user-avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+.user-avatar-wrap:hover .user-avatar { filter:brightness(0.75); }
+.avatar-edit-badge {
+  position:absolute; bottom:-4px; right:-4px;
+  width:22px; height:22px; border-radius:50%;
+  background:var(--accent); border:2px solid #fff;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:9px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.15);
+  transition:transform .2s;
+}
+.user-avatar-wrap:hover .avatar-edit-badge { transform:scale(1.15); }
+#avatar-file-input { display:none; }
+/* Info */
+.user-info { flex:1; min-width:0; }
+.user-name-row { display:flex; align-items:center; gap:8px; margin-bottom:2px; }
+.user-name  { font-size:16px; font-weight:700; color:var(--gray800); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.btn-edit-profile {
+  background:none; border:none; cursor:pointer; color:var(--gray400);
+  font-size:12px; padding:2px 4px; border-radius:4px;
+  transition:color .2s; flex-shrink:0;
+}
+.btn-edit-profile:hover { color:var(--accent); }
+.user-cargo { font-size:12px; color:var(--accent); font-weight:600; margin-bottom:2px; }
+.user-phone { font-size:11px; color:var(--gray400); font-weight:500; margin-bottom:2px; }
+.user-email-txt { font-size:11px; color:var(--gray400); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.user-badges { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+.user-badge-pill {
+  font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px;
+  display:flex; align-items:center; gap:4px;
+}
+.user-badge-pill.quality { background:#eef2ff; color:#5B8CD6; }
+.user-badge-pill.active  { background:#f0fdf4; color:#15803d; }
+
+/* ── Edit Profile Modal ── */
+.profile-modal-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(10,22,40,0.65); backdrop-filter:blur(4px);
+  z-index:2000; align-items:center; justify-content:center; padding:20px;
+}
+.profile-modal-overlay.open { display:flex; }
+.profile-modal-box {
+  background:#fff; border-radius:24px;
+  width:100%; max-width:440px;
+  box-shadow:0 32px 80px rgba(0,0,0,0.28);
+  overflow:hidden;
+  animation: modalIn .3s cubic-bezier(.34,1.56,.64,1);
+}
+.profile-modal-header {
+  background:linear-gradient(135deg,#0a1628,#1e3c72 60%,#2a5298);
+  padding:24px 24px 20px; position:relative;
+}
+.profile-modal-header h3 { font-size:17px; font-weight:700; color:#fff; margin-bottom:2px; }
+.profile-modal-header p  { font-size:12px; color:rgba(255,255,255,0.55); margin:0; }
+.profile-modal-close {
+  position:absolute; top:16px; right:16px;
+  background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2);
+  color:#fff; width:32px; height:32px; border-radius:50%;
+  font-size:13px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:background .2s;
+}
+.profile-modal-close:hover { background:rgba(255,255,255,0.25); }
+/* Avatar picker inside modal */
+.profile-avatar-picker {
+  display:flex; flex-direction:column; align-items:center;
+  padding:24px 24px 0; gap:10px;
+}
+.profile-avatar-preview {
+  width:80px; height:80px; border-radius:22px;
+  background:linear-gradient(135deg,#1e3c72,#5B8CD6);
+  display:flex; align-items:center; justify-content:center;
+  font-size:26px; font-weight:800; color:#fff;
+  overflow:hidden; box-shadow:0 6px 20px rgba(91,140,214,0.35);
+  cursor:pointer; transition:filter .2s;
+}
+.profile-avatar-preview:hover { filter:brightness(0.8); }
+.profile-avatar-preview img { width:100%; height:100%; object-fit:cover; }
+.btn-change-photo {
+  background:#eef2ff; color:var(--accent); border:none;
+  padding:7px 18px; border-radius:20px; font-size:12px;
+  font-weight:700; cursor:pointer; font-family:inherit;
+  display:flex; align-items:center; gap:6px; transition:background .2s;
+}
+.btn-change-photo:hover { background:#e0e7ff; }
+.profile-form { padding:20px 24px; }
+.pf-group { margin-bottom:14px; }
+.pf-label { font-size:11px; font-weight:700; color:var(--gray600); text-transform:uppercase; letter-spacing:0.6px; margin-bottom:5px; display:block; }
+.pf-input {
   width:100%; padding:11px 14px;
-  border:1.5px solid var(--gray200); border-radius:9px;
-  font-size:13px; font-family:inherit; color:var(--gray800);
+  border:1.5px solid var(--gray200); border-radius:10px;
+  font-size:14px; font-family:inherit; color:var(--gray800);
+  transition:border-color .2s, box-shadow .2s; background:#fff;
+}
+.pf-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(91,140,214,0.1); }
+.pf-select {
+  width:100%; padding:11px 14px;
+  border:1.5px solid var(--gray200); border-radius:10px;
+  font-size:14px; font-family:inherit; color:var(--gray800);
   background:#fff; transition:border-color .2s;
 }
-.modal-select:focus, .modal-input-field:focus { outline:none; border-color:var(--accent); }
-
-.modal-footer { padding:0 28px 24px; display:flex; gap:10px; }
-.btn-modal-cancel {
+.pf-select:focus { outline:none; border-color:var(--accent); }
+.profile-modal-footer {
+  padding:0 24px 24px; display:flex; gap:10px;
+}
+.btn-pf-cancel {
   flex:1; padding:12px; background:var(--gray100);
-  color:var(--gray600); border:none; border-radius:10px;
+  color:var(--gray600); border:none; border-radius:11px;
   font-size:13px; font-weight:700; font-family:inherit; cursor:pointer;
 }
-.btn-modal-create {
+.btn-pf-save {
   flex:2; padding:12px;
-  background: linear-gradient(135deg, #5B8CD6, #1e3c72);
-  color:#fff; border:none; border-radius:10px;
+  background:linear-gradient(135deg,#5B8CD6,#1e3c72);
+  color:#fff; border:none; border-radius:11px;
   font-size:13px; font-weight:700; font-family:inherit; cursor:pointer;
-  box-shadow:0 6px 18px rgba(91,140,214,0.35);
+  box-shadow:0 6px 18px rgba(91,140,214,0.3);
+  display:flex; align-items:center; justify-content:center; gap:8px;
   transition:all .2s;
 }
-.btn-modal-create:hover { transform:translateY(-1px); }
-.btn-modal-create:disabled { opacity:.6; cursor:not-allowed; }
+.btn-pf-save:hover { transform:translateY(-1px); }
 
 /* Toast */
 .toast {
@@ -706,6 +917,71 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   <!-- Body -->
   <div class="dash-body">
 
+    <!-- User Profile Panel -->
+    <div class="user-profile-panel" id="user-profile-panel">
+      <div class="user-avatar-wrap" onclick="openProfileModal()">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div class="avatar-edit-badge"><i class="fas fa-camera"></i></div>
+        <input type="file" id="avatar-file-input" accept="image/*" onchange="handleAvatarChange(event)">
+      </div>
+      <div class="user-info">
+        <div class="user-name-row">
+          <div class="user-name" id="user-fullname">Cargando...</div>
+          <button class="btn-edit-profile" onclick="openProfileModal()" title="Editar perfil">
+            <i class="fas fa-pen"></i>
+          </button>
+        </div>
+        <div class="user-cargo" id="user-cargo-display">Gestión de Calidad</div>
+        <div class="user-phone" id="user-phone-display" style="display:none"></div>
+        <div class="user-email-txt" id="user-email-display">—</div>
+        <div class="user-badges">
+          <span class="user-badge-pill active"><i class="fas fa-circle" style="font-size:7px"></i> Activo</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="profile-modal-overlay" id="profile-modal">
+      <div class="profile-modal-box">
+        <div class="profile-modal-header">
+          <h3>Editar perfil</h3>
+          <p>Personaliza tu información de auditor</p>
+          <button class="profile-modal-close" onclick="closeProfileModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="profile-avatar-picker">
+          <div class="profile-avatar-preview" id="profile-avatar-preview" onclick="document.getElementById('avatar-file-input').click()">?</div>
+          <button class="btn-change-photo" onclick="document.getElementById('avatar-file-input').click()">
+            <i class="fas fa-camera"></i> Cambiar foto
+          </button>
+        </div>
+        <div class="profile-form">
+          <div class="pf-group">
+            <label class="pf-label">Nombre completo</label>
+            <input class="pf-input" type="text" id="pf-nombre" placeholder="Ej: Luis Angel Bolaño Castro">
+          </div>
+          <div class="pf-group">
+            <label class="pf-label">Cargo</label>
+            <select class="pf-select" id="pf-cargo">
+              <option value="Directora de Calidad">Directora de Calidad</option>
+              <option value="Gestor de Calidad">Gestor de Calidad</option>
+              <option value="Asistente de Calidad">Asistente de Calidad</option>
+            </select>
+          </div>
+          <div class="pf-group">
+            <label class="pf-label">Teléfono / Celular</label>
+            <input class="pf-input" type="tel" id="pf-telefono" placeholder="Ej: 300 123 4567">
+          </div>
+
+        </div>
+        <div class="profile-modal-footer">
+          <button class="btn-pf-cancel" onclick="closeProfileModal()">Cancelar</button>
+          <button class="btn-pf-save" onclick="saveProfile()">
+            <i class="fas fa-check"></i> Guardar cambios
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Page title -->
     <div class="page-title-row">
       <div>
@@ -760,49 +1036,48 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 <!-- ══ MODAL: NUEVA AUDITORÍA ════════════════ -->
 <div class="modal-overlay" id="modal-nueva">
   <div class="modal-box">
+
     <div class="modal-header">
-      <h2><i class="fas fa-plus-circle" style="margin-right:8px"></i>Nueva Auditoría</h2>
       <button class="modal-close" onclick="closeNuevaModal()"><i class="fas fa-times"></i></button>
+      <h2>Lista de Verificación de Auditoría de Servicio</h2>
+      <p>Selecciona la institución para continuar</p>
     </div>
-    <div class="modal-body">
-      <label class="modal-label">Institución</label>
-      <div class="inst-selector">
-        <div class="inst-option selected" id="opt-foca" onclick="selectInst('foca')">
-          <img src="https://i.imgur.com/5pNuFBp.png" alt="FOCA">
-          <span>FOCA</span>
-        </div>
-        <div class="inst-option" id="opt-viu" onclick="selectInst('viu')">
-          <img src="https://i.imgur.com/qQ4lN8v.png" alt="VIU">
-          <span>VIU</span>
-        </div>
-      </div>
 
-      <div class="modal-form-group">
-        <label class="modal-label">Sede</label>
-        <select class="modal-select" id="nueva-sede">
-          <option value="">Seleccione la sede</option>
-          <option>FOCA VIVA</option><option>FOCA ALKARAWI</option>
-          <option>FOCA SEDE 2</option><option>FOCA SEDE 51B</option>
-          <option>FOCA ALEGRA</option><option>FOCA VALLEDUPAR</option>
-          <option>FOCA RIOHACHA</option><option>FOCA SANTA MARTA</option>
-          <option>FOCA SANTA MARTA BURANO</option><option>FOCA CARTAGENA</option>
-          <option>FOCA BARANOA</option><option>FOCA GALAPA</option>
-          <option>FOCA SABANALARGA 1</option><option>FOCA SABANALARGA 2</option>
-          <option>FOCA MALAMBO</option>
-        </select>
-      </div>
+    <div class="modal-body" style="padding:24px 24px 0;">
+      <div class="inst-cards-grid">
 
-      <div class="modal-form-group">
-        <label class="modal-label">Fecha de auditoría</label>
-        <input type="date" class="modal-input-field" id="nueva-fecha">
+        <!-- FOCA -->
+        <div class="inst-card foca-card selected" id="opt-foca" onclick="selectInst('foca')">
+          <div class="inst-card-check"><i class="fas fa-check"></i></div>
+          <div class="inst-card-logo">
+            <img src="https://i.imgur.com/5pNuFBp.png" alt="FOCA">
+          </div>
+          <div class="inst-card-name">FOCA</div>
+          <div class="inst-card-desc">Fundación Oftalmológica del Caribe</div>
+          <div class="inst-card-tag">F-FSYM-823</div>
+        </div>
+
+        <!-- VIU -->
+        <div class="inst-card viu-card" id="opt-viu" onclick="selectInst('viu')">
+          <div class="inst-card-check"><i class="fas fa-check"></i></div>
+          <div class="inst-card-logo">
+            <img src="https://i.imgur.com/qQ4lN8v.png" alt="VIU">
+          </div>
+          <div class="inst-card-name">VIU</div>
+          <div class="inst-card-desc">Clínica Oftalmológica Internacional</div>
+          <div class="inst-card-tag">F-SYM-824</div>
+        </div>
+
       </div>
     </div>
+
     <div class="modal-footer">
       <button class="btn-modal-cancel" onclick="closeNuevaModal()">Cancelar</button>
       <button class="btn-modal-create" id="btn-crear" onclick="crearAuditoria()">
-        <i class="fas fa-rocket"></i> Crear e iniciar
+        <i class="fas fa-clipboard-check"></i> Iniciar Lista de Verificación
       </button>
     </div>
+
   </div>
 </div>
 
@@ -858,6 +1133,8 @@ auth.onAuthStateChanged(user => {
     showScreen('dashboard');
     const name = user.email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
     document.getElementById('dash-user-name').textContent = name;
+    document.getElementById('user-email-display').textContent = user.email;
+    loadProfileFromFirebase(user.uid, name, user.email);
     loadAuditorias();
   } else {
     currentUser = null;
@@ -963,6 +1240,13 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && document.getElementById('screen-login').classList.contains('active')) {
     doLogin();
   }
+  if (e.key === 'Escape') { closeNuevaModal(); closeProfileModal(); }
+});
+
+// Close modals clicking overlay
+document.addEventListener('click', e => {
+  if (e.target.id === 'modal-nueva')  closeNuevaModal();
+  if (e.target.id === 'profile-modal') closeProfileModal();
 });
 
 // ══════════════════════════════════════════════
@@ -1071,8 +1355,6 @@ function setFilter(filter, btn) {
 // ══════════════════════════════════════════════
 function openNuevaModal() {
   document.getElementById('modal-nueva').classList.add('open');
-  document.getElementById('nueva-fecha').value = new Date().toISOString().split('T')[0];
-  document.getElementById('nueva-sede').value  = '';
   selectInst('foca');
 }
 
@@ -1084,44 +1366,25 @@ function selectInst(inst) {
   selectedInst = inst;
   document.getElementById('opt-foca').classList.toggle('selected', inst === 'foca');
   document.getElementById('opt-viu').classList.toggle('selected',  inst === 'viu');
-
-  // Actualizar opciones de sede según institución
-  const sedeSelect = document.getElementById('nueva-sede');
-  sedeSelect.innerHTML = '<option value="">Seleccione la sede</option>';
-  const sedesFoca = ['FOCA VIVA','FOCA ALKARAWI','FOCA SEDE 2','FOCA SEDE 51B','FOCA ALEGRA',
-    'FOCA VALLEDUPAR','FOCA RIOHACHA','FOCA SANTA MARTA','FOCA SANTA MARTA BURANO',
-    'FOCA CARTAGENA','FOCA BARANOA','FOCA GALAPA','FOCA SABANALARGA 1','FOCA SABANALARGA 2','FOCA MALAMBO'];
-  const sedesViu = ['VIU BARRANQUILLA','VIU BOGOTÁ','VIU MEDELLÍN','VIU CALI','VIU CARTAGENA'];
-  const sedes = inst === 'foca' ? sedesFoca : sedesViu;
-  sedes.forEach(s => {
-    const opt = document.createElement('option');
-    opt.value = s; opt.textContent = s;
-    sedeSelect.appendChild(opt);
-  });
 }
 
 async function crearAuditoria() {
-  const sede  = document.getElementById('nueva-sede').value;
-  const fecha = document.getElementById('nueva-fecha').value;
-  const btn   = document.getElementById('btn-crear');
-
-  if (!sede)  { showToast('Selecciona una sede', 'error'); return; }
-  if (!fecha) { showToast('Selecciona la fecha', 'error'); return; }
-
+  const btn = document.getElementById('btn-crear');
   btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando...';
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando...';
 
   const ts   = Date.now();
   const id   = 'AUD-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + ts.toString().slice(-4);
   const name = currentUser.email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
 
+  // Sede y fecha se dejan vacías — el auditor las completa al inicio de la lista
   const newAudit = {
     uid:           currentUser.uid,
     email:         currentUser.email,
     auditorNombre: name,
     institucion:   selectedInst,
-    sede,
-    fecha,
+    sede:          '',
+    fecha:         new Date().toISOString().split('T')[0],
     estado:        'en-progreso',
     porcentaje:    null,
     createdAt:     ts,
@@ -1135,12 +1398,12 @@ async function crearAuditoria() {
     setTimeout(() => {
       const url = LISTA_URLS[selectedInst] + '?auditId=' + id + '&uid=' + currentUser.uid;
       window.open(url, '_blank');
-    }, 800);
+    }, 700);
   } catch(e) {
     showToast('Error al crear: ' + e.message, 'error');
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-rocket"></i> Crear e iniciar';
+    btn.innerHTML = '<i class="fas fa-rocket"></i> Iniciar Auditoría';
   }
 }
 
@@ -1204,6 +1467,154 @@ async function eliminarAuditoria(id) {
 }
 
 // ══════════════════════════════════════════════
+// PERFIL DE USUARIO
+// ══════════════════════════════════════════════
+let _profileAvatarDataUrl = null;
+
+function loadProfileFromFirebase(uid, defaultName, email) {
+  db.ref('perfiles/' + uid).once('value').then(snap => {
+    const p = snap.exists() ? snap.val() : {};
+    const nombre = p.nombre || defaultName;
+    const cargo  = p.cargo  || 'Gestor de Calidad';
+    const tel    = p.telefono || '';
+
+    const avatar = p.avatarUrl || null;
+
+    // Panel principal
+    document.getElementById('user-fullname').textContent    = nombre;
+    document.getElementById('dash-user-name').textContent   = nombre;
+    document.getElementById('user-cargo-display').textContent = cargo;
+
+
+    if (tel) {
+      const ph = document.getElementById('user-phone-display');
+      ph.textContent = tel; ph.style.display = 'block';
+    }
+
+    // Avatar
+    if (avatar) {
+      _setAvatarImage(avatar);
+    } else {
+      const initials = nombre.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+      document.getElementById('user-avatar').textContent = initials;
+      document.getElementById('profile-avatar-preview').textContent = initials;
+    }
+
+    // Pre-fill form fields
+    document.getElementById('pf-nombre').value   = nombre;
+    document.getElementById('pf-cargo').value    = cargo;
+    document.getElementById('pf-telefono').value = tel;
+
+  }).catch(e => console.warn('loadProfile error:', e));
+}
+
+function _setAvatarImage(url) {
+  // Panel avatar
+  const av = document.getElementById('user-avatar');
+  av.textContent = '';
+  const img1 = document.createElement('img');
+  img1.src = url; img1.alt = 'Avatar';
+  av.appendChild(img1);
+  // Modal preview
+  const prev = document.getElementById('profile-avatar-preview');
+  prev.textContent = '';
+  const img2 = document.createElement('img');
+  img2.src = url; img2.alt = 'Avatar';
+  prev.appendChild(img2);
+  _profileAvatarDataUrl = url;
+}
+
+function openProfileModal() {
+  document.getElementById('profile-modal').classList.add('open');
+}
+
+function closeProfileModal() {
+  document.getElementById('profile-modal').classList.remove('open');
+}
+
+function handleAvatarChange(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    // Comprimir a 300x300 para el avatar
+    const img = new Image();
+    img.onload = () => {
+      const size = 300;
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      // Crop cuadrado centrado
+      const min = Math.min(img.width, img.height);
+      const sx  = (img.width  - min) / 2;
+      const sy  = (img.height - min) / 2;
+      ctx.drawImage(img, sx, sy, min, min, 0, 0, size, size);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+      _setAvatarImage(dataUrl);
+      _profileAvatarDataUrl = dataUrl;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+async function saveProfile() {
+  if (!currentUser) return;
+  const btn = document.querySelector('.btn-pf-save');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+  const nombre   = document.getElementById('pf-nombre').value.trim()   || currentUser.email.split('@')[0];
+  const cargo    = document.getElementById('pf-cargo').value;
+  const telefono = document.getElementById('pf-telefono').value.trim();
+  const profileData = {
+    nombre, cargo, telefono,
+    email:     currentUser.email,
+    updatedAt: Date.now()
+  };
+
+  // Subir avatar a Cloudinary si hay uno nuevo
+  if (_profileAvatarDataUrl && _profileAvatarDataUrl.startsWith('data:')) {
+    try {
+      const fd = new FormData();
+      fd.append('file',          _profileAvatarDataUrl);
+      fd.append('upload_preset', 'qualisig_fotos');
+      fd.append('folder',        'perfiles');
+      fd.append('public_id',     'avatar_' + currentUser.uid);
+      const res  = await fetch('https://api.cloudinary.com/v1_1/dqstmx4u8/image/upload', { method:'POST', body:fd });
+      const data = await res.json();
+      if (data.secure_url) profileData.avatarUrl = data.secure_url;
+    } catch(e) {
+      // Si falla Cloudinary guardar el dataUrl directamente (solo para este dispositivo)
+      profileData.avatarUrl = _profileAvatarDataUrl;
+      console.warn('Avatar upload failed:', e);
+    }
+  } else if (_profileAvatarDataUrl && !_profileAvatarDataUrl.startsWith('data:')) {
+    profileData.avatarUrl = _profileAvatarDataUrl; // ya es URL de Cloudinary
+  }
+
+  try {
+    await db.ref('perfiles/' + currentUser.uid).set(profileData);
+    // Actualizar panel en tiempo real
+    document.getElementById('user-fullname').textContent     = nombre;
+    document.getElementById('dash-user-name').textContent    = nombre;
+    document.getElementById('user-cargo-display').textContent = cargo;
+
+    const ph = document.getElementById('user-phone-display');
+    if (telefono) { ph.textContent = telefono; ph.style.display = 'block'; }
+    else          { ph.style.display = 'none'; }
+    closeProfileModal();
+    showToast('Perfil actualizado ✓', 'success');
+  } catch(e) {
+    showToast('Error al guardar: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-check"></i> Guardar cambios';
+  }
+}
+
+// ══════════════════════════════════════════════
 // TOAST
 // ══════════════════════════════════════════════
 let toastTimer;
@@ -1220,4 +1631,3 @@ function showToast(msg, type='info') {
 </script>
 </body>
 </html>
-
