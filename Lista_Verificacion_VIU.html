@@ -2165,13 +2165,15 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 
   if (_fbEnabled) {
     // Viene del portal: cargar desde Firebase
-    await _fbLoadDraft();
-    // Restaurar texto/radios desde localStorage (que _fbLoadDraft acaba de llenar)
-    const restored = restoreFromLocalStorage();
-    if (!restored) {
+    const tieneDraft = await _fbLoadDraft();
+    if (!tieneDraft) {
+      // Auditoría nueva sin borrador — limpiar cualquier dato anterior del localStorage
+      try { localStorage.removeItem(LS_KEY); } catch(e) {}
       document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
     } else {
-      showNotification('✓ Auditoría cargada desde Qualisig', 'info');
+      // Restaurar texto/radios desde localStorage (que _fbLoadDraft acaba de llenar)
+      const restored = restoreFromLocalStorage();
+      if (restored) showNotification('✓ Auditoría cargada desde Qualisig', 'info');
     }
     // Refrescar botones de evidencia DESPUÉS de renderChecklist y con evidenceStore ya cargado
     Object.keys(evidenceStore).forEach(itemId => refreshEvidenceButton(itemId));
