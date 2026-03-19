@@ -641,6 +641,78 @@ function _showUploadProgress(show, msg) {
   if (show && msg) document.getElementById('_cld_msg').textContent = msg;
 }
 
+
+async function fixImageOrientation(dataUrl) {
+  return new Promise(function(resolve) {
+    // Leer orientación EXIF manualmente (sin librería externa)
+    function getExifOrientation(dataUrl) {
+      try {
+        var b64 = dataUrl.split(',')[1];
+        var bin = atob(b64.substring(0, Math.min(b64.length, 131072)));
+        var len = bin.length;
+        if (bin.charCodeAt(0) !== 0xFF || bin.charCodeAt(1) !== 0xD8) return 1;
+        var i = 2;
+        while (i + 3 < len) {
+          if (bin.charCodeAt(i) !== 0xFF) break;
+          var marker = bin.charCodeAt(i + 1);
+          var segLen = (bin.charCodeAt(i + 2) << 8) | bin.charCodeAt(i + 3);
+          if (marker === 0xE1) {
+            if (bin.substring(i + 4, i + 8) !== 'Exif') return 1;
+            var tiff   = i + 10;
+            var little = (bin.charCodeAt(tiff) === 0x49);
+            function u16(o) {
+              var a = bin.charCodeAt(tiff + o), b = bin.charCodeAt(tiff + o + 1);
+              return little ? (a | (b << 8)) : ((a << 8) | b);
+            }
+            function u32(o) {
+              var a = bin.charCodeAt(tiff+o), b = bin.charCodeAt(tiff+o+1),
+                  c = bin.charCodeAt(tiff+o+2), d = bin.charCodeAt(tiff+o+3);
+              return little ? (a|(b<<8)|(c<<16)|(d<<24)) : ((a<<24)|(b<<16)|(c<<8)|d);
+            }
+            var ifd = u32(4), entries = u16(ifd);
+            for (var e = 0; e < entries; e++) {
+              if (u16(ifd + 2 + e * 12) === 0x0112)
+                return u16(ifd + 2 + e * 12 + 8);
+            }
+            return 1;
+          }
+          i += 2 + segLen;
+        }
+      } catch(err) {}
+      return 1;
+    }
+
+    var orientation = getExifOrientation(dataUrl);
+    // Orientación 1 = normal, no hace falta corregir
+    if (orientation <= 1) { resolve(dataUrl); return; }
+
+    var img = new Image();
+    img.onload = function() {
+      var w = img.naturalWidth, h = img.naturalHeight;
+      var canvas = document.createElement('canvas');
+      var ctx    = canvas.getContext('2d');
+      // Orientaciones 5-8 transponen ancho y alto
+      if (orientation >= 5) { canvas.width = h; canvas.height = w; }
+      else                  { canvas.width = w; canvas.height = h; }
+      ctx.save();
+      switch (orientation) {
+        case 2: ctx.translate(w, 0); ctx.scale(-1, 1); break;
+        case 3: ctx.translate(w, h); ctx.rotate(Math.PI); break;
+        case 4: ctx.translate(0, h); ctx.scale(1, -1); break;
+        case 5: ctx.rotate(0.5*Math.PI); ctx.scale(1, -1); break;
+        case 6: ctx.translate(h, 0); ctx.rotate(0.5*Math.PI); break;  // iPhone vertical
+        case 7: ctx.translate(h, w); ctx.rotate(0.5*Math.PI); ctx.scale(-1,1); break;
+        case 8: ctx.translate(0, w); ctx.rotate(-0.5*Math.PI); break;
+      }
+      ctx.drawImage(img, 0, 0);
+      ctx.restore();
+      resolve(canvas.toDataURL('image/jpeg', 0.92));
+    };
+    img.onerror = function() { resolve(dataUrl); };
+    img.src = dataUrl;
+  });
+}
+
 function processEvidenceFiles(files) {
   if (!currentEvidenceItem) return;
   if (!evidenceStore[currentEvidenceItem]) evidenceStore[currentEvidenceItem] = [];
@@ -650,7 +722,8 @@ function processEvidenceFiles(files) {
     // Leer dataUrl local inmediatamente para mostrar preview sin esperar
     const reader = new FileReader();
     reader.onload = async ev => {
-      const localDataUrl = ev.target.result;
+      // Corregir orientación EXIF antes de guardar (necesario para fotos verticales de iPhone)
+      const localDataUrl = await fixImageOrientation(ev.target.result);
       // Agregar con dataUrl local primero — el usuario ve la foto de inmediato
       const entry = { dataUrl: localDataUrl, title: '', cloudUrl: null, uploading: true };
       if (!evidenceStore[itemId]) evidenceStore[itemId] = [];
