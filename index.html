@@ -1116,6 +1116,13 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   .dash-body       { padding:24px 20px; }
   .stats-row       { grid-template-columns:repeat(2,1fr); }
   .page-title      { font-size:22px; }
+
+  /* DASHBOARD BI — TABLET */
+  .dbi-main-row    { grid-template-columns:1fr 1fr !important; }
+  #dbi-right       { grid-column:1/-1; }
+  .dbi-kpi-row     { grid-template-columns:repeat(3,1fr) !important; }
+  .dbi-bottom-row  { flex-direction:column; }
+  .dbi-filters     { flex-wrap:wrap; gap:6px; }
 }
 
 /* ══════════════════════════════════════════════
@@ -1132,6 +1139,57 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   #db-row1 { grid-template-columns:repeat(2,1fr) !important; }
   #db-row2 { grid-template-columns:1fr !important; }
   .db-fsel { max-width:120px !important; font-size:11px; }
+
+  /* ── DASHBOARD BI — SMARTPHONE ── */
+  .dbi-header         { flex-direction:column; align-items:flex-start; gap:10px; }
+  .dbi-filters        { width:100%; flex-wrap:wrap; gap:6px; }
+  .dbi-ent-btns       { width:100%; justify-content:flex-start; }
+  .dbi-report-btn     { width:100%; justify-content:center; }
+  .db-fsel            { flex:1; min-width:120px; font-size:11px; }
+  .db-btn-ref         { flex-shrink:0; }
+
+  /* KPIs: 2 columnas en móvil */
+  .dbi-kpi-row        { grid-template-columns:repeat(2,1fr) !important; gap:7px; }
+  .dbi-kv             { font-size:18px; }
+
+  /* Panel principal: una columna */
+  .dbi-main-row       { grid-template-columns:1fr !important; gap:10px; }
+
+  /* Panel ranking de sedes — altura limitada para no ocupar toda la pantalla */
+  #dbi-left .dbi-panel-body { max-height:220px; }
+
+  /* Barra de sedes — texto más compacto */
+  .dbi-sede-name      { font-size:10px; }
+  .dbi-sede-pct       { font-size:11px; min-width:32px; }
+  .dbi-sede-bar-wrap  { width:40px; }
+  .dbi-sede-mes       { width:24px; font-size:8px; }
+
+  /* Tendencia — altura reducida */
+  #dbi-right          { min-height:auto; }
+
+  /* Panel hallazgos — pills de categoría en wrap */
+  #db-cat-pills       { gap:3px; }
+  .dbi-cat-pill       { font-size:9px; padding:2px 7px; }
+  .dbi-res-tab        { font-size:9px; padding:3px 0; }
+
+  /* Fila inferior: columna única */
+  .dbi-bottom-row     { flex-direction:column; gap:10px; }
+  .dbi-bottom-row > * { flex:none !important; }
+
+  /* % por categoría — etiquetas más cortas */
+  #db-cat-pct > div > span:first-child { width:110px !important; font-size:9px; }
+
+  /* Modal informe — full width */
+  .rpt-box            { border-radius:16px 16px 0 0; margin:auto 0 0; }
+  .rpt-overlay        { align-items:flex-end; padding:0; }
+  .rpt-filters        { flex-direction:column; gap:8px; }
+  .rpt-fg             { min-width:100%; }
+  .rpt-preview        { max-height:45vh; }
+  .rpt-page           { width:100%; padding:20px 16px; font-size:10px; }
+  .rpt-kpi-row        { grid-template-columns:repeat(3,1fr) !important; }
+
+  /* Modal NC drill-down */
+  #dbi-modal > div    { max-height:90vh; border-radius:16px 16px 0 0; }
 
   /* CAPACITACIONES */
   .cap-grid    { grid-template-columns:1fr; }
