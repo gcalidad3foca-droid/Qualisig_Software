@@ -1265,6 +1265,28 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 
   /* CONFIRM DELETE POPUP */
   #confirm-overlay { flex-direction:column; }
+
+  /* ── DASHBOARD BI — responsive smartphone ── */
+  .dbi-header      { flex-direction:column; align-items:flex-start; gap:8px; }
+  .dbi-filters     { width:100%; flex-direction:column; align-items:stretch; gap:6px; }
+  .dbi-ent-btns    { justify-content:flex-start; }
+  .db-fsel         { max-width:100% !important; width:100%; font-size:13px; padding:9px 12px; }
+  .db-btn-ref      { width:100%; justify-content:center; }
+  .dbi-report-btn  { width:100%; justify-content:center; }
+
+  .dbi-kpi-row     { grid-template-columns:repeat(2,1fr); gap:8px; }
+  .dbi-kpi:last-child { grid-column: span 2; }
+
+  .dbi-main-row    { grid-template-columns:1fr; gap:10px; }
+  .dbi-main-row > div { min-width:0; }
+  #dbi-left        { order:1; }
+  #dbi-right       { order:3; }
+  .dbi-main-row > div:nth-child(2) { order:2; }
+
+  .dbi-bottom-row  { flex-direction:column; gap:10px; }
+  .dbi-bottom-row > .dbi-panel { flex:unset; }
+
+  .dbi-panel-body[style*="max-height:320px"] { max-height:240px !important; }
 }
 
 /* ── Extra small (iPhone SE, 375px) ────────── */
