@@ -1144,6 +1144,26 @@ async function exportToPDF() {
 function fixOrientationForPDF(dataUrl) {
   return new Promise(function(resolve) {
 
+    // If it's an external URL (Cloudinary), draw into canvas directly.
+    // The browser honors EXIF when drawing <img> to canvas, giving us
+    // correctly-oriented pixels regardless of EXIF metadata.
+    if (typeof dataUrl === 'string' && !dataUrl.startsWith('data:')) {
+      var img0 = new Image();
+      img0.crossOrigin = 'anonymous';
+      img0.onload = function() {
+        var canvas0 = document.createElement('canvas');
+        canvas0.width  = img0.naturalWidth;
+        canvas0.height = img0.naturalHeight;
+        var ctx0 = canvas0.getContext('2d');
+        ctx0.drawImage(img0, 0, 0);
+        resolve(canvas0.toDataURL('image/jpeg', 0.92));
+      };
+      img0.onerror = function() { resolve(dataUrl); };
+      // Add cache-bust to avoid CORS cached response without headers
+      img0.src = dataUrl + (dataUrl.includes('?') ? '&' : '?') + '_fix=1';
+      return;
+    }
+
     function getOrientation(dataUrl) {
       try {
         var b64  = dataUrl.split(',')[1];
