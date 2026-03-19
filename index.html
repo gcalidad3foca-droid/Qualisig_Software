@@ -1116,14 +1116,6 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   .dash-body       { padding:24px 20px; }
   .stats-row       { grid-template-columns:repeat(2,1fr); }
   .page-title      { font-size:22px; }
-
-  /* DASHBOARD BI — TABLET */
-  .dbi-main-row    { grid-template-columns:1fr 1fr !important; }
-  #dbi-right       { grid-column:1/-1; }
-  .dbi-kpi-row     { grid-template-columns:repeat(3,1fr) !important; }
-  .dbi-bottom-row  { flex-direction:column; }
-  .dbi-filters     { flex-wrap:wrap; gap:6px; }
-  .dbi-ent-btn img { height:20px; }
 }
 
 /* ══════════════════════════════════════════════
@@ -1140,30 +1132,6 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   #db-row1 { grid-template-columns:repeat(2,1fr) !important; }
   #db-row2 { grid-template-columns:1fr !important; }
   .db-fsel { max-width:120px !important; font-size:11px; }
-
-  /* ── DASHBOARD BI — responsive smartphone ── */
-  .dbi-header      { flex-direction:column; align-items:flex-start; gap:8px; }
-  .dbi-filters     { width:100%; flex-direction:column; align-items:stretch; gap:6px; }
-  .dbi-ent-btns    { justify-content:flex-start; width:100%; }
-  .dbi-ent-btn     { flex:1; justify-content:center; min-width:0; }
-  .dbi-ent-btn img { height:26px; width:auto; max-width:70%; object-fit:contain; }
-  .db-fsel         { max-width:100% !important; width:100%; font-size:13px; padding:9px 12px; }
-  .db-btn-ref      { width:100%; justify-content:center; }
-  .dbi-report-btn  { width:100%; justify-content:center; }
-
-  .dbi-kpi-row     { grid-template-columns:repeat(2,1fr); gap:8px; }
-  .dbi-kpi:last-child { grid-column: span 2; }
-
-  .dbi-main-row    { grid-template-columns:1fr; gap:10px; }
-  .dbi-main-row > div { min-width:0; }
-  #dbi-left        { order:1; }
-  #dbi-right       { order:3; }
-  .dbi-main-row > div:nth-child(2) { order:2; }
-
-  .dbi-bottom-row  { flex-direction:column; gap:10px; }
-  .dbi-bottom-row > .dbi-panel { flex:unset; }
-
-  .dbi-panel-body[style*="max-height:320px"] { max-height:240px !important; }
 
   /* CAPACITACIONES */
   .cap-grid    { grid-template-columns:1fr; }
@@ -1297,6 +1265,28 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 
   /* CONFIRM DELETE POPUP */
   #confirm-overlay { flex-direction:column; }
+
+  /* ── DASHBOARD BI — responsive smartphone ── */
+  .dbi-header      { flex-direction:column; align-items:flex-start; gap:8px; }
+  .dbi-filters     { width:100%; flex-direction:column; align-items:stretch; gap:6px; }
+  .dbi-ent-btns    { justify-content:flex-start; }
+  .db-fsel         { max-width:100% !important; width:100%; font-size:13px; padding:9px 12px; }
+  .db-btn-ref      { width:100%; justify-content:center; }
+  .dbi-report-btn  { width:100%; justify-content:center; }
+
+  .dbi-kpi-row     { grid-template-columns:repeat(2,1fr); gap:8px; }
+  .dbi-kpi:last-child { grid-column: span 2; }
+
+  .dbi-main-row    { grid-template-columns:1fr; gap:10px; }
+  .dbi-main-row > div { min-width:0; }
+  #dbi-left        { order:1; }
+  #dbi-right       { order:3; }
+  .dbi-main-row > div:nth-child(2) { order:2; }
+
+  .dbi-bottom-row  { flex-direction:column; gap:10px; }
+  .dbi-bottom-row > .dbi-panel { flex:unset; }
+
+  .dbi-panel-body[style*="max-height:320px"] { max-height:240px !important; }
 }
 
 /* ── Extra small (iPhone SE, 375px) ────────── */
@@ -1409,7 +1399,6 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
       <div class="user-avatar-wrap" onclick="openProfileModal()">
         <div class="user-avatar" id="user-avatar">?</div>
         <div class="avatar-edit-badge"><i class="fas fa-camera"></i></div>
-        <input type="file" id="avatar-file-input" accept="image/*" onchange="handleAvatarChange(event)">
       </div>
       <div class="user-info">
         <div class="user-name-row">
@@ -1436,6 +1425,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
           <button class="profile-modal-close" onclick="closeProfileModal()"><i class="fas fa-times"></i></button>
         </div>
         <div class="profile-avatar-picker">
+          <input type="file" id="avatar-file-input" accept="image/*" onchange="handleAvatarChange(event)" style="display:none">
           <div class="profile-avatar-preview" id="profile-avatar-preview" onclick="document.getElementById('avatar-file-input').click()">?</div>
           <button class="btn-change-photo" onclick="document.getElementById('avatar-file-input').click()">
             <i class="fas fa-camera"></i> Cambiar foto
@@ -1462,6 +1452,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
         </div>
         <div class="profile-modal-footer">
           <button class="btn-pf-cancel" onclick="closeProfileModal()">Cancelar</button>
+          <button style="background:#f1f5f9;border:1px solid #cbd5e1;border-radius:8px;padding:10px 14px;font-size:11px;color:#64748b;cursor:pointer;font-family:inherit" onclick="debugSaveTest()">🔧 Test Firebase</button>
           <button class="btn-pf-save" onclick="saveProfile()">
             <i class="fas fa-check"></i> Guardar cambios
           </button>
@@ -2343,6 +2334,11 @@ function _setAvatarImage(url) {
 }
 
 function openProfileModal() {
+  // Asegurar que _profileAvatarDataUrl refleje la foto actual antes de abrir
+  if (!_profileAvatarDataUrl) {
+    const img = document.querySelector('#user-avatar img');
+    if (img) _profileAvatarDataUrl = img.src;
+  }
   document.getElementById('profile-modal').classList.add('open');
 }
 
@@ -2355,14 +2351,12 @@ function handleAvatarChange(event) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    // Comprimir a 300x300 para el avatar
     const img = new Image();
     img.onload = () => {
       const size = 300;
       const canvas = document.createElement('canvas');
       canvas.width = canvas.height = size;
       const ctx = canvas.getContext('2d');
-      // Crop cuadrado centrado
       const min = Math.min(img.width, img.height);
       const sx  = (img.width  - min) / 2;
       const sy  = (img.height - min) / 2;
@@ -2370,11 +2364,12 @@ function handleAvatarChange(event) {
       const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
       _setAvatarImage(dataUrl);
       _profileAvatarDataUrl = dataUrl;
+      // Limpiar input DESPUÉS de procesar la imagen
+      event.target.value = '';
     };
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
-  event.target.value = '';
 }
 
 async function saveProfile() {
@@ -2383,60 +2378,83 @@ async function saveProfile() {
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
 
-  const nombre   = document.getElementById('pf-nombre').value.trim()   || currentUser.email.split('@')[0];
+  const nombre   = document.getElementById('pf-nombre').value.trim() || currentUser.email.split('@')[0];
   const cargo    = document.getElementById('pf-cargo').value;
   const telefono = document.getElementById('pf-telefono').value.trim();
+
   const profileData = {
     nombre, cargo, telefono,
     email:     currentUser.email,
     updatedAt: Date.now()
   };
 
-  // Subir avatar a Cloudinary si hay uno nuevo
+  // Si hay foto nueva (dataUrl del canvas), subirla a Cloudinary igual que evidencias
   if (_profileAvatarDataUrl && _profileAvatarDataUrl.startsWith('data:')) {
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo foto...';
     try {
       const fd = new FormData();
-      fd.append('file',          _profileAvatarDataUrl);
+      fd.append('file', _profileAvatarDataUrl);
       fd.append('upload_preset', 'qualisig_fotos');
-      fd.append('folder',        'perfiles');
-      // No usar public_id fijo — algunos presets unsigned no lo permiten
-      const res  = await fetch('https://api.cloudinary.com/v1_1/dqstmx4u8/image/upload', { method:'POST', body:fd });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
+      fd.append('folder', 'perfiles');
+      const res  = await fetch('https://api.cloudinary.com/v1_1/dqstmx4u8/image/upload', { method: 'POST', body: fd });
       const data = await res.json();
-      if (data.error) throw new Error(data.error.message);
+      console.log('[AVATAR] Cloudinary response:', data);
       if (data.secure_url) {
         profileData.avatarUrl = data.secure_url;
-        _profileAvatarDataUrl = data.secure_url; // actualizar referencia local
+        _profileAvatarDataUrl = data.secure_url;
+      } else {
+        showToast('Error subiendo foto: ' + (data.error?.message || JSON.stringify(data)), 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-check"></i> Guardar cambios';
+        return;
       }
     } catch(e) {
-      console.warn('Avatar upload failed:', e);
-      // Guardar dataUrl como fallback temporal (solo este dispositivo)
-      profileData.avatarUrl = _profileAvatarDataUrl;
+      console.error('[AVATAR] fetch error:', e);
+      showToast('Error de red al subir foto', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Guardar cambios';
+      return;
     }
   } else if (_profileAvatarDataUrl && !_profileAvatarDataUrl.startsWith('data:')) {
-    profileData.avatarUrl = _profileAvatarDataUrl; // ya es URL de Cloudinary
+    // Ya es URL de Cloudinary, preservarla
+    profileData.avatarUrl = _profileAvatarDataUrl;
   }
 
+  // Guardar en Firebase
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+  console.log('[PERFIL] Guardando en Firebase:', profileData);
   try {
-    await db.ref('perfiles/' + currentUser.uid).set(profileData);
-    // Actualizar panel en tiempo real
-    document.getElementById('user-fullname').textContent     = nombre;
-    document.getElementById('dash-user-name').textContent    = nombre;
+    await db.ref('perfiles/' + currentUser.uid).update(profileData);
+    console.log('[PERFIL] Guardado OK');
+
+    document.getElementById('user-fullname').textContent      = nombre;
+    document.getElementById('dash-user-name').textContent     = nombre;
     document.getElementById('user-cargo-display').textContent = cargo;
-    // Actualizar avatar si se subió uno nuevo
-    if (profileData.avatarUrl) {
-      _setAvatarImage(profileData.avatarUrl);
-    }
     const ph = document.getElementById('user-phone-display');
     if (telefono) { ph.textContent = telefono; ph.style.display = 'block'; }
     else          { ph.style.display = 'none'; }
+
     closeProfileModal();
     showToast('Perfil actualizado ✓', 'success');
   } catch(e) {
+    console.error('[PERFIL] Firebase error:', e);
     showToast('Error al guardar: ' + e.message, 'error');
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-check"></i> Guardar cambios';
+  }
+}
+
+// ── DEBUG: prueba directa de escritura en Firebase ──
+async function debugSaveTest() {
+  if (!currentUser) { alert('No hay usuario autenticado'); return; }
+  const uid = currentUser.uid;
+  const testData = { nombre: 'Test Debug', cargo: 'Test', email: currentUser.email, updatedAt: Date.now() };
+  try {
+    await db.ref('perfiles/' + uid).update(testData);
+    alert('✅ Firebase OK — escritura exitosa en perfiles/' + uid);
+  } catch(e) {
+    alert('❌ Firebase ERROR: ' + e.message + '\nCódigo: ' + e.code);
   }
 }
 
