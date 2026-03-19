@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Qualisig — Módulo de Auditorías</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script>
+  if(typeof ChartDataLabels !== 'undefined') Chart.register(ChartDataLabels);
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <!-- Firebase SDKs -->
@@ -216,6 +222,424 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   transition:all .2s;
 }
 .btn-logout:hover { border-color:#ef4444; color:#ef4444; background:#fef2f2; }
+
+/* ── DASHBOARD NUEVO ─────────────────────── */
+.db-topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:10px; }
+.db-maintitle { font-size:17px; font-weight:800; color:var(--gray800); letter-spacing:-0.3px; }
+.db-mainsub   { font-size:11px; color:var(--gray400); margin-top:2px; }
+.db-filterbar { display:flex; gap:10px; flex-wrap:wrap; background:#fff; border:1px solid var(--gray200); border-radius:14px; padding:14px 18px; margin-bottom:16px; box-shadow:var(--shadow); }
+.db-fg  { display:flex; flex-direction:column; gap:4px; flex:1; min-width:130px; }
+.db-fl  { font-size:10px; font-weight:700; color:var(--gray400); text-transform:uppercase; letter-spacing:.6px; }
+.db-res-pill { display:inline-block; font-size:10px; font-weight:700; padding:2px 9px; border-radius:20px; }
+.db-res-C   { background:#f0fdf4; color:#15803d; }
+.db-res-CP  { background:#fffbeb; color:#b45309; }
+.db-res-NC  { background:#fef2f2; color:#b91c1c; }
+.db-res-NA  { background:#f8fafc; color:#64748b; }
+.db-fsel {
+  padding:7px 11px; border:1.5px solid var(--gray200); border-radius:9px;
+  font-size:12px; font-family:inherit; color:var(--gray800);
+  background:#fff; cursor:pointer; transition:border-color .2s;
+}
+.db-fsel:focus { outline:none; border-color:var(--accent); }
+.db-btn-ref {
+  padding:7px 16px; border:1.5px solid var(--gray200); border-radius:9px;
+  font-size:12px; font-weight:700; font-family:inherit;
+  background:#fff; color:var(--gray600); cursor:pointer;
+  display:flex; align-items:center; gap:6px; transition:all .2s;
+}
+.db-btn-ref:hover { border-color:var(--accent); color:var(--accent); }
+.db-kpi-row {
+  display:grid; grid-template-columns:repeat(5,1fr);
+  gap:10px; margin-bottom:16px;
+}
+.db-kl { font-size:10px; font-weight:700; color:var(--gray400); text-transform:uppercase; letter-spacing:.6px; margin-bottom:4px; }
+.db-kv { font-size:24px; font-weight:800; color:var(--gray800); line-height:1; }
+.db-kv.g { color:#15803d; }
+.db-kv.o { color:#b45309; }
+.db-kv.r { color:#b91c1c; }
+.db-ks { font-size:10px; color:var(--gray400); margin-top:3px; }
+.db-kpi {
+  background:#fff; border-radius:10px;
+  border:1px solid var(--gray200); padding:12px 14px;
+  box-shadow:var(--shadow);
+}
+.db-kpi-l { font-size:10px; font-weight:700; color:var(--gray400); text-transform:uppercase; letter-spacing:.6px; margin-bottom:6px; }
+.db-kpi-v { font-size:28px; font-weight:800; color:var(--gray800); line-height:1; }
+.db-kpi-s { font-size:11px; color:var(--gray400); margin-top:4px; }
+.db-kpi-v.g { color:#15803d; }
+.db-kpi-v.o { color:#b45309; }
+.db-kpi-v.r { color:#b91c1c; }
+.db-charts-2 { display:grid; grid-template-columns:1.4fr 1fr; gap:12px; margin-bottom:12px; }
+.db-card {
+  background:#fff; border-radius:14px;
+  border:1px solid var(--gray200); padding:18px 20px;
+  box-shadow:var(--shadow);
+}
+.db-card-title { font-size:13px; font-weight:700; color:var(--gray800); margin-bottom:3px; }
+.db-card-sub   { font-size:11px; color:var(--gray400); margin-bottom:14px; }
+.db-table-card {
+  background:#fff; border-radius:14px;
+  border:1px solid var(--gray200); overflow:hidden;
+  box-shadow:var(--shadow); margin-bottom:14px;
+}
+.db-tc-head {
+  padding:14px 18px; border-bottom:1px solid var(--gray200);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.db-tc-title { font-size:13px; font-weight:700; color:var(--gray800); }
+.db-table { width:100%; border-collapse:collapse; font-size:12px; }
+.db-table th {
+  padding:9px 14px; text-align:left; font-weight:700;
+  color:var(--gray600); font-size:10px;
+  border-bottom:1px solid var(--gray200);
+  background:var(--gray50); text-transform:uppercase; letter-spacing:.5px;
+}
+.db-table td { padding:9px 14px; border-bottom:1px solid var(--gray100); color:var(--gray800); }
+.db-table tr:last-child td { border-bottom:none; }
+.db-table tr:hover td { background:var(--gray50); }
+.db-pill { display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; }
+.db-pill-g { background:#f0fdf4; color:#15803d; }
+.db-pill-o { background:#fffbeb; color:#b45309; }
+.db-pill-r { background:#fef2f2; color:#b91c1c; }
+/* ── DBI LAYOUT ──────────────────────────────── */
+.dbi-report-btn {
+  display:flex; align-items:center; gap:7px;
+  padding:7px 14px; border-radius:9px; border:none;
+  background:linear-gradient(135deg,#1e3c72,#2a5298);
+  color:#fff; font-size:12px; font-weight:700;
+  font-family:inherit; cursor:pointer; transition:all .2s;
+  box-shadow:0 2px 8px rgba(30,60,114,0.25);
+}
+.dbi-report-btn:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(30,60,114,0.35); }
+
+/* Report modal */
+.rpt-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(10,22,40,0.75); backdrop-filter:blur(4px);
+  z-index:3000; align-items:flex-start; justify-content:center;
+  padding:20px; overflow-y:auto;
+}
+.rpt-overlay.open { display:flex; }
+.rpt-box {
+  background:#fff; border-radius:20px; width:100%; max-width:820px;
+  margin:auto; box-shadow:0 32px 80px rgba(0,0,0,0.3);
+  overflow:hidden; animation:modalIn .3s cubic-bezier(.34,1.56,.64,1);
+}
+.rpt-header {
+  background:linear-gradient(135deg,#0a1628,#1e3c72 60%,#2a5298);
+  padding:22px 28px; display:flex; align-items:center; justify-content:space-between;
+}
+.rpt-header h3 { font-size:17px; font-weight:800; color:#fff; margin:0; }
+.rpt-header p  { font-size:11px; color:rgba(255,255,255,.55); margin:4px 0 0; }
+.rpt-close {
+  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2);
+  color:#fff; width:32px; height:32px; border-radius:50%;
+  font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+.rpt-filters { padding:20px 28px; border-bottom:1px solid var(--gray200); display:flex; gap:14px; flex-wrap:wrap; }
+.rpt-fg { display:flex; flex-direction:column; gap:4px; flex:1; min-width:140px; }
+.rpt-fl { font-size:10px; font-weight:700; color:var(--gray500); text-transform:uppercase; letter-spacing:.6px; }
+.rpt-sel { padding:8px 12px; border:1.5px solid var(--gray200); border-radius:9px; font-size:12px; font-family:inherit; color:var(--gray800); background:#fff; }
+.rpt-sel:focus { outline:none; border-color:var(--accent); }
+.rpt-preview { padding:0; max-height:560px; overflow-y:auto; background:#f8fafc; }
+.rpt-page {
+  background:#fff; width:794px; margin:20px auto;
+  padding:48px 56px; box-shadow:0 2px 16px rgba(0,0,0,0.1);
+  font-family:'Inter',sans-serif; font-size:11px; color:#1e293b;
+  min-height:900px; position:relative;
+}
+.rpt-logo-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; padding-bottom:16px; border-bottom:2px solid #1e3c72; }
+.rpt-logo-bar img { height:36px; object-fit:contain; }
+.rpt-logo-title { font-size:13px; font-weight:800; color:#1e3c72; text-align:center; }
+.rpt-logo-date { font-size:10px; color:#64748b; text-align:right; }
+.rpt-doc-title { font-size:18px; font-weight:800; color:#0a1628; margin-bottom:4px; }
+.rpt-doc-sub   { font-size:11px; color:#64748b; margin-bottom:24px; }
+.rpt-section   { margin-bottom:24px; }
+.rpt-section-title { font-size:12px; font-weight:800; color:#1e3c72; text-transform:uppercase; letter-spacing:.8px; border-left:3px solid #1e3c72; padding-left:8px; margin-bottom:12px; }
+.rpt-kpi-row { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:4px; }
+.rpt-kpi { background:#f1f5f9; border-radius:8px; padding:10px 12px; text-align:center; }
+.rpt-kpi-v { font-size:20px; font-weight:800; color:#1e3c72; line-height:1; }
+.rpt-kpi-l { font-size:9px; color:#64748b; margin-top:3px; text-transform:uppercase; letter-spacing:.4px; }
+.rpt-table { width:100%; border-collapse:collapse; font-size:10px; margin-bottom:4px; }
+.rpt-table th { background:#1e3c72; color:#fff; padding:7px 10px; text-align:left; font-weight:700; font-size:9px; text-transform:uppercase; letter-spacing:.5px; }
+.rpt-table td { padding:6px 10px; border-bottom:1px solid #e2e8f0; }
+.rpt-table tr:nth-child(even) td { background:#f8fafc; }
+.rpt-risk-b { color:#15803d; font-weight:700; }
+.rpt-risk-m { color:#b45309; font-weight:700; }
+.rpt-risk-a { color:#b91c1c; font-weight:700; }
+.rpt-freq-bar { display:inline-block; height:5px; background:#ef4444; border-radius:3px; vertical-align:middle; margin-right:5px; }
+.rpt-om-item { padding:5px 8px; background:#f8fafc; border-left:2px solid #1e3c72; margin-bottom:4px; border-radius:0 4px 4px 0; font-size:10px; }
+.rpt-om-cat  { font-size:9px; font-weight:700; color:#1e3c72; margin-bottom:2px; text-transform:uppercase; }
+.rpt-footer { position:absolute; bottom:32px; left:56px; right:56px; display:flex; align-items:center; justify-content:space-between; font-size:9px; color:#94a3b8; border-top:1px solid #e2e8f0; padding-top:8px; }
+.rpt-actions { padding:16px 28px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--gray200); background:#fff; }
+.btn-rpt-cancel { padding:10px 20px; background:var(--gray100); color:var(--gray600); border:none; border-radius:9px; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; }
+.btn-rpt-export { padding:10px 24px; background:linear-gradient(135deg,#1e3c72,#2a5298); color:#fff; border:none; border-radius:9px; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; display:flex; align-items:center; gap:7px; box-shadow:0 4px 12px rgba(30,60,114,.3); }
+
+.dbi-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:10px; flex-wrap:wrap; }
+.dbi-title-wrap { display:flex; flex-direction:column; gap:2px; }
+.dbi-title { font-size:15px; font-weight:800; color:var(--gray800); letter-spacing:-0.3px; }
+.dbi-sub   { font-size:11px; color:var(--gray400); }
+.dbi-filters { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.dbi-ent-btns { display:flex; gap:4px; background:var(--gray100); border-radius:10px; padding:3px; }
+.dbi-ent-btn {
+  display:flex; align-items:center; gap:6px; padding:4px 10px;
+  border:none; border-radius:8px; font-size:11px; font-weight:700;
+  font-family:inherit; cursor:pointer; color:var(--gray600);
+  background:transparent; transition:all .2s;
+}
+.dbi-ent-btn img { height:22px; width:auto; object-fit:contain; }
+.dbi-ent-btn.active { background:#fff; color:var(--blue); box-shadow:0 1px 6px rgba(0,0,0,0.1); }
+.dbi-ent-all-icon { font-size:14px; }
+.dbi-kpi-row { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:10px; }
+.dbi-kpi { background:#fff; border-radius:10px; border:1px solid var(--gray200); padding:12px 14px; box-shadow:var(--shadow); }
+.dbi-kl { font-size:10px; font-weight:700; color:var(--gray400); text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
+.dbi-kv { font-size:22px; font-weight:800; line-height:1; color:var(--gray800); }
+.dbi-ks { font-size:10px; color:var(--gray400); margin-top:3px; }
+.dbi-main-row { display:grid; grid-template-columns:1fr 1.2fr 1fr; gap:10px; margin-bottom:10px; }
+.dbi-bottom-row { display:flex; gap:10px; }
+.dbi-panel { background:#fff; border-radius:12px; border:1px solid var(--gray200); box-shadow:var(--shadow); display:flex; flex-direction:column; }
+.dbi-panel-head { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:0.5px solid var(--gray200); flex-shrink:0; }
+.dbi-panel-title { font-size:11px; font-weight:700; color:var(--gray700); text-transform:uppercase; letter-spacing:.5px; }
+.dbi-panel-badge { font-size:10px; color:var(--gray400); }
+.dbi-panel-body { flex:1; }
+/* Sede row */
+.dbi-sede-row { display:flex; align-items:center; gap:8px; padding:7px 14px; border-bottom:0.5px solid var(--gray100); cursor:pointer; transition:background .15s; }
+.dbi-sede-row:hover { background:var(--gray50); }
+.dbi-sede-ent { width:20px; height:20px; object-fit:contain; border-radius:4px; flex-shrink:0; }
+.dbi-sede-name { flex:1; font-size:11px; color:var(--gray800); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.dbi-sede-pct { font-size:12px; font-weight:800; min-width:36px; text-align:right; }
+.dbi-sede-bar-wrap { width:60px; height:4px; background:var(--gray100); border-radius:4px; overflow:hidden; flex-shrink:0; }
+.dbi-sede-bar { height:100%; border-radius:4px; }
+.dbi-sede-nc { font-size:10px; font-weight:700; min-width:22px; text-align:right; }
+.dbi-sede-mes { font-size:9px; font-weight:700; color:#94a3b8; width:28px; flex-shrink:0; text-align:center; }
+/* Cat pill */
+.dbi-cat-pill { padding:3px 9px; border-radius:20px; font-size:10px; font-weight:700; cursor:pointer; border:1.5px solid transparent; transition:all .15s; background:var(--gray100); color:var(--gray600); white-space:nowrap; }
+.dbi-cat-pill.active { background:#fef2f2; color:#b91c1c; border-color:#fca5a5; }
+.dbi-res-tab {
+  flex:1; padding:4px 0; border-radius:7px; font-size:10px; font-weight:700;
+  font-family:inherit; cursor:pointer; border:1.5px solid transparent;
+  transition:all .15s; opacity:.55;
+}
+.dbi-res-tab.active { opacity:1; box-shadow:0 1px 4px rgba(0,0,0,0.1); }
+/* NC item row */
+.dbi-nc-item { padding:5px 0; border-bottom:0.5px solid var(--gray100); }
+.dbi-nc-item-text { font-size:11px; color:var(--gray700); line-height:1.4; margin-bottom:3px; }
+.dbi-nc-freq { display:flex; align-items:center; gap:5px; }
+.dbi-nc-freq-bar { height:4px; border-radius:3px; background:#ef4444; opacity:.7; }
+.dbi-nc-freq-n { font-size:10px; font-weight:700; color:#b91c1c; }
+/* Modal item */
+.dbi-modal-item { padding:10px 0; border-bottom:0.5px solid #f1f5f9; }
+.dbi-modal-item-text { font-size:13px; color:#1e293b; margin-bottom:6px; line-height:1.5; }
+.dbi-modal-item-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.dbi-modal-freq { font-size:11px; font-weight:700; color:#b91c1c; background:#fef2f2; padding:2px 8px; border-radius:8px; }
+.dbi-modal-sedes { font-size:10px; color:#64748b; }
+.dbi-modal-obs { font-size:11px; color:#64748b; background:#f8fafc; padding:5px 8px; border-radius:6px; margin-top:4px; font-style:italic; }
+
+.db-nc-tag { font-size:10px; padding:2px 7px; border-radius:10px; background:#fef2f2; color:#b91c1c; font-weight:700; }
+
+/* ── NAV TABS ─────────────────────────────── */
+.nav-tabs {
+  display:flex; gap:4px; background:var(--gray100);
+  border-radius:12px; padding:4px; margin:0 auto;
+}
+.nav-tab {
+  display:flex; align-items:center; gap:7px;
+  padding:8px 18px; border-radius:9px; border:none;
+  font-size:12px; font-weight:700; font-family:inherit;
+  cursor:pointer; transition:all .2s; color:var(--gray600);
+  background:none; white-space:nowrap;
+}
+.nav-tab i { font-size:13px; }
+.nav-tab.active { background:#fff; color:var(--blue); box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+.nav-tab:hover:not(.active) { color:var(--blue); background:rgba(255,255,255,0.6); }
+
+/* ── MODULE PANELS ──────────────────────────── */
+.module { display:none; }
+.module.active { display:block; }
+
+/* ── DASHBOARD MODULE ─────────────────────── */
+.dash-filters {
+  display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px;
+  background:#fff; border-radius:14px; padding:16px 20px;
+  border:1px solid var(--gray200); box-shadow:var(--shadow);
+}
+.filter-group { display:flex; flex-direction:column; gap:4px; flex:1; min-width:140px; }
+.filter-group label { font-size:10px; font-weight:700; color:var(--gray600); text-transform:uppercase; letter-spacing:0.6px; }
+.filter-select {
+  padding:8px 12px; border:1.5px solid var(--gray200); border-radius:8px;
+  font-size:12px; font-family:inherit; color:var(--gray800);
+  background:#fff; cursor:pointer; transition:border-color .2s;
+}
+.filter-select:focus { outline:none; border-color:var(--accent); }
+.btn-refresh {
+  align-self:flex-end; padding:9px 18px;
+  background:linear-gradient(135deg,#5B8CD6,#1e3c72);
+  color:#fff; border:none; border-radius:8px;
+  font-size:12px; font-weight:700; font-family:inherit;
+  cursor:pointer; display:flex; align-items:center; gap:6px;
+  transition:all .2s; box-shadow:0 4px 12px rgba(91,140,214,0.25);
+}
+.btn-refresh:hover { transform:translateY(-1px); }
+.kpi-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:14px; margin-bottom:24px;
+}
+.kpi-card {
+  background:#fff; border-radius:14px; padding:18px 20px;
+  border:1px solid var(--gray200); box-shadow:var(--shadow);
+  position:relative; overflow:hidden;
+}
+.kpi-card::before {
+  content:''; position:absolute; top:0; left:0; width:4px; height:100%;
+}
+.kpi-card.blue::before   { background:#5B8CD6; }
+.kpi-card.green::before  { background:#22c55e; }
+.kpi-card.orange::before { background:#f59e0b; }
+.kpi-card.red::before    { background:#ef4444; }
+.kpi-card.purple::before { background:#8b5cf6; }
+.kpi-label  { font-size:11px; font-weight:600; color:var(--gray400); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+.kpi-value  { font-size:30px; font-weight:800; color:var(--gray800); line-height:1; margin-bottom:4px; }
+.kpi-sub    { font-size:11px; color:var(--gray400); font-weight:500; }
+.charts-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+.chart-card {
+  background:#fff; border-radius:14px; padding:20px;
+  border:1px solid var(--gray200); box-shadow:var(--shadow);
+}
+.chart-card-title { font-size:13px; font-weight:700; color:var(--gray800); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.chart-card-title i { color:var(--accent); font-size:13px; }
+.chart-wrap { position:relative; height:220px; }
+.table-card {
+  background:#fff; border-radius:14px;
+  border:1px solid var(--gray200); box-shadow:var(--shadow);
+  overflow:hidden; margin-bottom:16px;
+}
+.table-card-header {
+  padding:16px 20px; border-bottom:1px solid var(--gray200);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.table-card-title { font-size:13px; font-weight:700; color:var(--gray800); display:flex; align-items:center; gap:8px; }
+.table-card-title i { color:var(--accent); }
+.dash-table { width:100%; border-collapse:collapse; font-size:12px; }
+.dash-table th { background:var(--gray50); padding:10px 14px; text-align:left; font-weight:700; color:var(--gray600); font-size:11px; text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid var(--gray200); }
+.dash-table td { padding:10px 14px; border-bottom:1px solid var(--gray100); color:var(--gray800); }
+.dash-table tr:last-child td { border-bottom:none; }
+.dash-table tr:hover td { background:var(--gray50); }
+.risk-pill { font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; display:inline-block; }
+.risk-pill.bajo   { background:#f0fdf4; color:#15803d; }
+.risk-pill.medio  { background:#fffbeb; color:#b45309; }
+.risk-pill.alto   { background:#fef2f2; color:#b91c1c; }
+.dash-loading { text-align:center; padding:60px 20px; color:var(--gray400); }
+.dash-loading i { font-size:32px; margin-bottom:12px; display:block; }
+
+/* ── CAPACITACIONES MODULE ──────────────────── */
+.cap-toolbar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:20px; flex-wrap:wrap; gap:12px;
+}
+.btn-nueva-cap {
+  background:linear-gradient(135deg,#5B8CD6,#1e3c72);
+  color:#fff; border:none; border-radius:11px;
+  padding:11px 20px; font-size:13px; font-weight:700;
+  font-family:inherit; cursor:pointer;
+  display:flex; align-items:center; gap:8px;
+  box-shadow:0 6px 18px rgba(91,140,214,0.3); transition:all .2s;
+}
+.btn-nueva-cap:hover { transform:translateY(-2px); }
+.cap-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:16px; }
+.cap-card {
+  background:#fff; border-radius:14px; border:1.5px solid var(--gray200);
+  overflow:hidden; box-shadow:var(--shadow); transition:all .25s;
+}
+.cap-card:hover { transform:translateY(-3px); box-shadow:var(--shadow2); border-color:var(--accent); }
+.cap-card-header { padding:16px 18px 12px; border-bottom:1px solid var(--gray100); }
+.cap-card-status { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.cap-status-pill { font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; }
+.cap-status-pill.programada { background:#eff6ff; color:#1d4ed8; }
+.cap-status-pill.ejecutada  { background:#f0fdf4; color:#15803d; }
+.cap-status-pill.cancelada  { background:#fef2f2; color:#b91c1c; }
+.cap-card-title { font-size:14px; font-weight:700; color:var(--gray800); margin-bottom:4px; }
+.cap-card-fecha { font-size:11px; color:var(--gray400); display:flex; align-items:center; gap:5px; }
+.cap-card-body  { padding:12px 18px; }
+.cap-card-meta  { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.cap-meta-item  { font-size:11px; color:var(--gray600); display:flex; flex-direction:column; gap:2px; }
+.cap-meta-label { font-size:10px; font-weight:700; color:var(--gray400); text-transform:uppercase; letter-spacing:0.5px; }
+.cap-progress   { height:6px; background:var(--gray100); border-radius:10px; overflow:hidden; margin-bottom:4px; }
+.cap-progress-bar { height:100%; border-radius:10px; background:linear-gradient(90deg,#5B8CD6,#86C5DA); transition:width .5s; }
+.cap-progress-label { font-size:10px; color:var(--gray400); font-weight:600; }
+.cap-card-footer { padding:10px 18px 14px; display:flex; gap:8px; }
+.btn-cap-action {
+  flex:1; padding:8px; border:none; border-radius:8px;
+  font-size:11px; font-weight:700; font-family:inherit; cursor:pointer; transition:all .2s;
+}
+.btn-cap-ver    { background:var(--gray100); color:var(--gray600); }
+.btn-cap-ver:hover { background:var(--gray200); }
+.btn-cap-edit   { background:#eef2ff; color:var(--accent); }
+.btn-cap-edit:hover { background:#e0e7ff; }
+
+/* ── CAP MODAL ──────────────────────────────── */
+.cap-modal-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(10,22,40,0.7); backdrop-filter:blur(4px);
+  z-index:1000; align-items:flex-start; justify-content:center;
+  padding:20px; overflow-y:auto;
+}
+.cap-modal-overlay.open { display:flex; }
+.cap-modal-box {
+  background:#fff; border-radius:20px; width:100%; max-width:580px;
+  box-shadow:0 32px 80px rgba(0,0,0,0.25); overflow:hidden;
+  margin:auto; animation:modalIn .3s cubic-bezier(.34,1.56,.64,1);
+}
+.cap-modal-header {
+  background:linear-gradient(135deg,#0a1628,#1e3c72 60%,#2a5298);
+  padding:22px 24px; display:flex; align-items:center; justify-content:space-between;
+}
+.cap-modal-header h3 { font-size:16px; font-weight:700; color:#fff; }
+.cap-modal-body { padding:24px; max-height:70vh; overflow-y:auto; }
+.cap-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.cap-form-full { grid-column:1/-1; }
+.cap-form-group { display:flex; flex-direction:column; gap:5px; }
+.cap-form-label { font-size:11px; font-weight:700; color:var(--gray600); text-transform:uppercase; letter-spacing:0.5px; }
+.cap-form-input, .cap-form-select, .cap-form-textarea {
+  padding:10px 13px; border:1.5px solid var(--gray200); border-radius:9px;
+  font-size:13px; font-family:inherit; color:var(--gray800);
+  background:#fff; transition:border-color .2s;
+}
+.cap-form-input:focus, .cap-form-select:focus, .cap-form-textarea:focus {
+  outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(91,140,214,0.1);
+}
+.cap-form-textarea { resize:vertical; min-height:70px; }
+.cap-asistentes-wrap {
+  border:1.5px solid var(--gray200); border-radius:9px; overflow:hidden;
+}
+.cap-asistentes-header {
+  background:var(--gray50); padding:8px 12px;
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:11px; font-weight:700; color:var(--gray600); border-bottom:1px solid var(--gray200);
+}
+.btn-add-asistente {
+  background:var(--accent); color:#fff; border:none; border-radius:6px;
+  padding:3px 10px; font-size:11px; font-weight:700; cursor:pointer; font-family:inherit;
+}
+.cap-asistentes-list { padding:8px; max-height:140px; overflow-y:auto; }
+.cap-asistente-item {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:5px 8px; border-radius:6px; font-size:12px; color:var(--gray700,#374151);
+}
+.cap-asistente-item:hover { background:var(--gray50); }
+.btn-rm-asistente { background:none; border:none; color:#ef4444; cursor:pointer; font-size:13px; padding:0 4px; }
+.cap-evidencias-zone {
+  border:2px dashed var(--gray200); border-radius:10px; padding:16px;
+  text-align:center; cursor:pointer; transition:all .2s; font-size:12px; color:var(--gray400);
+}
+.cap-evidencias-zone:hover { border-color:var(--accent); color:var(--accent); background:#f8faff; }
+.cap-evidencias-preview { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.cap-ev-thumb { position:relative; width:64px; height:64px; border-radius:8px; overflow:hidden; border:1px solid var(--gray200); }
+.cap-ev-thumb img { width:100%; height:100%; object-fit:cover; }
+.cap-ev-rm { position:absolute; top:2px; right:2px; background:#ef4444; color:#fff; border:none; border-radius:50%; width:18px; height:18px; font-size:9px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.cap-modal-footer { padding:0 24px 24px; display:flex; gap:10px; }
+.btn-cap-cancel { flex:1; padding:12px; background:var(--gray100); color:var(--gray600); border:none; border-radius:10px; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; }
+.btn-cap-save { flex:2; padding:12px; background:linear-gradient(135deg,#5B8CD6,#1e3c72); color:#fff; border:none; border-radius:10px; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; box-shadow:0 6px 18px rgba(91,140,214,0.3); display:flex; align-items:center; justify-content:center; gap:8px; transition:all .2s; }
+.btn-cap-save:hover { transform:translateY(-1px); }
 
 /* Body */
 .dash-body {
@@ -699,6 +1123,23 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 ══════════════════════════════════════════════ */
 @media(max-width:640px) {
 
+  /* NAV TABS */
+  .nav-tabs    { gap:2px; }
+  .nav-tab     { padding:7px 10px; font-size:11px; gap:5px; }
+  .nav-tab i   { font-size:11px; }
+
+  /* DASHBOARD compacto */
+  #db-row1 { grid-template-columns:repeat(2,1fr) !important; }
+  #db-row2 { grid-template-columns:1fr !important; }
+  .db-fsel { max-width:120px !important; font-size:11px; }
+
+  /* CAPACITACIONES */
+  .cap-grid    { grid-template-columns:1fr; }
+  .cap-toolbar { flex-direction:column; align-items:flex-start; }
+  .btn-nueva-cap { width:100%; justify-content:center; }
+  .cap-form-grid { grid-template-columns:1fr; }
+  .cap-form-full { grid-column:1; }
+
   /* LOGIN */
   #screen-login {
     align-items:flex-start;
@@ -907,6 +1348,17 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
         <span class="dash-user-name" id="dash-user-name">Cargando...</span>
       </div>
     </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" id="tab-auditorias" onclick="switchModule('auditorias')">
+        <i class="fas fa-clipboard-list"></i> Auditorías
+      </button>
+      <button class="nav-tab" id="tab-dashboard" onclick="switchModule('dashboard')">
+        <i class="fas fa-chart-bar"></i> Dashboard
+      </button>
+      <button class="nav-tab" id="tab-capacitaciones" onclick="switchModule('capacitaciones')">
+        <i class="fas fa-graduation-cap"></i> Capacitaciones
+      </button>
+    </div>
     <div class="dash-header-actions">
       <button class="btn-logout" onclick="doLogout()">
         <i class="fas fa-sign-out-alt"></i> Cerrar sesión
@@ -916,6 +1368,9 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 
   <!-- Body -->
   <div class="dash-body">
+
+    <!-- ══ MODULE: AUDITORÍAS ══════════════════ -->
+    <div class="module active" id="module-auditorias">
 
     <!-- User Profile Panel -->
     <div class="user-profile-panel" id="user-profile-panel">
@@ -1030,8 +1485,246 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
       </div>
     </div>
 
-  </div>
-</div>
+    </div><!-- end module-auditorias -->
+
+    <!-- ══ MODULE: DASHBOARD ══════════════════ -->
+    <div class="module" id="module-dashboard">
+
+      <!-- ── HEADER ── -->
+      <div class="dbi-header">
+        <div class="dbi-title-wrap">
+          <span class="dbi-title">Business Intelligence · Auditorías de Servicio</span>
+          <span class="dbi-sub" id="db-sub">Cargando...</span>
+        </div>
+        <div class="dbi-filters">
+          <div class="dbi-ent-btns">
+            <button class="dbi-ent-btn active" id="btn-ent-all" onclick="setEntity('all')">
+              <span class="dbi-ent-all-icon">⊕</span> Todas
+            </button>
+            <button class="dbi-ent-btn" id="btn-ent-foca" onclick="setEntity('foca')">
+              <img src="https://i.imgur.com/5pNuFBp.png" alt="FOCA">
+            </button>
+            <button class="dbi-ent-btn" id="btn-ent-viu" onclick="setEntity('viu')">
+              <img src="https://i.imgur.com/qQ4lN8v.png" alt="VIU">
+            </button>
+          </div>
+          <select class="db-fsel" id="df-cat-filter" onchange="applyDashFilters()"><option value="">Todas las categorías</option>
+            <option>ADMISIÓN</option><option>PRESTACIÓN DEL SERVICIO</option>
+            <option>SEGURIDAD DEL PACIENTE</option><option>AMBIENTE HUMANIZADO</option>
+            <option>PQRS</option><option>PROTOCOLO DE IMAGEN</option>
+          </select>
+          <select class="db-fsel" id="df-sede" onchange="applyDashFilters()"><option value="">Todas las sedes</option></select>
+          <select class="db-fsel" id="df-mes"  onchange="applyDashFilters()">
+            <option value="">Todos los meses</option>
+            <option>Enero</option><option>Febrero</option><option>Marzo</option><option>Abril</option>
+            <option>Mayo</option><option>Junio</option><option>Julio</option><option>Agosto</option>
+            <option>Septiembre</option><option>Octubre</option><option>Noviembre</option><option>Diciembre</option>
+          </select>
+          <button class="db-btn-ref" onclick="loadDashboard()"><i class="fas fa-sync-alt"></i></button>
+          <button class="dbi-report-btn" onclick="openReportModal()">
+            <i class="fas fa-file-pdf"></i> Generar Informe
+          </button>
+        </div>
+      </div>
+
+      <!-- ── FILA KPIs ── -->
+      <div class="dbi-kpi-row" id="db-kpi-row">
+        <div class="dbi-kpi"><div class="dbi-kl">Auditorías</div><div class="dbi-kv" id="dv0">—</div><div class="dbi-ks" id="ds0">—</div></div>
+        <div class="dbi-kpi"><div class="dbi-kl">Promedio global</div><div class="dbi-kv" id="dv1" style="color:#1e3c72">—</div><div class="dbi-ks" id="ds1">—</div></div>
+        <div class="dbi-kpi"><div class="dbi-kl">Riesgo bajo ≥92%</div><div class="dbi-kv" id="dv2" style="color:#15803d">—</div><div class="dbi-ks" id="ds2">—</div></div>
+        <div class="dbi-kpi"><div class="dbi-kl">Riesgo medio</div><div class="dbi-kv" id="dv3" style="color:#b45309">—</div><div class="dbi-ks">85–91%</div></div>
+        <div class="dbi-kpi"><div class="dbi-kl">Riesgo alto &lt;85%</div><div class="dbi-kv" id="dv4" style="color:#b91c1c">—</div><div class="dbi-ks" id="ds4">—</div></div>
+      </div>
+
+      <!-- ── FILA PRINCIPAL ── -->
+      <div class="dbi-main-row">
+
+        <!-- IZQUIERDA: Sedes por entidad -->
+        <div class="dbi-panel" id="dbi-left">
+          <div class="dbi-panel-head">
+            <span class="dbi-panel-title">Ranking de sedes</span>
+            <span class="dbi-panel-badge" id="db-nsedes">—</span>
+          </div>
+          <div class="dbi-panel-body" id="db-sedes-body" style="overflow-y:auto;max-height:320px"></div>
+        </div>
+
+        <!-- CENTRO: Tendencia + Distribución -->
+        <div style="display:flex;flex-direction:column;gap:10px;flex:1.2">
+          <div class="dbi-panel" style="padding:14px 16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <span class="dbi-panel-title">Tendencia mensual</span>
+              <span id="dbi-trend-badge" style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px"></span>
+            </div>
+            <div style="position:relative;height:130px"><canvas id="dbCMes"></canvas></div>
+          </div>
+          <div class="dbi-panel" style="padding:14px 16px">
+            <div class="dbi-panel-title" style="margin-bottom:10px">Distribución C / CP / NC / N/A</div>
+            <div id="db-dist-bars"></div>
+          </div>
+        </div>
+
+        <!-- DERECHA: NC Drill-down -->
+        <div class="dbi-panel" id="dbi-right">
+          <div class="dbi-panel-head" style="flex-direction:column;align-items:stretch;gap:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span class="dbi-panel-title">Análisis de hallazgos</span>
+              <span id="db-hall-total" style="font-size:10px;color:var(--gray400)"></span>
+            </div>
+            <div style="display:flex;gap:3px">
+              <button class="dbi-res-tab active" id="rtab-NC" onclick="setActiveRes('NC')" style="background:#fef2f2;color:#b91c1c;border-color:#fca5a5">NC <span id="db-nc-cnt" style="font-weight:800"></span></button>
+              <button class="dbi-res-tab" id="rtab-CP" onclick="setActiveRes('CP')" style="background:#fffbeb;color:#b45309;border-color:#fcd34d">CP <span id="db-cp-cnt" style="font-weight:800"></span></button>
+              <button class="dbi-res-tab" id="rtab-C"  onclick="setActiveRes('C')"  style="background:#f0fdf4;color:#15803d;border-color:#86efac">C <span id="db-c-cnt" style="font-weight:800"></span></button>
+              <button class="dbi-res-tab" id="rtab-NA" onclick="setActiveRes('NA')" style="background:#f8fafc;color:#64748b;border-color:#cbd5e1">N/A <span id="db-na-cnt" style="font-weight:800"></span></button>
+            </div>
+          </div>
+          <!-- Selector de categoría -->
+          <div style="padding:8px 14px;border-bottom:0.5px solid var(--gray200)">
+            <div style="display:flex;gap:4px;flex-wrap:wrap" id="db-cat-pills"></div>
+          </div>
+          <!-- Items frecuentes en esa categoría -->
+          <div style="padding:10px 14px;overflow-y:auto;flex:1" id="db-nc-items"></div>
+        </div>
+
+      </div>
+
+      <!-- ── FILA INFERIOR: % por categoría + OMs ── -->
+      <div class="dbi-bottom-row">
+
+        <div class="dbi-panel" style="padding:14px 16px;flex:1.4">
+          <div class="dbi-panel-title" style="margin-bottom:12px">% cumplimiento por categoría</div>
+          <div id="db-cat-pct"></div>
+        </div>
+
+        <div class="dbi-panel" style="padding:0;overflow:hidden;flex:1">
+          <div class="dbi-panel-head">
+            <span class="dbi-panel-title">Oportunidades de mejora</span>
+            <span id="db-om-cnt" style="font-size:10px;color:var(--gray400)"></span>
+          </div>
+          <div style="overflow-y:auto;max-height:200px;padding:8px 14px" id="db-oms-list"></div>
+        </div>
+
+      </div>
+
+      <!-- ── MODAL NC DRILL-DOWN ── -->
+      <div id="dbi-modal" style="display:none;position:fixed;inset:0;background:rgba(10,22,40,0.6);backdrop-filter:blur(3px);z-index:2000;align-items:center;justify-content:center;padding:20px">
+        <div style="background:#fff;border-radius:20px;width:100%;max-width:680px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,0.25)">
+          <div style="background:linear-gradient(135deg,#0a1628,#1e3c72);padding:20px 24px;display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="color:#fff;font-size:16px;font-weight:800" id="modal-cat-title">—</div>
+              <div style="color:rgba(255,255,255,0.6);font-size:11px;margin-top:2px" id="modal-cat-sub">—</div>
+            </div>
+            <button onclick="closeDbiModal()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:#fff;width:32px;height:32px;border-radius:50%;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fas fa-times"></i></button>
+          </div>
+          <div style="overflow-y:auto;flex:1;padding:20px 24px" id="modal-cat-body"></div>
+        </div>
+      </div>
+
+      <!-- ── REPORT MODAL ── -->
+      <div class="rpt-overlay" id="rpt-modal">
+        <div class="rpt-box">
+          <div class="rpt-header">
+            <div>
+              <h3>Generar Informe de Auditorías</h3>
+              <p>Configura los filtros y revisa la vista previa antes de exportar</p>
+            </div>
+            <button class="rpt-close" onclick="closeReportModal()"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="rpt-filters">
+            <div class="rpt-fg">
+              <label class="rpt-fl">Institución</label>
+              <select class="rpt-sel" id="rpt-ent" onchange="generatePreview()">
+                <option value="all">Todas</option>
+                <option value="foca">FOCA</option>
+                <option value="viu">VIU</option>
+              </select>
+            </div>
+            <div class="rpt-fg">
+              <label class="rpt-fl">Sede</label>
+              <select class="rpt-sel" id="rpt-sede" onchange="generatePreview()">
+                <option value="">Todas las sedes</option>
+              </select>
+            </div>
+            <div class="rpt-fg">
+              <label class="rpt-fl">Mes</label>
+              <select class="rpt-sel" id="rpt-mes" onchange="generatePreview()">
+                <option value="">Todos los meses</option>
+                <option>Enero</option><option>Febrero</option><option>Marzo</option><option>Abril</option>
+                <option>Mayo</option><option>Junio</option><option>Julio</option><option>Agosto</option>
+                <option>Septiembre</option><option>Octubre</option><option>Noviembre</option><option>Diciembre</option>
+              </select>
+            </div>
+            <div class="rpt-fg">
+              <label class="rpt-fl">Categoría</label>
+              <select class="rpt-sel" id="rpt-cat" onchange="generatePreview()">
+                <option value="">Todas las categorías</option>
+                <option>ADMISIÓN</option><option>PRESTACIÓN DEL SERVICIO</option>
+                <option>SEGURIDAD DEL PACIENTE</option><option>AMBIENTE HUMANIZADO</option>
+                <option>PQRS</option><option>PROTOCOLO DE IMAGEN</option>
+              </select>
+            </div>
+          </div>
+          <div class="rpt-preview" id="rpt-preview">
+            <div style="text-align:center;padding:60px 20px;color:var(--gray400)">
+              <i class="fas fa-spinner fa-spin" style="font-size:24px;display:block;margin-bottom:12px"></i>
+              Generando vista previa...
+            </div>
+          </div>
+          <div class="rpt-actions">
+            <button class="btn-rpt-cancel" onclick="closeReportModal()">Cancelar</button>
+            <button class="btn-rpt-export" onclick="exportReportPDF()">
+              <i class="fas fa-file-pdf"></i> Exportar PDF
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end module-dashboard -->
+
+    <!-- ══ MODULE: CAPACITACIONES ══════════════ -->
+    <div class="module" id="module-capacitaciones">
+
+      <div class="cap-toolbar">
+        <div>
+          <h2 style="font-size:20px;font-weight:800;color:var(--gray800);letter-spacing:-0.4px">Capacitaciones</h2>
+          <p style="font-size:12px;color:var(--gray400);margin-top:2px">Registro y seguimiento del plan de capacitaciones de calidad</p>
+        </div>
+        <button class="btn-nueva-cap" onclick="openCapModal()">
+          <i class="fas fa-plus"></i> Nueva Capacitación
+        </button>
+      </div>
+
+      <!-- KPIs capacitaciones -->
+      <div class="kpi-grid" style="margin-bottom:20px">
+        <div class="kpi-card blue">
+          <div class="kpi-label">Total</div>
+          <div class="kpi-value" id="cap-total">0</div>
+          <div class="kpi-sub">capacitaciones</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">Ejecutadas</div>
+          <div class="kpi-value" id="cap-ejecutadas">0</div>
+          <div class="kpi-sub">completadas</div>
+        </div>
+        <div class="kpi-card orange">
+          <div class="kpi-label">Programadas</div>
+          <div class="kpi-value" id="cap-programadas">0</div>
+          <div class="kpi-sub">pendientes</div>
+        </div>
+        <div class="kpi-card purple">
+          <div class="kpi-label">Cumplimiento</div>
+          <div class="kpi-value" id="cap-cumplimiento">—</div>
+          <div class="kpi-sub">del plan</div>
+        </div>
+      </div>
+
+      <div class="cap-grid" id="cap-grid">
+        <div class="dash-loading"><i class="fas fa-graduation-cap"></i>Sin capacitaciones registradas.<br><span style="font-size:12px">Crea la primera con el botón "Nueva Capacitación"</span></div>
+      </div>
+
+    </div><!-- end module-capacitaciones -->
+
+  </div><!-- end dash-body -->
+</div><!-- end screen-dashboard -->
 
 <!-- ══ MODAL: NUEVA AUDITORÍA ════════════════ -->
 <div class="modal-overlay" id="modal-nueva">
@@ -1078,6 +1771,94 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
       </button>
     </div>
 
+  </div>
+</div>
+
+<!-- ══ MODAL: CAPACITACIÓN ═══════════════════ -->
+<div class="cap-modal-overlay" id="cap-modal">
+  <div class="cap-modal-box">
+    <div class="cap-modal-header">
+      <h3 id="cap-modal-title"><i class="fas fa-graduation-cap" style="margin-right:8px"></i>Nueva Capacitación</h3>
+      <button style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:#fff;width:32px;height:32px;border-radius:50%;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;" onclick="closeCapModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="cap-modal-body">
+      <input type="hidden" id="cap-id">
+      <div class="cap-form-grid">
+        <div class="cap-form-group cap-form-full">
+          <label class="cap-form-label">Tema / Nombre</label>
+          <input class="cap-form-input" type="text" id="cap-tema" placeholder="Ej: Protocolo de Lavado de Manos">
+        </div>
+        <div class="cap-form-group">
+          <label class="cap-form-label">Fecha</label>
+          <input class="cap-form-input" type="date" id="cap-fecha">
+        </div>
+        <div class="cap-form-group">
+          <label class="cap-form-label">Estado</label>
+          <select class="cap-form-select" id="cap-estado">
+            <option value="programada">Programada</option>
+            <option value="ejecutada">Ejecutada</option>
+            <option value="cancelada">Cancelada</option>
+          </select>
+        </div>
+        <div class="cap-form-group">
+          <label class="cap-form-label">Facilitador</label>
+          <input class="cap-form-input" type="text" id="cap-facilitador" placeholder="Nombre del facilitador">
+        </div>
+        <div class="cap-form-group">
+          <label class="cap-form-label">Sede</label>
+          <select class="cap-form-select" id="cap-sede">
+            <option value="">Todas las sedes</option>
+            <option>FOCA VIVA</option><option>FOCA ALKARAWI</option><option>FOCA SEDE 2</option>
+            <option>FOCA SEDE 51B</option><option>FOCA ALEGRA</option><option>FOCA VALLEDUPAR</option>
+            <option>FOCA RIOHACHA</option><option>FOCA SANTA MARTA</option>
+            <option>FOCA SANTA MARTA BURANO</option><option>FOCA CARTAGENA</option>
+            <option>FOCA BARANOA</option><option>FOCA GALAPA</option>
+            <option>FOCA SABANALARGA 1</option><option>FOCA SABANALARGA 2</option>
+            <option>FOCA MALAMBO</option>
+            <option>SALA AZUL MALL PLAZA</option><option>SALA AZUL SEDE 51B</option>
+            <option>SALA AZUL VALLEDUPAR</option>
+          </select>
+        </div>
+        <div class="cap-form-group">
+          <label class="cap-form-label">Duración (horas)</label>
+          <input class="cap-form-input" type="number" id="cap-horas" placeholder="2" min="0.5" step="0.5">
+        </div>
+        <div class="cap-form-group cap-form-full">
+          <label class="cap-form-label">Descripción / Objetivos</label>
+          <textarea class="cap-form-textarea" id="cap-descripcion" placeholder="Describe el objetivo de la capacitación..."></textarea>
+        </div>
+        <div class="cap-form-group cap-form-full">
+          <label class="cap-form-label">Asistentes</label>
+          <div class="cap-asistentes-wrap">
+            <div class="cap-asistentes-header">
+              <span id="cap-asistentes-count">0 asistentes</span>
+              <button class="btn-add-asistente" onclick="addAsistente()">+ Agregar</button>
+            </div>
+            <div class="cap-asistentes-list" id="cap-asistentes-list">
+              <div style="padding:8px;font-size:11px;color:var(--gray400);text-align:center">Sin asistentes aún</div>
+            </div>
+            <div style="padding:8px;display:flex;gap:6px;border-top:1px solid var(--gray200)">
+              <input class="cap-form-input" type="text" id="cap-asistente-input" placeholder="Nombre del asistente..." style="flex:1;padding:7px 10px;font-size:12px" onkeydown="if(event.key==='Enter'){addAsistente();event.preventDefault()}">
+            </div>
+          </div>
+        </div>
+        <div class="cap-form-group cap-form-full">
+          <label class="cap-form-label">Evidencias fotográficas</label>
+          <div class="cap-evidencias-zone" onclick="document.getElementById('cap-ev-input').click()">
+            <i class="fas fa-cloud-upload-alt" style="font-size:24px;margin-bottom:6px;display:block"></i>
+            Toca para subir fotos de la capacitación
+            <input type="file" id="cap-ev-input" accept="image/*" multiple style="display:none" onchange="handleCapEvidencias(event)">
+          </div>
+          <div class="cap-evidencias-preview" id="cap-ev-preview"></div>
+        </div>
+      </div>
+    </div>
+    <div class="cap-modal-footer">
+      <button class="btn-cap-cancel" onclick="closeCapModal()">Cancelar</button>
+      <button class="btn-cap-save" onclick="saveCapacitacion()">
+        <i class="fas fa-check"></i> Guardar Capacitación
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1182,8 +1963,13 @@ async function doLogin() {
     await auth.signInWithEmailAndPassword(email, pass);
   } catch(e) {
     let msg = 'Correo o contraseña incorrectos';
-    if (e.code === 'auth/too-many-requests') msg = 'Demasiados intentos. Intenta más tarde.';
-    if (e.code === 'auth/user-not-found')    msg = 'Usuario no encontrado.';
+    if (e.code === 'auth/too-many-requests')     msg = 'Demasiados intentos. Intenta más tarde.';
+    if (e.code === 'auth/user-not-found')         msg = 'No existe una cuenta con este correo.';
+    if (e.code === 'auth/wrong-password')         msg = 'Contraseña incorrecta.';
+    if (e.code === 'auth/invalid-credential')     msg = 'Correo o contraseña incorrectos.';
+    if (e.code === 'auth/invalid-email')          msg = 'El formato del correo no es válido.';
+    if (e.code === 'auth/user-disabled')          msg = 'Esta cuenta está deshabilitada.';
+    if (e.code === 'auth/network-request-failed') msg = 'Error de red. Verifica tu conexión.';
     showLoginError(msg);
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Iniciar sesión</span>';
@@ -1628,6 +2414,902 @@ function showToast(msg, type='info') {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
 }
+
+// ══════════════════════════════════════════════
+// NAVEGACIÓN DE MÓDULOS
+// ══════════════════════════════════════════════
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby9YVrSoK38cY8z8zOB-dnzrFdgbsQwWbAIQnMtyQS1TH-7PQ7CLEbV63GKK633Gl-_OQ/exec';
+
+function switchModule(name) {
+  document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('module-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'dashboard')      loadDashboard();
+  if (name === 'capacitaciones') loadCapacitaciones();
+}
+
+// ══════════════════════════════════════════════
+// DASHBOARD — LEE DE GOOGLE SHEETS
+// ══════════════════════════════════════════════
+let _dashData=[], _detalleData=[], _dashFiltered=[], _detFiltered=[];
+let dbCM, _activeCat=null, _activeEnt='all', _activeRes='NC';
+
+const _DB_LOGOS = {foca:'https://i.imgur.com/5pNuFBp.png', viu:'https://i.imgur.com/qQ4lN8v.png'};
+const FOCA_SEDES = ['FOCA VIVA','FOCA ALKARAWI','FOCA SEDE 2','FOCA SEDE 51B','FOCA ALEGRA','FOCA VALLEDUPAR','FOCA RIOHACHA','FOCA SANTA MARTA','FOCA SANTA MARTA BURANO','FOCA CARTAGENA','FOCA BARANOA','FOCA GALAPA','FOCA SABANALARGA 1','FOCA SABANALARGA 2','FOCA MALAMBO','FOCA CASONA'];
+const VIU_SEDES  = ['SALA AZUL MALL PLAZA','SALA AZUL SEDE 51B','SALA AZUL VALLEDUPAR','VIU'];
+const CATS = ['ADMISIÓN','PRESTACIÓN DEL SERVICIO','SEGURIDAD DEL PACIENTE','AMBIENTE HUMANIZADO','PQRS','PROTOCOLO DE IMAGEN'];
+const CAT_SHORT = {'ADMISIÓN':'ADM','PRESTACIÓN DEL SERVICIO':'PREST','SEGURIDAD DEL PACIENTE':'SEG','AMBIENTE HUMANIZADO':'AMB','PQRS':'PQRS','PROTOCOLO DE IMAGEN':'IMAGEN'};
+
+function _gv(row,...keys){for(const k of keys){if(row[k]!==undefined&&row[k]!==''&&row[k]!==null)return row[k];}return '';}
+function _id(r)  {return _gv(r,'id_auditoria','id','ID');}
+function _sede(r){return _gv(r,'sede','SEDE');}
+function _fecha(r){const f=_gv(r,'fecha','FECHA');if(!f)return '';try{return new Date(f).toISOString().split('T')[0];}catch(e){return String(f).split('T')[0];}}
+function _pct(r) {return parseFloat(_gv(r,'porcentaje_final','PORCENTAJE_FINAL','porcentaje'))||0;}
+function _res(r) {return _gv(r,'resultado','RESULTADO','Resultado');}
+function _cat(r) {return _gv(r,'categoria','CATEGORIA','Categoría','categoria');}
+function _item(r){return _gv(r,'item','ITEM','Ítem','item');}
+function _obs(r) {return _gv(r,'observacion','OBSERVACION','Observación','observacion');}
+function _om(r)  {return _gv(r,'Opt. Mejora','oportunidades_mejora','OPORTUNIDADES_MEJORA');}
+function _aud(r) {return _gv(r,'auditor','AUDITOR');}
+function _rc(p)  {return p>=92?'#15803d':p>=85?'#b45309':'#b91c1c';}
+function _resColor(r){ if(r==='NC')return{c:'#b91c1c',bg:'#fef2f2'}; if(r==='CP')return{c:'#b45309',bg:'#fffbeb'}; if(r==='C')return{c:'#15803d',bg:'#f0fdf4'}; return{c:'#64748b',bg:'#f8fafc'}; }
+function _rb(p)  {return p>=92?'#f0fdf4':p>=85?'#fffbeb':'#fef2f2';}
+function _rl(p)  {return p>=92?'Bajo':p>=85?'Medio':'Alto';}
+function _entOf(s){if(VIU_SEDES.some(v=>s.toUpperCase().includes(v.split(' ')[0])||s.toUpperCase().includes('VIU')))return 'viu';return 'foca';}
+
+function setEntity(ent){
+  _activeEnt=ent;
+  ['all','foca','viu'].forEach(e=>document.getElementById('btn-ent-'+e).classList.toggle('active',e===ent));
+  applyDashFilters();
+}
+
+async function loadDashboard(){
+  document.getElementById('db-sub').textContent='Cargando...';
+  try{
+    const [r1,r2]=await Promise.all([
+      fetch(APPS_SCRIPT_URL+'?sheet=AUDITORIAS').then(r=>r.json()),
+      fetch(APPS_SCRIPT_URL+'?sheet=DETALLE_AUDITORIA').then(r=>r.json())
+    ]);
+    _dashData=   (r1.data||[]).filter(r=>_id(r));
+    _detalleData=(r2.data||[]).filter(r=>_gv(r,'id','ID','id_auditoria'));
+    _dbPopFilters();
+    applyDashFilters();
+  }catch(e){document.getElementById('db-sub').textContent='Error al cargar datos';}
+}
+
+function _dbPopFilters(){
+  const sedes=[...new Set(_dashData.map(_sede).filter(Boolean))].sort();
+  const sel=document.getElementById('df-sede');
+  sel.innerHTML='<option value="">Todas las sedes</option>';
+  sedes.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o);});
+}
+
+function applyDashFilters(){
+  const catF=document.getElementById('df-cat-filter')?document.getElementById('df-cat-filter').value:'';
+  const sede=document.getElementById('df-sede').value;
+  const mes =document.getElementById('df-mes').value;
+  const MESES=['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  _dashFiltered=_dashData.filter(r=>{
+    let ok=true;
+    if(_activeEnt==='foca') ok=ok&&_entOf(_sede(r))==='foca';
+    if(_activeEnt==='viu')  ok=ok&&_entOf(_sede(r))==='viu';
+    if(sede) ok=ok&&_sede(r)===sede;
+    if(mes){const m=new Date(_fecha(r)).getMonth()+1;ok=ok&&MESES[m]===mes;}
+    return ok;
+  });
+  const ids=new Set(_dashFiltered.map(_id));
+  _detFiltered=_detalleData.filter(r=>{
+    if(!ids.has(_gv(r,'id','ID','id_auditoria')))return false;
+    if(catF&&_cat(r)!==catF)return false;
+    return true;
+  });
+  _dbRender();
+}
+
+function _dbRender(){
+  const data=_dashFiltered, det=_detFiltered;
+  if(!data.length){
+    document.getElementById('db-sub').textContent='Sin datos para los filtros';
+    document.getElementById('dv0').textContent='0';
+    return;
+  }
+  const pcts=data.map(_pct);
+  const avg=Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length);
+  const bajo=pcts.filter(p=>p>=92).length, medio=pcts.filter(p=>p>=85&&p<92).length, alto=pcts.filter(p=>p<85).length;
+  const ncAll=det.filter(r=>_res(r)==='NC').length, cpAll=det.filter(r=>_res(r)==='CP').length;
+  document.getElementById('db-sub').textContent=data.length+' auditorías · '+[...new Set(data.map(_sede))].length+' sedes · '+det.length+' ítems evaluados';
+
+  // KPIs
+  document.getElementById('dv0').textContent=data.length;
+  document.getElementById('ds0').textContent=[...new Set(data.map(_sede))].length+' sedes';
+  const kv1=document.getElementById('dv1'); kv1.textContent=avg+'%'; kv1.style.color=_rc(avg);
+  document.getElementById('ds1').textContent='Nivel: '+_rl(avg);
+  document.getElementById('dv2').textContent=bajo; document.getElementById('ds2').textContent=Math.round(bajo/data.length*100)+'% del total';
+  document.getElementById('dv3').textContent=medio;
+  document.getElementById('dv4').textContent=alto; document.getElementById('ds4').textContent=alto>0?'Requiere acción':'Sin riesgo alto';
+
+
+  // Tendencia
+  const mesMap={};
+  data.forEach(r=>{const f=_fecha(r);if(!f)return;const d=new Date(f);const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');if(!mesMap[k])mesMap[k]=[];mesMap[k].push(_pct(r));});
+  const mKeys=Object.keys(mesMap).sort();
+  const mV=mKeys.map(k=>Math.round(mesMap[k].reduce((a,b)=>a+b,0)/mesMap[k].length));
+  const MESES_NOM=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const mL=mKeys.map(k=>{const parts=k.split('-');return MESES_NOM[parseInt(parts[1]||1)-1]+' '+parts[0].slice(2);});
+  if(dbCM)dbCM.destroy();
+  const trendColor=mV.length>1&&mV[mV.length-1]>mV[mV.length-2]?'#22c55e':'#ef4444';
+  if(mV.length>1){const d=mV[mV.length-1]-mV[mV.length-2];document.getElementById('dbi-trend-badge').textContent=(d>0?'↑':d<0?'↓':'→')+Math.abs(d)+'% vs mes anterior';document.getElementById('dbi-trend-badge').style.cssText='background:'+_rb(mV[mV.length-1])+';color:'+_rc(mV[mV.length-1]);}
+  const minY=mV.length?Math.max(0,Math.min(...mV)-12):0;
+  dbCM=new Chart(document.getElementById('dbCMes'),{type:'line',data:{labels:mL,datasets:[{data:mV,borderColor:trendColor,backgroundColor:trendColor==='#22c55e'?'rgba(34,197,94,0.08)':'rgba(239,68,68,0.08)',borderWidth:2.5,tension:.4,fill:true,pointRadius:6,pointBackgroundColor:'#fff',pointBorderColor:trendColor,pointBorderWidth:2.5,pointHoverRadius:8}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:28,right:10,bottom:4,left:4}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+'% · '+_rl(c.raw)}},datalabels:{display:true,color:'#1e293b',backgroundColor:'#ffffff',borderColor:trendColor,borderWidth:1.5,borderRadius:6,padding:{top:2,bottom:2,left:5,right:5},font:{weight:'700',size:9,family:'Inter,sans-serif'},formatter:v=>v+'%',anchor:'end',align:'end',offset:6,clamp:true}},scales:{y:{display:true,min:minY,max:100,ticks:{callback:v=>v+'%',font:{size:9},color:'#94a3b8'},grid:{color:'rgba(0,0,0,0.03)'}},x:{ticks:{font:{size:9,weight:'600'},color:'#64748b',maxRotation:0},grid:{display:false}}}}});
+
+  // Dist bars
+  const dist={C:0,CP:0,NC:0,'N/A':0};
+  det.forEach(r=>{const v=_res(r);if(v==='C')dist.C++;else if(v==='CP')dist.CP++;else if(v==='NC')dist.NC++;else dist['N/A']++;});
+  const dTot=Object.values(dist).reduce((a,b)=>a+b,0)||1;
+  const dC={C:'#22c55e',CP:'#f59e0b',NC:'#ef4444','N/A':'#94a3b8'};
+  document.getElementById('db-dist-bars').innerHTML=Object.entries(dist).map(([k,v])=>{const p=Math.round(v/dTot*100);return`<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><span style="width:24px;font-size:10px;font-weight:700;color:${dC[k]}">${k}</span><div style="flex:1;height:6px;background:var(--gray100);border-radius:3px;overflow:hidden"><div style="height:100%;width:${p}%;background:${dC[k]};border-radius:3px"></div></div><span style="width:60px;text-align:right;font-size:10px;color:var(--gray500)">${v} (${p}%)</span></div>`;}).join('');
+
+  // ── SEDES con logos, mes y sin conteo NC
+  const MESES_CORTO_S=['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const sedeMap={};
+  data.forEach(r=>{
+    const s=_sede(r)||'Sin sede';
+    const f=_fecha(r);
+    const mesNum=f?new Date(f).getMonth()+1:0;
+    if(!sedeMap[s])sedeMap[s]={pcts:[],ent:_entOf(s),lastMes:0,lastFecha:''};
+    sedeMap[s].pcts.push(_pct(r));
+    if(f>sedeMap[s].lastFecha){sedeMap[s].lastFecha=f;sedeMap[s].lastMes=mesNum;}
+  });
+  const sorted=Object.entries(sedeMap)
+    .map(([s,v])=>({s,avg:Math.round(v.pcts.reduce((a,b)=>a+b,0)/v.pcts.length),ent:v.ent,mes:v.lastMes,n:v.pcts.length}))
+    .sort((a,b)=>b.mes-a.mes||b.avg-a.avg);
+  const maxPct=Math.max(...sorted.map(r=>r.avg))||100;
+  document.getElementById('db-nsedes').textContent=sorted.length+' sedes';
+  const sedesBody=document.getElementById('db-sedes-body');
+  sedesBody.innerHTML='';
+  sorted.forEach(r=>{
+    const row=document.createElement('div');
+    row.className='dbi-sede-row';
+    row.innerHTML=
+      '<span class="dbi-sede-mes">'+(r.mes?MESES_CORTO_S[r.mes]:'—')+'</span>'
+      +'<img class="dbi-sede-ent" src="'+(_DB_LOGOS[r.ent]||_DB_LOGOS.foca)+'" alt="'+r.ent+'">'
+      +'<span class="dbi-sede-name" title="'+r.s+'">'+r.s+'</span>'
+      +'<div class="dbi-sede-bar-wrap"><div class="dbi-sede-bar" style="width:'+Math.round(r.avg/maxPct*100)+'%;background:'+_rc(r.avg)+'"></div></div>'
+      +'<span class="dbi-sede-pct" style="color:'+_rc(r.avg)+'">'+r.avg+'%</span>';
+    row.addEventListener('click',function(){filterBySede(r.s);});
+    sedesBody.appendChild(row);
+  });
+
+  // ── NC drill-down: pills por categoría
+  // Count per result type
+  const resCounts={NC:det.filter(r=>_res(r)==='NC').length,CP:det.filter(r=>_res(r)==='CP').length,C:det.filter(r=>_res(r)==='C').length,NA:det.filter(r=>_res(r)==='NA'||_res(r)==='N/A').length};
+  document.getElementById('db-nc-cnt').textContent=resCounts.NC;
+  document.getElementById('db-cp-cnt').textContent=resCounts.CP;
+  document.getElementById('db-c-cnt').textContent=resCounts.C;
+  document.getElementById('db-na-cnt').textContent=resCounts.NA;
+  document.getElementById('db-hall-total').textContent=det.length+' ítems evaluados';
+  // Sync tab active state
+  ['NC','CP','C','NA'].forEach(r=>{document.getElementById('rtab-'+r).classList.toggle('active',r===_activeRes);});
+
+  const catNCmap=_buildCatMap(det,data,_activeRes);
+  if(!_activeCat||!catNCmap[_activeCat]||catNCmap[_activeCat].total===0)_activeCat=CATS.find(c=>catNCmap[c]&&catNCmap[c].total>0)||CATS[0];
+  const rc=_resColor(_activeRes);
+  document.getElementById('db-cat-pills').innerHTML=CATS.map(c=>{const hasData=catNCmap[c]&&catNCmap[c].total>0;return`<span class="dbi-cat-pill${_activeCat===c?' active':''}" onclick="selectCat('${c}')" title="${c}" style="${_activeCat===c?'background:'+rc.bg+';color:'+rc.c+';border-color:'+rc.c:''}">${CAT_SHORT[c]||c} ${hasData?'<b>'+catNCmap[c].total+'</b>':''}</span>`;}).join('');
+  _renderNCItems(catNCmap);
+
+  // ── % por categoría
+  const catPct={};CATS.forEach(c=>catPct[c]={s:0,n:0});
+  det.forEach(r=>{const c=_cat(r),v=_res(r);if(!catPct[c])catPct[c]={s:0,n:0};if(v==='C'){catPct[c].s+=100;catPct[c].n++;}else if(v==='CP'){catPct[c].s+=50;catPct[c].n++;}else if(v==='NC'){catPct[c].n++;}else if(v==='NA'||v==='N/A'){catPct[c].s+=100;catPct[c].n++;}});
+  document.getElementById('db-cat-pct').innerHTML=CATS.filter(c=>catPct[c].n>0).map(c=>{
+    const p=Math.round(catPct[c].s/catPct[c].n);
+    return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+      <span style="font-size:10px;color:var(--gray600);width:150px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${c}">${c}</span>
+      <div style="flex:1;height:8px;background:var(--gray100);border-radius:4px;overflow:hidden"><div style="height:100%;width:${p}%;background:${_rc(p)};border-radius:4px;opacity:.85"></div></div>
+      <span style="font-size:11px;font-weight:800;color:${_rc(p)};width:38px;text-align:right">${p}%</span>
+      <span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;background:${_rb(p)};color:${_rc(p)};width:36px;text-align:center">${_rl(p)}</span>
+    </div>`;}).join('');
+
+  // ── OMs
+  const omRows=[];
+  det.forEach(r=>{const om=_om(r);if(!om)return;const rid=_gv(r,'id','ID','id_auditoria');const aud=data.find(a=>_id(a)===rid)||{};String(om).split('|').map(s=>s.trim()).filter(Boolean).forEach(o=>{omRows.push({sede:_sede(aud),cat:_cat(r),om:o});});});
+  document.getElementById('db-om-cnt').textContent=omRows.length+' registradas';
+  document.getElementById('db-oms-list').innerHTML=omRows.length?omRows.map(r=>`<div style="display:flex;gap:6px;align-items:flex-start;padding:5px 0;border-bottom:0.5px solid var(--gray100)"><span style="font-size:9px;font-weight:700;padding:2px 5px;border-radius:5px;background:#eef2ff;color:#1e40af;flex-shrink:0;white-space:nowrap">${(CAT_SHORT[r.cat]||r.cat.split(' ')[0])}</span><div style="flex:1;min-width:0"><span style="font-size:11px;color:var(--gray700);line-height:1.4;display:block">${r.om}</span>${r.sede?`<span style="font-size:10px;color:var(--gray400)">${r.sede}</span>`:''}</div></div>`).join(''):`<span style="font-size:11px;color:var(--gray400)">Sin OMs registradas</span>`;
+}
+
+function _buildCatMap(det, data, resFilter){
+  const map={};CATS.forEach(c=>map[c]={items:{},total:0});
+  det.forEach(r=>{
+    const rv=_res(r);
+    const match = resFilter==='NA'?(rv==='NA'||rv==='N/A'):(rv===resFilter);
+    if(!match)return;
+    const c=_cat(r);if(!map[c])return;
+    const it=_item(r);const ob=_obs(r);
+    const rid=_gv(r,'id','ID','id_auditoria');
+    const aud=(data||_dashFiltered).find(a=>_id(a)===rid)||{};
+    if(!map[c].items[it])map[c].items[it]={n:0,obs:[],sedes:new Set()};
+    map[c].items[it].n++;
+    if(ob)map[c].items[it].obs.push(ob+'||'+(_sede(aud)||''));
+    map[c].items[it].sedes.add(_sede(aud));
+    map[c].total++;
+  });
+  return map;
+}
+
+// Cache for NC modal data
+const _ncItemCache = {};
+
+function _renderNCItems(catNCmap){
+  const cat=_activeCat;if(!catNCmap||!catNCmap[cat])return;
+  const items=Object.entries(catNCmap[cat].items).sort((a,b)=>b[1].n-a[1].n);
+  const maxN=items.length?items[0][1].n:1;
+  const rc=_resColor(_activeRes);
+  const container=document.getElementById('db-nc-items');
+  if(!items.length){
+    container.innerHTML='<span style="font-size:11px;color:var(--gray400);padding:12px 0;display:block">Sin hallazgos '+_activeRes+' en esta categoria</span>';
+    return;
+  }
+  container.innerHTML='';
+  items.forEach(([it,v],idx)=>{
+    const key='itm_'+idx;
+    _ncItemCache[key]={res:_activeRes,cat,item:it,n:v.n,obs:v.obs,sedes:[...v.sedes]};
+    const div=document.createElement('div');
+    div.className='dbi-nc-item';div.style.cursor='pointer';div.dataset.key=key;
+    const barW=Math.round(v.n/maxN*80);
+    const sedesTxt=v.sedes.size?[...v.sedes].slice(0,2).join(', ')+(v.sedes.size>2?' +'+(v.sedes.size-2):''):'';
+    div.innerHTML='<div class="dbi-nc-item-text">'+it.substring(0,90)+(it.length>90?'…':'')+'</div>'
+      +'<div class="dbi-nc-freq">'
+      +'<div class="dbi-nc-freq-bar" style="width:'+barW+'px;background:'+rc.c+'"></div>'
+      +'<span class="dbi-nc-freq-n" style="color:'+rc.c+'">'+v.n+'x</span>'
+      +'<span style="font-size:10px;color:var(--gray400)">'+sedesTxt+'</span>'
+      +'</div>';
+    div.addEventListener('click',function(){
+      const d=_ncItemCache[this.dataset.key];
+      openDbiModal(d.res,d.cat,d.item,{n:d.n,obs:d.obs,sedes:d.sedes});
+    });
+    container.appendChild(div);
+  });
+}
+
+function setActiveRes(res){
+  _activeRes=res;
+  ['NC','CP','C','NA'].forEach(r=>document.getElementById('rtab-'+r).classList.toggle('active',r===res));
+  const catNCmap=_buildCatMap(_detFiltered,_dashFiltered,_activeRes);
+  if(!_activeCat||!catNCmap[_activeCat]||catNCmap[_activeCat].total===0)_activeCat=CATS.find(c=>catNCmap[c]&&catNCmap[c].total>0)||CATS[0];
+  const rc=_resColor(_activeRes);
+  document.getElementById('db-cat-pills').innerHTML=CATS.map(c=>{const hasData=catNCmap[c]&&catNCmap[c].total>0;return`<span class="dbi-cat-pill${_activeCat===c?' active':''}" onclick="selectCat('${c}')" title="${c}" style="${_activeCat===c?'background:'+rc.bg+';color:'+rc.c+';border-color:'+rc.c:''}">${CAT_SHORT[c]||c} ${hasData?'<b>'+catNCmap[c].total+'</b>':''}</span>`;}).join('');
+  _renderNCItems(catNCmap);
+}
+
+function selectCat(cat){
+  _activeCat=cat;
+  const catNCmap=_buildCatMap(_detFiltered,_dashFiltered,_activeRes);
+  const rc=_resColor(_activeRes);
+  document.querySelectorAll('.dbi-cat-pill').forEach(el=>{const active=el.getAttribute('title')===cat;el.classList.toggle('active',active);el.style.cssText=active?'background:'+rc.bg+';color:'+rc.c+';border-color:'+rc.c:'';});
+  _renderNCItems(catNCmap);
+}
+
+function filterBySede(sede){
+  document.getElementById('df-sede').value=sede;
+  applyDashFilters();
+}
+
+function openDbiModal(resType,cat,item,data){
+  const rc=_resColor(resType);
+  const resLabel={NC:'No Conforme',CP:'Cumple Parcial',C:'Conforme',NA:'No Aplica'}[resType]||resType;
+  document.getElementById('modal-cat-title').textContent=cat+' · '+resLabel;
+  document.getElementById('modal-cat-sub').textContent=item;
+  const obs=Array.isArray(data.obs)?data.obs.filter(Boolean):[];
+  const sedes=Array.isArray(data.sedes)?data.sedes:[];
+  const n=data.n||0;
+  document.getElementById('modal-cat-body').innerHTML=`
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
+      <div style="background:${rc.bg};border-radius:12px;padding:14px 20px;text-align:center;min-width:80px">
+        <div style="font-size:32px;font-weight:800;color:${rc.c};line-height:1">${n}</div>
+        <div style="font-size:10px;color:${rc.c};margin-top:4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px">veces</div>
+      </div>
+      <div style="background:#f8fafc;border-radius:12px;padding:12px 16px;flex:1;min-width:160px">
+        <div style="font-size:10px;font-weight:700;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Sedes donde ocurrió</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">${sedes.map(s=>`<span style="font-size:10px;background:#e2e8f0;color:#334155;padding:2px 8px;border-radius:8px">${s}</span>`).join('')||'<span style="font-size:11px;color:#94a3b8">—</span>'}</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px">Observaciones de los auditores</div>
+      <span style="font-size:10px;background:#f1f5f9;color:#64748b;padding:2px 7px;border-radius:8px">${obs.length} registradas</span>
+    </div>
+    ${obs.length?obs.map((o,i)=>{const parts=o.split('||');const txt=parts[0]||o;const sed=parts[1]||'';return`<div style="display:flex;gap:8px;margin-bottom:10px"><span style="font-size:10px;font-weight:700;color:#94a3b8;padding-top:2px;flex-shrink:0">${i+1}.</span><div style="flex:1"><div class="dbi-modal-obs">"${txt}"</div>${sed?`<span style="font-size:10px;font-weight:700;background:#e2e8f0;color:#334155;padding:2px 8px;border-radius:8px;display:inline-block;margin-top:4px">${sed}</span>`:''}</div></div>`}).join(''):'<div style="padding:16px;background:#f8fafc;border-radius:8px;text-align:center;font-size:12px;color:#94a3b8">Sin observaciones registradas para este ítem</div>'}`;
+  const modal=document.getElementById('dbi-modal');
+  modal.style.display='flex';
+}
+function closeDbiModal(){document.getElementById('dbi-modal').style.display='none';}
+document.addEventListener('click',e=>{
+  if(e.target.id==='dbi-modal') closeDbiModal();
+  if(e.target.id==='rpt-modal') closeReportModal();
+});
+
+// ══════════════════════════════════════════════
+// GENERADOR DE INFORMES
+// ══════════════════════════════════════════════
+function openReportModal(){
+  const modal=document.getElementById('rpt-modal');
+  modal.classList.add('open');
+  // Populate sede filter
+  const sedes=[...new Set(_dashData.map(_sede).filter(Boolean))].sort();
+  const sel=document.getElementById('rpt-sede');
+  sel.innerHTML='<option value="">Todas las sedes</option>';
+  sedes.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o);});
+  // Reset filters to match current dashboard
+  document.getElementById('rpt-ent').value=_activeEnt;
+  document.getElementById('rpt-sede').value=document.getElementById('df-sede').value;
+  document.getElementById('rpt-mes').value=document.getElementById('df-mes').value;
+  document.getElementById('rpt-cat').value='';
+  generatePreview();
+}
+
+function closeReportModal(){
+  document.getElementById('rpt-modal').classList.remove('open');
+}
+
+function _getReportData(){
+  const ent=document.getElementById('rpt-ent').value;
+  const sede=document.getElementById('rpt-sede').value;
+  const mes=document.getElementById('rpt-mes').value;
+  const cat=document.getElementById('rpt-cat').value;
+  const MESES=['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+  const rData=_dashData.filter(r=>{
+    let ok=true;
+    if(ent==='foca') ok=ok&&_entOf(_sede(r))==='foca';
+    if(ent==='viu')  ok=ok&&_entOf(_sede(r))==='viu';
+    if(sede) ok=ok&&_sede(r)===sede;
+    if(mes){const m=new Date(_fecha(r)).getMonth()+1;ok=ok&&MESES[m]===mes;}
+    return ok;
+  });
+  const ids=new Set(rData.map(_id));
+  const rDet=_detalleData.filter(r=>{
+    const rid=_gv(r,'id','ID','id_auditoria');
+    if(!ids.has(rid))return false;
+    if(cat&&_cat(r)!==cat)return false;
+    return true;
+  });
+  return {rData,rDet,ent,sede,mes,cat};
+}
+
+function generatePreview(){
+  const {rData,rDet,ent,sede,mes,cat}=_getReportData();
+  const preview=document.getElementById('rpt-preview');
+  if(!rData.length){
+    preview.innerHTML='<div style="text-align:center;padding:60px 20px;color:var(--gray400)"><i class="fas fa-database" style="font-size:24px;display:block;margin-bottom:12px"></i>Sin datos para los filtros seleccionados</div>';
+    return;
+  }
+
+  const now=new Date();
+  const fechaRpt=now.toLocaleDateString('es-CO',{year:'numeric',month:'long',day:'numeric'});
+  const pcts=rData.map(_pct);
+  const avg=Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length);
+  const bajo=pcts.filter(p=>p>=92).length;
+  const medio=pcts.filter(p=>p>=85&&p<92).length;
+  const alto=pcts.filter(p=>p<85).length;
+  const ncAll=rDet.filter(r=>_res(r)==='NC').length;
+  const cpAll=rDet.filter(r=>_res(r)==='CP').length;
+
+  // Sedes ranking
+  const sedeMap={};
+  rData.forEach(r=>{const s=_sede(r)||'Sin sede';if(!sedeMap[s])sedeMap[s]={pcts:[],NC:0};sedeMap[s].pcts.push(_pct(r));});
+  rDet.forEach(d=>{const rid=_gv(d,'id','ID','id_auditoria');const aud=rData.find(r=>_id(r)===rid);if(!aud)return;const s=_sede(aud)||'Sin sede';if(sedeMap[s]&&_res(d)==='NC')sedeMap[s].NC++;});
+  const sedesSorted=Object.entries(sedeMap).map(([s,v])=>({s,avg:Math.round(v.pcts.reduce((a,b)=>a+b,0)/v.pcts.length),n:v.pcts.length,NC:v.NC})).sort((a,b)=>b.avg-a.avg);
+
+  // Tendencia
+  const mesMap={};
+  const MESES_NOM2=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  rData.forEach(r=>{const f=_fecha(r);if(!f)return;const d2=new Date(f);const k=d2.getFullYear()+'-'+String(d2.getMonth()+1).padStart(2,'0');if(!mesMap[k])mesMap[k]=[];mesMap[k].push(_pct(r));});
+  const mKeys=Object.keys(mesMap).sort();
+  const mVals=mKeys.map(k=>Math.round(mesMap[k].reduce((a,b)=>a+b,0)/mesMap[k].length));
+  const mLabels=mKeys.map(k=>{const p=k.split('-');return MESES_NOM2[parseInt(p[1]||1)-1]+' '+p[0].slice(2);});
+
+  // Hallazgos más repetidos (NC + CP)
+  const hallMap={};
+  rDet.forEach(r=>{
+    const v=_res(r);if(v!=='NC'&&v!=='CP')return;
+    const it=_item(r);const c=_cat(r);const ob=_obs(r);
+    const rid=_gv(r,'id','ID','id_auditoria');const aud=rData.find(a=>_id(a)===rid)||{};
+    const key=c+'|||'+it;
+    if(!hallMap[key])hallMap[key]={cat:c,item:it,n:0,nc:0,cp:0,sedes:new Set(),obs:[]};
+    hallMap[key].n++;
+    if(v==='NC')hallMap[key].nc++;
+    else hallMap[key].cp++;
+    hallMap[key].sedes.add(_sede(aud));
+    if(ob&&hallMap[key].obs.length<2)hallMap[key].obs.push(ob);
+  });
+  const hallSorted=Object.values(hallMap).sort((a,b)=>b.nc-a.nc||b.n-a.n).slice(0,15);
+  const maxHall=hallSorted.length?hallSorted[0].nc||1:1;
+
+  // OMs
+  const omRows=[];
+  rDet.forEach(r=>{
+    const om=_om(r);if(!om)return;
+    const rid=_gv(r,'id','ID','id_auditoria');const aud=rData.find(a=>_id(a)===rid)||{};
+    String(om).split('|').map(s=>s.trim()).filter(Boolean).forEach(o=>{
+      omRows.push({sede:_sede(aud),cat:_cat(r),om:o});
+    });
+  });
+
+  // Filtro label
+  const entLabel={all:'Todas las instituciones',foca:'FOCA – Fundación Oftalmológica del Caribe',viu:'VIU – Clínica Oftalmológica Internacional'}[ent]||'';
+  const filtrosLabel=[entLabel,sede,mes,cat].filter(Boolean).join(' · ') || 'Todos los datos disponibles';
+
+  // Tendencia HTML (mini barras)
+  const tendHTML=mLabels.map((l,i)=>{
+    const p=mVals[i];const w=Math.round(p/100*120);
+    const col=p>=92?'#15803d':p>=85?'#b45309':'#b91c1c';
+    return`<tr><td style="padding:4px 8px;font-size:10px;color:#334155;width:70px">${l}</td>
+      <td style="padding:4px 8px"><div style="height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden"><div style="height:100%;width:${w}px;background:${col};border-radius:3px;max-width:100%"></div></div></td>
+      <td style="padding:4px 8px;font-size:11px;font-weight:800;color:${col};width:40px">${p}%</td>
+      <td style="padding:4px 8px;font-size:9px;color:${col};width:50px">${_rl(p)}</td></tr>`;
+  }).join('');
+
+  const logoFOCA='https://i.imgur.com/5pNuFBp.png';
+  const logoVIU ='https://i.imgur.com/qQ4lN8v.png';
+
+  preview.innerHTML=`<div class="rpt-page" id="rpt-page-content">
+    <div class="rpt-logo-bar">
+      <img src="${logoFOCA}" alt="FOCA">
+      <div class="rpt-logo-title">INFORME DE AUDITORÍAS DE SERVICIO<br><span style="font-size:10px;color:#64748b;font-weight:400">${filtrosLabel}</span></div>
+      <div class="rpt-logo-date">Generado: ${fechaRpt}<br>Qualisig · Gestión de Calidad</div>
+    </div>
+
+    <div style="font-size:16px;font-weight:800;color:#0a1628;margin-bottom:2px">Informe Consolidado · Auditorías de Servicio</div>
+    <div style="font-size:10px;color:#64748b;margin-bottom:20px">${filtrosLabel}</div>
+
+    <!-- RESUMEN EJECUTIVO -->
+    <div class="rpt-section">
+      <div class="rpt-section-title">Resumen Ejecutivo</div>
+      <div class="rpt-kpi-row">
+        <div class="rpt-kpi"><div class="rpt-kpi-v">${rData.length}</div><div class="rpt-kpi-l">Auditorías</div></div>
+        <div class="rpt-kpi"><div class="rpt-kpi-v" style="color:${_rc(avg)}">${avg}%</div><div class="rpt-kpi-l">Promedio</div></div>
+        <div class="rpt-kpi"><div class="rpt-kpi-v" style="color:#15803d">${bajo}</div><div class="rpt-kpi-l">Riesgo Bajo</div></div>
+        <div class="rpt-kpi"><div class="rpt-kpi-v" style="color:#b45309">${medio}</div><div class="rpt-kpi-l">Riesgo Medio</div></div>
+        <div class="rpt-kpi"><div class="rpt-kpi-v" style="color:#b91c1c">${alto}</div><div class="rpt-kpi-l">Riesgo Alto</div></div>
+      </div>
+      <div style="margin-top:8px;padding:10px 14px;background:#f1f5f9;border-radius:8px;font-size:10px;color:#334155">
+        <b>NC:</b> ${ncAll} hallazgos no conformes &nbsp;·&nbsp; <b>CP:</b> ${cpAll} cumplimiento parcial &nbsp;·&nbsp;
+        <b>OMs:</b> ${omRows.length} oportunidades de mejora registradas
+      </div>
+    </div>
+
+    <!-- RANKING SEDES -->
+    <div class="rpt-section">
+      <div class="rpt-section-title">Ranking de Sedes</div>
+      <table class="rpt-table">
+        <thead><tr><th>#</th><th>Sede</th><th>Auditorías</th><th>Promedio</th><th>NC</th><th>Estado</th></tr></thead>
+        <tbody>${sedesSorted.map((r,i)=>`<tr>
+          <td>${i+1}</td><td>${r.s}</td><td style="text-align:center">${r.n}</td>
+          <td class="${r.avg>=92?'rpt-risk-b':r.avg>=85?'rpt-risk-m':'rpt-risk-a'}">${r.avg}%</td>
+          <td style="text-align:center;color:${r.NC>0?'#b91c1c':'#15803d'}">${r.NC||'—'}</td>
+          <td class="${r.avg>=92?'rpt-risk-b':r.avg>=85?'rpt-risk-m':'rpt-risk-a'}">${_rl(r.avg)}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>
+
+    <!-- TENDENCIA -->
+    ${mLabels.length>0?`<div class="rpt-section">
+      <div class="rpt-section-title">Tendencia Mensual</div>
+      <table style="width:100%;border-collapse:collapse">${tendHTML}</table>
+    </div>`:''}
+
+    <!-- HALLAZGOS MÁS REPETIDOS -->
+    ${hallSorted.length>0?`<div class="rpt-section">
+      <div class="rpt-section-title">Hallazgos Más Repetidos (NC + CP)</div>
+      <table class="rpt-table">
+        <thead><tr><th>Categoría</th><th>Ítem</th><th>Sedes</th><th>NC</th><th>CP</th><th>Frecuencia</th></tr></thead>
+        <tbody>${hallSorted.map(h=>`<tr>
+          <td style="font-size:9px;color:#1e3c72;font-weight:700">${h.cat}</td>
+          <td style="max-width:260px">${h.item.substring(0,80)}${h.item.length>80?'…':''}</td>
+          <td style="font-size:9px">${[...h.sedes].slice(0,3).join(', ')}${h.sedes.size>3?' +'+(h.sedes.size-3):''}</td>
+          <td style="text-align:center;color:#b91c1c;font-weight:700">${h.nc}</td>
+          <td style="text-align:center;color:#b45309;font-weight:700">${h.cp}</td>
+          <td><div class="rpt-freq-bar" style="width:${Math.round(h.nc/maxHall*60)}px"></div>${h.n}x</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`:''}
+
+    <!-- OPORTUNIDADES DE MEJORA -->
+    ${omRows.length>0?`<div class="rpt-section">
+      <div class="rpt-section-title">Oportunidades de Mejora</div>
+      ${omRows.map(r=>`<div class="rpt-om-item">
+        <div class="rpt-om-cat">${r.cat}${r.sede?' · '+r.sede:''}</div>
+        ${r.om}
+      </div>`).join('')}
+    </div>`:''}
+
+    <div class="rpt-footer">
+      <span>Qualisig · Sistema de Gestión de Calidad</span>
+      <span>${filtrosLabel}</span>
+      <span>${fechaRpt}</span>
+    </div>
+  </div>`;
+}
+
+async function exportReportPDF(){
+  const btn=document.querySelector('.btn-rpt-export');
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Generando PDF...';
+  try{
+    const {jsPDF}=window.jspdf;
+    const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const PW=doc.internal.pageSize.getWidth();
+    const PH=doc.internal.pageSize.getHeight();
+    const M=14;
+
+    const {rData,rDet,ent,sede,mes,cat}=_getReportData();
+    if(!rData.length){showToast('Sin datos para exportar','error');return;}
+
+    const now=new Date();
+    const fechaRpt=now.toLocaleDateString('es-CO',{year:'numeric',month:'long',day:'numeric'});
+    const pcts=rData.map(_pct);
+    const avg=Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length);
+    const bajo=pcts.filter(p=>p>=92).length,medio=pcts.filter(p=>p>=85&&p<92).length,alto=pcts.filter(p=>p<85).length;
+    const ncAll=rDet.filter(r=>_res(r)==='NC').length,cpAll=rDet.filter(r=>_res(r)==='CP').length;
+    const MESES_NOM3=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const entLabel={all:'Todas las instituciones',foca:'FOCA',viu:'VIU'}[ent]||'';
+    const filtrosLabel=[entLabel,sede,mes,cat].filter(Boolean).join(' · ')||'Todos los datos';
+
+    // Page header helper
+    function addHeader(doc,page){
+      doc.setFillColor(30,60,114);doc.rect(0,0,PW,18,'F');
+      doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);
+      doc.text('INFORME DE AUDITORÍAS DE SERVICIO · Qualisig',M,11);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);
+      doc.text('Pág. '+page+' · '+fechaRpt,PW-M,11,{align:'right'});
+      doc.setDrawColor(86,140,214);doc.setLineWidth(0.5);doc.line(0,18,PW,18);
+    }
+    function addFooter(doc){
+      doc.setDrawColor(200,200,200);doc.setLineWidth(0.3);doc.line(M,PH-10,PW-M,PH-10);
+      doc.setFontSize(7);doc.setTextColor(150,150,150);doc.setFont('helvetica','normal');
+      doc.text('Qualisig · Sistema de Gestión de Calidad · '+filtrosLabel,M,PH-6);
+    }
+    function sectionTitle(doc,y,title){
+      doc.setFillColor(241,245,249);doc.rect(M,y,PW-M*2,6,'F');
+      doc.setDrawColor(30,60,114);doc.setLineWidth(0.8);doc.line(M,y,M,y+6);
+      doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(30,60,114);
+      doc.text(title.toUpperCase(),M+4,y+4.2);
+      return y+10;
+    }
+
+    let page=1;
+    addHeader(doc,page);
+    let y=24;
+
+    // Title block
+    doc.setFillColor(248,250,252);doc.rect(M,y,PW-M*2,16,'F');
+    doc.setFontSize(13);doc.setFont('helvetica','bold');doc.setTextColor(10,22,40);
+    doc.text('Informe Consolidado · Auditorías de Servicio',M+4,y+7);
+    doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(100,116,139);
+    doc.text(filtrosLabel,M+4,y+13);
+    y+=20;
+
+    // RESUMEN EJECUTIVO
+    y=sectionTitle(doc,y,'Resumen Ejecutivo');
+    const kpis=[{l:'Auditorías',v:rData.length,c:[30,60,114]},{l:'Promedio',v:avg+'%',c:avg>=92?[21,128,61]:avg>=85?[180,83,9]:[185,28,28]},{l:'Riesgo Bajo',v:bajo,c:[21,128,61]},{l:'Riesgo Medio',v:medio,c:[180,83,9]},{l:'Riesgo Alto',v:alto,c:[185,28,28]}];
+    const kw=(PW-M*2)/5;
+    kpis.forEach((k,i)=>{
+      const kx=M+i*kw;
+      doc.setFillColor(248,250,252);doc.rect(kx,y,kw-2,16,'F');
+      doc.setFontSize(14);doc.setFont('helvetica','bold');doc.setTextColor(...k.c);
+      doc.text(String(k.v),kx+kw/2-1,y+9,{align:'center'});
+      doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(100,116,139);
+      doc.text(k.l,kx+kw/2-1,y+14,{align:'center'});
+    });
+    y+=20;
+    doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(51,65,85);
+    doc.text('NC: '+ncAll+' hallazgos no conformes  ·  CP: '+cpAll+' cumplimiento parcial',M,y);y+=8;
+
+    // SEDES
+    y=sectionTitle(doc,y,'Ranking de Sedes');
+    const sedeMap2={};
+    rData.forEach(r=>{const s=_sede(r)||'Sin sede';if(!sedeMap2[s])sedeMap2[s]={pcts:[],NC:0};sedeMap2[s].pcts.push(_pct(r));});
+    rDet.forEach(d=>{const rid=_gv(d,'id','ID','id_auditoria');const aud=rData.find(r=>_id(r)===rid);if(!aud)return;const s=_sede(aud)||'Sin sede';if(sedeMap2[s]&&_res(d)==='NC')sedeMap2[s].NC++;});
+    const sedesSorted2=Object.entries(sedeMap2).map(([s,v])=>({s,avg:Math.round(v.pcts.reduce((a,b)=>a+b,0)/v.pcts.length),n:v.pcts.length,NC:v.NC})).sort((a,b)=>b.avg-a.avg);
+    // Table header
+    doc.setFillColor(30,60,114);doc.rect(M,y,PW-M*2,6,'F');
+    doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);
+    doc.text('#',M+2,y+4.2);doc.text('Sede',M+10,y+4.2);doc.text('Aud.',M+110,y+4.2);doc.text('Promedio',M+124,y+4.2);doc.text('NC',M+148,y+4.2);doc.text('Estado',M+158,y+4.2);
+    y+=6;
+    sedesSorted2.forEach((r,i)=>{
+      if(y>PH-20){addFooter(doc);doc.addPage();page++;addHeader(doc,page);y=24;}
+      if(i%2===0){doc.setFillColor(248,250,252);doc.rect(M,y,PW-M*2,5.5,'F');}
+      const c=r.avg>=92?[21,128,61]:r.avg>=85?[180,83,9]:[185,28,28];
+      doc.setFontSize(7.5);doc.setFont('helvetica','normal');doc.setTextColor(30,41,59);
+      doc.text(String(i+1),M+2,y+4);doc.text(r.s.substring(0,30),M+10,y+4);doc.text(String(r.n),M+112,y+4);
+      doc.setTextColor(...c);doc.setFont('helvetica','bold');
+      doc.text(r.avg+'%',M+126,y+4);doc.text(r.NC>0?String(r.NC):'—',M+150,y+4);doc.text(_rl(r.avg),M+158,y+4);
+      y+=5.5;
+    });y+=4;
+
+    // TENDENCIA
+    const mesMap2={};
+    rData.forEach(r=>{const f=_fecha(r);if(!f)return;const d2=new Date(f);const k=d2.getFullYear()+'-'+String(d2.getMonth()+1).padStart(2,'0');if(!mesMap2[k])mesMap2[k]=[];mesMap2[k].push(_pct(r));});
+    const mKeys2=Object.keys(mesMap2).sort();
+    if(mKeys2.length>0){
+      if(y>PH-40){addFooter(doc);doc.addPage();page++;addHeader(doc,page);y=24;}
+      y=sectionTitle(doc,y,'Tendencia Mensual');
+      mKeys2.forEach(k=>{
+        const mV2=Math.round(mesMap2[k].reduce((a,b)=>a+b,0)/mesMap2[k].length);
+        const parts=k.split('-');const mLabel=MESES_NOM3[parseInt(parts[1]||1)-1]+' '+parts[0].slice(2);
+        const c=mV2>=92?[21,128,61]:mV2>=85?[180,83,9]:[185,28,28];
+        doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(51,65,85);doc.text(mLabel,M+2,y+4);
+        doc.setFillColor(226,232,240);doc.rect(M+30,y+1,100,4,'F');
+        doc.setFillColor(...c);doc.rect(M+30,y+1,mV2,4,'F');
+        doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...c);doc.text(mV2+'%',M+135,y+4);
+        doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(100,116,139);doc.text(_rl(mV2),M+148,y+4);
+        y+=7;
+      });y+=4;
+    }
+
+    // HALLAZGOS
+    const hallMap2={};
+    rDet.forEach(r=>{const v=_res(r);if(v!=='NC'&&v!=='CP')return;const it=_item(r);const c=_cat(r);const rid=_gv(r,'id','ID','id_auditoria');const aud=rData.find(a=>_id(a)===rid)||{};const key=c+'|||'+it;if(!hallMap2[key])hallMap2[key]={cat:c,item:it,n:0,nc:0,cp:0,sedes:new Set()};hallMap2[key].n++;if(v==='NC')hallMap2[key].nc++;else hallMap2[key].cp++;hallMap2[key].sedes.add(_sede(aud));});
+    const hall2=Object.values(hallMap2).sort((a,b)=>b.nc-a.nc||b.n-a.n).slice(0,15);
+    if(hall2.length>0){
+      if(y>PH-40){addFooter(doc);doc.addPage();page++;addHeader(doc,page);y=24;}
+      y=sectionTitle(doc,y,'Hallazgos Más Repetidos (NC + CP)');
+      doc.setFillColor(30,60,114);doc.rect(M,y,PW-M*2,6,'F');
+      doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);
+      doc.text('Categoría',M+2,y+4.2);doc.text('Ítem',M+38,y+4.2);doc.text('Sedes',M+118,y+4.2);doc.text('NC',M+147,y+4.2);doc.text('CP',M+156,y+4.2);doc.text('Total',M+165,y+4.2);
+      y+=6;
+      hall2.forEach((h,i)=>{
+        if(y>PH-20){addFooter(doc);doc.addPage();page++;addHeader(doc,page);y=24;}
+        if(i%2===0){doc.setFillColor(248,250,252);doc.rect(M,y,PW-M*2,5.5,'F');}
+        doc.setFontSize(6.5);doc.setFont('helvetica','bold');doc.setTextColor(30,60,114);
+        doc.text(h.cat.substring(0,18),M+2,y+4);
+        doc.setFont('helvetica','normal');doc.setTextColor(30,41,59);
+        doc.text(h.item.substring(0,48),M+38,y+4);
+        doc.setTextColor(100,116,139);doc.text([...h.sedes].slice(0,2).join(', ').substring(0,24),M+118,y+4);
+        doc.setTextColor(185,28,28);doc.setFont('helvetica','bold');doc.text(String(h.nc),M+148,y+4);
+        doc.setTextColor(180,83,9);doc.text(String(h.cp),M+157,y+4);
+        doc.setTextColor(30,41,59);doc.text(String(h.n)+'x',M+166,y+4);
+        y+=5.5;
+      });y+=4;
+    }
+
+    // OMs
+    const omRows2=[];
+    rDet.forEach(r=>{const om=_om(r);if(!om)return;const rid=_gv(r,'id','ID','id_auditoria');const aud=rData.find(a=>_id(a)===rid)||{};String(om).split('|').map(s=>s.trim()).filter(Boolean).forEach(o=>{omRows2.push({sede:_sede(aud),cat:_cat(r),om:o});});});
+    if(omRows2.length>0){
+      if(y>PH-40){addFooter(doc);doc.addPage();page++;addHeader(doc,page);y=24;}
+      y=sectionTitle(doc,y,'Oportunidades de Mejora');
+      omRows2.forEach((r,i)=>{
+        if(y>PH-18){addFooter(doc);doc.addPage();page++;addHeader(doc,page);y=24;}
+        doc.setFillColor(241,245,249);doc.rect(M,y,2,5.5,'F');
+        doc.setFillColor(248,250,252);doc.rect(M+2,y,PW-M*2-2,5.5,'F');
+        doc.setFontSize(6.5);doc.setFont('helvetica','bold');doc.setTextColor(30,60,114);
+        doc.text((r.cat||'—')+(r.sede?' · '+r.sede:''),M+4,y+2.5);
+        doc.setFont('helvetica','normal');doc.setTextColor(51,65,85);
+        const omText=doc.splitTextToSize(r.om,PW-M*2-10);
+        doc.text(omText[0].substring(0,100),M+4,y+5);
+        y+=6.5;
+      });
+    }
+
+    addFooter(doc);
+    const fn='Informe_Auditorias'+(sede?'_'+sede.replace(/\s/g,'_'):'')+(mes?'_'+mes:'')+'.pdf';
+    doc.save(fn);
+    showToast('PDF generado correctamente ✓','success');
+  }catch(err){
+    showToast('Error al generar PDF: '+err.message,'error');
+    console.error(err);
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<i class="fas fa-file-pdf"></i> Exportar PDF';
+  }
+}
+// CAPACITACIONES
+// ══════════════════════════════════════════════
+let _capList    = [];
+let _capAsistentes = [];
+let _capEvidencias = [];
+let _editingCapId  = null;
+
+function loadCapacitaciones() {
+  if (!currentUser) return;
+  db.ref('capacitaciones').orderByChild('uid').equalTo(currentUser.uid).on('value', snap => {
+    _capList = [];
+    if (snap.exists()) snap.forEach(c => _capList.push({ id:c.key, ...c.val() }));
+    _capList.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+    renderCapacitaciones();
+  });
+}
+
+function renderCapacitaciones() {
+  const total       = _capList.length;
+  const ejecutadas  = _capList.filter(c=>c.estado==='ejecutada').length;
+  const programadas = _capList.filter(c=>c.estado==='programada').length;
+  const pct = total > 0 ? Math.round((ejecutadas/total)*100) + '%' : '—';
+  document.getElementById('cap-total').textContent       = total;
+  document.getElementById('cap-ejecutadas').textContent  = ejecutadas;
+  document.getElementById('cap-programadas').textContent = programadas;
+  document.getElementById('cap-cumplimiento').textContent= pct;
+
+  const grid = document.getElementById('cap-grid');
+  if (!total) {
+    grid.innerHTML = '<div class="dash-loading"><i class="fas fa-graduation-cap"></i><br>Sin capacitaciones registradas.<br><span style="font-size:12px">Crea la primera con el botón "Nueva Capacitación"</span></div>';
+    return;
+  }
+  grid.innerHTML = _capList.map(c => {
+    const asistentes = c.asistentes ? c.asistentes.length : 0;
+    const evCount    = c.evidencias ? c.evidencias.length : 0;
+    const pctCump    = c.estado === 'ejecutada' ? 100 : c.estado === 'programada' ? 0 : 0;
+    const stateLabel = c.estado === 'ejecutada' ? 'Ejecutada' : c.estado === 'programada' ? 'Programada' : 'Cancelada';
+    return `
+    <div class="cap-card">
+      <div class="cap-card-header">
+        <div class="cap-card-status">
+          <span class="cap-status-pill ${c.estado||'programada'}">${stateLabel}</span>
+          <span style="font-size:10px;color:var(--gray400)">${evCount} evidencia${evCount!==1?'s':''}</span>
+        </div>
+        <div class="cap-card-title">${c.tema||'Sin título'}</div>
+        <div class="cap-card-fecha"><i class="fas fa-calendar" style="font-size:10px"></i>${c.fecha||'—'}</div>
+      </div>
+      <div class="cap-card-body">
+        <div class="cap-card-meta">
+          <div class="cap-meta-item"><span class="cap-meta-label">Facilitador</span>${c.facilitador||'—'}</div>
+          <div class="cap-meta-item"><span class="cap-meta-label">Sede</span>${c.sede||'General'}</div>
+          <div class="cap-meta-item"><span class="cap-meta-label">Duración</span>${c.horas||'—'} h</div>
+          <div class="cap-meta-item"><span class="cap-meta-label">Asistentes</span>${asistentes}</div>
+        </div>
+        <div class="cap-progress"><div class="cap-progress-bar" style="width:${pctCump}%"></div></div>
+        <div class="cap-progress-label">${pctCump}% cumplimiento</div>
+      </div>
+      <div class="cap-card-footer">
+        <button class="btn-cap-action btn-cap-ver" onclick="verCapacitacion('${c.id}')"><i class="fas fa-eye"></i> Ver</button>
+        <button class="btn-cap-action btn-cap-edit" onclick="editCapacitacion('${c.id}')"><i class="fas fa-pen"></i> Editar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openCapModal(editing) {
+  _capAsistentes = [];
+  _capEvidencias = [];
+  _editingCapId  = editing || null;
+  document.getElementById('cap-id').value           = '';
+  document.getElementById('cap-tema').value         = '';
+  document.getElementById('cap-fecha').value        = new Date().toISOString().split('T')[0];
+  document.getElementById('cap-estado').value       = 'programada';
+  document.getElementById('cap-facilitador').value  = '';
+  document.getElementById('cap-sede').value         = '';
+  document.getElementById('cap-horas').value        = '';
+  document.getElementById('cap-descripcion').value  = '';
+  document.getElementById('cap-asistente-input').value = '';
+  document.getElementById('cap-modal-title').innerHTML = '<i class="fas fa-graduation-cap" style="margin-right:8px"></i>' + (editing ? 'Editar' : 'Nueva') + ' Capacitación';
+  renderCapAsistentes();
+  renderCapEvidencias();
+  document.getElementById('cap-modal').classList.add('open');
+}
+
+function closeCapModal() { document.getElementById('cap-modal').classList.remove('open'); }
+
+function editCapacitacion(id) {
+  const cap = _capList.find(c=>c.id===id);
+  if (!cap) return;
+  openCapModal(id);
+  _capAsistentes = cap.asistentes ? [...cap.asistentes] : [];
+  _capEvidencias = cap.evidencias ? [...cap.evidencias] : [];
+  document.getElementById('cap-id').value          = id;
+  document.getElementById('cap-tema').value        = cap.tema||'';
+  document.getElementById('cap-fecha').value       = cap.fecha||'';
+  document.getElementById('cap-estado').value      = cap.estado||'programada';
+  document.getElementById('cap-facilitador').value = cap.facilitador||'';
+  document.getElementById('cap-sede').value        = cap.sede||'';
+  document.getElementById('cap-horas').value       = cap.horas||'';
+  document.getElementById('cap-descripcion').value = cap.descripcion||'';
+  renderCapAsistentes();
+  renderCapEvidencias();
+}
+
+function verCapacitacion(id) { editCapacitacion(id); }
+
+function addAsistente() {
+  const inp = document.getElementById('cap-asistente-input');
+  const val = inp.value.trim();
+  if (!val) return;
+  _capAsistentes.push(val);
+  inp.value = '';
+  renderCapAsistentes();
+  inp.focus();
+}
+
+function removeAsistente(i) { _capAsistentes.splice(i,1); renderCapAsistentes(); }
+
+function renderCapAsistentes() {
+  const list = document.getElementById('cap-asistentes-list');
+  document.getElementById('cap-asistentes-count').textContent = _capAsistentes.length + ' asistentes';
+  list.innerHTML = _capAsistentes.length
+    ? _capAsistentes.map((a,i) => `<div class="cap-asistente-item"><span>${a}</span><button class="btn-rm-asistente" onclick="removeAsistente(${i})"><i class="fas fa-times"></i></button></div>`).join('')
+    : '<div style="padding:8px;font-size:11px;color:var(--gray400);text-align:center">Sin asistentes aún</div>';
+}
+
+function handleCapEvidencias(event) {
+  const files = event.target.files;
+  if (!files.length) return;
+  Array.from(files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      _capEvidencias.push({ dataUrl: e.target.result, cloudUrl: null });
+      renderCapEvidencias();
+      // Upload to Cloudinary
+      const fd = new FormData();
+      fd.append('file', e.target.result);
+      fd.append('upload_preset', 'qualisig_fotos');
+      fd.append('folder', 'capacitaciones');
+      fetch('https://api.cloudinary.com/v1_1/dqstmx4u8/image/upload', { method:'POST', body:fd })
+        .then(r=>r.json()).then(data => {
+          const idx = _capEvidencias.findIndex(ev => ev.dataUrl === e.target.result);
+          if (idx !== -1 && data.secure_url) {
+            _capEvidencias[idx].cloudUrl = data.secure_url;
+            renderCapEvidencias();
+          }
+        }).catch(err => console.warn('Cloudinary cap error:', err));
+    };
+    reader.readAsDataURL(file);
+  });
+  event.target.value = '';
+}
+
+function removeCapEvidencia(i) { _capEvidencias.splice(i,1); renderCapEvidencias(); }
+
+function renderCapEvidencias() {
+  const prev = document.getElementById('cap-ev-preview');
+  prev.innerHTML = _capEvidencias.map((ev,i) => `
+    <div class="cap-ev-thumb">
+      <img src="${ev.cloudUrl||ev.dataUrl}" alt="Evidencia">
+      <button class="cap-ev-rm" onclick="removeCapEvidencia(${i})"><i class="fas fa-times"></i></button>
+    </div>`).join('');
+}
+
+async function saveCapacitacion() {
+  const btn = document.querySelector('.btn-cap-save');
+  const tema = document.getElementById('cap-tema').value.trim();
+  if (!tema) { showToast('Escribe el tema de la capacitación','error'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+  const id = document.getElementById('cap-id').value ||
+    'CAP-' + Date.now().toString().slice(-6);
+
+  const capData = {
+    uid:         currentUser.uid,
+    email:       currentUser.email,
+    tema,
+    fecha:       document.getElementById('cap-fecha').value,
+    estado:      document.getElementById('cap-estado').value,
+    facilitador: document.getElementById('cap-facilitador').value.trim(),
+    sede:        document.getElementById('cap-sede').value,
+    horas:       parseFloat(document.getElementById('cap-horas').value)||0,
+    descripcion: document.getElementById('cap-descripcion').value.trim(),
+    asistentes:  _capAsistentes,
+    evidencias:  _capEvidencias.map(e => ({ cloudUrl: e.cloudUrl||e.dataUrl })),
+    createdAt:   _editingCapId ? (_capList.find(c=>c.id===_editingCapId)||{}).createdAt||Date.now() : Date.now(),
+    updatedAt:   Date.now()
+  };
+
+  try {
+    await db.ref('capacitaciones/' + id).set(capData);
+    closeCapModal();
+    showToast(_editingCapId ? 'Capacitación actualizada ✓' : 'Capacitación guardada ✓', 'success');
+  } catch(e) {
+    showToast('Error al guardar: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-check"></i> Guardar Capacitación';
+  }
+}
+
+// Close cap modal on overlay click / ESC
+document.addEventListener('click', e => {
+  if (e.target.id === 'cap-modal') closeCapModal();
+});
 </script>
 </body>
 </html>
