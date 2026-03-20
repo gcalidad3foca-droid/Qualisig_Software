@@ -2582,33 +2582,26 @@ function _dbRender(){
   const dC={C:'#22c55e',CP:'#f59e0b',NC:'#ef4444','N/A':'#94a3b8'};
   document.getElementById('db-dist-bars').innerHTML=Object.entries(dist).map(([k,v])=>{const p=Math.round(v/dTot*100);return`<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><span style="width:24px;font-size:10px;font-weight:700;color:${dC[k]}">${k}</span><div style="flex:1;height:6px;background:var(--gray100);border-radius:3px;overflow:hidden"><div style="height:100%;width:${p}%;background:${dC[k]};border-radius:3px"></div></div><span style="width:60px;text-align:right;font-size:10px;color:var(--gray500)">${v} (${p}%)</span></div>`;}).join('');
 
-  // ── SEDES con logos, mes y sin conteo NC
+  // ── Una fila por auditoría individual (mes + sede + porcentaje)
   const MESES_CORTO_S=['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const sedeMap={};
-  data.forEach(r=>{
-    const s=_sede(r)||'Sin sede';
+  const auditRows=data.map(r=>{
     const f=_fecha(r);
     const mesNum=f?new Date(f).getMonth()+1:0;
-    if(!sedeMap[s])sedeMap[s]={pcts:[],ent:_entOf(s),lastMes:0,lastFecha:''};
-    sedeMap[s].pcts.push(_pct(r));
-    if(f>sedeMap[s].lastFecha){sedeMap[s].lastFecha=f;sedeMap[s].lastMes=mesNum;}
-  });
-  const sorted=Object.entries(sedeMap)
-    .map(([s,v])=>({s,avg:Math.round(v.pcts.reduce((a,b)=>a+b,0)/v.pcts.length),ent:v.ent,mes:v.lastMes,n:v.pcts.length}))
-    .sort((a,b)=>b.mes-a.mes||b.avg-a.avg);
-  const maxPct=Math.max(...sorted.map(r=>r.avg))||100;
-  document.getElementById('db-nsedes').textContent=sorted.length+' sedes';
+    return {s:_sede(r)||'Sin sede',pct:_pct(r),ent:_entOf(_sede(r)),mes:mesNum};
+  }).sort((a,b)=>b.mes-a.mes||b.pct-a.pct);
+  const maxPct2=Math.max(...auditRows.map(r=>r.pct),1);
+  document.getElementById('db-nsedes').textContent=auditRows.length+' auditorías';
   const sedesBody=document.getElementById('db-sedes-body');
   sedesBody.innerHTML='';
-  sorted.forEach(r=>{
+  auditRows.forEach(r=>{
     const row=document.createElement('div');
     row.className='dbi-sede-row';
     row.innerHTML=
       '<span class="dbi-sede-mes">'+(r.mes?MESES_CORTO_S[r.mes]:'—')+'</span>'
       +'<img class="dbi-sede-ent" src="'+(_DB_LOGOS[r.ent]||_DB_LOGOS.foca)+'" alt="'+r.ent+'">'
       +'<span class="dbi-sede-name" title="'+r.s+'">'+r.s+'</span>'
-      +'<div class="dbi-sede-bar-wrap"><div class="dbi-sede-bar" style="width:'+Math.round(r.avg/maxPct*100)+'%;background:'+_rc(r.avg)+'"></div></div>'
-      +'<span class="dbi-sede-pct" style="color:'+_rc(r.avg)+'">'+r.avg+'%</span>';
+      +'<div class="dbi-sede-bar-wrap"><div class="dbi-sede-bar" style="width:'+Math.round(r.pct/maxPct2*100)+'%;background:'+_rc(r.pct)+'"></div></div>'
+      +'<span class="dbi-sede-pct" style="color:'+_rc(r.pct)+'">'+r.pct+'%</span>';
     row.addEventListener('click',function(){filterBySede(r.s);});
     sedesBody.appendChild(row);
   });
