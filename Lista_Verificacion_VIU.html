@@ -608,10 +608,13 @@ const _CLD_URL    = 'https://api.cloudinary.com/v1_1/dqstmx4u8/image/upload';
 async function uploadToCloudinary(dataUrl, itemId) {
   try {
     const fd = new FormData();
-    fd.append('file',          dataUrl);        // base64 dataUrl directo
-    fd.append('upload_preset', _CLD_PRESET);    // unsigned preset
-    fd.append('folder',        'auditorias');   // carpeta fija sin subpath
+    fd.append('file',          dataUrl);
+    fd.append('upload_preset', _CLD_PRESET);
+    fd.append('folder',        'auditorias');
     fd.append('public_id',     itemId.replace(/[^a-z0-9]/gi,'_') + '_' + Date.now());
+    // angle:exif le dice a Cloudinary que rote los píxeles según el EXIF
+    // antes de guardar — así la URL resultante siempre tiene orientación correcta
+    fd.append('angle',         'exif');
 
     const res = await fetch(_CLD_URL, { method: 'POST', body: fd });
     if (!res.ok) {
@@ -1141,33 +1144,58 @@ async function exportToPDF() {
 // tomadas en vertical aparecen rotadas en el informe.
 // Corrige orientación EXIF antes de insertar en jsPDF.
 // Usa rotate/translate en lugar de transform para evitar bugs con los offsets.
-function fixOrientationForPDF(dataUrl) {
+function fixOrientationForPDF(src) {
   return new Promise(function(resolve) {
 
-    // If it's an external URL (Cloudinary), draw into canvas directly.
-    // The browser honors EXIF when drawing <img> to canvas, giving us
-    // correctly-oriented pixels regardless of EXIF metadata.
-    if (typeof dataUrl === 'string' && !dataUrl.startsWith('data:')) {
+    // ── CASO A: URL de Cloudinary → insertar /a_auto/ para rotar en servidor
+    // Cloudinary aplica la orientación EXIF en los píxeles antes de servir.
+    // Esto es 100% servidor, independiente del navegador o dispositivo.
+    if (typeof src === 'string' && src.startsWith('https://res.cloudinary.com/')) {
+      // Transformar: .../upload/foto.jpg → .../upload/a_auto/foto.jpg
+      var fixedUrl = src.replace('/upload/', '/upload/a_auto/');
       var img0 = new Image();
       img0.crossOrigin = 'anonymous';
       img0.onload = function() {
-        var canvas0 = document.createElement('canvas');
-        canvas0.width  = img0.naturalWidth;
-        canvas0.height = img0.naturalHeight;
-        var ctx0 = canvas0.getContext('2d');
-        ctx0.drawImage(img0, 0, 0);
-        resolve(canvas0.toDataURL('image/jpeg', 0.92));
+        try {
+          var cv = document.createElement('canvas');
+          cv.width  = img0.naturalWidth;
+          cv.height = img0.naturalHeight;
+          cv.getContext('2d').drawImage(img0, 0, 0);
+          resolve(cv.toDataURL('image/jpeg', 0.92));
+        } catch(e) { resolve(fixedUrl); }
       };
-      img0.onerror = function() { resolve(dataUrl); };
-      // Add cache-bust to avoid CORS cached response without headers
-      img0.src = dataUrl + (dataUrl.includes('?') ? '&' : '?') + '_fix=1';
+      img0.onerror = function() {
+        // Si falla CORS intentar con URL original
+        resolve(src);
+      };
+      img0.src = fixedUrl + '?_t=' + Date.now();
       return;
     }
 
+    // ── CASO B: Cualquier otra URL (no Cloudinary) → canvas directo
+    if (typeof src === 'string' && src.startsWith('http')) {
+      var img1 = new Image();
+      img1.crossOrigin = 'anonymous';
+      img1.onload = function() {
+        try {
+          var cv1 = document.createElement('canvas');
+          cv1.width  = img1.naturalWidth;
+          cv1.height = img1.naturalHeight;
+          cv1.getContext('2d').drawImage(img1, 0, 0);
+          resolve(cv1.toDataURL('image/jpeg', 0.92));
+        } catch(e) { resolve(src); }
+      };
+      img1.onerror = function() { resolve(src); };
+      img1.src = src;
+      return;
+    }
+
+    // ── CASO C: base64 dataUrl → leer EXIF y rotar en canvas
     function getOrientation(dataUrl) {
       try {
         var b64  = dataUrl.split(',')[1];
-        var bin  = atob(b64.substring(0, Math.min(b64.length, 87380)));
+        if (!b64) return 1;
+        var bin  = atob(b64.substring(0, Math.min(b64.length, 131072)));
         var len  = bin.length;
         if (bin.charCodeAt(0) !== 0xFF || bin.charCodeAt(1) !== 0xD8) return 1;
         var i = 2;
@@ -1184,16 +1212,13 @@ function fixOrientationForPDF(dataUrl) {
               return little ? (a | (b << 8)) : ((a << 8) | b);
             }
             function u32(o) {
-              var a = bin.charCodeAt(tiff + o),   b = bin.charCodeAt(tiff + o + 1),
-                  c = bin.charCodeAt(tiff + o + 2), d = bin.charCodeAt(tiff + o + 3);
-              return little ? (a|(b<<8)|(c<<16)|(d<<24)) : ((a<<24)|(b<<16)|(c<<8)|d);
+              var a=bin.charCodeAt(tiff+o),b=bin.charCodeAt(tiff+o+1),
+                  cc=bin.charCodeAt(tiff+o+2),d=bin.charCodeAt(tiff+o+3);
+              return little?(a|(b<<8)|(cc<<16)|(d<<24)):((a<<24)|(b<<16)|(cc<<8)|d);
             }
-            var ifd     = u32(4);
-            var entries = u16(ifd);
-            for (var e = 0; e < entries; e++) {
-              if (u16(ifd + 2 + e * 12) === 0x0112) {
-                return u16(ifd + 2 + e * 12 + 8);
-              }
+            var ifd=u32(4), entries=u16(ifd);
+            for (var e=0;e<entries;e++) {
+              if (u16(ifd+2+e*12)===0x0112) return u16(ifd+2+e*12+8);
             }
             return 1;
           }
@@ -1203,46 +1228,34 @@ function fixOrientationForPDF(dataUrl) {
       return 1;
     }
 
-    var orientation = getOrientation(dataUrl);
-    if (orientation <= 1) { resolve(dataUrl); return; }
+    var orientation = getOrientation(src);
+    if (orientation <= 1) { resolve(src); return; }
 
-    var img = new Image();
-    img.onload = function() {
-      var w   = img.naturalWidth;
-      var h   = img.naturalHeight;
-      var canvas = document.createElement('canvas');
-      var ctx    = canvas.getContext('2d');
-
-      // Orientaciones 5-8: el lienzo se transpone (ancho ↔ alto)
-      if (orientation >= 5) { canvas.width = h; canvas.height = w; }
-      else                  { canvas.width = w; canvas.height = h; }
-
+    var img2 = new Image();
+    img2.onload = function() {
+      var w=img2.naturalWidth, h=img2.naturalHeight;
+      var cv2=document.createElement('canvas');
+      var ctx=cv2.getContext('2d');
+      if (orientation>=5){cv2.width=h;cv2.height=w;}
+      else               {cv2.width=w;cv2.height=h;}
       ctx.save();
-      switch (orientation) {
-        case 2:                              // espejo horizontal
-          ctx.translate(w, 0); ctx.scale(-1, 1); break;
-        case 3:                              // 180°
-          ctx.translate(w, h); ctx.rotate(Math.PI); break;
-        case 4:                              // espejo vertical
-          ctx.translate(0, h); ctx.scale(1, -1); break;
-        case 5:                              // transponer + espejo horizontal
-          ctx.rotate(0.5 * Math.PI); ctx.scale(1, -1); break;
-        case 6:                              // 90° CW  ← caso iPhone vertical
-          ctx.translate(h, 0); ctx.rotate(0.5 * Math.PI); break;
-        case 7:                              // transponer + espejo vertical
-          ctx.translate(h, w); ctx.rotate(0.5 * Math.PI); ctx.scale(-1, 1); break;
-        case 8:                              // 90° CCW
-          ctx.translate(0, w); ctx.rotate(-0.5 * Math.PI); break;
+      switch(orientation){
+        case 2: ctx.translate(w,0);ctx.scale(-1,1);break;
+        case 3: ctx.translate(w,h);ctx.rotate(Math.PI);break;
+        case 4: ctx.translate(0,h);ctx.scale(1,-1);break;
+        case 5: ctx.rotate(0.5*Math.PI);ctx.scale(1,-1);break;
+        case 6: ctx.translate(h,0);ctx.rotate(0.5*Math.PI);break;
+        case 7: ctx.translate(h,w);ctx.rotate(0.5*Math.PI);ctx.scale(-1,1);break;
+        case 8: ctx.translate(0,w);ctx.rotate(-0.5*Math.PI);break;
       }
-      ctx.drawImage(img, 0, 0);
+      ctx.drawImage(img2,0,0);
       ctx.restore();
-      resolve(canvas.toDataURL('image/jpeg', 0.92));
+      resolve(cv2.toDataURL('image/jpeg',0.92));
     };
-    img.onerror = function() { resolve(dataUrl); };
-    img.src = dataUrl;
+    img2.onerror = function(){resolve(src);};
+    img2.src = src;
   });
 }
-
 
 async function loadImageAsBase64(url) {
   return new Promise((resolve) => {
