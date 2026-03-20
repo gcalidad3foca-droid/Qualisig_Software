@@ -197,6 +197,11 @@
     .radio-cell input[type="radio"] { width: 18px; height: 18px; }
     .export-btn { min-width: auto; width: 100%; padding: 12px 14px; font-size: 13px; }
   }
+
+/* Respetar orientación EXIF en previews de fotos */
+.evidence-img, .evidence-preview img, #evidence-list img {
+  image-orientation: from-image;
+}
 </style>
 </head>
 <body>
@@ -729,8 +734,10 @@ function processEvidenceFiles(files) {
     // Leer dataUrl local inmediatamente para mostrar preview sin esperar
     const reader = new FileReader();
     reader.onload = async ev => {
-      // Corregir orientación EXIF antes de guardar (necesario para fotos verticales de iPhone)
-      const localDataUrl = await fixImageOrientation(ev.target.result);
+      // Guardar dataUrl original con EXIF intacto — el navegador lo muestra
+      // correctamente con image-orientation:from-image (CSS default en iOS/Chrome)
+      // La corrección de orientación se aplica SOLO al generar el PDF
+      const localDataUrl = ev.target.result;
       // Agregar con dataUrl local primero — el usuario ve la foto de inmediato
       const entry = { dataUrl: localDataUrl, title: '', cloudUrl: null, uploading: true };
       if (!evidenceStore[itemId]) evidenceStore[itemId] = [];
