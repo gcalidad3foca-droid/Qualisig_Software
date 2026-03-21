@@ -450,6 +450,89 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   background:none; white-space:nowrap;
 }
 .nav-tab i { font-size:13px; }
+.papelera-badge { background:#fef2f2; color:#b91c1c; font-size:10px; font-weight:700; padding:1px 6px; border-radius:10px; margin-left:4px; }
+/* ── MÓDULO EQUIPO AUDITOR ─────────────────── */
+.eq-page-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:12px; }
+.eq-page-title  { font-size:22px; font-weight:800; color:var(--gray800); letter-spacing:-0.4px; }
+.eq-page-sub    { font-size:12px; color:var(--gray400); margin-top:4px; }
+.eq-page-filters{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.eq-fsel { padding:8px 14px; border:1.5px solid var(--gray200); border-radius:10px; font-size:12px; font-family:inherit; color:var(--gray700); background:#fff; transition:border-color .2s; }
+.eq-fsel:focus  { outline:none; border-color:var(--accent); }
+.eq-page-grid   { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+
+/* Tarjeta auditor */
+.eq-card {
+  background:#fff; border-radius:20px; overflow:hidden;
+  border:1px solid var(--gray200);
+  box-shadow:0 2px 12px rgba(0,0,0,0.06);
+  display:flex; flex-direction:column;
+  transition:transform .18s, box-shadow .18s;
+}
+.eq-card:hover { transform:translateY(-3px); box-shadow:0 10px 32px rgba(0,0,0,0.10); }
+.eq-card-top {
+  padding:28px 24px 20px;
+  display:flex; align-items:center; gap:16px;
+  border-bottom:1px solid var(--gray100);
+}
+.eq-card-avatar {
+  width:64px; height:64px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; font-weight:800; color:#fff; overflow:hidden;
+  box-shadow:0 4px 14px rgba(0,0,0,0.15);
+}
+.eq-card-avatar img { width:100%; height:100%; object-fit:cover; }
+.eq-card-info { flex:1; min-width:0; }
+.eq-card-name  { font-size:16px; font-weight:800; color:var(--gray800); line-height:1.2; }
+.eq-card-cargo { font-size:11px; color:var(--gray400); margin-top:4px; font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+.eq-card-inst  { display:flex; gap:4px; margin-top:8px; flex-wrap:wrap; }
+.eq-card-inst-badge { font-size:10px; font-weight:700; padding:2px 9px; border-radius:20px; }
+
+/* KPIs en la tarjeta */
+.eq-card-kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--gray100); }
+.eq-card-kpi  { background:#fff; padding:14px 8px; text-align:center; }
+.eq-card-kpi-n{ font-size:20px; font-weight:800; color:var(--gray800); line-height:1; }
+.eq-card-kpi-l{ font-size:9px; color:var(--gray400); margin-top:3px; text-transform:uppercase; letter-spacing:.5px; }
+
+/* Lista auditorías en la tarjeta */
+.eq-card-list { padding:16px 20px; flex:1; }
+.eq-card-list-title { font-size:10px; font-weight:700; color:var(--gray400); text-transform:uppercase; letter-spacing:.7px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
+.eq-card-audit-row {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 12px; border-radius:10px; margin-bottom:5px;
+  border:1px solid var(--gray100); cursor:pointer;
+  transition:all .14s; background:#fafafa;
+}
+.eq-card-audit-row:hover { background:#f0f7ff; border-color:var(--blue); }
+.eq-card-audit-inst { width:26px; height:26px; border-radius:6px; object-fit:contain; border:1px solid var(--gray100); padding:2px; flex-shrink:0; }
+.eq-card-audit-body { flex:1; min-width:0; }
+.eq-card-audit-sede { font-size:12px; font-weight:700; color:var(--gray800); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.eq-card-audit-meta { font-size:10px; color:var(--gray400); margin-top:1px; }
+.eq-card-audit-right{ display:flex; flex-direction:column; align-items:flex-end; gap:3px; flex-shrink:0; }
+.eq-card-audit-pct  { font-size:14px; font-weight:800; line-height:1; }
+.eq-card-audit-badge{ font-size:9px; font-weight:700; padding:2px 7px; border-radius:8px; white-space:nowrap; }
+.eq-card-footer { padding:14px 20px; border-top:1px solid var(--gray100); display:flex; align-items:center; justify-content:space-between; }
+.eq-card-footer-stat{ font-size:11px; color:var(--gray500); }
+.eq-card-footer-stat b { color:var(--gray800); font-weight:700; }
+.eq-card-view-btn {
+  font-size:11px; font-weight:700; color:var(--blue);
+  background:var(--gray50); border:1px solid var(--gray200);
+  border-radius:8px; padding:6px 14px; cursor:pointer;
+  font-family:inherit; transition:all .15s; display:flex; align-items:center; gap:5px;
+}
+.eq-card-view-btn:hover { background:var(--blue); color:#fff; border-color:var(--blue); }
+
+/* Responsive */
+@media(max-width:900px) {
+  .eq-page-grid   { grid-template-columns:repeat(2,1fr); }
+}
+@media(max-width:640px) {
+  .eq-page-grid   { grid-template-columns:1fr; }
+  .eq-page-header { flex-direction:column; }
+  .eq-page-filters{ width:100%; }
+  .eq-fsel        { flex:1; }
+  .eq-card-kpis   { grid-template-columns:repeat(2,1fr); }
+}
+
 .nav-tab.active { background:#fff; color:var(--blue); box-shadow:0 2px 8px rgba(0,0,0,0.08); }
 .nav-tab:hover:not(.active) { color:var(--blue); background:rgba(255,255,255,0.6); }
 
@@ -715,7 +798,59 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 .filter-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; }
 
 /* Audit list */
-.audit-list { display:flex; flex-direction:column; gap:12px; }
+.audit-list { display:flex; flex-direction:column; gap:14px; }
+
+.btn-vaciar {
+  display:flex; align-items:center; gap:7px;
+  padding:8px 16px; border-radius:10px;
+  background:#fff; border:1.5px solid var(--gray200);
+  color:var(--gray600); font-size:12px; font-weight:700;
+  font-family:inherit; cursor:pointer; transition:all .2s;
+}
+.btn-vaciar:hover { background:#fef2f2; border-color:#fca5a5; color:#b91c1c; }
+
+.btn-restaurar {
+  display:flex; align-items:center; gap:6px;
+  padding:7px 14px; border-radius:9px;
+  background:#fff; border:1.5px solid var(--gray200);
+  color:var(--gray600); font-size:12px; font-weight:700;
+  font-family:inherit; cursor:pointer; transition:all .2s;
+}
+.btn-restaurar:hover { background:#f0fdf4; border-color:#86efac; color:#15803d; }
+
+.btn-elim-def {
+  width:36px; height:36px; border-radius:9px; flex-shrink:0;
+  background:#fff; border:1.5px solid var(--gray200);
+  color:var(--gray400); font-size:13px;
+  cursor:pointer; transition:all .2s;
+  display:flex; align-items:center; justify-content:center;
+  font-family:inherit;
+}
+.btn-elim-def:hover { background:#fef2f2; border-color:#fca5a5; color:#b91c1c; }
+
+.papelera-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  background:#fff; border-radius:12px; border:1.5px solid var(--gray200);
+  padding:12px 18px; margin-bottom:16px; box-shadow:var(--shadow);
+}
+.papelera-bar-info { display:flex; align-items:center; gap:10px; font-size:12px; color:var(--gray500); }
+.papelera-bar-icon { width:32px; height:32px; border-radius:8px; background:#fef2f2; display:flex; align-items:center; justify-content:center; color:#b91c1c; font-size:13px; flex-shrink:0; }
+
+.mes-group { display:flex; flex-direction:column; gap:16px; margin-bottom:8px; }
+.mes-group-label {
+  display:flex; align-items:center; gap:10px;
+  padding:0 2px 10px;
+  border-bottom:1.5px solid var(--gray200);
+}
+.mes-group-label-text {
+  font-size:13px; font-weight:600; color:var(--gray600);
+  letter-spacing:-.1px;
+}
+.mes-count-badge {
+  font-size:11px; font-weight:600;
+  background:var(--gray100); color:var(--gray500);
+  padding:2px 9px; border-radius:20px;
+}
 
 .audit-item {
   background:#fff; border-radius:14px;
@@ -1239,7 +1374,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   .filter-btn      { white-space:nowrap; flex-shrink:0; font-size:11px; padding:6px 12px; }
 
   /* AUDIT ITEMS — stack vertically on mobile */
-  .audit-list      { gap:10px; }
+  .audit-list      { gap:14px; }
   .audit-item      {
     padding:14px 14px;
     gap:10px;
@@ -1379,9 +1514,10 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
       <button class="nav-tab" id="tab-dashboard" onclick="switchModule('dashboard')">
         <i class="fas fa-chart-bar"></i> Dashboard
       </button>
-      <button class="nav-tab" id="tab-capacitaciones" onclick="switchModule('capacitaciones')">
-        <i class="fas fa-graduation-cap"></i> Capacitaciones
+      <button class="nav-tab" id="tab-equipo" onclick="switchModule('equipo')">
+        <i class="fas fa-users"></i> Equipo
       </button>
+
     </div>
     <div class="dash-header-actions">
       <button class="btn-logout" onclick="doLogout()">
@@ -1496,9 +1632,13 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
     <div class="section-header">
       <div class="section-title"><i class="fas fa-list-check"></i> Auditorías</div>
       <div class="filters">
-        <button class="filter-btn active" onclick="setFilter('todas', this)">Todas</button>
-        <button class="filter-btn" onclick="setFilter('en-progreso', this)">En progreso</button>
-        <button class="filter-btn" onclick="setFilter('completada', this)">Completadas</button>
+        <button class="filter-btn active" id="fbtn-todas" onclick="setFilter('todas', this)">Todas</button>
+        <button class="filter-btn" id="fbtn-progreso" onclick="setFilter('en-progreso', this)">En progreso</button>
+        <button class="filter-btn" id="fbtn-completada" onclick="setFilter('completada', this)">Completadas</button>
+        <button class="filter-btn" id="fbtn-papelera" onclick="setFilter('papelera', this)">
+          <i class="fas fa-trash-alt" style="font-size:10px"></i> Papelera
+          <span class="papelera-badge" id="papelera-count" style="display:none">0</span>
+        </button>
       </div>
     </div>
 
@@ -1703,6 +1843,40 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
       </div>
 
     </div><!-- end module-dashboard -->
+
+    <!-- ══ MODULE: EQUIPO ═══════════════════════ -->
+    <div class="module" id="module-equipo">
+
+      <!-- Header -->
+      <div class="eq-page-header">
+        <div>
+          <div class="eq-page-title">Equipo Auditor</div>
+          <div class="eq-page-sub" id="eq-page-sub">Cargando...</div>
+        </div>
+        <div class="eq-page-filters">
+          <div class="dbi-ent-btns">
+            <button class="dbi-ent-btn active" id="eq-btn-all"  onclick="setEqEnt('all')"><span class="dbi-ent-all-icon">⊕</span> Todas</button>
+            <button class="dbi-ent-btn"        id="eq-btn-foca" onclick="setEqEnt('foca')"><img src="https://i.imgur.com/5pNuFBp.png" alt="FOCA"></button>
+            <button class="dbi-ent-btn"        id="eq-btn-viu"  onclick="setEqEnt('viu')"><img src="https://i.imgur.com/qQ4lN8v.png" alt="VIU"></button>
+          </div>
+          <select class="eq-fsel" id="eq-mes-filter" onchange="renderEquipo()">
+            <option value="">Todos los meses</option>
+            <option>Enero</option><option>Febrero</option><option>Marzo</option><option>Abril</option>
+            <option>Mayo</option><option>Junio</option><option>Julio</option><option>Agosto</option>
+            <option>Septiembre</option><option>Octubre</option><option>Noviembre</option><option>Diciembre</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Cards grid -->
+      <div class="eq-page-grid" id="equipo-grid">
+        <div class="loading-state">
+          <div class="spinner-sm"></div>
+          <p>Cargando equipo...</p>
+        </div>
+      </div>
+
+    </div><!-- end module-equipo -->
 
     <!-- ══ MODULE: CAPACITACIONES ══════════════ -->
     <div class="module" id="module-capacitaciones">
@@ -1927,6 +2101,7 @@ const INST_LOGOS = {
 let currentUser  = null;
 let allAuditorias = [];
 let currentFilter = 'todas';
+let allTeamAuditorias = [];
 let selectedInst  = 'foca';
 
 // ══════════════════════════════════════════════
@@ -2065,19 +2240,51 @@ document.addEventListener('click', e => {
 function loadAuditorias() {
   if (!currentUser) return;
   const uid = currentUser.uid;
-
-  db.ref('auditorias').orderByChild('uid').equalTo(uid).on('value', snap => {
+  // Mis auditorías — leer todas y filtrar por uid en cliente
+  // Garantiza que aparezcan sin depender de índices Firebase
+  db.ref('auditorias').on('value', snap => {
     allAuditorias = [];
     if (snap.exists()) {
       snap.forEach(child => {
-        allAuditorias.push({ id: child.key, ...child.val() });
+        const a = { id: child.key, ...child.val() };
+        if (a.uid === uid) allAuditorias.push(a);
       });
-      // Más recientes primero
       allAuditorias.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
     }
     renderStats();
     renderAuditorias();
+    _updatePapeleraBadge();
   });
+  // Auditorías del equipo: leer perfiles → luego auditorías por uid de cada auditor
+  // Esto funciona con las reglas de Firebase actuales (no requiere lectura total)
+  loadTeamAuditorias();
+  loadTeamPerfiles();
+}
+
+function loadTeamAuditorias() {
+  if (!currentUser) return;
+  // Leer TODAS las auditorías — el listener de mis auditorías ya existe,
+  // reutilizamos el mismo snapshot para poblar allTeamAuditorias
+  // Este listener es compartido con el de mis auditorías (mismo ref)
+  db.ref('auditorias').on('value', snap => {
+    allTeamAuditorias = [];
+    if (snap.exists()) {
+      snap.forEach(child => {
+        const a = { id: child.key, ...child.val() };
+        if (!a.deletedAt) allTeamAuditorias.push(a);
+      });
+    }
+    renderEquipo();
+  });
+}
+
+function _updatePapeleraBadge() {
+  const deleted = allAuditorias.filter(a => a.deletedAt);
+  const badge = document.getElementById('papelera-count');
+  if (badge) {
+    badge.textContent = deleted.length;
+    badge.style.display = deleted.length > 0 ? 'inline-block' : 'none';
+  }
 }
 
 function renderStats() {
@@ -2095,13 +2302,31 @@ function renderStats() {
   document.getElementById('stat-promedio').textContent   = promedio != null ? promedio + '%' : '—';
 }
 
+const MESES_NOMBRES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
 function renderAuditorias() {
   const list = document.getElementById('audit-list');
-  let items = allAuditorias;
 
-  if (currentFilter !== 'todas') {
-    items = items.filter(a => a.estado === currentFilter);
+  // Papelera: auditorías con deletedAt
+  if (currentFilter === 'papelera') {
+    const deleted = allAuditorias.filter(a => a.deletedAt).sort((a,b)=>(b.deletedAt||0)-(a.deletedAt||0));
+    if (!deleted.length) {
+      list.innerHTML = `<div class="empty-state"><i class="fas fa-trash-alt"></i><h3>Papelera vacía</h3><p>Las auditorías eliminadas aparecerán aquí durante 30 días</p></div>`;
+      return;
+    }
+    list.innerHTML = `<div class="papelera-bar">
+      <div class="papelera-bar-info">
+        <div class="papelera-bar-icon"><i class="fas fa-trash-alt"></i></div>
+        <span><b style="color:var(--gray700)">${deleted.length}</b> auditoría${deleted.length!==1?'s':''} en papelera &nbsp;·&nbsp; se eliminan automáticamente a los 30 días</span>
+      </div>
+      <button class="btn-vaciar" onclick="vaciarPapelera()"><i class="fas fa-trash-alt"></i> Vaciar papelera</button>
+    </div>` + deleted.map(a => _renderAuditItem(a, true)).join('');
+    return;
   }
+
+  // Filtrar activas (sin deletedAt)
+  let items = allAuditorias.filter(a => !a.deletedAt);
+  if (currentFilter !== 'todas') items = items.filter(a => a.estado === currentFilter);
 
   if (items.length === 0) {
     list.innerHTML = `
@@ -2113,44 +2338,67 @@ function renderAuditorias() {
     return;
   }
 
-  list.innerHTML = items.map(a => {
-    const pct     = a.porcentaje != null ? a.porcentaje : null;
-    const scoreClass = pct == null ? 'none' : pct >= 92 ? 'high' : pct >= 85 ? 'medium' : 'low';
-    const scoreText  = pct == null ? 'Sin calificar' : pct + '%';
-    const badgeClass = a.estado || 'en-progreso';
-    const badgeText  = badgeClass === 'en-progreso' ? 'En progreso' : badgeClass === 'completada' ? 'Completada' : 'Pendiente';
-    const dotClass   = badgeClass;
-    const logo       = INST_LOGOS[a.institucion] || INST_LOGOS.foca;
-    const fecha      = a.fecha ? new Date(a.fecha + 'T12:00:00').toLocaleDateString('es-CO', {day:'2-digit',month:'short',year:'numeric'}) : '—';
-    const isComplete = a.estado === 'completada';
+  list.innerHTML = items.map(a => _renderAuditItem(a, false)).join('');
+}
 
-    return `
-    <div class="audit-item" data-id="${a.id}">
-      <div class="audit-status-dot ${dotClass}"></div>
-      <div class="audit-inst-logo">
-        <img src="${logo}" alt="${a.institucion}">
-      </div>
+function _renderAuditItem(a, isPapelera) {
+  const pct     = a.porcentaje != null ? a.porcentaje : null;
+  const scoreClass = pct == null ? 'none' : pct >= 92 ? 'high' : pct >= 85 ? 'medium' : 'low';
+  const scoreText  = pct == null ? 'Sin calificar' : pct + '%';
+  const badgeClass = a.estado || 'en-progreso';
+  const badgeText  = badgeClass === 'en-progreso' ? 'En progreso' : badgeClass === 'completada' ? 'Completada' : 'Pendiente';
+  const logo       = INST_LOGOS[a.institucion] || INST_LOGOS.foca;
+  const fecha      = a.fecha ? new Date(a.fecha + 'T12:00:00').toLocaleDateString('es-CO', {day:'2-digit',month:'short',year:'numeric'}) : '—';
+  const isComplete = a.estado === 'completada';
+  const deletedFecha = a.deletedAt ? new Date(a.deletedAt).toLocaleDateString('es-CO',{day:'2-digit',month:'short'}) : '';
+
+  if (isPapelera) {
+    return `<div class="audit-item" data-id="${a.id}" style="opacity:.85;border-left:3px solid #fca5a5">
+      <div class="audit-inst-logo"><img src="${logo}" alt="${a.institucion}"></div>
       <div class="audit-info">
         <div class="audit-title">${a.sede || 'Sin sede'} — ${(a.institucion||'foca').toUpperCase()}</div>
         <div class="audit-meta">
           <div class="audit-meta-item"><i class="fas fa-calendar"></i>${fecha}</div>
-          <div class="audit-meta-item"><i class="fas fa-user"></i>${a.auditorNombre || currentUser.email}</div>
-          <div class="audit-meta-item"><i class="fas fa-tag"></i>${a.id}</div>
+          <div class="audit-meta-item"><i class="fas fa-user"></i>${a.auditorNombre || '—'}</div>
+          <div class="audit-meta-item" style="color:#b91c1c"><i class="fas fa-trash-alt"></i>Eliminada el ${deletedFecha}</div>
         </div>
       </div>
       <div class="audit-score ${scoreClass}">${scoreText}</div>
-      <div class="audit-badge ${badgeClass}">${badgeText}</div>
       <div class="audit-actions">
-        <button class="btn-action btn-continuar" onclick="abrirAuditoria('${a.id}','${a.institucion}')">
-          <i class="fas ${isComplete ? 'fa-folder-open' : 'fa-play'}"></i>
-          ${isComplete ? 'Abrir' : 'Continuar'}
+        <button class="btn-restaurar" onclick="restaurarAuditoria('${a.id}')">
+          <i class="fas fa-undo-alt"></i> Restaurar
         </button>
-        <button class="btn-action btn-delete" onclick="confirmarEliminar(event,'${a.id}','${a.sede||'Sin sede'}')">
-          <i class="fas fa-trash-alt"></i>
+        <button class="btn-elim-def" onclick="eliminarDefinitivo(event,'${a.id}','${(a.sede||'').replace(/'/g,"\'")}')" title="Eliminar definitivamente">
+          <i class="fas fa-times"></i>
         </button>
       </div>
     </div>`;
-  }).join('');
+  }
+
+  return `
+  <div class="audit-item" data-id="${a.id}">
+    <div class="audit-status-dot ${badgeClass}"></div>
+    <div class="audit-inst-logo"><img src="${logo}" alt="${a.institucion}"></div>
+    <div class="audit-info">
+      <div class="audit-title">${a.sede || 'Sin sede'} — ${(a.institucion||'foca').toUpperCase()}</div>
+      <div class="audit-meta">
+        <div class="audit-meta-item"><i class="fas fa-calendar"></i>${fecha}</div>
+        <div class="audit-meta-item"><i class="fas fa-user"></i>${a.auditorNombre || currentUser.email}</div>
+        <div class="audit-meta-item"><i class="fas fa-tag"></i>${a.id}</div>
+      </div>
+    </div>
+    <div class="audit-score ${scoreClass}">${scoreText}</div>
+    <div class="audit-badge ${badgeClass}">${badgeText}</div>
+    <div class="audit-actions">
+      <button class="btn-action btn-continuar" onclick="abrirAuditoria('${a.id}','${a.institucion}')">
+        <i class="fas ${isComplete ? 'fa-folder-open' : 'fa-play'}"></i>
+        ${isComplete ? 'Abrir' : 'Continuar'}
+      </button>
+      <button class="btn-action btn-delete" onclick="confirmarEliminar(event,'${a.id}','${(a.sede||'Sin sede').replace(/'/g,"\'")}')">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
+  </div>`;
 }
 
 function setFilter(filter, btn) {
@@ -2185,13 +2433,17 @@ async function crearAuditoria() {
 
   const ts   = Date.now();
   const id   = 'AUD-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + ts.toString().slice(-4);
-  const name = currentUser.email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+  // Usar nombre y cargo del perfil guardado (si existe)
+  const perfActual = _allPerfiles[currentUser.uid] || {};
+  const name  = perfActual.nombre || currentUser.email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,ch=>ch.toUpperCase());
+  const cargo = perfActual.cargo  || 'Auditor';
 
   // Sede y fecha se dejan vacías — el auditor las completa al inicio de la lista
   const newAudit = {
     uid:           currentUser.uid,
     email:         currentUser.email,
     auditorNombre: name,
+    auditorCargo:  cargo,
     institucion:   selectedInst,
     sede:          '',
     fecha:         new Date().toISOString().split('T')[0],
@@ -2268,14 +2520,212 @@ function confirmarEliminar(e, id, sede) {
 }
 
 async function eliminarAuditoria(id) {
+  // Mover a papelera (soft delete) en lugar de borrar definitivamente
   try {
-    await db.ref('auditorias/' + id).remove();
-    showToast('Auditoría eliminada', 'info');
+    await db.ref('auditorias/' + id + '/deletedAt').set(Date.now());
+    showToast('Auditoría movida a la papelera', 'info');
+    _updatePapeleraBadge();
   } catch(e) {
-    showToast('Error al eliminar: ' + e.message, 'error');
+    showToast('Error: ' + e.message, 'error');
   }
 }
 
+async function restaurarAuditoria(id) {
+  try {
+    await db.ref('auditorias/' + id + '/deletedAt').remove();
+    showToast('Auditoría restaurada ✓', 'success');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+async function eliminarDefinitivo(e, id, sede) {
+  e.stopPropagation();
+  const existing = document.getElementById('confirm-def-' + id);
+  if (existing) { existing.remove(); return; }
+  const item = e.target.closest('.audit-item');
+  if (!item) return;
+
+  // Reemplazar la tarjeta con confirmación inline — sin popups que se salgan
+  const confirm = document.createElement('div');
+  confirm.id = 'confirm-def-' + id;
+  confirm.style.cssText = 'background:#fff;border-radius:14px;border:1.5px solid #fca5a5;padding:16px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 12px rgba(239,68,68,0.12)';
+  confirm.innerHTML =
+    '<div style="width:36px;height:36px;border-radius:10px;background:#fef2f2;display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+    +'<i class="fas fa-exclamation-triangle" style="color:#b91c1c;font-size:15px"></i></div>'
+    +'<div style="flex:1"><div style="font-size:13px;font-weight:700;color:#1e293b;margin-bottom:2px">¿Eliminar definitivamente?</div>'
+    +'<div style="font-size:11px;color:#94a3b8">Esta acción no se puede deshacer · '+( sede||'Sin sede')+'</div></div>'
+    +'<div style="display:flex;gap:8px;flex-shrink:0">'
+    +'<button onclick="document.getElementById(\'confirm-def-'+id+'\').replaceWith(document.getElementById(\'confirm-def-'+id+'\')._original)" style="padding:8px 16px;border-radius:9px;background:#f1f5f9;color:#475569;border:1.5px solid #e2e8f0;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">Cancelar</button>'
+    +'<button onclick="confirmarEliminarDefinitivo(\''+id+'\')" style="padding:8px 16px;border-radius:9px;background:#ef4444;color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">Eliminar</button>'
+    +'</div>';
+
+  confirm._original = item;
+  item.parentNode.replaceChild(confirm, item);
+  setTimeout(() => {
+    const el = document.getElementById('confirm-def-' + id);
+    if (el && el._original) el.parentNode.replaceChild(el._original, el);
+  }, 6000);
+}
+
+async function confirmarEliminarDefinitivo(id) {
+  try {
+    await db.ref('auditorias/' + id).remove();
+    showToast('Auditoría eliminada definitivamente', 'info');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+async function vaciarPapelera() {
+  const deleted = allAuditorias.filter(a => a.deletedAt);
+  if (!deleted.length) return;
+  try {
+    await Promise.all(deleted.map(a => db.ref('auditorias/' + a.id).remove()));
+    showToast('Papelera vaciada (' + deleted.length + ' auditorías)', 'info');
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+// ══════════════════════════════════════════════
+// EQUIPO AUDITOR
+// ══════════════════════════════════════════════
+const _EQ_COLORS = ['#1e3c72','#0f6e56','#7c3aed','#b45309','#be185d','#0f766e'];
+let _activeEqEnt = 'all';
+
+function setEqEnt(ent) {
+  _activeEqEnt = ent;
+  ['all','foca','viu'].forEach(e => {
+    const btn = document.getElementById('eq-btn-'+e);
+    if (btn) btn.classList.toggle('active', e===ent);
+  });
+  renderEquipo();
+}
+let   _allPerfiles = {};  // uid → {nombre, cargo, avatarUrl}
+
+// Cargar perfiles del equipo para tener fotos y nombres reales
+function loadTeamPerfiles() {
+  db.ref('perfiles').on('value', snap => {
+    _allPerfiles = {};
+    if (snap.exists()) snap.forEach(c => { _allPerfiles[c.key] = { ...c.val(), uid: c.key }; });
+    renderEquipo();
+  });
+}
+
+function _eqColor(nombre) {
+  const h = Math.abs((nombre||'').split('').reduce((acc,ch)=>acc+ch.charCodeAt(0),0));
+  return _EQ_COLORS[h % _EQ_COLORS.length];
+}
+
+
+
+function renderEquipo() {
+  const grid = document.getElementById('equipo-grid');
+  if (!grid) return;
+
+  const mesF  = (document.getElementById('eq-mes-filter')  || {}).value || '';
+  const instF = _activeEqEnt !== 'all' ? _activeEqEnt : '';
+  const MN = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const MC = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+  // Agrupar por uid con TODAS sus auditorías (KPIs globales sin filtrar)
+  const byUid = {};
+  allTeamAuditorias.filter(a => !a.deletedAt).forEach(a => {
+    const uid    = a.uid || 'unknown';
+    const perf   = _allPerfiles[uid] || {};
+    const nombre = perf.nombre || a.auditorNombre || a.auditorEmail || 'Sin nombre';
+    const cargo  = perf.cargo  || a.auditorCargo  || 'Auditor';
+    if (!byUid[uid]) byUid[uid] = { uid, nombre, cargo, todas:[], completadas:0, enProgreso:0, pcts:[], inst:new Set() };
+    byUid[uid].todas.push(a);
+    if (a.estado === 'completada') byUid[uid].completadas++;
+    else byUid[uid].enProgreso++;
+    if (a.porcentaje != null) byUid[uid].pcts.push(a.porcentaje);
+    if (a.institucion) byUid[uid].inst.add(a.institucion);
+  });
+
+  const sub = document.getElementById('eq-page-sub');
+
+  if (!Object.keys(byUid).length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-users"></i><h3>Sin datos del equipo</h3><p>Las auditorías del equipo aparecerán aquí automáticamente cuando los auditores inicien sesión</p></div>';
+    if (sub) sub.textContent = 'Sin datos aún';
+    return;
+  }
+
+  const auditores = Object.values(byUid).sort((a,b) => b.todas.length - a.todas.length);
+  if (sub) sub.textContent = auditores.length + ' auditores · ' + allTeamAuditorias.filter(a=>!a.deletedAt).length + ' auditorías en total';
+
+  grid.innerHTML = auditores.map(aud => {
+    const avg      = aud.pcts.length ? Math.round(aud.pcts.reduce((s,p)=>s+p,0)/aud.pcts.length) : null;
+    const avgColor = avg==null?'#94a3b8':avg>=92?'#15803d':avg>=85?'#b45309':'#b91c1c';
+    const avgBg    = avg==null?'#f8fafc':avg>=92?'#f0fdf4':avg>=85?'#fffbeb':'#fef2f2';
+
+    // Avatar — foto real o iniciales
+    const perf    = _allPerfiles[aud.uid] || {};
+    const foto    = perf.avatarUrl || null;
+    const ini     = aud.nombre.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+    const color   = _eqColor(aud.nombre);
+    const avatarHtml = foto
+      ? '<div class="eq-card-avatar" style="background:transparent"><img src="'+foto+'" alt="'+aud.nombre+'"></div>'
+      : '<div class="eq-card-avatar" style="background:'+color+'">'+ini+'</div>';
+
+    const instBadges = ''; // removed per user request
+
+    // Auditorías filtradas para mostrar en la lista
+    let filtradas = [...aud.todas].sort((a,b) => (b.createdAt||0)-(a.createdAt||0));
+    if (mesF)  filtradas = filtradas.filter(a => { const f=a.fecha?new Date(a.fecha+'T12:00:00'):null; return f && MN[f.getMonth()+1]===mesF; });
+    if (instF) filtradas = filtradas.filter(a => (a.institucion||'foca')===instF);
+    const mostrar = filtradas.slice(0,5);
+
+    const rowsHtml = mostrar.length ? mostrar.map(a => {
+      const f    = a.fecha ? new Date(a.fecha+'T12:00:00') : null;
+      const dia  = f ? f.toLocaleDateString('es-CO',{day:'2-digit',month:'short'}) : '—';
+      const mes  = f ? MC[f.getMonth()+1] : '—';
+      const pct  = a.porcentaje != null ? a.porcentaje : null;
+      const col  = pct==null?'#94a3b8':pct>=92?'#15803d':pct>=85?'#b45309':'#b91c1c';
+      const bText= a.estado==='completada'?'Completada':a.estado==='en-progreso'?'En progreso':'Pendiente';
+      const bBg  = a.estado==='completada'?'#f0fdf4':a.estado==='en-progreso'?'#fffbeb':'#f1f5f9';
+      const bCol = a.estado==='completada'?'#15803d':a.estado==='en-progreso'?'#b45309':'#64748b';
+      const logo = INST_LOGOS[a.institucion] || INST_LOGOS.foca;
+      return '<div class="eq-card-audit-row" onclick="abrirAuditoria(\''+a.id+'\',\''+(a.institucion||'foca')+'\')">'
+        +'<img class="eq-card-audit-inst" src="'+logo+'" alt="'+(a.institucion||'')+'">'
+        +'<div class="eq-card-audit-body">'
+        +'<div class="eq-card-audit-sede">'+(a.sede||'Sin sede')+'</div>'
+        +'<div class="eq-card-audit-meta">'+dia+'</div>'
+        +'</div>'
+        +'<div class="eq-card-audit-right">'
+        +'<span class="eq-card-audit-pct" style="color:'+col+'">'+(pct!=null?pct+'%':'—')+'</span>'
+        +'<span class="eq-card-audit-badge" style="background:'+bBg+';color:'+bCol+'">'+bText+'</span>'
+        +'</div></div>';
+    }).join('') : '<div style="text-align:center;padding:20px 0;color:var(--gray400);font-size:12px">'
+      +'<i class="fas fa-clipboard" style="display:block;font-size:22px;margin-bottom:8px;opacity:.4"></i>'
+      +'Sin auditorías en este período</div>';
+
+    const masCount = filtradas.length - mostrar.length;
+
+    return '<div class="eq-card">'
+      +'<div class="eq-card-top">'
+      +avatarHtml
+      +'<div class="eq-card-info">'
+      +'<div class="eq-card-name">'+aud.nombre+'</div>'
+      +'<div class="eq-card-cargo">'+aud.cargo+'</div>'
+      
+      +'</div></div>'
+      +'<div class="eq-card-kpis">'
+      +'<div class="eq-card-kpi"><div class="eq-card-kpi-n">'+aud.todas.length+'</div><div class="eq-card-kpi-l">Total</div></div>'
+      +'<div class="eq-card-kpi"><div class="eq-card-kpi-n" style="color:#15803d">'+aud.completadas+'</div><div class="eq-card-kpi-l">Completadas</div></div>'
+      +'<div class="eq-card-kpi"><div class="eq-card-kpi-n" style="color:#b45309">'+aud.enProgreso+'</div><div class="eq-card-kpi-l">En progreso</div></div>'
+      +'<div class="eq-card-kpi"><div class="eq-card-kpi-n" style="color:'+avgColor+'">'+(avg!=null?avg+'%':'—')+'</div><div class="eq-card-kpi-l">Promedio</div></div>'
+      +'</div>'
+      +'<div class="eq-card-list">'
+      +'<div class="eq-card-list-title"><span>Auditorías recientes</span>'
+      +(mesF||instF ? '<span style="font-size:10px;color:var(--blue)">'+filtradas.length+' encontradas</span>' : '')
+      +'</div>'
+      +rowsHtml
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
 // ══════════════════════════════════════════════
 // PERFIL DE USUARIO
 // ══════════════════════════════════════════════
@@ -2459,6 +2909,7 @@ function switchModule(name) {
   document.getElementById('tab-' + name).classList.add('active');
   if (name === 'dashboard')      loadDashboard();
   if (name === 'capacitaciones') loadCapacitaciones();
+  if (name === 'equipo')         renderEquipo();
 }
 
 // ══════════════════════════════════════════════
@@ -2750,6 +3201,7 @@ function closeDbiModal(){document.getElementById('dbi-modal').style.display='non
 document.addEventListener('click',e=>{
   if(e.target.id==='dbi-modal') closeDbiModal();
   if(e.target.id==='rpt-modal') closeReportModal();
+  if(e.target.id==='eq-modal') closeEqModal();
 });
 
 // ══════════════════════════════════════════════
