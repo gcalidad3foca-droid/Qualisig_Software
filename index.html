@@ -239,6 +239,12 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 .btn-logout:hover { border-color:#ef4444; color:#ef4444; background:#fef2f2; }
 
 /* Botón logout compacto (ícono) */
+.header-top-row {
+  display:flex; align-items:center; gap:20px;
+  padding:0 32px; height:68px; flex:1;
+  width:100%;
+}
+
 .btn-logout-icon {
   width:36px; height:36px; border-radius:9px;
   border:1.5px solid var(--gray200);
@@ -1294,6 +1300,58 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   .nav-tab     { padding:7px 10px; font-size:11px; gap:5px; }
   .nav-tab i   { font-size:11px; }
 
+  /* HEADER — 2 filas en móvil */
+  .dash-header {
+    height: auto;
+    padding: 0;
+    gap: 0;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .dash-header::before { height: 3px; }
+  .dash-divider { display: none; }
+
+  /* Fila 1 wrapper */
+  .header-top-row {
+    display: flex;
+    align-items: center;
+    padding: 8px 14px;
+    gap: 8px;
+    height: auto;
+  }
+  .header-top-row .dash-logo { gap: 8px; }
+  .dash-logo-icon  { width: 32px; height: 32px; border-radius: 9px; }
+  .dash-logo-icon img { width: 17px; height: 17px; }
+  .dash-brand-name { font-size: 15px; }
+  .dash-brand-sub  { font-size: 8px; }
+
+  /* Chip perfil en fila 1 */
+  .dash-user-chip {
+    padding: 4px 10px 4px 5px;
+    gap: 6px;
+  }
+  .duc-avatar { width: 28px; height: 28px; font-size: 9px; }
+  .duc-name   { font-size: 11px; max-width: 100px; }
+  .duc-cargo  { font-size: 9px;  max-width: 100px; }
+
+  /* Logout icon */
+  .btn-logout-icon {
+    width: 32px; height: 32px;
+    font-size: 14px; flex-shrink: 0;
+  }
+
+  /* Nav tabs — fila 2 */
+  .dash-header > .nav-tabs {
+    border-radius: 0;
+    background: var(--gray50);
+    border-top: 1px solid var(--gray200);
+    padding: 5px 8px; gap: 3px;
+    margin: 0;
+    justify-content: space-around;
+  }
+  .nav-tab { padding: 7px 8px; font-size: 11px; gap: 5px; flex: 1; justify-content: center; }
+  .nav-tab i { font-size: 11px; }
+
   /* DASHBOARD compacto */
   #db-row1 { grid-template-columns:repeat(2,1fr) !important; }
   #db-row2 { grid-template-columns:1fr !important; }
@@ -1521,18 +1579,32 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 
   <!-- Header -->
   <header class="dash-header">
-    <div class="dash-logo">
-      <div class="dash-logo-icon">
-        <img src="https://i.imgur.com/3WZzeT6.png" alt="Qualisig">
+    <!-- Fila 1: logo + perfil + logout -->
+    <div class="header-top-row">
+      <div class="dash-logo">
+        <div class="dash-logo-icon">
+          <img src="https://i.imgur.com/3WZzeT6.png" alt="Qualisig">
+        </div>
+        <div>
+          <div class="dash-brand-name">QUALISIG</div>
+          <div class="dash-brand-sub">Gestión de Calidad</div>
+        </div>
       </div>
-      <div>
-        <div class="dash-brand-name">QUALISIG</div>
-        <div class="dash-brand-sub">Gestión de Calidad</div>
+      <div class="dash-divider"></div>
+      <div style="flex:1"></div>
+      <div class="dash-user-chip" id="dash-user-chip" onclick="openProfileModal()" title="Mi perfil">
+        <div class="duc-avatar" id="duc-avatar"><i class="fas fa-user" style="font-size:12px;color:#fff"></i></div>
+        <div class="duc-info">
+          <div class="duc-name" id="dash-user-name">Cargando...</div>
+          <div class="duc-cargo" id="duc-cargo">—</div>
+        </div>
       </div>
+      <button class="btn-logout-icon" onclick="doLogout()" title="Cerrar sesión">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
     </div>
-    <div class="dash-divider"></div>
-    <div style="flex:1"></div>
-    <div class="nav-tabs">
+    <!-- Fila 2: nav tabs -->
+    <div class="nav-tabs" id="main-nav-tabs">
       <button class="nav-tab active" id="tab-auditorias" onclick="switchModule('auditorias')">
         <i class="fas fa-clipboard-list"></i> Auditorías
       </button>
@@ -1543,17 +1615,6 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
         <i class="fas fa-users"></i> Equipo
       </button>
     </div>
-    <div class="dash-divider"></div>
-    <div class="dash-user-chip" id="dash-user-chip" onclick="switchModule('auditorias');setTimeout(()=>openProfileModal(),100)" title="Mi perfil">
-      <div class="duc-avatar" id="duc-avatar"><i class="fas fa-user" style="font-size:12px;color:#fff"></i></div>
-      <div class="duc-info">
-        <div class="duc-name" id="dash-user-name">Cargando...</div>
-        <div class="duc-cargo" id="duc-cargo">—</div>
-      </div>
-    </div>
-    <button class="btn-logout-icon" onclick="doLogout()" title="Cerrar sesión">
-      <i class="fas fa-sign-out-alt"></i>
-    </button>
   </header>
 
   <!-- Body -->
