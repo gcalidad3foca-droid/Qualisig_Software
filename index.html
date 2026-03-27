@@ -204,14 +204,29 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 .dash-divider    { width:1px; height:30px; background:var(--gray200); }
 
 .dash-user-info  { flex:1; display:flex; align-items:center; gap:10px; }
-.dash-user-badge {
-  background: linear-gradient(135deg, #eef2ff, #e0e7ff);
-  border:1.5px solid #c7d2fe;
-  padding:7px 16px; border-radius:9px;
-  display:flex; align-items:center; gap:8px;
+.dash-user-chip {
+  display:flex; align-items:center; gap:10px;
+  padding:5px 14px 5px 6px;
+  border-radius:40px;
+  border:1.5px solid var(--gray200);
+  background:#fff;
+  cursor:pointer;
+  transition:all .18s;
+  box-shadow:0 1px 4px rgba(0,0,0,0.06);
 }
-.dash-user-badge i { color:var(--accent); font-size:14px; }
-.dash-user-name   { font-size:13px; font-weight:600; color:#2d3748; }
+.dash-user-chip:hover { border-color:var(--accent); box-shadow:0 2px 10px rgba(91,140,214,0.15); }
+.duc-avatar {
+  width:32px; height:32px; border-radius:50%;
+  background:linear-gradient(135deg,#5B8CD6,#1e3c72);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; overflow:hidden;
+  font-size:12px; font-weight:800; color:#fff;
+}
+.duc-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.duc-info { display:flex; flex-direction:column; gap:1px; min-width:0; }
+.duc-name  { font-size:12px; font-weight:700; color:var(--gray800); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:160px; }
+.duc-cargo { font-size:10px; color:var(--gray400); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:160px; }
+.dash-user-name { font-size:13px; font-weight:600; color:#2d3748; }
 
 .dash-header-actions { display:flex; align-items:center; gap:10px; }
 .btn-logout {
@@ -222,6 +237,17 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   transition:all .2s;
 }
 .btn-logout:hover { border-color:#ef4444; color:#ef4444; background:#fef2f2; }
+
+/* Botón logout compacto (ícono) */
+.btn-logout-icon {
+  width:36px; height:36px; border-radius:9px;
+  border:1.5px solid var(--gray200);
+  background:#fff; color:var(--gray600);
+  font-size:14px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .2s; flex-shrink:0;
+}
+.btn-logout-icon:hover { border-color:#ef4444; color:#ef4444; background:#fef2f2; }
 
 /* ── DASHBOARD NUEVO ─────────────────────── */
 .db-topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:10px; }
@@ -467,6 +493,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   box-shadow:0 2px 12px rgba(0,0,0,0.06);
   display:flex; flex-direction:column;
   transition:transform .18s, box-shadow .18s;
+  height:460px; /* altura fija para todas las tarjetas */
 }
 .eq-card:hover { transform:translateY(-3px); box-shadow:0 10px 32px rgba(0,0,0,0.10); }
 .eq-card-top {
@@ -494,7 +521,11 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 .eq-card-kpi-l{ font-size:9px; color:var(--gray400); margin-top:3px; text-transform:uppercase; letter-spacing:.5px; }
 
 /* Lista auditorías en la tarjeta */
-.eq-card-list { padding:16px 20px; flex:1; }
+.eq-card-list { padding:16px 20px; flex:1; overflow-y:auto; min-height:0; }
+.eq-card-list::-webkit-scrollbar { width:4px; }
+.eq-card-list::-webkit-scrollbar-track { background:transparent; }
+.eq-card-list::-webkit-scrollbar-thumb { background:var(--gray200); border-radius:4px; }
+.eq-card-list::-webkit-scrollbar-thumb:hover { background:var(--gray400); }
 .eq-card-list-title { font-size:10px; font-weight:700; color:var(--gray400); text-transform:uppercase; letter-spacing:.7px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
 .eq-card-audit-row {
   display:flex; align-items:center; gap:10px;
@@ -1345,11 +1376,10 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   .dash-brand-name { font-size:17px; }
   .dash-brand-sub  { font-size:8px; }
   .dash-divider    { display:none; }
-  .dash-user-info  { width:100%; }
-  .dash-user-badge { width:100%; padding:7px 12px; }
+  .dash-user-chip  { order:3; }
+  .duc-name, .duc-cargo { max-width:100%; }
   .dash-user-name  { font-size:12px; }
-  .dash-header-actions { width:100%; }
-  .btn-logout      { width:100%; justify-content:center; padding:8px 12px; font-size:12px; }
+  .btn-logout-icon { order:4; }
 
   /* BODY */
   .dash-body       { padding:16px 12px; }
@@ -1501,12 +1531,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
       </div>
     </div>
     <div class="dash-divider"></div>
-    <div class="dash-user-info">
-      <div class="dash-user-badge">
-        <i class="fas fa-user-circle"></i>
-        <span class="dash-user-name" id="dash-user-name">Cargando...</span>
-      </div>
-    </div>
+    <div style="flex:1"></div>
     <div class="nav-tabs">
       <button class="nav-tab active" id="tab-auditorias" onclick="switchModule('auditorias')">
         <i class="fas fa-clipboard-list"></i> Auditorías
@@ -1517,13 +1542,18 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
       <button class="nav-tab" id="tab-equipo" onclick="switchModule('equipo')">
         <i class="fas fa-users"></i> Equipo
       </button>
-
     </div>
-    <div class="dash-header-actions">
-      <button class="btn-logout" onclick="doLogout()">
-        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-      </button>
+    <div class="dash-divider"></div>
+    <div class="dash-user-chip" id="dash-user-chip" onclick="switchModule('auditorias');setTimeout(()=>openProfileModal(),100)" title="Mi perfil">
+      <div class="duc-avatar" id="duc-avatar"><i class="fas fa-user" style="font-size:12px;color:#fff"></i></div>
+      <div class="duc-info">
+        <div class="duc-name" id="dash-user-name">Cargando...</div>
+        <div class="duc-cargo" id="duc-cargo">—</div>
+      </div>
     </div>
+    <button class="btn-logout-icon" onclick="doLogout()" title="Cerrar sesión">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
   </header>
 
   <!-- Body -->
@@ -1532,28 +1562,12 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
     <!-- ══ MODULE: AUDITORÍAS ══════════════════ -->
     <div class="module active" id="module-auditorias">
 
-    <!-- User Profile Panel -->
-    <div class="user-profile-panel" id="user-profile-panel">
-      <div class="user-avatar-wrap" onclick="openProfileModal()">
-        <div class="user-avatar" id="user-avatar">?</div>
-        <div class="avatar-edit-badge"><i class="fas fa-camera"></i></div>
-        <input type="file" id="avatar-file-input" accept="image/*" onchange="handleAvatarChange(event)">
-      </div>
-      <div class="user-info">
-        <div class="user-name-row">
-          <div class="user-name" id="user-fullname">Cargando...</div>
-          <button class="btn-edit-profile" onclick="openProfileModal()" title="Editar perfil">
-            <i class="fas fa-pen"></i>
-          </button>
-        </div>
-        <div class="user-cargo" id="user-cargo-display">Gestión de Calidad</div>
-        <div class="user-phone" id="user-phone-display" style="display:none"></div>
-        <div class="user-email-txt" id="user-email-display">—</div>
-        <div class="user-badges">
-          <span class="user-badge-pill active"><i class="fas fa-circle" style="font-size:7px"></i> Activo</span>
-        </div>
-      </div>
-    </div>
+    <!-- Ghost elements for JS compatibility (panel de perfil eliminado del UI) -->
+    <span id="user-fullname"    style="display:none"></span>
+    <span id="user-cargo-display" style="display:none"></span>
+    <span id="user-phone-display" style="display:none;position:absolute;left:-9999px;visibility:hidden"></span>
+    <span id="user-email-display" style="display:none"></span>
+    <div  id="user-avatar"      style="display:none"></div>
 
     <!-- Edit Profile Modal -->
     <div class="profile-modal-overlay" id="profile-modal">
@@ -1568,6 +1582,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
           <button class="btn-change-photo" onclick="document.getElementById('avatar-file-input').click()">
             <i class="fas fa-camera"></i> Cambiar foto
           </button>
+          <input type="file" id="avatar-file-input" accept="image/*" style="display:none" onchange="handleAvatarChange(event)">
         </div>
         <div class="profile-form">
           <div class="pf-group">
@@ -2675,7 +2690,7 @@ function renderEquipo() {
     let filtradas = [...aud.todas].sort((a,b) => (b.createdAt||0)-(a.createdAt||0));
     if (mesF)  filtradas = filtradas.filter(a => { const f=a.fecha?new Date(a.fecha+'T12:00:00'):null; return f && MN[f.getMonth()+1]===mesF; });
     if (instF) filtradas = filtradas.filter(a => (a.institucion||'foca')===instF);
-    const mostrar = filtradas.slice(0,5);
+    const mostrar = filtradas;
 
     const rowsHtml = mostrar.length ? mostrar.map(a => {
       const f    = a.fecha ? new Date(a.fecha+'T12:00:00') : null;
@@ -2701,8 +2716,6 @@ function renderEquipo() {
       +'<i class="fas fa-clipboard" style="display:block;font-size:22px;margin-bottom:8px;opacity:.4"></i>'
       +'Sin auditorías en este período</div>';
 
-    const masCount = filtradas.length - mostrar.length;
-
     return '<div class="eq-card">'
       +'<div class="eq-card-top">'
       +avatarHtml
@@ -2718,9 +2731,7 @@ function renderEquipo() {
       +'<div class="eq-card-kpi"><div class="eq-card-kpi-n" style="color:'+avgColor+'">'+(avg!=null?avg+'%':'—')+'</div><div class="eq-card-kpi-l">Promedio</div></div>'
       +'</div>'
       +'<div class="eq-card-list">'
-      +'<div class="eq-card-list-title"><span>Auditorías recientes</span>'
-      +(mesF||instF ? '<span style="font-size:10px;color:var(--blue)">'+filtradas.length+' encontradas</span>' : '')
-      +'</div>'
+      +'<div class="eq-card-list-title"><span>Auditorías</span><span style="font-size:10px;color:var(--gray400)">'+filtradas.length+' registradas</span></div>'
       +rowsHtml
       +'</div>'
       +'</div>';
@@ -2740,15 +2751,32 @@ function loadProfileFromFirebase(uid, defaultName, email) {
 
     const avatar = p.avatarUrl || null;
 
-    // Panel principal
-    document.getElementById('user-fullname').textContent    = nombre;
+    // Panel principal (ghost elements, null-safe)
+    const elName  = document.getElementById('user-fullname');
+    const elCargo = document.getElementById('user-cargo-display');
+    const elEmail = document.getElementById('user-email-display');
+    if (elName)  elName.textContent  = nombre;
+    if (elCargo) elCargo.textContent = cargo;
+    if (elEmail) elEmail.textContent = email;
     document.getElementById('dash-user-name').textContent   = nombre;
-    document.getElementById('user-cargo-display').textContent = cargo;
+    // Chip del header
+    const ducName  = document.getElementById('duc-cargo');
+    const ducChip  = document.getElementById('duc-avatar');
+    if (ducName)  ducName.textContent  = cargo;
+    if (ducChip) {
+      if (avatar) {
+        ducChip.innerHTML = '<img src="'+avatar+'" alt="'+nombre+'">';
+      } else {
+        const ini = nombre.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+        ducChip.textContent = ini;
+        ducChip.style.fontSize = '11px';
+      }
+    }
 
 
     if (tel) {
       const ph = document.getElementById('user-phone-display');
-      ph.textContent = tel; ph.style.display = 'block';
+      if (ph) { ph.textContent = tel; /* stays hidden, ghost element */ }
     }
 
     // Avatar
@@ -2756,8 +2784,12 @@ function loadProfileFromFirebase(uid, defaultName, email) {
       _setAvatarImage(avatar);
     } else {
       const initials = nombre.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
-      document.getElementById('user-avatar').textContent = initials;
+      const av = document.getElementById('user-avatar');
+      if (av) av.textContent = initials;
       document.getElementById('profile-avatar-preview').textContent = initials;
+      // Chip del header con iniciales
+      const ducChip = document.getElementById('duc-avatar');
+      if (ducChip) { ducChip.innerHTML = ''; ducChip.textContent = initials; ducChip.style.fontSize = '11px'; }
     }
 
     // Pre-fill form fields
@@ -2769,18 +2801,15 @@ function loadProfileFromFirebase(uid, defaultName, email) {
 }
 
 function _setAvatarImage(url) {
-  // Panel avatar
+  // Panel avatar (ghost, oculto)
   const av = document.getElementById('user-avatar');
-  av.textContent = '';
-  const img1 = document.createElement('img');
-  img1.src = url; img1.alt = 'Avatar';
-  av.appendChild(img1);
+  if (av) { av.textContent = ''; const img1 = document.createElement('img'); img1.src = url; img1.alt = 'Avatar'; av.appendChild(img1); }
+  // Chip del header
+  const ducChip = document.getElementById('duc-avatar');
+  if (ducChip) { ducChip.innerHTML = '<img src="'+url+'" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'; }
   // Modal preview
   const prev = document.getElementById('profile-avatar-preview');
-  prev.textContent = '';
-  const img2 = document.createElement('img');
-  img2.src = url; img2.alt = 'Avatar';
-  prev.appendChild(img2);
+  if (prev) { prev.textContent = ''; const img2 = document.createElement('img'); img2.src = url; img2.alt = 'Avatar'; prev.appendChild(img2); }
   _profileAvatarDataUrl = url;
 }
 
@@ -2861,17 +2890,20 @@ async function saveProfile() {
 
   try {
     await db.ref('perfiles/' + currentUser.uid).set(profileData);
-    // Actualizar panel en tiempo real
-    document.getElementById('user-fullname').textContent     = nombre;
+    // Actualizar panel en tiempo real (null-safe)
+    const elN = document.getElementById('user-fullname');
+    const elC = document.getElementById('user-cargo-display');
+    if (elN) elN.textContent = nombre;
+    if (elC) elC.textContent = cargo;
     document.getElementById('dash-user-name').textContent    = nombre;
-    document.getElementById('user-cargo-display').textContent = cargo;
+    const ducName = document.getElementById('duc-cargo');
+    if (ducName) ducName.textContent = cargo;
     // Actualizar avatar si se subió uno nuevo
     if (profileData.avatarUrl) {
       _setAvatarImage(profileData.avatarUrl);
     }
     const ph = document.getElementById('user-phone-display');
-    if (telefono) { ph.textContent = telefono; ph.style.display = 'block'; }
-    else          { ph.style.display = 'none'; }
+    if (ph) { ph.textContent = telefono; /* stays hidden, ghost element */ }
     closeProfileModal();
     showToast('Perfil actualizado ✓', 'success');
   } catch(e) {
