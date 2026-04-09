@@ -236,7 +236,7 @@
 .ha-form textarea{width:100%;padding:9px 12px;border:1.5px solid #d0d8f5;border-radius:7px;font-size:13px;font-family:inherit;background:white;color:#2c3e50;resize:vertical;box-sizing:border-box;min-height:64px;}
 .ha-form textarea:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.1);}
 .ha-form-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:10px;}
-.ha-cal-grp{display:flex;gap:4px;}
+.ha-cal-grp{display:flex;gap:4px;flex-wrap:wrap;}
 .ha-cal-radio{display:none;}
 .ha-cal-label{padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid #e0e4f0;background:white;transition:all .15s;user-select:none;}
 .ha-cal-radio:checked+.ha-cal-label{border-color:transparent;color:white;}
@@ -253,7 +253,40 @@
 .ha-form-count{position:absolute;top:-7px;right:-7px;background:#f44336;color:white;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
 .ha-add-btn{margin-left:auto;padding:7px 20px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(102,126,234,.25);}
 .ha-add-btn:hover{opacity:.88;}
-@media(max-width:600px){.ha-form-row{flex-direction:column;align-items:stretch;}.ha-add-btn{margin-left:0;width:100%;}}
+/* ── MÓVIL: hallazgo adicional ── */
+@media(max-width:700px){
+  /* Fila contenedora: sin padding lateral excesivo */
+  .ha-row td{padding:10px 8px!important;}
+  /* Botón toggle ocupa todo el ancho */
+  .ha-toggle-btn{width:100%;justify-content:center;padding:10px 14px;font-size:13px;border-radius:8px;}
+  /* Panel sin overflow oculto para que no se corte */
+  .ha-panel{border-radius:8px;margin-top:8px;}
+  /* Ítem de lista: layout vertical en móvil */
+  .ha-list li{padding:10px 10px;}
+  .ha-li-main{flex-wrap:wrap;gap:6px;}
+  .ha-li-text{font-size:12px;width:100%;order:1;}
+  .ha-li-meta{order:0;width:100%;}
+  .ha-li-actions{order:2;width:100%;justify-content:flex-start;gap:6px;}
+  /* Botones acción ítems: más grandes para touch */
+  .ha-act-btn{width:auto;flex:1;max-width:90px;padding:8px 6px;font-size:12px;min-height:38px;}
+  .ha-del-btn{margin-left:auto;font-size:18px;padding:4px 8px;color:#e0e0e0;}
+  /* Formulario de nuevo hallazgo */
+  .ha-form{padding:12px 10px;}
+  .ha-form-lbl{font-size:10px;}
+  .ha-form textarea{font-size:14px;min-height:72px;padding:10px;}
+  /* Fila de controles: apilada verticalmente */
+  .ha-form-row{flex-direction:column;align-items:stretch;gap:8px;margin-top:8px;}
+  /* Grupo de calificación: botones más grandes */
+  .ha-cal-grp{gap:5px;justify-content:space-between;}
+  .ha-cal-label{flex:1;text-align:center;padding:9px 4px;font-size:12px;border-radius:6px;}
+  /* Fila secundaria: Foto + OM + Agregar */
+  .ha-form-action-btn{flex:1;justify-content:center;padding:10px 8px;font-size:13px;min-height:42px;border-radius:8px;}
+  .ha-form-action-btn i{font-size:14px;}
+  .ha-add-btn{width:100%;margin-left:0;padding:12px;font-size:14px;border-radius:8px;min-height:46px;}
+  /* Badge contadores: ligeramente más grande para móvil */
+  .ha-act-count{width:20px;height:20px;font-size:11px;top:-9px;right:-9px;}
+  .ha-form-count{width:18px;height:18px;font-size:10px;top:-8px;right:-8px;}
+}
 
 /* ── Panel 80% — switch a la derecha ── */
 .rec-panel{margin:32px 24px 24px;border-radius:14px;overflow:hidden;box-shadow:0 6px 28px rgba(30,60,114,.18);}
