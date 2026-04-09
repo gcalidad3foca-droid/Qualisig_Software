@@ -202,6 +202,92 @@
 .evidence-img, .evidence-preview img, #evidence-list img {
   image-orientation: from-image;
 }
+/* ── Hallazgo adicional — inline expandable ── */
+.ha-row td{background:#f0f4ff!important;padding:10px 16px!important;border-bottom:2px solid #e4eaff!important;}
+.ha-toggle-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:7px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(102,126,234,.25);transition:all .2s;}
+.ha-toggle-btn:hover{opacity:.88;transform:translateY(-1px);}
+.ha-toggle-btn.has-items{background:linear-gradient(135deg,#1e3c72,#2a5298);}
+.ha-panel{display:none;margin-top:12px;padding:0;border-radius:10px;border:1.5px solid #d8e0f8;overflow:hidden;}
+.ha-panel.open{display:block;}
+.ha-list{list-style:none;padding:0;margin:0;}
+.ha-list li{background:#fff;border-bottom:1px solid #eef0f8;padding:11px 14px;}
+.ha-list li:last-child{border-bottom:none;}
+.ha-li-main{display:flex;align-items:center;gap:8px;}
+.ha-li-body{flex:1;min-width:0;}
+.ha-li-meta{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px;min-height:18px;}
+.ha-li-text{font-size:13px;color:#2c3e50;font-weight:500;line-height:1.4;}
+.ha-li-actions{display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.ha-del-btn{background:none;border:none;color:#ccc;cursor:pointer;font-size:15px;padding:2px 4px;line-height:1;transition:color .15s;flex-shrink:0;}
+.ha-del-btn:hover{color:#f44336;}
+.ha-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
+.ha-badge.C{background:#e8f5e9;color:#2e7d32;}
+.ha-badge.CP{background:#fff3e0;color:#e65100;}
+.ha-badge.NC{background:#fce4ec;color:#c62828;}
+.ha-badge.NA{background:#eceff1;color:#546e7a;}
+.ha-act-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 0;width:62px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .3s;box-shadow:0 2px 8px rgba(102,126,234,.2);position:relative;}
+.ha-act-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(102,126,234,.3);}
+.ha-act-btn.active{background:linear-gradient(135deg,#4caf50,#66bb6a);box-shadow:0 2px 8px rgba(76,175,80,.2);}
+.ha-act-btn.om-s{background:linear-gradient(135deg,#7c8ff0,#9c6fd6);box-shadow:0 2px 8px rgba(124,143,240,.2);}
+.ha-act-btn.om-s:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(124,143,240,.3);}
+.ha-act-btn.om-s.active{background:linear-gradient(135deg,#4caf50,#66bb6a);box-shadow:0 2px 8px rgba(76,175,80,.2);}
+.ha-act-count{position:absolute;top:-8px;right:-8px;background:#f44336;color:white;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;box-shadow:0 2px 4px rgba(0,0,0,.2);}
+.ha-form{background:#f8f9ff;padding:14px 16px;border-top:1.5px solid #e4eaff;}
+.ha-form-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#1e3c72;margin-bottom:7px;display:block;}
+.ha-form textarea{width:100%;padding:9px 12px;border:1.5px solid #d0d8f5;border-radius:7px;font-size:13px;font-family:inherit;background:white;color:#2c3e50;resize:vertical;box-sizing:border-box;min-height:64px;}
+.ha-form textarea:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.1);}
+.ha-form-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:10px;}
+.ha-cal-grp{display:flex;gap:4px;}
+.ha-cal-radio{display:none;}
+.ha-cal-label{padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid #e0e4f0;background:white;transition:all .15s;user-select:none;}
+.ha-cal-radio:checked+.ha-cal-label{border-color:transparent;color:white;}
+.ha-cal-radio[value="C"]:checked+.ha-cal-label{background:#43a047;}
+.ha-cal-radio[value="CP"]:checked+.ha-cal-label{background:#fb8c00;}
+.ha-cal-radio[value="NC"]:checked+.ha-cal-label{background:#e53935;}
+.ha-cal-radio[value="NA"]:checked+.ha-cal-label{background:#78909c;}
+.ha-form-action-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:none;border-radius:6px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;cursor:pointer;font-size:12px;font-weight:600;transition:all .3s;box-shadow:0 2px 8px rgba(102,126,234,.2);position:relative;}
+.ha-form-action-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(102,126,234,.3);}
+.ha-form-action-btn.active{background:linear-gradient(135deg,#4caf50,#66bb6a);box-shadow:0 2px 8px rgba(76,175,80,.2);}
+.ha-form-om-btn{background:linear-gradient(135deg,#7c8ff0,#9c6fd6);box-shadow:0 2px 8px rgba(124,143,240,.2);}
+.ha-form-om-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,143,240,.3);}
+.ha-form-om-btn.active{background:linear-gradient(135deg,#4caf50,#66bb6a);}
+.ha-form-count{position:absolute;top:-7px;right:-7px;background:#f44336;color:white;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
+.ha-add-btn{margin-left:auto;padding:7px 20px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(102,126,234,.25);}
+.ha-add-btn:hover{opacity:.88;}
+@media(max-width:600px){.ha-form-row{flex-direction:column;align-items:stretch;}.ha-add-btn{margin-left:0;width:100%;}}
+
+/* ── Panel 80% — switch a la derecha ── */
+.rec-panel{margin:32px 24px 24px;border-radius:14px;overflow:hidden;box-shadow:0 6px 28px rgba(30,60,114,.18);}
+.rec-panel-inner{background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%);padding:18px 22px;display:flex;align-items:center;gap:14px;}
+.rec-icon{width:44px;height:44px;background:rgba(255,255,255,.13);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;flex-shrink:0;border:1px solid rgba(255,255,255,.2);}
+.rec-info-wrap{flex:1;min-width:0;}
+.rec-info-wrap h3{margin:0 0 2px;font-size:14px;font-weight:700;color:#fff;}
+.rec-info-wrap p{margin:0;font-size:11px;color:rgba(255,255,255,.7);line-height:1.4;}
+.rec-switch-wrap{display:flex;align-items:center;gap:10px;flex-shrink:0;cursor:pointer;user-select:none;}
+.rec-switch-label{font-size:12.5px;font-weight:700;color:#fff;white-space:nowrap;}
+.rec-switch-track{width:42px;height:24px;background:rgba(255,255,255,.25);border-radius:12px;position:relative;transition:background .25s;flex-shrink:0;}
+.rec-switch-track::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .25s;box-shadow:0 2px 5px rgba(0,0,0,.25);}
+.rec-switch-wrap.on .rec-switch-track{background:rgba(255,255,255,.9);}
+.rec-switch-wrap.on .rec-switch-track::after{transform:translateX(18px);background:#2a5298;}
+.rec-fields-panel{display:none;background:#fff;padding:20px 22px;border-top:1px solid #e8edf8;}
+.rec-fields-panel.open{display:block;}
+.rec-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.rec-field label{display:block;font-size:11px;font-weight:700;color:#1e3c72;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
+.rec-select,.rec-obs{width:100%;padding:9px 12px;border:1.5px solid #d0d8f5;border-radius:7px;font-size:13px;font-family:inherit;background:#fafbff;color:#2c3e50;}
+.rec-select:focus,.rec-obs:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.1);}
+.rec-obs-wrap{grid-column:1/-1;}
+.rec-obs{resize:vertical;min-height:56px;}
+.rec-add-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(102,126,234,.22);}
+.rec-add-btn:hover{opacity:.88;}
+.rec-list{list-style:none;padding:0;margin:12px 0 0;}
+.rec-list li{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;margin-bottom:7px;background:#f3f6ff;border-radius:8px;border-left:3px solid #667eea;}
+.rec-li-body{flex:1;min-width:0;}
+.rec-li-cat{font-size:10px;font-weight:700;color:#667eea;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px;}
+.rec-li-text{font-size:12px;color:#2c3e50;line-height:1.4;}
+.rec-li-obs{font-size:11px;color:#8898bb;margin-top:2px;font-style:italic;}
+.rec-li-del{background:none;border:none;color:#bbb;cursor:pointer;font-size:13px;padding:2px;transition:color .15s;flex-shrink:0;}
+.rec-li-del:hover{color:#f44336;}
+@media(max-width:600px){.rec-panel{margin:24px 12px 16px;}.rec-grid{grid-template-columns:1fr;}.rec-panel-inner{padding:14px 16px;flex-wrap:wrap;}.rec-switch-wrap{width:100%;justify-content:space-between;margin-top:10px;}.rec-fields-panel{padding:14px 16px;}}
+
 </style>
 </head>
 <body>
@@ -276,6 +362,45 @@
       </table>
     </div>
 
+    <!-- HALLAZGO RECURRENTE 80% -->
+    <div class="rec-panel">
+      <div class="rec-panel-inner">
+        <div class="rec-icon"><i class="fas fa-history"></i></div>
+        <div class="rec-info-wrap">
+          <h3>Hallazgo Recurrente — Ajuste al 80%</h3>
+          <p>Mismo hallazgo en tres (3) informes consecutivos → resultado fijado en 80%.</p>
+        </div>
+        <div class="rec-switch-wrap" id="recSwitchWrap" onclick="toggleRec()">
+          <span class="rec-switch-label">Aplicar regla del 80%</span>
+          <input type="checkbox" id="recActivo" style="display:none">
+          <div class="rec-switch-track"></div>
+        </div>
+      </div>
+      <div class="rec-fields-panel" id="recFields">
+        <div class="rec-grid">
+          <div class="rec-field">
+            <label>Categoría del hallazgo recurrente</label>
+            <select class="rec-select" id="recCat" onchange="recUpdateItems()">
+              <option value="">— Seleccione la categoría —</option>
+            </select>
+          </div>
+          <div class="rec-field">
+            <label>Ítem con hallazgo recurrente</label>
+            <select class="rec-select" id="recItem">
+              <option value="">— Seleccione el ítem —</option>
+            </select>
+          </div>
+          <div class="rec-obs-wrap rec-field">
+            <label>Observación</label>
+            <textarea class="rec-obs" id="recObsInput" rows="2" placeholder="Describa brevemente el hallazgo recurrente..."></textarea>
+          </div>
+        </div>
+        <button type="button" class="rec-add-btn" onclick="recAdd()"><i class="fas fa-plus"></i> Agregar ítem</button>
+        <ul class="rec-list" id="recList"></ul>
+      </div>
+    </div>
+
+
     <!-- RESULTS -->
     <div class="results-section">
       <h2 class="results-title">META DE SEGURIDAD <span class="badge">Resultados por Criterio</span></h2>
@@ -333,6 +458,7 @@
     </div>
   </div>
 </div>
+
 
 <!-- ===== EVIDENCE MODAL ===== -->
 <div id="evidenceModal" class="modal">
@@ -577,6 +703,118 @@ function renderChecklist() {
       row.appendChild(tdObs); tbody.appendChild(row);
     });
 
+
+
+    // ── Hallazgo adicional — inline panel ──
+    (function(secName, secId) {
+      var trHa = document.createElement('tr');
+      trHa.className = 'ha-row';
+      var tdHa = document.createElement('td');
+      tdHa.colSpan = 8;
+
+      // Toggle button
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'ha-toggle-btn';
+      btn.id = 'ha-btn-' + secId;
+      btn.innerHTML = '<i class="fas fa-plus-circle"></i> Agregar hallazgo adicional';
+      btn.addEventListener('click', function(){ haToggle(secId, secName); });
+
+      // Inline panel
+      var panel = document.createElement('div');
+      panel.className = 'ha-panel';
+      panel.id = 'ha-panel-' + secId;
+
+      // List container
+      var list = document.createElement('ul');
+      list.className = 'ha-list';
+      list.id = 'ha-list-' + secId;
+
+      // Add form
+      var form = document.createElement('div');
+      form.className = 'ha-form';
+      var lbl = document.createElement('label');
+      lbl.className = 'ha-form-lbl';
+      lbl.innerHTML = '<i class="fas fa-plus-circle" style="margin-right:5px;color:#667eea;"></i> Nuevo hallazgo adicional en: ' + secName;
+      var ta = document.createElement('textarea');
+      ta.id = 'ha-ta-' + secId;
+      ta.rows = 2;
+      ta.placeholder = 'Describa el hallazgo adicional observado...';
+      ta.addEventListener('keydown', function(e){
+        if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); haAdd(secId); }
+      });
+      var row = document.createElement('div');
+      row.className = 'ha-form-row';
+      var calGrp = document.createElement('div');
+      calGrp.className = 'ha-cal-grp';
+      ['C','CP','NC','NA'].forEach(function(v) {
+        var inp = document.createElement('input');
+        inp.type = 'radio'; inp.className = 'ha-cal-radio';
+        inp.name = 'ha-cal-' + secId; inp.value = v; inp.id = 'ha-' + v + '-' + secId;
+        var lb = document.createElement('label');
+        lb.className = 'ha-cal-label'; lb.htmlFor = 'ha-' + v + '-' + secId;
+        lb.textContent = v === 'NA' ? 'N/A' : v;
+        calGrp.appendChild(inp); calGrp.appendChild(lb);
+      });
+      // Foto button (opens evidence modal for a pending new item)
+      var haFotoPrev = document.createElement('button');
+      haFotoPrev.type = 'button';
+      haFotoPrev.className = 'ha-form-action-btn';
+      haFotoPrev.id = 'ha-form-foto-' + secId;
+      haFotoPrev.innerHTML = '<i class="fas fa-camera"></i> Foto';
+      haFotoPrev.title = 'Agregar evidencia fotográfica al hallazgo';
+      haFotoPrev.addEventListener('click', function(){
+        if (!haFormEvidenceId[secId]) {
+          haFormEvidenceId[secId] = 'ha-prev-' + secId + '-' + Date.now();
+          if (!evidenceStore[haFormEvidenceId[secId]]) evidenceStore[haFormEvidenceId[secId]] = [];
+        }
+        currentEvidenceItem = haFormEvidenceId[secId];
+        document.getElementById('modal-title').innerHTML = '<i class="fas fa-camera" style="margin-right:8px;"></i>Evidencia fotográfica del hallazgo';
+        updateEvidencePreview();
+        document.getElementById('evidenceModal').style.display = 'block';
+        window._haActiveIid = haFormEvidenceId[secId];
+        window._haFormSecId = secId;
+      });
+      // OM button
+      var haOmPrev = document.createElement('button');
+      haOmPrev.type = 'button';
+      haOmPrev.className = 'ha-form-action-btn ha-form-om-btn';
+      haOmPrev.id = 'ha-form-om-' + secId;
+      haOmPrev.innerHTML = '<i class="fas fa-lightbulb"></i> OM';
+      haOmPrev.title = 'Agregar oportunidad de mejora al hallazgo';
+      haOmPrev.addEventListener('click', function(){
+        if (!haFormEvidenceId[secId]) {
+          haFormEvidenceId[secId] = 'ha-prev-' + secId + '-' + Date.now();
+          if (!evidenceStore[haFormEvidenceId[secId]]) evidenceStore[haFormEvidenceId[secId]] = [];
+        }
+        if (!omStore[haFormEvidenceId[secId]]) omStore[haFormEvidenceId[secId]] = [];
+        _currentOmItem  = haFormEvidenceId[secId];
+        _currentOmLabel = 'Hallazgo adicional — ' + secName;
+        document.getElementById('om-inline-subtitle').textContent = _currentOmLabel;
+        document.getElementById('om-inline-input').value = '';
+        omInlineRenderLista();
+        document.getElementById('omInlineModal').style.display = 'block';
+        window._haFormSecId = secId;
+        setTimeout(function(){ document.getElementById('om-inline-input').focus(); }, 80);
+      });
+      var addBtn = document.createElement('button');
+      addBtn.type = 'button'; addBtn.className = 'ha-add-btn';
+      addBtn.innerHTML = '<i class="fas fa-plus"></i> Agregar';
+      addBtn.addEventListener('click', function(){ haAdd(secId); });
+      row.appendChild(calGrp);
+      row.appendChild(haFotoPrev);
+      row.appendChild(haOmPrev);
+      row.appendChild(addBtn);
+      form.appendChild(lbl); form.appendChild(ta); form.appendChild(row);
+
+      panel.appendChild(list);
+      panel.appendChild(form);
+      tdHa.appendChild(btn);
+      tdHa.appendChild(panel);
+      trHa.appendChild(tdHa);
+      tbody.appendChild(trHa);
+    })(section.name, makeId(section.name, 0));
+
     const trRes = document.createElement('tr'); trRes.className = 'result-row';
     const tdLbl = document.createElement('td'); tdLbl.textContent = 'Resultado %';
     const tdVal = document.createElement('td'); tdVal.colSpan = 7; tdVal.className = 'radio-cell';
@@ -593,6 +831,16 @@ function openEvidenceModal(sectionName, itemIdx, itemText) {
 }
 function closeEvidenceModal() {
   document.getElementById('evidenceModal').style.display = 'none';
+  if (window._haActiveIid) {
+    if (typeof haRefreshBadges === 'function') haRefreshBadges(window._haActiveIid);
+    // Update form foto button
+    if (window._haFormSecId !== undefined) {
+      haSetFormBtnCount('ha-form-foto-' + window._haFormSecId,
+        (evidenceStore[window._haActiveIid] || []).length, false);
+      window._haFormSecId = undefined;
+    }
+    window._haActiveIid = null;
+  }
   currentEvidenceItem = null;
 }
 function handleEvidenceUpload(event) {
@@ -875,7 +1123,9 @@ function computeResults() {
     tr.innerHTML=`<td>${r.name}</td><td class="radio-cell">${Math.round(w*100)}%</td><td class="radio-cell">${p}%</td><td>${legendFor(p)}</td>`;
     wtbody.appendChild(tr); totalsum+=(p/100)*w;
   });
-  const finalPct=Math.round(totalsum*100);
+  const _calc=Math.round(totalsum*100);
+  var _recOn=document.getElementById("recActivo")&&document.getElementById("recActivo").checked;
+  const finalPct=_recOn?80:_calc;
   document.getElementById('total-pct').textContent=finalPct+'%';
   document.getElementById('final-status').textContent=legendFor(finalPct);
   const fs=document.querySelector('.final-score');
@@ -963,10 +1213,18 @@ function omInlineEliminar(idx) {
 
 function omInlineCerrar() {
   document.getElementById('omInlineModal').style.display = 'none';
+  // Si se cerró desde el formulario de hallazgo adicional, actualizar el contador del botón OM
+  if (window._haFormSecId !== undefined && _currentOmItem) {
+    var _omCount = (_currentOmItem && omStore[_currentOmItem]) ? omStore[_currentOmItem].length : 0;
+    haSetFormBtnCount('ha-form-om-' + window._haFormSecId, _omCount, true);
+    window._haFormSecId = undefined;
+  }
   _currentOmItem = null;
 }
 
 function refreshOmButton(itemId) {
+  // Refresh ha badges if it's a ha item
+  if (typeof haRefreshBadges === 'function') haRefreshBadges(itemId);
   const btn = document.getElementById('om-btn-' + itemId);
   if (!btn) return;
   const count = (omStore[itemId] || []).length;
@@ -988,6 +1246,13 @@ function collectAllOMs() {
         omStore[itemId].forEach(om => result.push(om));
       }
     });
+    // Include ha adicionales OM
+    const sid = makeId(section.name, 0);
+    (haStore[sid] || []).forEach(function(x) {
+      if (omStore[x.iid] && omStore[x.iid].length > 0) {
+        omStore[x.iid].forEach(om => result.push(om));
+      }
+    });
   });
   return result;
 }
@@ -997,6 +1262,33 @@ function executeGenerateReport(){
   const rm = document.getElementById('report-mes').value;
   const al = document.getElementById('report-auditor-lider').value;
   if (!rf || !rm || !al) { showNotification('Complete todos los campos del informe', 'error'); return; }
+  // Validate NC/CP must have observations
+  const missingObs = [];
+  DATA.forEach(section => {
+    section.items.forEach((item, idx) => {
+      const itemId = makeId(section.name, idx);
+      const radios = document.getElementsByName(itemId);
+      let val = ''; for (const r of radios) if (r.checked) val = r.value;
+      if (val === 'NC' || val === 'CP') {
+        const allRows = document.querySelectorAll('#tbody tr');
+        let obs = '';
+        for (const row of allRows) {
+          const fc = row.cells[0];
+          if (fc && fc.textContent === item) {
+            const oi = row.querySelector('.obs-input');
+            if (oi) { obs = oi.value.trim(); oi.style.borderColor = obs ? '' : '#e53935'; }
+            break;
+          }
+        }
+        if (!obs) missingObs.push(section.name + ': ' + item.substring(0, 50) + '…');
+      }
+    });
+  });
+  if (missingObs.length > 0) {
+    showNotification('⚠ ' + missingObs.length + ' ítem(s) con NC/CP sin observación. Complételos antes de generar el informe.', 'error');
+    closeReportModal();
+    return;
+  }
   closeReportModal();
   const omsParaInforme = collectAllOMs();
   generateFullReport(rf, rm, al, omsParaInforme);
@@ -1293,6 +1585,18 @@ async function generateFullReport(reportFecha, reportMes, auditorLider, oportuni
     const auditorAsignado=document.getElementById('auditor').value;
     const {results, finalPct}=computeResults();
     const findings=collectFindings();
+    // ── Merge ha adicionales into findings (before count cards) ──
+    DATA.forEach(function(sec) {
+      var sid = makeId(sec.name, 0);
+      (haStore[sid] || []).forEach(function(x) {
+        var finding = { section: sec.name, item: x.text, obs: x.text, itemId: x.iid, isHa: true };
+        if      (x.cal === 'C')  findings.C.push(finding);
+        else if (x.cal === 'CP') findings.CP.push(finding);
+        else if (x.cal === 'NC') findings.NC.push(finding);
+        else if (x.cal === 'NA') findings.NA.push(finding);
+        else                     findings.NC.push(finding);
+      });
+    });
 
     const {jsPDF}=window.jspdf;
     const doc=new jsPDF('p','mm','a4');
@@ -1503,7 +1807,19 @@ async function generateFullReport(reportFecha, reportMes, auditorLider, oportuni
         fail:'Se observaron incumplimientos en uñas, peinado o maquillaje respecto al protocolo de imagen institucional.' },
     ];
 
-    function buildFinding(itemText, isConforming, obsText) {
+    function buildFinding(itemText, isConforming, obsText, isHa) {
+      // Ha adicionales: always show the text as written, no prefix
+      if (isHa) {
+        const txt = (obsText || itemText).trim();
+        const clean = txt.charAt(0).toUpperCase() + txt.slice(1).replace(/[.;,]+$/, '');
+        return clean + '.';
+      }
+      // NC/CP: if there's an observation, show ONLY the observation text
+      if (!isConforming && obsText && obsText.trim()) {
+        const obs = obsText.trim();
+        const obsFinal = obs.charAt(0).toUpperCase() + obs.slice(1).replace(/[.;,]+$/, '');
+        return obsFinal + '.';
+      }
       const itemLower = itemText.toLowerCase();
       let base = '';
       for (const p of ITEM_PHRASES) {
@@ -1518,14 +1834,14 @@ async function generateFullReport(reportFecha, reportMes, auditorLider, oportuni
       }
       if (!obsText) return base;
       const baseClean = base.replace(/[.;,\s]+$/, '');
-      const obs = obsText.trim().replace(/^\s*[-–:]\s*/, '');
+      const obs2 = obsText.trim().replace(/^\s*[-–:]\s*/, '');
       const usarPuntoYComa = Math.random() < 0.5;
       if (usarPuntoYComa) {
-        const obsMin = obs.charAt(0).toLowerCase() + obs.slice(1).replace(/[.;,]+$/, '');
+        const obsMin = obs2.charAt(0).toLowerCase() + obs2.slice(1).replace(/[.;,]+$/, '');
         return baseClean + '; ' + obsMin + '.';
       } else {
-        const obsFinal = obs.charAt(0).toUpperCase() + obs.slice(1).replace(/[.;,]+$/, '');
-        return baseClean + '. ' + obsFinal + '.';
+        const obsFinal2 = obs2.charAt(0).toUpperCase() + obs2.slice(1).replace(/[.;,]+$/, '');
+        return baseClean + '. ' + obsFinal2 + '.';
       }
     }
 
@@ -1549,7 +1865,7 @@ async function generateFullReport(reportFecha, reportMes, auditorLider, oportuni
         yPos+=11;
         secItems.forEach(f=>{
           const obsText = f.obs ? f.obs.trim() : '';
-          const parrafo = buildFinding(f.item, isConforming, obsText);
+          const parrafo = buildFinding(f.item, isConforming, obsText, f.isHa);
           const parLines = doc.splitTextToSize(parrafo, CW-12);
           const needed = parLines.length*4.8+10;
           chk(needed);
@@ -1583,6 +1899,13 @@ async function generateFullReport(reportFecha, reportMes, auditorLider, oportuni
           const key=makeId(sec.name,idx);
           if(evidenceStore[key]&&evidenceStore[key].length>0){
             evidenceStore[key].forEach(ev=>secPhotos.push(ev));
+          }
+        });
+        // Include ha adicionales photos
+        const sid=makeId(sec.name,0);
+        (haStore[sid]||[]).forEach(function(x){
+          if(evidenceStore[x.iid]&&evidenceStore[x.iid].length>0){
+            evidenceStore[x.iid].forEach(ev=>secPhotos.push(Object.assign({},ev,{title:(ev.title||x.text.substring(0,40))})));
           }
         });
         if(secPhotos.length>0) bySectionOrdered.push({name:sec.name, photos:secPhotos});
@@ -1696,14 +2019,54 @@ async function generateFullReport(reportFecha, reportMes, auditorLider, oportuni
     yPos+=8;
 
     sectionBar('CONCLUSIÓN', CB);
-    let concText='';
-    if(finalPct>=92) concText='Como resultado de la auditoría realizada en '+sede+' durante el mes de '+reportMes+', se obtiene una calificación del '+finalPct+'% clasificándose en RIESGO BAJO. La sede cumple satisfactoriamente con los criterios de calidad evaluados. Se genera seguimiento pero no se requiere plan de acción inmediato. Se recomienda mantener los estándares alcanzados y documentar las buenas prácticas identificadas.';
-    else if(finalPct>=85) concText='Como resultado de la auditoría realizada en '+sede+' durante el mes de '+reportMes+', se obtiene una calificación del '+finalPct+'% clasificándose en RIESGO MEDIO. La sede cumple parcialmente con los criterios evaluados. Se requiere plan de acción y seguimiento para mejorar las áreas con oportunidad de mejora identificadas en el presente informe.';
-    else concText='Como resultado de la auditoría realizada en '+sede+' durante el mes de '+reportMes+', se obtiene una calificación del '+finalPct+'% clasificándose en RIESGO ALTO. Se evidencian deficiencias que comprometen la calidad del servicio y la seguridad del paciente. Se requieren acciones de intervención inmediata y plan de mejoramiento a corto plazo para corregir los hallazgos no conformes identificados.';
+    var _recOnRep = document.getElementById('recActivo') && document.getElementById('recActivo').checked;
     doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(CT[0],CT[1],CT[2]);
-    const cLines=doc.splitTextToSize(concText,CW-6);
-    chk(cLines.length*5.2+8);
-    doc.text(cLines,M+3,yPos); yPos+=cLines.length*5.2+6;
+    var _concLineH = 5.2;
+    var _concGap   = 2; // separación mínima entre párrafos
+
+    function _drawConcPara(txt) {
+      var lines = doc.splitTextToSize(txt, CW-6);
+      chk(lines.length * _concLineH + 6);
+      doc.text(lines, M+3, yPos, { align: 'justify', maxWidth: CW-6 });
+      yPos += lines.length * _concLineH + _concGap;
+    }
+
+    if (_recOnRep) {
+      // ── Párrafo 1: resultado general ──
+      _drawConcPara(
+        'Como resultado de la auditoría realizada en ' + sede + ' durante el mes de ' + reportMes +
+        ', la sede presenta un resultado de cumplimiento que, de acuerdo con los criterios establecidos, correspondería a RIESGO BAJO; no obstante, de conformidad con la política interna de calidad, el resultado del presente informe se califica con un 80% de cumplimiento.'
+      );
+      // ── Párrafo 2: explicación de la política ──
+      _drawConcPara(
+        'Esta calificación obedece a que cuando una sede mantiene cumplimiento, pero presenta el mismo hallazgo de manera recurrente durante tres (3) informes consecutivos, el resultado del informe se fija en el 80%, con el fin de promover la mejora continua.'
+      );
+      // ── Párrafo 3: hallazgo(s) específico(s) ──
+      var _p3 = '';
+      if (recItems && recItems.length === 1) {
+        var ri = recItems[0];
+        _p3 = 'Esta recurrencia de hallazgo se pudo evidenciar en la categoría de "' + ri.cat + '"' +
+          (ri.itxt ? ', específicamente en el ítem referente a "' + ri.itxt + '"' + ', se ha identificado la persistencia del mismo hallazgo durante tres (3) informes de auditoría consecutivos.' : ', donde se ha identificado la persistencia del mismo hallazgo durante tres (3) informes de auditoría consecutivos.') +
+          (ri.obs ? ' ' + ri.obs.charAt(0).toUpperCase() + ri.obs.slice(1).replace(/[.,;]+$/,'') + '.' : '') +
+          ' Se requiere la formulación de un plan de acción orientado a la eliminación definitiva del hallazgo recurrente identificado.';
+      } else if (recItems && recItems.length > 1) {
+        var _rlist2 = recItems.map(function(ri, ii){
+          return (ii+1) + ') Categoría "' + ri.cat + '"' + (ri.itxt ? ': ' + ri.itxt : '');
+        }).join('  ');
+        _p3 = 'Esta recurrencia de hallazgos se pudo evidenciar en ' + recItems.length + ' ítems: ' + _rlist2 + '. En todos los casos se ha identificado la persistencia del mismo hallazgo durante tres (3) informes de auditoría consecutivos. Se requiere la formulación de un plan de acción orientado a la eliminación definitiva de los hallazgos recurrentes identificados.';
+      } else {
+        _p3 = 'Esta recurrencia de hallazgo se ha evidenciado de manera persistente durante tres (3) informes de auditoría consecutivos. Se requiere la formulación de un plan de acción orientado a la eliminación definitiva del hallazgo recurrente identificado.';
+      }
+      _drawConcPara(_p3);
+      yPos += 2; // pequeño espacio final antes de la siguiente sección
+    } else {
+      var _concSingle = '';
+      if(finalPct>=92) _concSingle='Como resultado de la auditoría realizada en '+sede+' durante el mes de '+reportMes+', se obtiene una calificación del '+finalPct+'% clasificándose en RIESGO BAJO. La sede cumple satisfactoriamente con los criterios de calidad evaluados. Se genera seguimiento pero no se requiere plan de acción inmediato. Se recomienda mantener los estándares alcanzados y documentar las buenas prácticas identificadas.';
+      else if(finalPct>=85) _concSingle='Como resultado de la auditoría realizada en '+sede+' durante el mes de '+reportMes+', se obtiene una calificación del '+finalPct+'% clasificándose en RIESGO MEDIO. La sede cumple parcialmente con los criterios evaluados. Se requiere plan de acción y seguimiento para mejorar las áreas con oportunidad de mejora identificadas en el presente informe.';
+      else _concSingle='Como resultado de la auditoría realizada en '+sede+' durante el mes de '+reportMes+', se obtiene una calificación del '+finalPct+'% clasificándose en RIESGO ALTO. Se evidencian deficiencias que comprometen la calidad del servicio y la seguridad del paciente. Se requieren acciones de intervención inmediata y plan de mejoramiento a corto plazo para corregir los hallazgos no conformes identificados.';
+      _drawConcPara(_concSingle);
+      yPos += 2;
+    }
 
     if(oportunidades && oportunidades.length > 0){
       sectionBar('OPORTUNIDADES DE MEJORA', CB);
@@ -1914,7 +2277,15 @@ async function guardarAuditoria(){
         if(radios.length>0){ const fila=radios[0].closest('tr'); const oi=fila?fila.querySelector('.obs-input'):null; if(oi) obs=oi.value; }
         const evCount=evidenceStore[itemId]?evidenceStore[itemId].length:0;
         const oportunidades=omStore[itemId]||[];
-        items.push({categoria:section.name,item,resultado:valor||'Sin evaluar',observacion:obs,evidencias:evCount,oportunidades});
+        items.push({categoria:section.name,item,resultado:valor||'Sin evaluar',observacion:obs,evidencias:evCount,oportunidades,esHallazgoAdicional:false});
+      });
+      // Include ha adicionales in Sheets
+      const sid=makeId(section.name,0);
+      (haStore[sid]||[]).forEach(function(x){
+        const evCount=evidenceStore[x.iid]?evidenceStore[x.iid].length:0;
+        const oportunidades=omStore[x.iid]||[];
+        const calSigla = (x.cal==='C'||x.cal==='CP'||x.cal==='NC'||x.cal==='NA') ? x.cal : 'Sin evaluar';
+        items.push({categoria:section.name,item:x.text,resultado:calSigla,observacion:x.text,evidencias:evCount,oportunidades,esHallazgoAdicional:true,hallazgoAdicional:true});
       });
     });
     const fStr=fecha.replace(/-/g,'');
@@ -2226,12 +2597,23 @@ function saveToLocalStorage() {
       const oi = row.querySelector('.obs-input');
       if (fc && oi && oi.value) obs[fc.textContent.trim()] = oi.value;
     });
+    // Save ha items
+    var _haSave = {};
+    Object.keys(haStore).forEach(function(sid) {
+      _haSave[sid] = (haStore[sid] || []).map(function(x){
+        return { text: x.text, cal: x.cal, iid: x.iid,
+          omData: omStore[x.iid] ? omStore[x.iid].slice() : [] };
+      });
+    });
     const draft = {
       fecha:   document.getElementById('fecha').value,
       sede:    document.getElementById('sede').value,
       auditor: document.getElementById('auditor').value,
       radios, obs,
       omStore: JSON.parse(JSON.stringify(omStore)),
+      haSave: _haSave,
+      recActivo: document.getElementById('recActivo') ? document.getElementById('recActivo').checked : false,
+      recItems:  JSON.parse(JSON.stringify(recItems))
     };
     localStorage.setItem(LS_KEY, JSON.stringify(draft));
     _fbSaveDraft(); // ← sincroniza con Firebase y pulsa el badge
@@ -2261,9 +2643,36 @@ function restoreFromLocalStorage() {
     }
     if (draft.omStore) {
       omStore = draft.omStore;
-      Object.keys(omStore).forEach(itemId => {
+      Object.keys(omStore).forEach(function(itemId) {
         if (omStore[itemId] && omStore[itemId].length > 0) refreshOmButton(itemId);
       });
+    }
+    if (draft.haSave) {
+      Object.keys(draft.haSave).forEach(function(sid) {
+        var arr = draft.haSave[sid] || [];
+        arr.forEach(function(x) {
+          if (!x.text) return;
+          haCount++;
+          var iid = x.iid || ('ha-' + sid + '-' + haCount);
+          x.iid = iid;
+          evidenceStore[iid] = [];
+          omStore[iid] = x.omData || [];
+          if (!haStore[sid]) haStore[sid] = [];
+          haStore[sid].push({ text: x.text, cal: x.cal, iid: iid });
+        });
+        haRefreshBtn(sid);
+      });
+    }
+    if (draft.recActivo && document.getElementById('recActivo')) {
+      document.getElementById('recActivo').checked = true;
+      var sw2 = document.getElementById('recSwitchWrap');
+      if (sw2) sw2.classList.add('on');
+      var rf = document.getElementById('recFields');
+      if (rf) rf.classList.add('open');
+      if (draft.recItems && Array.isArray(draft.recItems)) {
+        recItems = draft.recItems;
+        recRender();
+      }
     }
     return true;
   } catch(e) { console.warn('Restore error:', e); return false; }
@@ -2272,8 +2681,317 @@ function clearLocalStorage() {
   try { localStorage.removeItem(LS_KEY); } catch(e) {}
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// HALLAZGOS ADICIONALES — inline panel con foto y OM
+// ═══════════════════════════════════════════════════════════════
+var haStore = {};
+var haCount = 0;
+var haFormEvidenceId = {};  // temp evidenceId per secId before item is added
+
+function haToggle(secId, secName) {
+  var panel = document.getElementById('ha-panel-' + secId);
+  var btn   = document.getElementById('ha-btn-'   + secId);
+  if (!panel) return;
+  var opening = !panel.classList.contains('open');
+  panel.classList.toggle('open', opening);
+  if (opening) {
+    btn.innerHTML = '<i class="fas fa-chevron-up"></i> Ocultar hallazgos adicionales';
+    btn.classList.remove('has-items');
+    var ta = document.getElementById('ha-ta-' + secId);
+    if (ta) setTimeout(function(){ ta.focus(); }, 60);
+  } else {
+    haRefreshBtn(secId);
+  }
+}
+
+function haAdd(secId) {
+  var ta  = document.getElementById('ha-ta-' + secId);
+  if (!ta) return;
+  var txt = ta.value.trim();
+  if (!txt) { ta.focus(); return; }
+
+  var calEl = document.querySelector('input[name="ha-cal-' + secId + '"]:checked');
+  var cal   = calEl ? calEl.value : '';
+
+  haCount++;
+  var iid = 'ha-' + secId + '-' + haCount;
+  // Transfer any pre-attached evidence/om from the form buttons
+  if (haFormEvidenceId[secId]) {
+    var prevId = haFormEvidenceId[secId];
+    evidenceStore[iid] = evidenceStore[prevId] || [];
+    omStore[iid]       = omStore[prevId]       || [];
+    delete evidenceStore[prevId];
+    delete omStore[prevId];
+    delete haFormEvidenceId[secId];
+  } else {
+    evidenceStore[iid] = [];
+    omStore[iid]       = [];
+  }
+
+  if (!haStore[secId]) haStore[secId] = [];
+  haStore[secId].push({ text: txt, cal: cal, iid: iid });
+
+  haAppendItem(secId, { text: txt, cal: cal, iid: iid });
+
+  ta.value = '';
+  if (calEl) calEl.checked = false;
+  // Reset form button counters
+  haSetFormBtnCount('ha-form-foto-' + secId, 0, false);
+  haSetFormBtnCount('ha-form-om-'   + secId, 0, true);
+  ta.focus();
+  haRefreshBtn(secId);
+  saveToLocalStorage();
+}
+
+function haAppendItem(secId, item) {
+  var list = document.getElementById('ha-list-' + secId);
+  if (!list) return;
+
+  var li = document.createElement('li');
+  li.id  = 'ha-li-' + item.iid;
+
+  // Meta row (badges)
+  var meta = document.createElement('div');
+  meta.className = 'ha-li-meta';
+  meta.id = 'ha-meta-' + item.iid;
+  if (item.cal) {
+    var badge = document.createElement('span');
+    badge.className = 'ha-badge ' + item.cal;
+    badge.textContent = item.cal;
+    meta.appendChild(badge);
+  }
+
+  // Main row: text + action buttons + delete (all inline)
+  var mainDiv = document.createElement('div');
+  mainDiv.className = 'ha-li-main';
+
+  var textDiv = document.createElement('div');
+  textDiv.className = 'ha-li-text';
+  textDiv.style.flex = '1';
+  textDiv.textContent = item.text;
+
+  // Actions wrapper — same style as evidence-btn/om-btn
+  var actDiv = document.createElement('div');
+  actDiv.className = 'ha-li-actions';
+
+  var fotoBtn = document.createElement('button');
+  fotoBtn.type = 'button';
+  fotoBtn.className = 'ha-act-btn';
+  fotoBtn.id = 'ha-foto-' + item.iid;
+  fotoBtn.title = 'Evidencia fotográfica';
+  fotoBtn.innerHTML = '<i class="fas fa-camera"></i><span>Foto</span>';
+  (function(iid, txt){
+    fotoBtn.addEventListener('click', function(){
+      currentEvidenceItem = iid;
+      document.getElementById('modal-title').innerHTML =
+        '<i class="fas fa-camera" style="margin-right:8px;"></i>Evidencia: ' +
+        txt.substring(0, 52) + (txt.length > 52 ? '…' : '');
+      updateEvidencePreview();
+      document.getElementById('evidenceModal').style.display = 'block';
+      window._haActiveIid = iid;
+    });
+  })(item.iid, item.text);
+
+  var omBtn = document.createElement('button');
+  omBtn.type = 'button';
+  omBtn.className = 'ha-act-btn om-s';
+  omBtn.id = 'ha-om-' + item.iid;
+  omBtn.title = 'Oportunidad de mejora';
+  omBtn.innerHTML = '<i class="fas fa-lightbulb"></i><span>OM</span>';
+  (function(iid, txt){
+    omBtn.addEventListener('click', function(){
+      _currentOmItem  = iid;
+      _currentOmLabel = txt.substring(0, 70) + (txt.length > 70 ? '…' : '');
+      document.getElementById('om-inline-subtitle').textContent = _currentOmLabel;
+      document.getElementById('om-inline-input').value = '';
+      omInlineRenderLista();
+      document.getElementById('omInlineModal').style.display = 'block';
+      setTimeout(function(){ document.getElementById('om-inline-input').focus(); }, 80);
+    });
+  })(item.iid, item.text);
+
+  var delBtn = document.createElement('button');
+  delBtn.className = 'ha-del-btn';
+  delBtn.title = 'Eliminar';
+  delBtn.innerHTML = '<i class="fas fa-times"></i>';
+  (function(iid, sid){ delBtn.onclick = function(){ haDel(iid, sid); }; })(item.iid, secId);
+
+  actDiv.appendChild(fotoBtn);
+  actDiv.appendChild(omBtn);
+  actDiv.appendChild(delBtn);
+
+  mainDiv.appendChild(textDiv);
+  mainDiv.appendChild(actDiv);
+
+  li.appendChild(meta);
+  li.appendChild(mainDiv);
+  list.appendChild(li);
+}
+
+function haDel(iid, secId) {
+  var li = document.getElementById('ha-li-' + iid);
+  if (li) li.remove();
+  haStore[secId] = (haStore[secId] || []).filter(function(x){ return x.iid !== iid; });
+  delete evidenceStore[iid];
+  delete omStore[iid];
+  haRefreshBtn(secId);
+  saveToLocalStorage();
+}
+
+function haRefreshBtn(secId) {
+  var btn   = document.getElementById('ha-btn-' + secId);
+  var panel = document.getElementById('ha-panel-' + secId);
+  if (!btn) return;
+  var count = (haStore[secId] || []).length;
+  if (panel && panel.classList.contains('open')) {
+    btn.innerHTML = '<i class="fas fa-chevron-up"></i> Ocultar hallazgos adicionales';
+    btn.classList.remove('has-items');
+  } else if (count > 0) {
+    btn.classList.add('has-items');
+    btn.innerHTML = '<i class="fas fa-flag"></i> ' + count + ' hallazgo' + (count > 1 ? 's' : '') + ' adicional' + (count > 1 ? 'es' : '');
+  } else {
+    btn.classList.remove('has-items');
+    btn.innerHTML = '<i class="fas fa-plus-circle"></i> Agregar hallazgo adicional';
+  }
+}
+
+function haRefreshBadges(iid) {
+  haSetBtnCount('ha-foto-' + iid, (evidenceStore[iid] || []).length, false);
+  haSetBtnCount('ha-om-'   + iid, (omStore[iid]       || []).length, true);
+}
+
+function haSetBtnCount(btnId, count, isOm) {
+  var btn = document.getElementById(btnId);
+  if (!btn) return;
+  var existing = btn.querySelector('.ha-act-count');
+  if (existing) existing.remove();
+  btn.classList.toggle('active', count > 0);
+  btn.innerHTML = isOm
+    ? '<i class="fas fa-lightbulb"></i><span>OM</span>'
+    : '<i class="fas fa-camera"></i><span>Foto</span>';
+  if (count > 0) {
+    var badge = document.createElement('span');
+    badge.className = 'ha-act-count';
+    badge.textContent = count;
+    btn.appendChild(badge);
+  }
+}
+
+function haSetFormBtnCount(btnId, count, isOm) {
+  var btn = document.getElementById(btnId);
+  if (!btn) return;
+  var existing = btn.querySelector('.ha-form-count');
+  if (existing) existing.remove();
+  btn.classList.toggle('active', count > 0);
+  btn.innerHTML = isOm
+    ? '<i class="fas fa-lightbulb"></i> OM'
+    : '<i class="fas fa-camera"></i> Foto';
+  if (count > 0) {
+    var badge = document.createElement('span');
+    badge.className = 'ha-form-count';
+    badge.textContent = count;
+    btn.appendChild(badge);
+  }
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+// HALLAZGO RECURRENTE 80%
+// ═══════════════════════════════════════════════════════════════
+var recItems = [];
+
+function recPopulate() {
+  var sel = document.getElementById('recCat');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— Seleccione la categoría —</option>';
+  DATA.forEach(function(s) {
+    var o = document.createElement('option');
+    o.value = s.name; o.textContent = s.name;
+    sel.appendChild(o);
+  });
+}
+
+function recUpdateItems() {
+  var cat = document.getElementById('recCat').value;
+  var sel = document.getElementById('recItem');
+  sel.innerHTML = '<option value="">— Seleccione el ítem —</option>';
+  if (!cat) return;
+  var sec = DATA.find(function(s){ return s.name === cat; });
+  if (!sec) return;
+  sec.items.forEach(function(item, i) {
+    var o = document.createElement('option');
+    o.value = i;
+    o.textContent = item.length > 90 ? item.substring(0, 90) + '…' : item;
+    sel.appendChild(o);
+  });
+}
+
+function recAdd() {
+  var catSel = document.getElementById('recCat');
+  var itmSel = document.getElementById('recItem');
+  var obsEl  = document.getElementById('recObsInput');
+  var cat    = catSel.value;
+  if (!cat) { catSel.focus(); return; }
+  var sec  = DATA.find(function(s){ return s.name === cat; });
+  var iIdx = itmSel.value;
+  var itxt = (sec && iIdx !== '') ? sec.items[parseInt(iIdx)] : '';
+  var obs  = obsEl ? obsEl.value.trim() : '';
+  recItems.push({ cat: cat, iIdx: iIdx, itxt: itxt, obs: obs });
+  recRender();
+  catSel.value = ''; itmSel.innerHTML = '<option value="">— Seleccione el ítem —</option>';
+  if (obsEl) obsEl.value = '';
+  saveToLocalStorage();
+}
+
+function recRender() {
+  var ul = document.getElementById('recList');
+  if (!ul) return;
+  ul.innerHTML = '';
+  recItems.forEach(function(it, idx) {
+    var li   = document.createElement('li');
+    var body = document.createElement('div');
+    body.className = 'rec-li-body';
+    var catDiv = document.createElement('div');
+    catDiv.className = 'rec-li-cat';
+    catDiv.textContent = it.cat;
+    var txtDiv = document.createElement('div');
+    txtDiv.className = 'rec-li-text';
+    txtDiv.textContent = it.itxt || '(categoría completa)';
+    body.appendChild(catDiv);
+    body.appendChild(txtDiv);
+    if (it.obs) {
+      var obsDiv = document.createElement('div');
+      obsDiv.className = 'rec-li-obs';
+      obsDiv.textContent = it.obs;
+      body.appendChild(obsDiv);
+    }
+    var del = document.createElement('button');
+    del.className = 'rec-li-del';
+    del.innerHTML = '<i class="fas fa-times"></i>';
+    (function(i){ del.onclick = function(){ recItems.splice(i,1); recRender(); saveToLocalStorage(); }; })(idx);
+    li.appendChild(body);
+    li.appendChild(del);
+    ul.appendChild(li);
+  });
+}
+
+function toggleRec() {
+  var cb     = document.getElementById('recActivo');
+  var sw     = document.getElementById('recSwitchWrap');
+  var fields = document.getElementById('recFields');
+  cb.checked = !cb.checked;
+  var active = cb.checked;
+  if (sw)     sw.classList.toggle('on', active);
+  if (fields) fields.classList.toggle('open', active);
+  computeResults();
+  saveToLocalStorage();
+}
+
+
 document.addEventListener('DOMContentLoaded', async ()=>{
   renderChecklist();
+  recPopulate();
   initDropZone();
 
   if (_fbEnabled) {
@@ -2312,8 +3030,33 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   document.getElementById('save-audit').addEventListener('click', guardarAuditoria);
   document.getElementById('reset-form').addEventListener('click', resetForm);
   document.body.addEventListener('change', e => {
-    if (e.target.type === 'radio' || e.target.classList.contains('obs-input')) {
+    if (e.target.type === 'radio') {
       computeResults(); saveToLocalStorage();
+      // If NC or CP selected, mark obs as required
+      if (e.target.value === 'NC' || e.target.value === 'CP') {
+        var row = e.target.closest('tr');
+        if (row) {
+          var obs = row.querySelector('.obs-input');
+          if (obs) {
+            obs.placeholder = '⚠ Observación obligatoria para NC/CP...';
+            obs.style.borderColor = obs.value.trim() ? '' : '#e53935';
+          }
+        }
+      } else if (e.target.value === 'C' || e.target.value === 'NA') {
+        var row2 = e.target.closest('tr');
+        if (row2) {
+          var obs2 = row2.querySelector('.obs-input');
+          if (obs2) {
+            obs2.placeholder = 'Observaciones...';
+            obs2.style.borderColor = '';
+          }
+        }
+      }
+    }
+    if (e.target.classList.contains('obs-input')) {
+      computeResults(); saveToLocalStorage();
+      // Clear error border when user types
+      if (e.target.value.trim()) e.target.style.borderColor = '';
     }
   });
   document.body.addEventListener('input', e => {
@@ -2327,6 +3070,9 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     if (e.target === document.getElementById('reportModal')) closeReportModal();
     if (e.target === document.getElementById('omInlineModal')) omInlineCerrar();
   };
+  // haTa enter
+  var haTaEl = document.getElementById('haTa');
+  if(haTaEl) haTaEl.addEventListener('keydown',function(e){ if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();haAdd();} });
 });
 </script>
 </body>
