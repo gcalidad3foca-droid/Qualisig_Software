@@ -68,7 +68,7 @@
   .om-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(124,143,240,0.3); }
   .om-btn.has-om { background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%); box-shadow: 0 2px 8px rgba(76,175,80,0.2); }
   .om-btn i { font-size: 14px; }
-  .om-inline-modal { display:none; position:fixed; z-index:1500; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); animation:fadeIn 0.2s ease; }
+  .om-inline-modal { display:none; position:fixed; z-index:4500; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); animation:fadeIn 0.2s ease; }
   .om-inline-content { position:relative; background:#fff; margin:8% auto; border-radius:12px; width:90%; max-width:480px; overflow:hidden; box-shadow:0 10px 40px rgba(0,0,0,0.3); animation:slideIn 0.3s ease; }
   .om-inline-header { background:linear-gradient(135deg,#1e3c72 0%,#2a5298 100%); color:white; padding:16px 20px; }
   .om-inline-header h3 { margin:0 0 2px; font-size:15px; font-weight:700; }
@@ -76,7 +76,7 @@
   .om-inline-body { padding:18px 20px; }
   .evidence-count { position: absolute; top: -8px; right: -8px; background: #f44336; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
-  .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.75); animation: fadeIn 0.3s ease; }
+  .modal { display: none; position: fixed; z-index: 4500; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.75); animation: fadeIn 0.3s ease; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   .modal-content { position: relative; background-color: #fff; margin: 3% auto; padding: 0; border-radius: 14px; width: 90%; max-width: 820px; max-height: 90vh; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: slideIn 0.3s ease; }
   @keyframes slideIn { from { transform: translateY(-40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -202,91 +202,104 @@
 .evidence-img, .evidence-preview img, #evidence-list img {
   image-orientation: from-image;
 }
-/* ── Hallazgo adicional — inline expandable ── */
+/* ── Hallazgo adicional — botón en tabla ── */
 .ha-row td{background:#f0f4ff!important;padding:10px 16px!important;border-bottom:2px solid #e4eaff!important;}
 .ha-toggle-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:7px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(102,126,234,.25);transition:all .2s;}
 .ha-toggle-btn:hover{opacity:.88;transform:translateY(-1px);}
 .ha-toggle-btn.has-items{background:linear-gradient(135deg,#1e3c72,#2a5298);}
-.ha-panel{display:none;margin-top:12px;padding:0;border-radius:10px;border:1.5px solid #d8e0f8;overflow:hidden;}
-.ha-panel.open{display:block;}
+
+/* ── Hallazgo adicional — MODAL FLOTANTE ── */
+#haModal{display:none;position:fixed;inset:0;z-index:4000;background:rgba(15,23,42,.65);backdrop-filter:blur(3px);animation:fadeIn .22s ease;align-items:center;justify-content:center;}
+#haModal.open{display:flex;}
+#haModalBox{
+  background:#fff;
+  border-radius:16px;
+  width:94%;
+  max-width:640px;
+  max-height:88vh;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 24px 60px rgba(0,0,0,.35);
+  animation:slideIn .25s ease;
+  overflow:hidden;
+}
+#haModalHead{
+  background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+  padding:16px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-shrink:0;
+}
+#haModalHead h3{margin:0;font-size:15px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;}
+#haModalHead p{margin:2px 0 0;font-size:11px;color:rgba(255,255,255,.8);}
+#haModalClose{background:rgba(255,255,255,.18);border:none;color:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0;}
+#haModalClose:hover{background:rgba(255,255,255,.32);}
+#haModalBody{overflow-y:auto;flex:1;padding:0;}
+
+/* Lista de ítems dentro del modal */
 .ha-list{list-style:none;padding:0;margin:0;}
-.ha-list li{background:#fff;border-bottom:1px solid #eef0f8;padding:11px 14px;}
+.ha-list li{background:#fff;border-bottom:1px solid #eef0f8;padding:12px 16px;transition:background .12s;}
+.ha-list li:hover{background:#fafbff;}
 .ha-list li:last-child{border-bottom:none;}
-.ha-li-main{display:flex;align-items:center;gap:8px;}
+.ha-li-main{display:flex;align-items:flex-start;gap:10px;}
 .ha-li-body{flex:1;min-width:0;}
-.ha-li-meta{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px;min-height:18px;}
-.ha-li-text{font-size:13px;color:#2c3e50;font-weight:500;line-height:1.4;}
-.ha-li-actions{display:flex;align-items:center;gap:5px;flex-shrink:0;}
-.ha-del-btn{background:none;border:none;color:#ccc;cursor:pointer;font-size:15px;padding:2px 4px;line-height:1;transition:color .15s;flex-shrink:0;}
+.ha-li-meta{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px;min-height:18px;}
+.ha-li-text{font-size:13px;color:#2c3e50;font-weight:500;line-height:1.45;word-break:break-word;}
+.ha-li-actions{display:flex;align-items:center;gap:5px;flex-shrink:0;margin-top:2px;}
+.ha-del-btn{background:none;border:none;color:#ddd;cursor:pointer;font-size:16px;padding:3px 5px;line-height:1;transition:color .15s;flex-shrink:0;}
 .ha-del-btn:hover{color:#f44336;}
 .ha-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
 .ha-badge.C{background:#e8f5e9;color:#2e7d32;}
 .ha-badge.CP{background:#fff3e0;color:#e65100;}
 .ha-badge.NC{background:#fce4ec;color:#c62828;}
 .ha-badge.NA{background:#eceff1;color:#546e7a;}
-.ha-act-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 0;width:62px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .3s;box-shadow:0 2px 8px rgba(102,126,234,.2);position:relative;}
-.ha-act-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(102,126,234,.3);}
-.ha-act-btn.active{background:linear-gradient(135deg,#4caf50,#66bb6a);box-shadow:0 2px 8px rgba(76,175,80,.2);}
-.ha-act-btn.om-s{background:linear-gradient(135deg,#7c8ff0,#9c6fd6);box-shadow:0 2px 8px rgba(124,143,240,.2);}
-.ha-act-btn.om-s:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(124,143,240,.3);}
-.ha-act-btn.om-s.active{background:linear-gradient(135deg,#4caf50,#66bb6a);box-shadow:0 2px 8px rgba(76,175,80,.2);}
-.ha-act-count{position:absolute;top:-8px;right:-8px;background:#f44336;color:white;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;box-shadow:0 2px 4px rgba(0,0,0,.2);}
-.ha-form{background:#f8f9ff;padding:14px 16px;border-top:1.5px solid #e4eaff;}
-.ha-form-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#1e3c72;margin-bottom:7px;display:block;}
-.ha-form textarea{width:100%;padding:9px 12px;border:1.5px solid #d0d8f5;border-radius:7px;font-size:13px;font-family:inherit;background:white;color:#2c3e50;resize:vertical;box-sizing:border-box;min-height:64px;}
+.ha-act-btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:5px 10px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all .25s;box-shadow:0 2px 6px rgba(102,126,234,.2);position:relative;white-space:nowrap;}
+.ha-act-btn:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(102,126,234,.3);}
+.ha-act-btn.active{background:linear-gradient(135deg,#4caf50,#66bb6a);box-shadow:0 2px 6px rgba(76,175,80,.2);}
+.ha-act-btn.om-s{background:linear-gradient(135deg,#7c8ff0,#9c6fd6);}
+.ha-act-btn.om-s:hover{box-shadow:0 4px 10px rgba(124,143,240,.3);}
+.ha-act-btn.om-s.active{background:linear-gradient(135deg,#4caf50,#66bb6a);}
+.ha-act-count{position:absolute;top:-7px;right:-7px;background:#f44336;color:white;border-radius:50%;width:17px;height:17px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.25);}
+
+/* Formulario nuevo hallazgo (dentro del modal) */
+.ha-form{background:#f4f6ff;padding:14px 16px;border-top:2px solid #e4eaff;}
+.ha-form-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#667eea;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.ha-form textarea{width:100%;padding:10px 12px;border:1.5px solid #d0d8f5;border-radius:8px;font-size:13px;font-family:inherit;background:white;color:#2c3e50;resize:vertical;box-sizing:border-box;min-height:64px;transition:border-color .15s;}
 .ha-form textarea:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.1);}
 .ha-form-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:10px;}
 .ha-cal-grp{display:flex;gap:4px;flex-wrap:wrap;}
 .ha-cal-radio{display:none;}
-.ha-cal-label{padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid #e0e4f0;background:white;transition:all .15s;user-select:none;}
+.ha-cal-label{padding:5px 11px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid #e0e4f0;background:white;transition:all .15s;user-select:none;}
 .ha-cal-radio:checked+.ha-cal-label{border-color:transparent;color:white;}
 .ha-cal-radio[value="C"]:checked+.ha-cal-label{background:#43a047;}
 .ha-cal-radio[value="CP"]:checked+.ha-cal-label{background:#fb8c00;}
 .ha-cal-radio[value="NC"]:checked+.ha-cal-label{background:#e53935;}
 .ha-cal-radio[value="NA"]:checked+.ha-cal-label{background:#78909c;}
-.ha-form-action-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:none;border-radius:6px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;cursor:pointer;font-size:12px;font-weight:600;transition:all .3s;box-shadow:0 2px 8px rgba(102,126,234,.2);position:relative;}
+.ha-form-action-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border:none;border-radius:7px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;cursor:pointer;font-size:12px;font-weight:600;transition:all .25s;box-shadow:0 2px 8px rgba(102,126,234,.2);position:relative;}
 .ha-form-action-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(102,126,234,.3);}
-.ha-form-action-btn.active{background:linear-gradient(135deg,#4caf50,#66bb6a);box-shadow:0 2px 8px rgba(76,175,80,.2);}
-.ha-form-om-btn{background:linear-gradient(135deg,#7c8ff0,#9c6fd6);box-shadow:0 2px 8px rgba(124,143,240,.2);}
-.ha-form-om-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,143,240,.3);}
+.ha-form-action-btn.active{background:linear-gradient(135deg,#4caf50,#66bb6a);}
+.ha-form-om-btn{background:linear-gradient(135deg,#7c8ff0,#9c6fd6);}
+.ha-form-om-btn:hover{box-shadow:0 4px 12px rgba(124,143,240,.3);}
 .ha-form-om-btn.active{background:linear-gradient(135deg,#4caf50,#66bb6a);}
 .ha-form-count{position:absolute;top:-7px;right:-7px;background:#f44336;color:white;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
-.ha-add-btn{margin-left:auto;padding:7px 20px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(102,126,234,.25);}
-.ha-add-btn:hover{opacity:.88;}
-/* ── MÓVIL: hallazgo adicional ── */
-@media(max-width:700px){
-  /* Fila contenedora: sin padding lateral excesivo */
-  .ha-row td{padding:10px 8px!important;}
-  /* Botón toggle ocupa todo el ancho */
-  .ha-toggle-btn{width:100%;justify-content:center;padding:10px 14px;font-size:13px;border-radius:8px;}
-  /* Panel sin overflow oculto para que no se corte */
-  .ha-panel{border-radius:8px;margin-top:8px;}
-  /* Ítem de lista: layout vertical en móvil */
-  .ha-list li{padding:10px 10px;}
-  .ha-li-main{flex-wrap:wrap;gap:6px;}
-  .ha-li-text{font-size:12px;width:100%;order:1;}
-  .ha-li-meta{order:0;width:100%;}
-  .ha-li-actions{order:2;width:100%;justify-content:flex-start;gap:6px;}
-  /* Botones acción ítems: más grandes para touch */
-  .ha-act-btn{width:auto;flex:1;max-width:90px;padding:8px 6px;font-size:12px;min-height:38px;}
-  .ha-del-btn{margin-left:auto;font-size:18px;padding:4px 8px;color:#e0e0e0;}
-  /* Formulario de nuevo hallazgo */
-  .ha-form{padding:12px 10px;}
-  .ha-form-lbl{font-size:10px;}
-  .ha-form textarea{font-size:14px;min-height:72px;padding:10px;}
-  /* Fila de controles: apilada verticalmente */
-  .ha-form-row{flex-direction:column;align-items:stretch;gap:8px;margin-top:8px;}
-  /* Grupo de calificación: botones más grandes */
-  .ha-cal-grp{gap:5px;justify-content:space-between;}
-  .ha-cal-label{flex:1;text-align:center;padding:9px 4px;font-size:12px;border-radius:6px;}
-  /* Fila secundaria: Foto + OM + Agregar */
-  .ha-form-action-btn{flex:1;justify-content:center;padding:10px 8px;font-size:13px;min-height:42px;border-radius:8px;}
-  .ha-form-action-btn i{font-size:14px;}
-  .ha-add-btn{width:100%;margin-left:0;padding:12px;font-size:14px;border-radius:8px;min-height:46px;}
-  /* Badge contadores: ligeramente más grande para móvil */
-  .ha-act-count{width:20px;height:20px;font-size:11px;top:-9px;right:-9px;}
-  .ha-form-count{width:18px;height:18px;font-size:10px;top:-8px;right:-8px;}
+.ha-add-btn{margin-left:auto;padding:7px 20px;background:linear-gradient(135deg,#1e3c72,#2a5298);color:white;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(30,60,114,.25);transition:all .2s;}
+.ha-add-btn:hover{opacity:.88;transform:translateY(-1px);}
+
+/* ── MÓVIL: modal HA ── */
+@media(max-width:600px){
+  #haModalBox{width:100%;max-width:100%;border-radius:18px 18px 0 0;max-height:92vh;position:fixed;bottom:0;left:0;animation:slideUp .28s ease;}
+  #haModal{align-items:flex-end;}
+  @keyframes slideUp{from{transform:translateY(100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .ha-form-row{flex-direction:column;align-items:stretch;gap:8px;}
+  .ha-cal-grp{justify-content:space-between;}
+  .ha-cal-label{flex:1;text-align:center;padding:9px 4px;font-size:12px;}
+  .ha-form-action-btn{flex:1;justify-content:center;min-height:42px;font-size:13px;}
+  .ha-add-btn{width:100%;margin-left:0;padding:12px;font-size:14px;min-height:46px;}
+  .ha-act-btn{flex:1;max-width:none;min-height:36px;font-size:12px;}
+  .ha-li-actions{width:100%;margin-top:6px;}
 }
+
 
 /* ── Panel 80% — switch a la derecha ── */
 .rec-panel{margin:32px 24px 24px;border-radius:14px;overflow:hidden;box-shadow:0 6px 28px rgba(30,60,114,.18);}
@@ -494,6 +507,32 @@
 
 
 <!-- ===== EVIDENCE MODAL ===== -->
+<!-- ===== HALLAZGOS ADICIONALES MODAL ===== -->
+<div id="haModal">
+  <div id="haModalBox">
+    <div id="haModalHead">
+      <div>
+        <h3><i class="fas fa-flag"></i> <span id="haModalTitle">Hallazgos Adicionales</span></h3>
+        <p id="haModalSub">Sección</p>
+      </div>
+      <button id="haModalClose" onclick="haCloseModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="haModalBody">
+      <ul class="ha-list" id="haModalList"></ul>
+      <div class="ha-form" id="haModalForm">
+        <label class="ha-form-lbl"><i class="fas fa-plus-circle"></i> <span id="haModalFormLbl">Nuevo hallazgo adicional</span></label>
+        <textarea id="haModalTa" rows="2" placeholder="Describa el hallazgo adicional observado..."></textarea>
+        <div class="ha-form-row" id="haModalFormRow">
+          <div class="ha-cal-grp" id="haModalCalGrp"></div>
+          <button type="button" class="ha-form-action-btn" id="haModalFotoBtn"><i class="fas fa-camera"></i> Foto</button>
+          <button type="button" class="ha-form-action-btn ha-form-om-btn" id="haModalOmBtn"><i class="fas fa-lightbulb"></i> OM</button>
+          <button type="button" class="ha-add-btn" id="haModalAddBtn"><i class="fas fa-plus"></i> Agregar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="evidenceModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -738,112 +777,21 @@ function renderChecklist() {
 
 
 
-    // ── Hallazgo adicional — inline panel ──
+    // ── Hallazgo adicional — botón que abre modal flotante ──
     (function(secName, secId) {
       var trHa = document.createElement('tr');
       trHa.className = 'ha-row';
       var tdHa = document.createElement('td');
       tdHa.colSpan = 8;
 
-      // Toggle button
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'ha-toggle-btn';
       btn.id = 'ha-btn-' + secId;
       btn.innerHTML = '<i class="fas fa-plus-circle"></i> Agregar hallazgo adicional';
-      btn.addEventListener('click', function(){ haToggle(secId, secName); });
+      btn.addEventListener('click', function(){ haOpenModal(secId, secName); });
 
-      // Inline panel
-      var panel = document.createElement('div');
-      panel.className = 'ha-panel';
-      panel.id = 'ha-panel-' + secId;
-
-      // List container
-      var list = document.createElement('ul');
-      list.className = 'ha-list';
-      list.id = 'ha-list-' + secId;
-
-      // Add form
-      var form = document.createElement('div');
-      form.className = 'ha-form';
-      var lbl = document.createElement('label');
-      lbl.className = 'ha-form-lbl';
-      lbl.innerHTML = '<i class="fas fa-plus-circle" style="margin-right:5px;color:#667eea;"></i> Nuevo hallazgo adicional en: ' + secName;
-      var ta = document.createElement('textarea');
-      ta.id = 'ha-ta-' + secId;
-      ta.rows = 2;
-      ta.placeholder = 'Describa el hallazgo adicional observado...';
-      ta.addEventListener('keydown', function(e){
-        if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); haAdd(secId); }
-      });
-      var row = document.createElement('div');
-      row.className = 'ha-form-row';
-      var calGrp = document.createElement('div');
-      calGrp.className = 'ha-cal-grp';
-      ['C','CP','NC','NA'].forEach(function(v) {
-        var inp = document.createElement('input');
-        inp.type = 'radio'; inp.className = 'ha-cal-radio';
-        inp.name = 'ha-cal-' + secId; inp.value = v; inp.id = 'ha-' + v + '-' + secId;
-        var lb = document.createElement('label');
-        lb.className = 'ha-cal-label'; lb.htmlFor = 'ha-' + v + '-' + secId;
-        lb.textContent = v === 'NA' ? 'N/A' : v;
-        calGrp.appendChild(inp); calGrp.appendChild(lb);
-      });
-      // Foto button (opens evidence modal for a pending new item)
-      var haFotoPrev = document.createElement('button');
-      haFotoPrev.type = 'button';
-      haFotoPrev.className = 'ha-form-action-btn';
-      haFotoPrev.id = 'ha-form-foto-' + secId;
-      haFotoPrev.innerHTML = '<i class="fas fa-camera"></i> Foto';
-      haFotoPrev.title = 'Agregar evidencia fotográfica al hallazgo';
-      haFotoPrev.addEventListener('click', function(){
-        if (!haFormEvidenceId[secId]) {
-          haFormEvidenceId[secId] = 'ha-prev-' + secId + '-' + Date.now();
-          if (!evidenceStore[haFormEvidenceId[secId]]) evidenceStore[haFormEvidenceId[secId]] = [];
-        }
-        currentEvidenceItem = haFormEvidenceId[secId];
-        document.getElementById('modal-title').innerHTML = '<i class="fas fa-camera" style="margin-right:8px;"></i>Evidencia fotográfica del hallazgo';
-        updateEvidencePreview();
-        document.getElementById('evidenceModal').style.display = 'block';
-        window._haActiveIid = haFormEvidenceId[secId];
-        window._haFormSecId = secId;
-      });
-      // OM button
-      var haOmPrev = document.createElement('button');
-      haOmPrev.type = 'button';
-      haOmPrev.className = 'ha-form-action-btn ha-form-om-btn';
-      haOmPrev.id = 'ha-form-om-' + secId;
-      haOmPrev.innerHTML = '<i class="fas fa-lightbulb"></i> OM';
-      haOmPrev.title = 'Agregar oportunidad de mejora al hallazgo';
-      haOmPrev.addEventListener('click', function(){
-        if (!haFormEvidenceId[secId]) {
-          haFormEvidenceId[secId] = 'ha-prev-' + secId + '-' + Date.now();
-          if (!evidenceStore[haFormEvidenceId[secId]]) evidenceStore[haFormEvidenceId[secId]] = [];
-        }
-        if (!omStore[haFormEvidenceId[secId]]) omStore[haFormEvidenceId[secId]] = [];
-        _currentOmItem  = haFormEvidenceId[secId];
-        _currentOmLabel = 'Hallazgo adicional — ' + secName;
-        document.getElementById('om-inline-subtitle').textContent = _currentOmLabel;
-        document.getElementById('om-inline-input').value = '';
-        omInlineRenderLista();
-        document.getElementById('omInlineModal').style.display = 'block';
-        window._haFormSecId = secId;
-        setTimeout(function(){ document.getElementById('om-inline-input').focus(); }, 80);
-      });
-      var addBtn = document.createElement('button');
-      addBtn.type = 'button'; addBtn.className = 'ha-add-btn';
-      addBtn.innerHTML = '<i class="fas fa-plus"></i> Agregar';
-      addBtn.addEventListener('click', function(){ haAdd(secId); });
-      row.appendChild(calGrp);
-      row.appendChild(haFotoPrev);
-      row.appendChild(haOmPrev);
-      row.appendChild(addBtn);
-      form.appendChild(lbl); form.appendChild(ta); form.appendChild(row);
-
-      panel.appendChild(list);
-      panel.appendChild(form);
       tdHa.appendChild(btn);
-      tdHa.appendChild(panel);
       trHa.appendChild(tdHa);
       tbody.appendChild(trHa);
     })(section.name, makeId(section.name, 0));
@@ -866,13 +814,13 @@ function closeEvidenceModal() {
   document.getElementById('evidenceModal').style.display = 'none';
   if (window._haActiveIid) {
     if (typeof haRefreshBadges === 'function') haRefreshBadges(window._haActiveIid);
-    // Update form foto button
-    if (window._haFormSecId !== undefined) {
-      haSetFormBtnCount('ha-form-foto-' + window._haFormSecId,
-        (evidenceStore[window._haActiveIid] || []).length, false);
-      window._haFormSecId = undefined;
-    }
-    window._haActiveIid = null;
+    window._haFormSecId  = undefined;
+    window._haActiveIid  = null;
+  }
+  // Refrescar contadores del formulario del modal HA si estaba abierto
+  if (window._haFromModal && typeof _haRefreshModalFormBtns === 'function') {
+    _haRefreshModalFormBtns();
+    window._haFromModal = false;
   }
   currentEvidenceItem = null;
 }
@@ -1246,12 +1194,16 @@ function omInlineEliminar(idx) {
 
 function omInlineCerrar() {
   document.getElementById('omInlineModal').style.display = 'none';
-  // Si se cerró desde el formulario de hallazgo adicional, actualizar el contador del botón OM
-  if (window._haFormSecId !== undefined && _currentOmItem) {
-    var _omCount = (_currentOmItem && omStore[_currentOmItem]) ? omStore[_currentOmItem].length : 0;
-    haSetFormBtnCount('ha-form-om-' + window._haFormSecId, _omCount, true);
-    window._haFormSecId = undefined;
+  // Refrescar badges del ítem si viene de un botón OM de ítem ya guardado
+  if (_currentOmItem && typeof haRefreshBadges === 'function') {
+    haRefreshBadges(_currentOmItem);
   }
+  // Refrescar contadores del formulario del modal HA
+  if (window._haFromModal && typeof _haRefreshModalFormBtns === 'function') {
+    _haRefreshModalFormBtns();
+    window._haFromModal  = false;
+  }
+  window._haFormSecId = undefined;
   _currentOmItem = null;
 }
 
@@ -2715,41 +2667,257 @@ function clearLocalStorage() {
 }
 
 
-// ═══════════════════════════════════════════════════════════════
-// HALLAZGOS ADICIONALES — inline panel con foto y OM
-// ═══════════════════════════════════════════════════════════════
-var haStore = {};
-var haCount = 0;
-var haFormEvidenceId = {};  // temp evidenceId per secId before item is added
 
-function haToggle(secId, secName) {
-  var panel = document.getElementById('ha-panel-' + secId);
-  var btn   = document.getElementById('ha-btn-'   + secId);
-  if (!panel) return;
-  var opening = !panel.classList.contains('open');
-  panel.classList.toggle('open', opening);
-  if (opening) {
-    btn.innerHTML = '<i class="fas fa-chevron-up"></i> Ocultar hallazgos adicionales';
-    btn.classList.remove('has-items');
-    var ta = document.getElementById('ha-ta-' + secId);
-    if (ta) setTimeout(function(){ ta.focus(); }, 60);
-  } else {
-    haRefreshBtn(secId);
+// ═══════════════════════════════════════════════════════════════
+// HALLAZGOS ADICIONALES — modal flotante
+// ═══════════════════════════════════════════════════════════════
+var haStore          = {};
+var haCount          = 0;
+var haFormEvidenceId = {};   // evidenceId temporal antes de agregar el ítem
+var _haCurrentSecId  = null; // secId activo en el modal
+var _haCurrentSecName= '';
+
+/* ── Abrir modal ── */
+function haOpenModal(secId, secName) {
+  _haCurrentSecId   = secId;
+  _haCurrentSecName = secName;
+
+  // Títulos
+  document.getElementById('haModalTitle').textContent = 'Hallazgos Adicionales';
+  document.getElementById('haModalSub').textContent   = secName;
+  document.getElementById('haModalFormLbl').textContent = 'Nuevo hallazgo en: ' + secName;
+
+  // Construir radios de calificación (una vez, o reconstruir si cambia secId)
+  var calGrp = document.getElementById('haModalCalGrp');
+  calGrp.innerHTML = '';
+  ['C','CP','NC','NA'].forEach(function(v) {
+    var inp = document.createElement('input');
+    inp.type = 'radio'; inp.className = 'ha-cal-radio';
+    inp.name = 'ha-modal-cal'; inp.value = v; inp.id = 'ha-modal-' + v;
+    var lb = document.createElement('label');
+    lb.className = 'ha-cal-label'; lb.htmlFor = 'ha-modal-' + v;
+    lb.textContent = v === 'NA' ? 'N/A' : v;
+    calGrp.appendChild(inp); calGrp.appendChild(lb);
+  });
+
+  // Limpiar textarea y contadores del formulario
+  document.getElementById('haModalTa').value = '';
+  _haRefreshModalFormBtns();
+
+  // Renderizar lista existente
+  _haRenderModalList();
+
+  // Conectar botones del formulario
+  document.getElementById('haModalFotoBtn').onclick = _haModalFotoClick;
+  document.getElementById('haModalOmBtn').onclick   = _haModalOmClick;
+  document.getElementById('haModalAddBtn').onclick  = function(){ haAdd(_haCurrentSecId); };
+  document.getElementById('haModalTa').onkeydown = function(e){
+    if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); haAdd(_haCurrentSecId); }
+  };
+
+  // Mostrar modal
+  var modal = document.getElementById('haModal');
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function(){ document.getElementById('haModalTa').focus(); }, 80);
+}
+
+/* ── Cerrar modal ── */
+function haCloseModal() {
+  document.getElementById('haModal').classList.remove('open');
+  document.body.style.overflow = '';
+  // Limpiar evidencia temporal del formulario sin guardar
+  if (_haCurrentSecId && haFormEvidenceId[_haCurrentSecId]) {
+    delete evidenceStore[haFormEvidenceId[_haCurrentSecId]];
+    delete omStore[haFormEvidenceId[_haCurrentSecId]];
+    delete haFormEvidenceId[_haCurrentSecId];
+  }
+  _haCurrentSecId = null;
+}
+
+/* Cerrar al click en backdrop */
+document.getElementById('haModal').addEventListener('click', function(e){
+  if (e.target === this) haCloseModal();
+});
+
+/* ── Renderizar lista de ítems en el modal ── */
+function _haRenderModalList() {
+  var list = document.getElementById('haModalList');
+  list.innerHTML = '';
+  var items = haStore[_haCurrentSecId] || [];
+  if (items.length === 0) {
+    list.innerHTML = '<li style="padding:16px;text-align:center;color:#aaa;font-size:13px;"><i class="fas fa-inbox" style="display:block;font-size:24px;margin-bottom:6px;opacity:.4;"></i>Sin hallazgos adicionales aún</li>';
+    return;
+  }
+  items.forEach(function(item) {
+    list.appendChild(_haCreateListItem(_haCurrentSecId, item));
+  });
+}
+
+/* ── Crear elemento <li> de un ítem ── */
+function _haCreateListItem(secId, item) {
+  var li = document.createElement('li');
+  li.id  = 'ha-li-' + item.iid;
+
+  var meta = document.createElement('div');
+  meta.className = 'ha-li-meta';
+  meta.id = 'ha-meta-' + item.iid;
+  if (item.cal) {
+    var badge = document.createElement('span');
+    badge.className = 'ha-badge ' + item.cal;
+    badge.textContent = item.cal;
+    meta.appendChild(badge);
+  }
+
+  var mainDiv = document.createElement('div');
+  mainDiv.className = 'ha-li-main';
+
+  var textDiv = document.createElement('div');
+  textDiv.className = 'ha-li-text';
+  textDiv.style.flex = '1';
+  textDiv.textContent = item.text;
+
+  var actDiv = document.createElement('div');
+  actDiv.className = 'ha-li-actions';
+
+  // Botón Foto
+  var fotoBtn = document.createElement('button');
+  fotoBtn.type = 'button';
+  fotoBtn.className = 'ha-act-btn';
+  fotoBtn.id = 'ha-foto-' + item.iid;
+  fotoBtn.title = 'Evidencia fotográfica';
+  fotoBtn.innerHTML = '<i class="fas fa-camera"></i><span>Foto</span>';
+  (function(iid, txt){
+    fotoBtn.addEventListener('click', function(){
+      currentEvidenceItem = iid;
+      document.getElementById('modal-title').innerHTML =
+        '<i class="fas fa-camera" style="margin-right:8px;"></i>Evidencia: ' +
+        txt.substring(0, 52) + (txt.length > 52 ? '…' : '');
+      updateEvidencePreview();
+      // Subir evidenceModal por encima del haModal (ya tiene z-index:4500)
+      document.getElementById('evidenceModal').style.display = 'block';
+      window._haActiveIid   = iid;
+      window._haFromModal   = true;
+    });
+  })(item.iid, item.text);
+
+  // Botón OM
+  var omBtn = document.createElement('button');
+  omBtn.type = 'button';
+  omBtn.className = 'ha-act-btn om-s';
+  omBtn.id = 'ha-om-' + item.iid;
+  omBtn.title = 'Oportunidad de mejora';
+  omBtn.innerHTML = '<i class="fas fa-lightbulb"></i><span>OM</span>';
+  (function(iid, txt){
+    omBtn.addEventListener('click', function(){
+      _currentOmItem  = iid;
+      _currentOmLabel = txt.substring(0, 70) + (txt.length > 70 ? '…' : '');
+      document.getElementById('om-inline-subtitle').textContent = _currentOmLabel;
+      document.getElementById('om-inline-input').value = '';
+      omInlineRenderLista();
+      // omInlineModal ya tiene z-index:4500, queda por encima del haModal
+      document.getElementById('omInlineModal').style.display = 'block';
+      window._haFromModal = true;
+      setTimeout(function(){ document.getElementById('om-inline-input').focus(); }, 80);
+    });
+  })(item.iid, item.text);
+
+  // Botón eliminar
+  var delBtn = document.createElement('button');
+  delBtn.className = 'ha-del-btn';
+  delBtn.title = 'Eliminar';
+  delBtn.innerHTML = '<i class="fas fa-times"></i>';
+  (function(iid, sid){ delBtn.onclick = function(){ haDel(iid, sid); }; })(item.iid, secId);
+
+  actDiv.appendChild(fotoBtn);
+  actDiv.appendChild(omBtn);
+  actDiv.appendChild(delBtn);
+  mainDiv.appendChild(textDiv);
+  mainDiv.appendChild(actDiv);
+  li.appendChild(meta);
+  li.appendChild(mainDiv);
+  return li;
+}
+
+/* ── Botón Foto del formulario (ítem nuevo aún no guardado) ── */
+function _haModalFotoClick() {
+  var secId = _haCurrentSecId;
+  if (!secId) return;
+  if (!haFormEvidenceId[secId]) {
+    haFormEvidenceId[secId] = 'ha-prev-' + secId + '-' + Date.now();
+    evidenceStore[haFormEvidenceId[secId]] = [];
+  }
+  currentEvidenceItem = haFormEvidenceId[secId];
+  document.getElementById('modal-title').innerHTML = '<i class="fas fa-camera" style="margin-right:8px;"></i>Evidencia fotográfica del hallazgo';
+  updateEvidencePreview();
+  document.getElementById('evidenceModal').style.display = 'block';
+  window._haActiveIid  = haFormEvidenceId[secId];
+  window._haFormSecId  = secId;
+  window._haFromModal  = true;
+}
+
+/* ── Botón OM del formulario ── */
+function _haModalOmClick() {
+  var secId = _haCurrentSecId;
+  if (!secId) return;
+  if (!haFormEvidenceId[secId]) {
+    haFormEvidenceId[secId] = 'ha-prev-' + secId + '-' + Date.now();
+    evidenceStore[haFormEvidenceId[secId]] = [];
+  }
+  if (!omStore[haFormEvidenceId[secId]]) omStore[haFormEvidenceId[secId]] = [];
+  _currentOmItem  = haFormEvidenceId[secId];
+  _currentOmLabel = 'Hallazgo adicional — ' + _haCurrentSecName;
+  document.getElementById('om-inline-subtitle').textContent = _currentOmLabel;
+  document.getElementById('om-inline-input').value = '';
+  omInlineRenderLista();
+  document.getElementById('omInlineModal').style.display = 'block';
+  window._haFormSecId = secId;
+  window._haFromModal = true;
+  setTimeout(function(){ document.getElementById('om-inline-input').focus(); }, 80);
+}
+
+/* ── Refrescar contadores de los botones del formulario ── */
+function _haRefreshModalFormBtns() {
+  var secId = _haCurrentSecId;
+  var fotoBtn = document.getElementById('haModalFotoBtn');
+  var omBtn   = document.getElementById('haModalOmBtn');
+  if (!fotoBtn || !omBtn) return;
+
+  var prevId    = secId ? haFormEvidenceId[secId] : null;
+  var fotoCount = prevId ? (evidenceStore[prevId] || []).length : 0;
+  var omCount   = prevId ? (omStore[prevId]       || []).length : 0;
+
+  // Foto btn
+  var ef = fotoBtn.querySelector('.ha-form-count'); if (ef) ef.remove();
+  fotoBtn.classList.toggle('active', fotoCount > 0);
+  fotoBtn.innerHTML = '<i class="fas fa-camera"></i> Foto';
+  if (fotoCount > 0) {
+    var b1 = document.createElement('span'); b1.className = 'ha-form-count'; b1.textContent = fotoCount;
+    fotoBtn.appendChild(b1);
+  }
+  // OM btn
+  var eo = omBtn.querySelector('.ha-form-count'); if (eo) eo.remove();
+  omBtn.classList.toggle('active', omCount > 0);
+  omBtn.innerHTML = '<i class="fas fa-lightbulb"></i> OM';
+  if (omCount > 0) {
+    var b2 = document.createElement('span'); b2.className = 'ha-form-count'; b2.textContent = omCount;
+    omBtn.appendChild(b2);
   }
 }
 
+/* ── Agregar ítem ── */
 function haAdd(secId) {
-  var ta  = document.getElementById('ha-ta-' + secId);
+  var ta  = document.getElementById('haModalTa');
   if (!ta) return;
   var txt = ta.value.trim();
   if (!txt) { ta.focus(); return; }
 
-  var calEl = document.querySelector('input[name="ha-cal-' + secId + '"]:checked');
+  var calEl = document.querySelector('input[name="ha-modal-cal"]:checked');
   var cal   = calEl ? calEl.value : '';
 
   haCount++;
   var iid = 'ha-' + secId + '-' + haCount;
-  // Transfer any pre-attached evidence/om from the form buttons
+
   if (haFormEvidenceId[secId]) {
     var prevId = haFormEvidenceId[secId];
     evidenceStore[iid] = evidenceStore[prevId] || [];
@@ -2765,133 +2933,60 @@ function haAdd(secId) {
   if (!haStore[secId]) haStore[secId] = [];
   haStore[secId].push({ text: txt, cal: cal, iid: iid });
 
-  haAppendItem(secId, { text: txt, cal: cal, iid: iid });
+  // Añadir ítem a la lista del modal
+  var list = document.getElementById('haModalList');
+  // Quitar el estado vacío si existe
+  if (list.querySelector('li[style]')) list.innerHTML = '';
+  list.appendChild(_haCreateListItem(secId, { text: txt, cal: cal, iid: iid }));
 
+  // Reset formulario
   ta.value = '';
   if (calEl) calEl.checked = false;
-  // Reset form button counters
-  haSetFormBtnCount('ha-form-foto-' + secId, 0, false);
-  haSetFormBtnCount('ha-form-om-'   + secId, 0, true);
+  _haRefreshModalFormBtns();
   ta.focus();
+
   haRefreshBtn(secId);
   saveToLocalStorage();
 }
 
-function haAppendItem(secId, item) {
-  var list = document.getElementById('ha-list-' + secId);
-  if (!list) return;
-
-  var li = document.createElement('li');
-  li.id  = 'ha-li-' + item.iid;
-
-  // Meta row (badges)
-  var meta = document.createElement('div');
-  meta.className = 'ha-li-meta';
-  meta.id = 'ha-meta-' + item.iid;
-  if (item.cal) {
-    var badge = document.createElement('span');
-    badge.className = 'ha-badge ' + item.cal;
-    badge.textContent = item.cal;
-    meta.appendChild(badge);
-  }
-
-  // Main row: text + action buttons + delete (all inline)
-  var mainDiv = document.createElement('div');
-  mainDiv.className = 'ha-li-main';
-
-  var textDiv = document.createElement('div');
-  textDiv.className = 'ha-li-text';
-  textDiv.style.flex = '1';
-  textDiv.textContent = item.text;
-
-  // Actions wrapper — same style as evidence-btn/om-btn
-  var actDiv = document.createElement('div');
-  actDiv.className = 'ha-li-actions';
-
-  var fotoBtn = document.createElement('button');
-  fotoBtn.type = 'button';
-  fotoBtn.className = 'ha-act-btn';
-  fotoBtn.id = 'ha-foto-' + item.iid;
-  fotoBtn.title = 'Evidencia fotográfica';
-  fotoBtn.innerHTML = '<i class="fas fa-camera"></i><span>Foto</span>';
-  (function(iid, txt){
-    fotoBtn.addEventListener('click', function(){
-      currentEvidenceItem = iid;
-      document.getElementById('modal-title').innerHTML =
-        '<i class="fas fa-camera" style="margin-right:8px;"></i>Evidencia: ' +
-        txt.substring(0, 52) + (txt.length > 52 ? '…' : '');
-      updateEvidencePreview();
-      document.getElementById('evidenceModal').style.display = 'block';
-      window._haActiveIid = iid;
-    });
-  })(item.iid, item.text);
-
-  var omBtn = document.createElement('button');
-  omBtn.type = 'button';
-  omBtn.className = 'ha-act-btn om-s';
-  omBtn.id = 'ha-om-' + item.iid;
-  omBtn.title = 'Oportunidad de mejora';
-  omBtn.innerHTML = '<i class="fas fa-lightbulb"></i><span>OM</span>';
-  (function(iid, txt){
-    omBtn.addEventListener('click', function(){
-      _currentOmItem  = iid;
-      _currentOmLabel = txt.substring(0, 70) + (txt.length > 70 ? '…' : '');
-      document.getElementById('om-inline-subtitle').textContent = _currentOmLabel;
-      document.getElementById('om-inline-input').value = '';
-      omInlineRenderLista();
-      document.getElementById('omInlineModal').style.display = 'block';
-      setTimeout(function(){ document.getElementById('om-inline-input').focus(); }, 80);
-    });
-  })(item.iid, item.text);
-
-  var delBtn = document.createElement('button');
-  delBtn.className = 'ha-del-btn';
-  delBtn.title = 'Eliminar';
-  delBtn.innerHTML = '<i class="fas fa-times"></i>';
-  (function(iid, sid){ delBtn.onclick = function(){ haDel(iid, sid); }; })(item.iid, secId);
-
-  actDiv.appendChild(fotoBtn);
-  actDiv.appendChild(omBtn);
-  actDiv.appendChild(delBtn);
-
-  mainDiv.appendChild(textDiv);
-  mainDiv.appendChild(actDiv);
-
-  li.appendChild(meta);
-  li.appendChild(mainDiv);
-  list.appendChild(li);
-}
-
+/* ── Eliminar ítem ── */
 function haDel(iid, secId) {
   var li = document.getElementById('ha-li-' + iid);
   if (li) li.remove();
   haStore[secId] = (haStore[secId] || []).filter(function(x){ return x.iid !== iid; });
   delete evidenceStore[iid];
   delete omStore[iid];
+  // Si lista queda vacía, mostrar estado vacío
+  var list = document.getElementById('haModalList');
+  if (list && (haStore[secId] || []).length === 0) {
+    list.innerHTML = '<li style="padding:16px;text-align:center;color:#aaa;font-size:13px;"><i class="fas fa-inbox" style="display:block;font-size:24px;margin-bottom:6px;opacity:.4;"></i>Sin hallazgos adicionales aún</li>';
+  }
   haRefreshBtn(secId);
   saveToLocalStorage();
 }
 
+/* ── Actualizar texto del botón en la tabla ── */
 function haRefreshBtn(secId) {
-  var btn   = document.getElementById('ha-btn-' + secId);
-  var panel = document.getElementById('ha-panel-' + secId);
+  var btn = document.getElementById('ha-btn-' + secId);
   if (!btn) return;
   var count = (haStore[secId] || []).length;
-  if (panel && panel.classList.contains('open')) {
-    btn.innerHTML = '<i class="fas fa-chevron-up"></i> Ocultar hallazgos adicionales';
-    btn.classList.remove('has-items');
-  } else if (count > 0) {
+  if (count > 0) {
     btn.classList.add('has-items');
-    btn.innerHTML = '<i class="fas fa-flag"></i> ' + count + ' hallazgo' + (count > 1 ? 's' : '') + ' adicional' + (count > 1 ? 'es' : '');
+    btn.innerHTML = '<i class="fas fa-flag"></i> ' + count + ' hallazgo' + (count > 1 ? 's' : '') + ' adicional' + (count > 1 ? 'es' : '') + ' <i class="fas fa-external-link-alt" style="font-size:10px;margin-left:4px;opacity:.7;"></i>';
   } else {
     btn.classList.remove('has-items');
     btn.innerHTML = '<i class="fas fa-plus-circle"></i> Agregar hallazgo adicional';
   }
 }
 
+/* ── Refrescar badges de un ítem ya guardado ── */
 function haRefreshBadges(iid) {
   haSetBtnCount('ha-foto-' + iid, (evidenceStore[iid] || []).length, false);
   haSetBtnCount('ha-om-'   + iid, (omStore[iid]       || []).length, true);
+  // Si el modal está abierto y el ítem es del form (previo), refrescar también form btns
+  if (_haCurrentSecId && haFormEvidenceId[_haCurrentSecId] === iid) {
+    _haRefreshModalFormBtns();
+  }
 }
 
 function haSetBtnCount(btnId, count, isOm) {
@@ -2911,22 +3006,25 @@ function haSetBtnCount(btnId, count, isOm) {
   }
 }
 
+/* haSetFormBtnCount: ahora apunta al modal (se mantiene por compatibilidad con closeEvidenceModal / omInlineCerrar) */
 function haSetFormBtnCount(btnId, count, isOm) {
-  var btn = document.getElementById(btnId);
-  if (!btn) return;
-  var existing = btn.querySelector('.ha-form-count');
-  if (existing) existing.remove();
-  btn.classList.toggle('active', count > 0);
-  btn.innerHTML = isOm
-    ? '<i class="fas fa-lightbulb"></i> OM'
-    : '<i class="fas fa-camera"></i> Foto';
-  if (count > 0) {
-    var badge = document.createElement('span');
-    badge.className = 'ha-form-count';
-    badge.textContent = count;
-    btn.appendChild(badge);
+  // Refrescar los botones del formulario del modal directamente
+  _haRefreshModalFormBtns();
+}
+
+/* haAppendItem: compatibilidad con restoreFromLocalStorage */
+function haAppendItem(secId, item) {
+  // Solo se llama desde restore; si el modal está abierto y es el mismo secId, renderizar
+  if (_haCurrentSecId === secId) {
+    var list = document.getElementById('haModalList');
+    if (list) {
+      if (list.querySelector('li[style]')) list.innerHTML = '';
+      list.appendChild(_haCreateListItem(secId, item));
+    }
   }
 }
+
+
 
 
 // ═══════════════════════════════════════════════════════════════
