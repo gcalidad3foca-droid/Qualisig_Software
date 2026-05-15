@@ -67,6 +67,9 @@
   .om-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 0; width: 58px; background: linear-gradient(135deg, #7c8ff0 0%, #9c6fd6 100%); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(124,143,240,0.2); position: relative; }
   .om-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(124,143,240,0.3); }
   .om-btn.has-om { background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%); box-shadow: 0 2px 8px rgba(76,175,80,0.2); }
+  .om-btn.has-om-draft { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 2px 8px rgba(245,158,11,0.3); animation: om-draft-pulse 2s ease-in-out infinite; width: auto; padding: 5px 8px; flex-direction: column; gap: 1px; }
+  .om-btn.has-om-draft .om-draft-label { font-size: 9px; font-weight: 700; line-height: 1; letter-spacing: 0.2px; opacity: 0.95; }
+  @keyframes om-draft-pulse { 0%,100%{opacity:1;} 50%{opacity:0.75;} }
   .om-btn i { font-size: 14px; }
   .om-inline-modal { display:none; position:fixed; z-index:4500; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); animation:fadeIn 0.2s ease; }
   .om-inline-content { position:relative; background:#fff; margin:8% auto; border-radius:12px; width:90%; max-width:480px; overflow:hidden; box-shadow:0 10px 40px rgba(0,0,0,0.3); animation:slideIn 0.3s ease; }
@@ -207,6 +210,8 @@
 .ha-toggle-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:7px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(102,126,234,.25);transition:all .2s;}
 .ha-toggle-btn:hover{opacity:.88;transform:translateY(-1px);}
 .ha-toggle-btn.has-items{background:linear-gradient(135deg,#1e3c72,#2a5298);}
+.ha-toggle-btn.has-draft{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 2px 8px rgba(245,158,11,.35);animation:ha-draft-pulse 2s ease-in-out infinite;}
+@keyframes ha-draft-pulse{0%,100%{opacity:1;}50%{opacity:0.78;}}
 
 /* ── Hallazgo adicional — MODAL FLOTANTE ── */
 #haModal{display:none;position:fixed;inset:0;z-index:4000;background:rgba(15,23,42,.65);backdrop-filter:blur(3px);animation:fadeIn .22s ease;align-items:center;justify-content:center;}
@@ -282,6 +287,7 @@
 .ha-form-om-btn{background:linear-gradient(135deg,#7c8ff0,#9c6fd6);}
 .ha-form-om-btn:hover{box-shadow:0 4px 12px rgba(124,143,240,.3);}
 .ha-form-om-btn.active{background:linear-gradient(135deg,#4caf50,#66bb6a);}
+.ha-form-om-btn.om-draft-pending{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 2px 8px rgba(245,158,11,.35);animation:om-draft-pulse 2s ease-in-out infinite;}
 .ha-form-count{position:absolute;top:-7px;right:-7px;background:#f44336;color:white;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
 .ha-add-btn{margin-left:auto;padding:7px 20px;background:linear-gradient(135deg,#1e3c72,#2a5298);color:white;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(30,60,114,.25);transition:all .2s;}
 .ha-add-btn:hover{opacity:.88;transform:translateY(-1px);}
@@ -606,25 +612,28 @@
 <!-- ===== OPORTUNIDADES DE MEJORA INLINE MODAL ===== -->
 <div id="omInlineModal" class="om-inline-modal">
   <div class="om-inline-content">
-    <div class="om-inline-header">
-      <h3><i class="fas fa-lightbulb" style="margin-right:6px;"></i>Oportunidad de Mejora</h3>
-      <p id="om-inline-subtitle">Ítem seleccionado</p>
+    <div class="om-inline-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+      <div>
+        <h3><i class="fas fa-lightbulb" style="margin-right:6px;"></i>Oportunidad de Mejora</h3>
+        <p id="om-inline-subtitle">Ítem seleccionado</p>
+      </div>
+      <button onclick="omInlineCerrar()" title="Cerrar" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">&times;</button>
     </div>
     <div class="om-inline-body">
       <div id="om-inline-lista" style="margin-bottom:10px;max-height:160px;overflow-y:auto;"></div>
+      <div id="om-inline-draft-warn" style="display:none;background:#fff3cd;border:1.5px solid #ffc107;border-radius:7px;padding:8px 12px;margin-bottom:8px;font-size:12px;color:#856404;display:flex;align-items:center;gap:7px;">
+        <i class="fas fa-exclamation-triangle" style="color:#ffc107;flex-shrink:0;"></i>
+        <span>Hay una oportunidad sin agregar. Presiona <strong>+ Agregar</strong> para guardarla.</span>
+      </div>
       <div style="display:flex;gap:8px;margin-bottom:8px;">
         <textarea id="om-inline-input" placeholder="Escriba la oportunidad de mejora o recomendación..." rows="2" maxlength="400"
           style="flex:1;padding:10px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;"></textarea>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <div style="display:flex;gap:8px;margin-bottom:4px;">
         <button onclick="omInlineAgregar()" style="flex:1;padding:10px;background:#e65100;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;">
           <i class="fas fa-plus"></i> Agregar
         </button>
-        <button onclick="omInlineCerrar()" style="flex:1;padding:10px;background:#4caf50;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;">
-          <i class="fas fa-check"></i> Listo
-        </button>
       </div>
-      <button onclick="omInlineCerrar()" style="width:100%;padding:8px;background:#e0e0e0;color:#555;border:none;border-radius:8px;cursor:pointer;font-size:12px;">Cerrar sin guardar más</button>
     </div>
   </div>
 </div>
@@ -1149,10 +1158,25 @@ function openOmInlineModal(sectionName, itemIdx, itemText) {
   _currentOmItem = makeId(sectionName, itemIdx);
   _currentOmLabel = itemText.substring(0, 70) + (itemText.length > 70 ? '…' : '');
   document.getElementById('om-inline-subtitle').textContent = _currentOmLabel;
-  document.getElementById('om-inline-input').value = '';
+  // Restaurar borrador si existe para este ítem
+  var savedDraft = (window._omDrafts = window._omDrafts || {}) && window._omDrafts[_currentOmItem] || '';
+  var inp = document.getElementById('om-inline-input');
+  inp.value = savedDraft;
+  inp.oninput = _omInlineUpdateDraftWarn;
   omInlineRenderLista();
+  _omInlineUpdateDraftWarn();
   document.getElementById('omInlineModal').style.display = 'block';
-  setTimeout(()=>document.getElementById('om-inline-input').focus(), 100);
+  setTimeout(()=>inp.focus(), 100);
+}
+
+function _omInlineUpdateDraftWarn() {
+  var inp = document.getElementById('om-inline-input');
+  var warn = document.getElementById('om-inline-draft-warn');
+  if (!inp || !warn) return;
+  var hasDraft = inp.value.trim().length > 0;
+  warn.style.display = hasDraft ? 'flex' : 'none';
+  inp.style.borderColor = hasDraft ? '#f59e0b' : '';
+  inp.style.boxShadow   = hasDraft ? '0 0 0 3px rgba(245,158,11,0.15)' : '';
 }
 
 function omInlineRenderLista() {
@@ -1177,6 +1201,9 @@ function omInlineAgregar() {
   if (!omStore[_currentOmItem]) omStore[_currentOmItem] = [];
   omStore[_currentOmItem].push(txt);
   inp.value = '';
+  // Limpiar borrador guardado para este ítem
+  if (window._omDrafts) window._omDrafts[_currentOmItem] = '';
+  _omInlineUpdateDraftWarn();
   omInlineRenderLista();
   refreshOmButton(_currentOmItem);
   saveToLocalStorage();
@@ -1193,10 +1220,19 @@ function omInlineEliminar(idx) {
 }
 
 function omInlineCerrar() {
+  // Guardar borrador del input antes de cerrar
+  var inp = document.getElementById('om-inline-input');
+  var itemId = _currentOmItem;
+  if (inp && itemId) {
+    if (!window._omDrafts) window._omDrafts = {};
+    window._omDrafts[itemId] = inp.value;
+  }
   document.getElementById('omInlineModal').style.display = 'none';
+  // Refrescar botón OM para mostrar indicador de borrador si aplica
+  if (itemId) refreshOmButton(itemId);
   // Refrescar badges del ítem si viene de un botón OM de ítem ya guardado
-  if (_currentOmItem && typeof haRefreshBadges === 'function') {
-    haRefreshBadges(_currentOmItem);
+  if (itemId && typeof haRefreshBadges === 'function') {
+    haRefreshBadges(itemId);
   }
   // Refrescar contadores del formulario del modal HA
   if (window._haFromModal && typeof _haRefreshModalFormBtns === 'function') {
@@ -1213,11 +1249,18 @@ function refreshOmButton(itemId) {
   const btn = document.getElementById('om-btn-' + itemId);
   if (!btn) return;
   const count = (omStore[itemId] || []).length;
+  const hasDraft = window._omDrafts && window._omDrafts[itemId] && window._omDrafts[itemId].trim().length > 0;
   if (count > 0) {
     btn.classList.add('has-om');
+    btn.classList.remove('has-om-draft');
     btn.innerHTML = `<i class="fas fa-lightbulb"></i><span>OM (${count})</span>`;
+  } else if (hasDraft) {
+    btn.classList.remove('has-om');
+    btn.classList.add('has-om-draft');
+    btn.innerHTML = '<i class="fas fa-lightbulb" style="font-size:13px;"></i><span class="om-draft-label">sin guardar</span>';
   } else {
     btn.classList.remove('has-om');
+    btn.classList.remove('has-om-draft');
     btn.innerHTML = '<i class="fas fa-lightbulb"></i><span>OM</span>';
   }
 }
@@ -2700,8 +2743,21 @@ function haOpenModal(secId, secName) {
     calGrp.appendChild(inp); calGrp.appendChild(lb);
   });
 
-  // Limpiar textarea y contadores del formulario
-  document.getElementById('haModalTa').value = '';
+  // Restaurar borrador si hay uno guardado para esta sección, o limpiar
+  var savedHaDraft = window._haDrafts && window._haDrafts[secId];
+  var ta = document.getElementById('haModalTa');
+  if (savedHaDraft) {
+    ta.value = savedHaDraft.text || '';
+    // Restaurar radio de calificación
+    if (savedHaDraft.cal) {
+      var calInput = document.getElementById('ha-modal-' + savedHaDraft.cal);
+      if (calInput) calInput.checked = true;
+    }
+    // Restaurar el prevId en haFormEvidenceId si estaba guardado
+    if (savedHaDraft.prevId) haFormEvidenceId[secId] = savedHaDraft.prevId;
+  } else {
+    ta.value = '';
+  }
   _haRefreshModalFormBtns();
 
   // Renderizar lista existente
@@ -2714,23 +2770,93 @@ function haOpenModal(secId, secName) {
   document.getElementById('haModalTa').onkeydown = function(e){
     if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); haAdd(_haCurrentSecId); }
   };
+  document.getElementById('haModalTa').oninput = function() {
+    // Quitar borde de borrador al empezar a editar
+    if (this.style.borderColor) { this.style.borderColor = ''; this.style.boxShadow = ''; }
+  };
 
   // Mostrar modal
   var modal = document.getElementById('haModal');
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
-  setTimeout(function(){ document.getElementById('haModalTa').focus(); }, 80);
+  window._haCloseWarnShown = false;
+  var warnEl = document.getElementById('haFormDraftWarn');
+  if (warnEl) warnEl.remove();
+  // Si hay borrador guardado, mostrar aviso de restauración
+  if (savedHaDraft && ta.value.trim()) {
+    var restoredWarn = document.createElement('div');
+    restoredWarn.id = 'haFormDraftWarn';
+    restoredWarn.style.cssText = 'background:#fff3cd;border:1.5px solid #ffc107;border-radius:8px;padding:9px 13px;margin:10px 16px 0;font-size:12px;color:#856404;display:flex;align-items:flex-start;gap:8px;';
+    restoredWarn.innerHTML = '<i class="fas fa-pencil-alt" style="color:#f59e0b;margin-top:1px;flex-shrink:0;"></i><span>Borrador restaurado — presiona <strong>Agregar</strong> para guardarlo o edita antes de agregar.</span>';
+    var formEl = document.getElementById('haModalForm');
+    if (formEl) formEl.parentNode.insertBefore(restoredWarn, formEl);
+    ta.style.borderColor = '#f59e0b';
+    ta.style.boxShadow   = '0 0 0 3px rgba(245,158,11,0.15)';
+  }
+  setTimeout(function(){ ta.focus(); }, 80);
 }
 
 /* ── Cerrar modal ── */
 function haCloseModal() {
+  var ta = document.getElementById('haModalTa');
+  var secId = _haCurrentSecId;
+  var hasDraftText = ta && ta.value.trim().length > 0;
+  var prevId = secId ? haFormEvidenceId[secId] : null;
+  var hasFoto = prevId && (evidenceStore[prevId] || []).length > 0;
+  var hasOM   = prevId && (omStore[prevId]       || []).length > 0;
+  var hasPending = hasDraftText || hasFoto || hasOM;
+
+  if (hasPending) {
+    var partes = [];
+    if (hasDraftText) partes.push('texto del hallazgo');
+    if (hasFoto)      partes.push('foto(s)');
+    if (hasOM)        partes.push('oportunidad(es) de mejora');
+    var msg = 'Tienes ' + partes.join(', ') + ' sin agregar. Presiona "Agregar" para guardarlos, o cierra de nuevo para volver después.';
+    var existingWarn = document.getElementById('haFormDraftWarn');
+    if (!existingWarn) {
+      existingWarn = document.createElement('div');
+      existingWarn.id = 'haFormDraftWarn';
+      existingWarn.style.cssText = 'background:#fff3cd;border:1.5px solid #ffc107;border-radius:8px;padding:9px 13px;margin:10px 16px 0;font-size:12px;color:#856404;display:flex;align-items:flex-start;gap:8px;';
+      existingWarn.innerHTML = '<i class="fas fa-exclamation-triangle" style="color:#ffc107;margin-top:1px;flex-shrink:0;"></i><span>' + msg + '</span>';
+      var form = document.getElementById('haModalForm');
+      if (form) form.parentNode.insertBefore(existingWarn, form);
+    } else {
+      existingWarn.querySelector('span').textContent = msg;
+      existingWarn.style.display = 'flex';
+    }
+    if (!window._haCloseWarnShown) {
+      window._haCloseWarnShown = true;
+      return; // primer intento: solo mostrar aviso
+    }
+    // Segundo cierre: guardar borrador en memoria y marcar botón
+    if (!window._haDrafts) window._haDrafts = {};
+    window._haDrafts[secId] = {
+      text:  ta ? ta.value : '',
+      cal:   (function(){ var el=document.querySelector('input[name="ha-modal-cal"]:checked'); return el?el.value:''; })(),
+      prevId: prevId
+    };
+    // Mantener las fotos y OM en evidenceStore/omStore (NO borrar)
+    haRefreshBtn(secId, true); // marcar botón como "tiene borrador"
+  } else {
+    // Sin datos pendientes: borrar cualquier borrador guardado
+    if (window._haDrafts) delete window._haDrafts[secId];
+    haRefreshBtn(secId, false);
+  }
+
+  // Cerrar modal
+  window._haCloseWarnShown = false;
+  var warnEl = document.getElementById('haFormDraftWarn');
+  if (warnEl) warnEl.remove();
   document.getElementById('haModal').classList.remove('open');
   document.body.style.overflow = '';
-  // Limpiar evidencia temporal del formulario sin guardar
-  if (_haCurrentSecId && haFormEvidenceId[_haCurrentSecId]) {
-    delete evidenceStore[haFormEvidenceId[_haCurrentSecId]];
-    delete omStore[haFormEvidenceId[_haCurrentSecId]];
-    delete haFormEvidenceId[_haCurrentSecId];
+  // Si no hay borrador pendiente, limpiar evidencia temporal
+  var savedDraft = window._haDrafts && window._haDrafts[secId];
+  if (!savedDraft) {
+    if (secId && haFormEvidenceId[secId]) {
+      delete evidenceStore[haFormEvidenceId[secId]];
+      delete omStore[haFormEvidenceId[secId]];
+      delete haFormEvidenceId[secId];
+    }
   }
   _haCurrentSecId = null;
 }
@@ -2813,8 +2939,10 @@ function _haCreateListItem(secId, item) {
       _currentOmItem  = iid;
       _currentOmLabel = txt.substring(0, 70) + (txt.length > 70 ? '…' : '');
       document.getElementById('om-inline-subtitle').textContent = _currentOmLabel;
-      document.getElementById('om-inline-input').value = '';
+      var savedDraft = (window._omDrafts && window._omDrafts[iid]) || '';
+      document.getElementById('om-inline-input').value = savedDraft;
       omInlineRenderLista();
+      _omInlineUpdateDraftWarn();
       // omInlineModal ya tiene z-index:4500, queda por encima del haModal
       document.getElementById('omInlineModal').style.display = 'block';
       window._haFromModal = true;
@@ -2868,8 +2996,10 @@ function _haModalOmClick() {
   _currentOmItem  = haFormEvidenceId[secId];
   _currentOmLabel = 'Hallazgo adicional — ' + _haCurrentSecName;
   document.getElementById('om-inline-subtitle').textContent = _currentOmLabel;
-  document.getElementById('om-inline-input').value = '';
+  var savedDraft = (window._omDrafts && window._omDrafts[_currentOmItem]) || '';
+  document.getElementById('om-inline-input').value = savedDraft;
   omInlineRenderLista();
+  _omInlineUpdateDraftWarn();
   document.getElementById('omInlineModal').style.display = 'block';
   window._haFormSecId = secId;
   window._haFromModal = true;
@@ -2886,6 +3016,7 @@ function _haRefreshModalFormBtns() {
   var prevId    = secId ? haFormEvidenceId[secId] : null;
   var fotoCount = prevId ? (evidenceStore[prevId] || []).length : 0;
   var omCount   = prevId ? (omStore[prevId]       || []).length : 0;
+  var omDraft   = prevId && window._omDrafts && window._omDrafts[prevId] && window._omDrafts[prevId].trim().length > 0;
 
   // Foto btn
   var ef = fotoBtn.querySelector('.ha-form-count'); if (ef) ef.remove();
@@ -2895,13 +3026,19 @@ function _haRefreshModalFormBtns() {
     var b1 = document.createElement('span'); b1.className = 'ha-form-count'; b1.textContent = fotoCount;
     fotoBtn.appendChild(b1);
   }
-  // OM btn
+  // OM btn — verde si hay OMs guardadas, naranja si hay borrador pendiente
   var eo = omBtn.querySelector('.ha-form-count'); if (eo) eo.remove();
-  omBtn.classList.toggle('active', omCount > 0);
-  omBtn.innerHTML = '<i class="fas fa-lightbulb"></i> OM';
+  omBtn.classList.remove('active', 'om-draft-pending');
   if (omCount > 0) {
+    omBtn.classList.add('active');
+    omBtn.innerHTML = '<i class="fas fa-lightbulb"></i> OM';
     var b2 = document.createElement('span'); b2.className = 'ha-form-count'; b2.textContent = omCount;
     omBtn.appendChild(b2);
+  } else if (omDraft) {
+    omBtn.classList.add('om-draft-pending');
+    omBtn.innerHTML = '<i class="fas fa-lightbulb"></i> OM <span style="font-size:9px;font-weight:700;opacity:0.9;letter-spacing:0.2px;">· sin guardar</span>';
+  } else {
+    omBtn.innerHTML = '<i class="fas fa-lightbulb"></i> OM';
   }
 }
 
@@ -2941,9 +3078,18 @@ function haAdd(secId) {
 
   // Reset formulario
   ta.value = '';
+  ta.style.borderColor = ''; ta.style.boxShadow = '';
   if (calEl) calEl.checked = false;
   _haRefreshModalFormBtns();
   ta.focus();
+  // Limpiar aviso de borrador si existía
+  window._haCloseWarnShown = false;
+  if (window._haDrafts) delete window._haDrafts[secId];
+  var warnEl = document.getElementById('haFormDraftWarn');
+  if (warnEl) warnEl.remove();
+
+  haRefreshBtn(secId, false);
+  saveToLocalStorage();
 
   haRefreshBtn(secId);
   saveToLocalStorage();
@@ -2966,15 +3112,25 @@ function haDel(iid, secId) {
 }
 
 /* ── Actualizar texto del botón en la tabla ── */
-function haRefreshBtn(secId) {
+function haRefreshBtn(secId, hasDraftPending) {
   var btn = document.getElementById('ha-btn-' + secId);
   if (!btn) return;
   var count = (haStore[secId] || []).length;
-  if (count > 0) {
+  if (count > 0 && hasDraftPending) {
     btn.classList.add('has-items');
+    btn.classList.add('has-draft');
+    btn.innerHTML = '<i class="fas fa-flag"></i> ' + count + ' hallazgo' + (count > 1 ? 's' : '') + ' adicional' + (count > 1 ? 'es' : '') + ' · <i class="fas fa-pencil-alt" style="font-size:10px;margin-left:2px;" title="Hay un hallazgo sin agregar"></i> sin guardar';
+  } else if (count > 0) {
+    btn.classList.add('has-items');
+    btn.classList.remove('has-draft');
     btn.innerHTML = '<i class="fas fa-flag"></i> ' + count + ' hallazgo' + (count > 1 ? 's' : '') + ' adicional' + (count > 1 ? 'es' : '') + ' <i class="fas fa-external-link-alt" style="font-size:10px;margin-left:4px;opacity:.7;"></i>';
+  } else if (hasDraftPending) {
+    btn.classList.remove('has-items');
+    btn.classList.add('has-draft');
+    btn.innerHTML = '<i class="fas fa-pencil-alt"></i> Hallazgo sin guardar — click para continuar';
   } else {
     btn.classList.remove('has-items');
+    btn.classList.remove('has-draft');
     btn.innerHTML = '<i class="fas fa-plus-circle"></i> Agregar hallazgo adicional';
   }
 }
@@ -3208,3 +3364,4 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 </script>
 </body>
 </html>
+
