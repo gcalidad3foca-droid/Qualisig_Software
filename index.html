@@ -93,8 +93,8 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 .login-brand-name { display:none; }
 .login-brand-sub  { display:none; }
 
-.login-title { font-size:22px; font-weight:700; color:var(--gray800); margin-bottom:6px; }
-.login-desc  { font-size:13px; color:var(--gray400); margin-bottom:20px; }
+.login-title { font-size:22px; font-weight:700; color:var(--gray800); margin-bottom:6px; text-align:center; }
+.login-desc  { font-size:13px; color:var(--gray400); margin-bottom:20px; text-align:center; }
 
 .form-group { margin-bottom:18px; }
 .form-label { display:block; font-size:12px; font-weight:600; color:var(--gray600); margin-bottom:7px; text-transform:uppercase; letter-spacing:0.6px; }
@@ -1391,26 +1391,26 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   #screen-login {
     align-items:flex-start;
     justify-content:flex-start;
-    padding:24px 16px 32px;
+    padding:16px 16px 24px;
     min-height:100vh;
     min-height:100dvh;
   }
   .login-card {
     border-radius:20px;
-    padding:32px 22px 28px;
+    padding:20px 22px 24px;
     margin:auto 0;
     width:100%;
     max-width:100%;
     box-shadow:0 12px 48px rgba(0,0,0,0.28);
     align-self:center;
   }
-  .login-logo      { margin-bottom:20px; gap:12px; }
+  .login-logo      { margin-bottom:12px; gap:12px; }
   .login-logo-icon { width:44px; height:44px; border-radius:11px; flex-shrink:0; }
   .login-logo-icon img { width:32px; height:32px; }
   .login-brand-name { font-size:20px; }
   .login-brand-sub  { font-size:9px; }
-  .login-title     { font-size:18px; margin-bottom:4px; }
-  .login-desc      { font-size:12px; margin-bottom:20px; }
+  .login-title     { font-size:18px; margin-bottom:4px; text-align:center; }
+  .login-desc      { font-size:12px; margin-bottom:16px; text-align:center; }
   .form-group      { margin-bottom:14px; }
   .form-label      { font-size:11px; margin-bottom:5px; }
   .form-input      { padding:13px 14px; font-size:16px; border-radius:9px; }
@@ -1509,12 +1509,12 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 <!-- ══ SCREEN: LOGIN ══════════════════════════ -->
 <div id="screen-login" class="screen active">
   <div class="login-card">
-    <div class="login-logo" style="height: 160px">
-      <img class="login-logo-img" src="https://i.imgur.com/L8Fpofk.png" alt="Qualisig" style="width: 280px; height: 160px; object-fit: contain">
+    <div class="login-logo" style="height: 90px; overflow: hidden; margin-bottom: 8px;">
+      <img class="login-logo-img" src="https://i.imgur.com/L8Fpofk.png" alt="Qualisig" style="width: 280px; height: 140px; object-fit: contain; margin-top: -25px;">
     </div>
 
-    <h2 class="login-title">                     Bienvenido</h2>
-    <p class="login-desc">Ingresa tus credenciales para acceder al módulo de auditorías</p>
+    <h2 class="login-title" style="text-align:center !important; width:100%;">Bienvenido</h2>
+    <p class="login-desc" style="text-align:center !important; width:100%;">Ingresa tus credenciales para acceder al módulo de auditorías</p>
 
     <div class="login-error" id="login-error">
       <i class="fas fa-exclamation-circle"></i>
