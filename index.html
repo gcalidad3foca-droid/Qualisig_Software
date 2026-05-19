@@ -1419,24 +1419,6 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   .forgot-link     { font-size:12px; margin-top:7px; }
   .login-error, .forgot-success { font-size:12px; padding:10px 12px; }
 
-  /* HEADER */
-  .dash-header     {
-    height:auto;
-    padding:12px 16px;
-    gap:10px;
-    flex-wrap:wrap;
-  }
-  .dash-header::before { height:3px; }
-  .dash-logo       { gap:10px; }
-  .dash-logo-img   { width:180px; height:auto; }
-  .dash-brand-name { font-size:17px; }
-  .dash-brand-sub  { font-size:8px; }
-  .dash-divider    { display:none; }
-  .dash-user-chip  { order:3; }
-  .duc-name, .duc-cargo { max-width:100%; }
-  .dash-user-name  { font-size:12px; }
-  .btn-logout-icon { order:4; }
-
   /* BODY */
   .dash-body       { padding:16px 12px; }
 
@@ -1527,11 +1509,11 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 <!-- ══ SCREEN: LOGIN ══════════════════════════ -->
 <div id="screen-login" class="screen active">
   <div class="login-card">
-    <div class="login-logo">
-      <img class="login-logo-img" src="https://i.imgur.com/L8Fpofk.png" alt="Qualisig">
+    <div class="login-logo" style="height: 160px">
+      <img class="login-logo-img" src="https://i.imgur.com/L8Fpofk.png" alt="Qualisig" style="width: 280px; height: 160px; object-fit: contain">
     </div>
 
-    <h2 class="login-title">Bienvenido</h2>
+    <h2 class="login-title">                     Bienvenido</h2>
     <p class="login-desc">Ingresa tus credenciales para acceder al módulo de auditorías</p>
 
     <div class="login-error" id="login-error">
@@ -3869,4 +3851,3 @@ document.addEventListener('click', e => {
 </script>
 </body>
 </html>
-
