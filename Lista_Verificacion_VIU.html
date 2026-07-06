@@ -2076,7 +2076,7 @@ async function generateFullReport(reportFecha, reportMes, auditorLider, oportuni
         _p3 = 'Esta recurrencia de hallazgo se ha evidenciado de manera persistente durante tres (3) informes de auditoría consecutivos' +
           (ri.itxt ? ' en el ítem correspondiente a "' + ri.itxt + '".' : '.') +
           (ri.obs ? ' ' + ri.obs.charAt(0).toUpperCase() + ri.obs.slice(1).replace(/[.,;]+$/,'') + '.' : '') +
-          ' Se requiere la formulación de un plan de acción orientado a la eliminación definitiva del hallazgo recurrente identificado.';
+          ' Se requiere la formulación de un plan de acción orientado a la eliminación definitiva del hallazgo recurrente identificado, el cual debe ser ejecutado en un plazo maximo de 1 mes una vez recibido el presente informe.';
       } else if (recItems && recItems.length > 1) {
         var _rlist2 = recItems.map(function(ri, ii){
           return (ii+1) + ') ' + (ri.itxt ? 'ítem correspondiente a "' + ri.itxt + '"' : 'categoría "' + ri.cat + '"');
