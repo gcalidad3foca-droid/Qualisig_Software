@@ -2073,15 +2073,15 @@ async function generateFullReport(reportFecha, reportMes, auditorLider, oportuni
       var _p3 = '';
       if (recItems && recItems.length === 1) {
         var ri = recItems[0];
-        _p3 = 'Esta recurrencia de hallazgo se pudo evidenciar en la categoría de "' + ri.cat + '"' +
-          (ri.itxt ? ', específicamente en el ítem referente a "' + ri.itxt + '"' + ', se ha identificado la persistencia del mismo hallazgo durante tres (3) informes de auditoría consecutivos.' : ', donde se ha identificado la persistencia del mismo hallazgo durante tres (3) informes de auditoría consecutivos.') +
+        _p3 = 'Esta recurrencia de hallazgo se ha evidenciado de manera persistente durante tres (3) informes de auditoría consecutivos' +
+          (ri.itxt ? ' en el ítem correspondiente a "' + ri.itxt + '".' : '.') +
           (ri.obs ? ' ' + ri.obs.charAt(0).toUpperCase() + ri.obs.slice(1).replace(/[.,;]+$/,'') + '.' : '') +
           ' Se requiere la formulación de un plan de acción orientado a la eliminación definitiva del hallazgo recurrente identificado.';
       } else if (recItems && recItems.length > 1) {
         var _rlist2 = recItems.map(function(ri, ii){
-          return (ii+1) + ') Categoría "' + ri.cat + '"' + (ri.itxt ? ': ' + ri.itxt : '');
+          return (ii+1) + ') ' + (ri.itxt ? 'ítem correspondiente a "' + ri.itxt + '"' : 'categoría "' + ri.cat + '"');
         }).join('  ');
-        _p3 = 'Esta recurrencia de hallazgos se pudo evidenciar en ' + recItems.length + ' ítems: ' + _rlist2 + '. En todos los casos se ha identificado la persistencia del mismo hallazgo durante tres (3) informes de auditoría consecutivos. Se requiere la formulación de un plan de acción orientado a la eliminación definitiva de los hallazgos recurrentes identificados.';
+        _p3 = 'Esta recurrencia de hallazgos se ha evidenciado de manera persistente durante tres (3) informes de auditoría consecutivos en ' + recItems.length + ' ítems: ' + _rlist2 + '. Se requiere la formulación de un plan de acción orientado a la eliminación definitiva de los hallazgos recurrentes identificados.';
       } else {
         _p3 = 'Esta recurrencia de hallazgo se ha evidenciado de manera persistente durante tres (3) informes de auditoría consecutivos. Se requiere la formulación de un plan de acción orientado a la eliminación definitiva del hallazgo recurrente identificado.';
       }
@@ -3364,4 +3364,5 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 </script>
 </body>
 </html>
+
 
