@@ -2328,7 +2328,15 @@ function resetForm(){
   showNotification('Formulario restablecido','success');
 }
 
+// Guarda el ID generado la primera vez que se guarda esta auditoría en la sesión actual,
+// para que un segundo clic en "Guardar" (accidental o intencional) actualice la MISMA
+// fila en Sheets en vez de crear una fila nueva con otro porcentaje.
+let _auditIDSesion = null;
+
 async function guardarAuditoria(){
+  const btnGuardar = document.getElementById('save-audit');
+  if (btnGuardar && btnGuardar.disabled) return; // evita doble clic mientras ya está guardando
+  if (btnGuardar) btnGuardar.disabled = true;
   try{
     showNotification('Guardando auditoría...','info');
     const resultado=computeResults();
@@ -2358,15 +2366,20 @@ async function guardarAuditoria(){
       });
     });
     const fStr=fecha.replace(/-/g,'');
-    const cons=Math.floor(Math.random()*10000).toString().padStart(4,'0');
-    const auditID=_fbEnabled ? _auditId : `AuditoriaVIU-${fStr}-${cons}`;
+    // Reutiliza el ID de un guardado previo en esta misma sesión; solo genera uno nuevo la primera vez.
+    if (!_auditIDSesion) {
+      const cons=Math.floor(Math.random()*10000).toString().padStart(4,'0');
+      _auditIDSesion = `AUD-${fStr}-${cons}`;
+    }
+    const auditID=_fbEnabled ? _auditId : _auditIDSesion;
     const payload={id:auditID,fecha,sede,auditor,porcentaje_final:resultado.finalPct,estado:legendFor(resultado.finalPct),timestamp:new Date().toISOString(),items,oportunidades_mejora:collectAllOMs()};
-    // Guardar en Google Sheets (flujo original)
+    // Guardar en Google Sheets (flujo original) — el Apps Script borra filas previas con este mismo id antes de insertar
     await fetch('https://script.google.com/macros/s/AKfycby9YVrSoK38cY8z8zOB-dnzrFdgbsQwWbAIQnMtyQS1TH-7PQ7CLEbV63GKK633Gl-_OQ/exec',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     // Marcar como completada en Firebase (si viene del portal)
     await _fbMarcarCompleta();
     showNotification(`✔ Auditoría guardada – ID: ${auditID}`,'success');
   }catch(e){ showNotification('Error al guardar: '+e.message,'error'); }
+  finally { if (btnGuardar) btnGuardar.disabled = false; }
 }
 
 function initializeCharts(){
