@@ -1125,7 +1125,10 @@ function computeResults() {
   });
   const _calc=Math.round(totalsum*100);
   var _recOn=document.getElementById("recActivo")&&document.getElementById("recActivo").checked;
-  const finalPct=_recOn?80:_calc;
+  // La regla de recurrencia solo AJUSTA A LA BAJA: si el resultado real ya es menor a 80%,
+  // el informe se mantiene en el real (no se sube artificialmente a 80%).
+  const finalPct=(_recOn && _calc>80) ? 80 : _calc;
+  window._finalPctReal = _calc; // porcentaje real calculado, antes del ajuste por regla del 80%
   document.getElementById('total-pct').textContent=finalPct+'%';
   document.getElementById('final-status').textContent=legendFor(finalPct);
   const fs=document.querySelector('.final-score');
@@ -1328,6 +1331,7 @@ function executeGenerateReport(){
     return;
   }
   closeReportModal();
+  computeResults(); // refresca window._finalPctReal con el estado actual del checklist
   const omsParaInforme = collectAllOMs();
   generateFullReport(rf, rm, al, omsParaInforme);
 }
@@ -2071,14 +2075,35 @@ async function generateFullReport(reportFecha, reportMes, auditorLider, oportuni
 
     if (_recOnRep) {
       // ── Párrafo 1: resultado general ──
-      _drawConcPara(
-        'Como resultado de la auditoría realizada en ' + sede + ' durante el mes de ' + reportMes +
-        ', la sede presenta un resultado de cumplimiento que, de acuerdo con los criterios establecidos, correspondería a RIESGO BAJO; no obstante, de conformidad con la política interna de calidad, el resultado del presente informe se califica con un 80% de cumplimiento.'
-      );
-      // ── Párrafo 2: explicación de la política ──
-      _drawConcPara(
-        'Esta calificación obedece a que cuando una sede mantiene cumplimiento, pero presenta el mismo hallazgo de manera recurrente durante tres (3) informes consecutivos, el resultado del informe se fija en el 80%, con el fin de promover la mejora continua.'
-      );
+      // Usamos el porcentaje REAL calculado a partir de los ítems evaluados
+      // (window._finalPctReal), no el ya ajustado por la regla de recurrencia,
+      // para que el riesgo y el porcentaje mostrados aquí reflejen la verdad del checklist.
+      // Hay 3 escenarios posibles frente al 80%:
+      //  1) Real > 80%  -> el informe se AJUSTA A LA BAJA, se fija en 80%.
+      //  2) Real = 80%  -> el informe se RATIFICA en 80% (no hay ajuste real).
+      //  3) Real < 80%  -> el informe se mantiene en el porcentaje REAL (más bajo);
+      //     la recurrencia se documenta como hallazgo/agravante adicional, sin
+      //     subir artificialmente el resultado.
+      var _pctReal = (typeof window._finalPctReal === 'number') ? window._finalPctReal : finalPct;
+      var _riesgoReal = legendFor(_pctReal).toUpperCase();
+      var _p1 = '';
+      if (_pctReal > 80) {
+        _p1 = 'Como resultado de la auditoría realizada en ' + sede + ' durante el mes de ' + reportMes +
+          ', la sede presenta un resultado de cumplimiento que, de acuerdo con los criterios establecidos, correspondería a ' + _riesgoReal + ', con un porcentaje real de cumplimiento del ' + _pctReal + '%; no obstante, de conformidad con la política interna de calidad, el resultado del presente informe se ajusta y se califica con un 80% de cumplimiento.';
+      } else if (_pctReal === 80) {
+        _p1 = 'Como resultado de la auditoría realizada en ' + sede + ' durante el mes de ' + reportMes +
+          ', la sede presenta un resultado de cumplimiento correspondiente a ' + _riesgoReal + ', con un porcentaje real de cumplimiento del ' + _pctReal + '%, el cual coincide con el porcentaje que, de conformidad con la política interna de calidad, se ratifica como resultado del presente informe.';
+      } else {
+        _p1 = 'Como resultado de la auditoría realizada en ' + sede + ' durante el mes de ' + reportMes +
+          ', la sede presenta un resultado de cumplimiento que, de acuerdo con los criterios establecidos, corresponde a ' + _riesgoReal + ', con un porcentaje real de cumplimiento del ' + _pctReal + '%. Adicionalmente, de conformidad con la política interna de calidad, se evidenció la recurrencia de los hallazgos descritos a continuación, lo cual constituye un agravante que debe ser atendido junto con las demás no conformidades identificadas en el presente informe.';
+      }
+      _drawConcPara(_p1);
+      // ── Párrafo 2: explicación de la política (solo aplica cuando hay ajuste real a 80%) ──
+      if (_pctReal >= 80) {
+        _drawConcPara(
+          'Esta calificación obedece a que cuando una sede mantiene cumplimiento, pero presenta el mismo hallazgo de manera recurrente durante tres (3) informes consecutivos, el resultado del informe se fija en el 80%, con el fin de promover la mejora continua.'
+        );
+      }
       // ── Párrafo 3: hallazgo(s) específico(s) ──
       function _mesesTxt(ri) {
         if (!ri.meses || !ri.meses.length) return '';
