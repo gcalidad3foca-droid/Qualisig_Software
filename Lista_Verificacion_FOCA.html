@@ -322,23 +322,36 @@
 .rec-switch-wrap.on .rec-switch-track::after{transform:translateX(18px);background:#2a5298;}
 .rec-fields-panel{display:none;background:#fff;padding:20px 22px;border-top:1px solid #e8edf8;}
 .rec-fields-panel.open{display:block;}
-.rec-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-.rec-field label{display:block;font-size:11px;font-weight:700;color:#1e3c72;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
-.rec-select,.rec-obs{width:100%;padding:9px 12px;border:1.5px solid #d0d8f5;border-radius:7px;font-size:13px;font-family:inherit;background:#fafbff;color:#2c3e50;}
-.rec-select:focus,.rec-obs:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.1);}
-.rec-obs-wrap{grid-column:1/-1;}
-.rec-obs{resize:vertical;min-height:56px;}
-.rec-add-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(102,126,234,.22);}
-.rec-add-btn:hover{opacity:.88;}
-.rec-list{list-style:none;padding:0;margin:12px 0 0;}
-.rec-list li{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;margin-bottom:7px;background:#f3f6ff;border-radius:8px;border-left:3px solid #667eea;}
+.rec-list-label{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:#5b8a5b;text-transform:uppercase;letter-spacing:.4px;margin:18px 0 9px;}
+.rec-list-label i{color:#5b8a5b;font-size:12px;}
+.rec-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;}
+.rec-list li{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px;background:#fff;border:1px solid #e6e9f7;border-radius:9px;box-shadow:0 1px 2px rgba(30,40,90,.04);transition:box-shadow .2s,border-color .2s;}
+.rec-list li:hover{border-color:#c9d0f2;box-shadow:0 2px 8px rgba(102,126,234,.09);}
 .rec-li-body{flex:1;min-width:0;}
-.rec-li-cat{font-size:10px;font-weight:700;color:#667eea;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px;}
-.rec-li-text{font-size:12px;color:#2c3e50;line-height:1.4;}
-.rec-li-obs{font-size:11px;color:#8898bb;margin-top:2px;font-style:italic;}
-.rec-li-del{background:none;border:none;color:#bbb;cursor:pointer;font-size:13px;padding:2px;transition:color .15s;flex-shrink:0;}
-.rec-li-del:hover{color:#f44336;}
-@media(max-width:600px){.rec-panel{margin:24px 12px 16px;}.rec-grid{grid-template-columns:1fr;}.rec-panel-inner{padding:14px 16px;flex-wrap:wrap;}.rec-switch-wrap{width:100%;justify-content:space-between;margin-top:10px;}.rec-fields-panel{padding:14px 16px;}}
+.rec-li-cat{display:inline-block;font-size:9.5px;font-weight:800;color:#5b4bad;background:#ede9fb;text-transform:uppercase;letter-spacing:.4px;padding:2.5px 9px;border-radius:20px;margin-bottom:6px;}
+.rec-li-text{font-size:12.5px;color:#2c3350;line-height:1.45;margin-bottom:4px;}
+.rec-li-obs{font-size:11.5px;color:#8890b3;margin-top:4px;font-style:italic;line-height:1.4;}
+.rec-li-meses{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:#5a4fb8;font-weight:700;background:#f1eefc;padding:3px 9px;border-radius:20px;margin-top:2px;}
+.rec-li-meses i{font-size:9.5px;}
+.rec-li-del{background:#f5f6fb;border:none;color:#9099b8;cursor:pointer;font-size:12px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s;}
+.rec-li-del:hover{background:#fdeaea;color:#e0433d;}
+.rec-auto-wrap{margin:0 0 18px;border:1px solid #e1e6f9;border-radius:12px;background:linear-gradient(180deg,#f8f9ff 0%,#f3f5fd 100%);padding:16px 18px;box-shadow:0 1px 3px rgba(102,126,234,.06);}
+.rec-auto-head{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;color:#4a3f8f;text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #e1e6f9;}
+.rec-auto-head i{color:#764ba2;font-size:13px;}
+.rec-auto-body{display:flex;flex-direction:column;gap:9px;}
+.rec-auto-item{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px;background:#fff;border:1px solid #e6e9f7;border-radius:9px;box-shadow:0 1px 2px rgba(30,40,90,.04);transition:box-shadow .2s,border-color .2s;}
+.rec-auto-item:hover{border-color:#c9d0f2;box-shadow:0 2px 8px rgba(102,126,234,.09);}
+.rec-auto-item-txt{flex:1;min-width:0;}
+.rec-auto-item-cat{display:inline-block;font-size:9.5px;font-weight:800;color:#5b4bad;background:#ede9fb;text-transform:uppercase;letter-spacing:.4px;padding:2.5px 9px;border-radius:20px;margin-bottom:6px;}
+.rec-auto-item-nom{font-size:12.5px;color:#2c3350;line-height:1.45;margin-bottom:6px;}
+.rec-auto-item-meses{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:#5a4fb8;font-weight:700;background:#f1eefc;padding:3px 9px;border-radius:20px;}
+.rec-auto-item-meses i{font-size:9.5px;}
+.rec-auto-item-btn{flex-shrink:0;padding:8px 16px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 2px 6px rgba(102,126,234,.25);transition:opacity .2s,transform .15s;}
+.rec-auto-item-btn:hover{opacity:.92;transform:translateY(-1px);}
+.rec-auto-item-btn.added{background:#c3c9de;box-shadow:none;cursor:default;transform:none;}
+.rec-auto-empty{font-size:12.5px;color:#8890b3;font-style:italic;padding:2px 0;}
+.rec-auto-loading{font-size:12.5px;color:#5a4fb8;display:flex;align-items:center;gap:8px;font-weight:500;}
+@media(max-width:600px){.rec-panel{margin:24px 12px 16px;}.rec-panel-inner{padding:14px 16px;flex-wrap:wrap;}.rec-switch-wrap{width:100%;justify-content:space-between;margin-top:10px;}.rec-fields-panel{padding:14px 16px;}}
 
 </style>
 </head>
@@ -370,11 +383,11 @@
       <div class="meta-grid">
         <div class="meta-field">
           <label>Fecha de Auditoría</label>
-          <input type="date" id="fecha">
+          <input type="date" id="fecha" onchange="recRedetectarSiActivo();">
         </div>
         <div class="meta-field">
           <label>Sede</label>
-          <select id="sede">
+          <select id="sede" onchange="recPrecargarHistoricoSedeActual(); recRedetectarSiActivo();">
             <option value="">Seleccione la sede</option>
             <option>FOCA VIVA</option><option>FOCA ALKARAWI</option><option>FOCA SEDE 2</option>
             <option>FOCA SEDE 51B</option><option>FOCA ALEGRA</option><option>FOCA VALLEDUPAR</option>
@@ -434,25 +447,16 @@
         </div>
       </div>
       <div class="rec-fields-panel" id="recFields">
-        <div class="rec-grid">
-          <div class="rec-field">
-            <label>Categoría del hallazgo recurrente</label>
-            <select class="rec-select" id="recCat" onchange="recUpdateItems()">
-              <option value="">— Seleccione la categoría —</option>
-            </select>
+        <div class="rec-auto-wrap" id="recAutoWrap" style="display:none;">
+          <div class="rec-auto-head">
+            <i class="fas fa-clock-rotate-left"></i>
+            <span>Hallazgos recurrentes evidenciados</span>
           </div>
-          <div class="rec-field">
-            <label>Ítem con hallazgo recurrente</label>
-            <select class="rec-select" id="recItem">
-              <option value="">— Seleccione el ítem —</option>
-            </select>
-          </div>
-          <div class="rec-obs-wrap rec-field">
-            <label>Observación</label>
-            <textarea class="rec-obs" id="recObsInput" rows="2" placeholder="Describa brevemente el hallazgo recurrente..."></textarea>
-          </div>
+          <div class="rec-auto-body" id="recAutoBody"></div>
         </div>
-        <button type="button" class="rec-add-btn" onclick="recAdd()"><i class="fas fa-plus"></i> Agregar ítem</button>
+        <div class="rec-list-label" id="recListLabel" style="display:none;">
+          <i class="fas fa-check-circle"></i> Incluidos en el informe
+        </div>
         <ul class="rec-list" id="recList"></ul>
       </div>
     </div>
@@ -2076,22 +2080,34 @@ async function generateFullReport(reportFecha, reportMes, auditorLider, oportuni
         'Esta calificación obedece a que cuando una sede mantiene cumplimiento, pero presenta el mismo hallazgo de manera recurrente durante tres (3) informes consecutivos, el resultado del informe se fija en el 80%, con el fin de promover la mejora continua.'
       );
       // ── Párrafo 3: hallazgo(s) específico(s) ──
+      function _mesesTxt(ri) {
+        if (!ri.meses || !ri.meses.length) return '';
+        if (ri.meses.length === 1) return ' Evidenciado específicamente en el mes de ' + ri.meses[0] + '.';
+        var ult = ri.meses[ri.meses.length-1];
+        var resto = ri.meses.slice(0, -1).join(', ');
+        return ' Evidenciado específicamente en los meses de ' + resto + ' y ' + ult + '.';
+      }
       var _p3 = '';
+      var _p4 = '';
       if (recItems && recItems.length === 1) {
         var ri = recItems[0];
         _p3 = 'Esta recurrencia de hallazgo se ha evidenciado de manera persistente durante tres (3) informes de auditoría consecutivos' +
           (ri.itxt ? ' en el ítem correspondiente a "' + ri.itxt + '".' : '.') +
-          (ri.obs ? ' ' + ri.obs.charAt(0).toUpperCase() + ri.obs.slice(1).replace(/[.,;]+$/,'') + '.' : '') +
-          ' Se requiere la formulación de un plan de acción orientado a la eliminación definitiva del hallazgo recurrente identificado, el cual debe ser ejecutado en un plazo maximo de 1 mes una vez recibido el presente informe.';
+          _mesesTxt(ri) +
+          (ri.obs ? ' ' + ri.obs.charAt(0).toUpperCase() + ri.obs.slice(1).replace(/[.,;]+$/,'') + '.' : '');
+        _p4 = 'Se requiere la formulación de un plan de acción orientado a la eliminación definitiva del hallazgo recurrente identificado, el cual debe ser ejecutado en un plazo maximo de 1 mes una vez recibido el presente informe.';
       } else if (recItems && recItems.length > 1) {
         var _rlist2 = recItems.map(function(ri, ii){
-          return (ii+1) + ') ' + (ri.itxt ? 'ítem correspondiente a "' + ri.itxt + '"' : 'categoría "' + ri.cat + '"');
+          return (ii+1) + ') ' + (ri.itxt ? 'ítem correspondiente a "' + ri.itxt + '"' : 'categoría "' + ri.cat + '"') + _mesesTxt(ri);
         }).join('  ');
-        _p3 = 'Esta recurrencia de hallazgos se ha evidenciado de manera persistente durante tres (3) informes de auditoría consecutivos en ' + recItems.length + ' ítems: ' + _rlist2 + '. Se requiere la formulación de un plan de acción orientado a la eliminación definitiva de los hallazgos recurrentes identificados.';
+        _p3 = 'Esta recurrencia de hallazgos se ha evidenciado de manera persistente durante tres (3) informes de auditoría consecutivos en ' + recItems.length + ' ítems: ' + _rlist2 + '.';
+        _p4 = 'Se requiere la formulación de un plan de acción orientado a la eliminación definitiva de los hallazgos recurrentes identificados, el cual debe ser ejecutado en un plazo maximo de 1 mes una vez recibido el presente informe.';
       } else {
-        _p3 = 'Esta recurrencia de hallazgo se ha evidenciado de manera persistente durante tres (3) informes de auditoría consecutivos. Se requiere la formulación de un plan de acción orientado a la eliminación definitiva del hallazgo recurrente identificado.';
+        _p3 = 'Esta recurrencia de hallazgo se ha evidenciado de manera persistente durante tres (3) informes de auditoría consecutivos.';
+        _p4 = 'Se requiere la formulación de un plan de acción orientado a la eliminación definitiva del hallazgo recurrente identificado, el cual debe ser ejecutado en un plazo maximo de 1 mes una vez recibido el presente informe.';
       }
       _drawConcPara(_p3);
+      _drawConcPara(_p4);
       yPos += 2;
     } else {
       var _concSingle = '';
@@ -3198,57 +3214,359 @@ function haAppendItem(secId, item) {
 
 
 // ═══════════════════════════════════════════════════════════════
+// HISTÓRICO DE HALLAZGOS RECURRENTES (Qualisig)
+// Precarga en segundo plano al elegir sede, con caché en memoria
+// y en sessionStorage para respuesta instantánea entre navegaciones.
+// ═══════════════════════════════════════════════════════════════
+const GS_URL        = 'https://script.google.com/macros/s/AKfycby9YVrSoK38cY8z8zOB-dnzrFdgbsQwWbAIQnMtyQS1TH-7PQ7CLEbV63GKK633Gl-_OQ/exec';
+const MESES_ES       = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const HIST_TTL_MS    = 30 * 60 * 1000; // 30 min: tiempo de vida del caché persistente
+const HIST_FETCH_TIMEOUT_MS = 25000;   // Apps Script puede tardar en "despertar" (cold start)
+const HIST_MAX_INTENTOS = 4;           // reintentos totales antes de rendirse
+
+// Normaliza texto para comparar ítems/sedes sin que fallen por tildes, mayúsculas o espacios
+function _normTxt(s) {
+  return (s || '').toString()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+// Convierte fecha en cualquier formato común (Date, ISO, dd/mm/aaaa, serial numérico) a {label, ts}
+function _parseFechaHist(raw) {
+  if (raw === '' || raw === null || raw === undefined) return null;
+  let d = null;
+  if (raw instanceof Date) {
+    d = raw;
+  } else if (typeof raw === 'number') {
+    d = new Date(Math.round((raw - 25569) * 86400 * 1000)); // serial de hoja de cálculo
+  } else {
+    const s = raw.toString().trim();
+    let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) d = new Date(+m[1], +m[2] - 1, +m[3]);
+    else {
+      m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      if (m) d = new Date(+m[3], +m[2] - 1, +m[1]);
+      else { const t = new Date(s); if (!isNaN(t.getTime())) d = t; }
+    }
+  }
+  if (!d || isNaN(d.getTime())) return null;
+  const label = MESES_ES[d.getMonth()].charAt(0).toUpperCase() + MESES_ES[d.getMonth()].slice(1) + ' ' + d.getFullYear();
+  return { label, ts: d.getTime() };
+}
+
+function _itemKeyOf(cat, itxt) { return _normTxt(cat) + '||' + _normTxt(itxt); }
+
+// Lee una columna probando varias variantes de nombre (con/sin tilde, mayúscula,
+// nombre alternativo), igual que hace el panel de indicadores que ya lee este mismo
+// Sheet correctamente. Esto evita fallos silenciosos si el encabezado cambia de forma.
+function _gv(row) {
+  for (let i = 1; i < arguments.length; i++) {
+    const k = arguments[i];
+    if (row[k] !== undefined && row[k] !== '' && row[k] !== null) return row[k];
+  }
+  return '';
+}
+
+// Caché en memoria: sedeNormalizada -> { itemKey: [{label, ts, resultado}] }
+let _histCache = {};
+// Promesas en curso: sedeNormalizada -> Promise (evita disparar dos fetch simultáneos para la misma sede)
+let _histInFlight = {};
+
+function _histCacheKeySS(sedeKey) { return 'qs_hist_v4_' + sedeKey; }
+
+function _histLeerCachePersistente(sedeKey) {
+  try {
+    const raw = sessionStorage.getItem(_histCacheKeySS(sedeKey));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || (Date.now() - parsed.t) > HIST_TTL_MS) return null;
+    return parsed.d;
+  } catch (e) { return null; }
+}
+
+function _histGuardarCachePersistente(sedeKey, data) {
+  try { sessionStorage.setItem(_histCacheKeySS(sedeKey), JSON.stringify({ t: Date.now(), d: data })); }
+  catch (e) { /* almacenamiento lleno u otro error — no crítico */ }
+}
+
+function _fetchConTimeout(url, ms) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(timer));
+}
+
+// Callback opcional que la UI puede registrar para enterarse de reintentos en curso
+// (se usa para actualizar el mensaje de "cargando" mientras dura el análisis)
+let _histOnRetry = null;
+
+// Descarga una pestaña de datos con varios reintentos y espera creciente entre
+// cada uno (backoff), para que casi siempre termine cargando aunque Apps Script
+// esté "frío" o la red esté intermitente.
+async function _fetchSheetTab(sheetName, intento) {
+  intento = intento || 1;
+  try {
+    const resp = await _fetchConTimeout(GS_URL + '?sheet=' + encodeURIComponent(sheetName), HIST_FETCH_TIMEOUT_MS);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const json = await resp.json();
+    if (json.error) throw new Error(json.error);
+    return json.data || [];
+  } catch (err) {
+    if (intento < HIST_MAX_INTENTOS) {
+      const espera = 1000 * Math.pow(2, intento - 1); // 1s, 2s, 4s...
+      console.warn('Histórico: intento ' + intento + '/' + HIST_MAX_INTENTOS + ' falló para "' + sheetName + '", reintentando en ' + espera + 'ms:', err);
+      if (_histOnRetry) { try { _histOnRetry(intento, HIST_MAX_INTENTOS); } catch(e){} }
+      await new Promise(function(r){ setTimeout(r, espera); });
+      return _fetchSheetTab(sheetName, intento + 1);
+    }
+    console.warn('Histórico: fallo definitivo cargando "' + sheetName + '" tras ' + HIST_MAX_INTENTOS + ' intentos:', err);
+    throw err;
+  }
+}
+
+// Descarga (una sola vez por sede) y agrupa por ítem los registros con resultado NC o CP (hallazgos)
+function cargarHistoricoSede(sede) {
+  const sedeKey = _normTxt(sede);
+  if (!sedeKey) return Promise.resolve({});
+
+  if (_histCache[sedeKey]) return Promise.resolve(_histCache[sedeKey]);
+
+  const cachedPersist = _histLeerCachePersistente(sedeKey);
+  if (cachedPersist) { _histCache[sedeKey] = cachedPersist; return Promise.resolve(cachedPersist); }
+
+  if (_histInFlight[sedeKey]) return _histInFlight[sedeKey];
+
+  const promesa = Promise.all([
+    _fetchSheetTab('AUDITORIAS'),
+    _fetchSheetTab('DETALLE_AUDITORIA')
+  ]).then(function([auditorias, detalle]) {
+    const auditMap = {};
+    auditorias.forEach(function(row) {
+      const id = _gv(row, 'id_auditoria', 'id', 'ID');
+      if (!id) return;
+      auditMap[id] = {
+        sede:  _gv(row, 'sede', 'SEDE', 'Sede'),
+        fecha: _gv(row, 'fecha', 'FECHA', 'Fecha', 'fecha_registro')
+      };
+    });
+
+    const porItem = {};
+    detalle.forEach(function(row) {
+      const id  = _gv(row, 'id', 'ID', 'id_auditoria');
+      const cab = auditMap[id];
+      if (!cab || _normTxt(cab.sede) !== sedeKey) return;
+      const resultado = _gv(row, 'resultado', 'RESULTADO', 'Resultado').toString().trim().toUpperCase();
+      if (resultado !== 'NC' && resultado !== 'CP') return;
+      const fInfo = _parseFechaHist(cab.fecha);
+      if (!fInfo) return;
+      const categoria = _gv(row, 'categoria', 'CATEGORIA', 'Categoría', 'Categoria');
+      const item      = _gv(row, 'item', 'ITEM', 'Ítem', 'Item');
+      const key = _itemKeyOf(categoria, item);
+      if (!porItem[key]) porItem[key] = [];
+      if (porItem[key].some(function(x){ return x.auditId === id; })) return;
+      porItem[key].push({ label: fInfo.label, ts: fInfo.ts, resultado: resultado, auditId: id, year: null, month: null });
+    });
+
+    // Completar year/month a partir del ts guardado (necesario para la detección de consecutivos)
+    Object.keys(porItem).forEach(function(k) {
+      porItem[k].forEach(function(r) {
+        const d = new Date(r.ts);
+        r.year = d.getFullYear();
+        r.month = d.getMonth();
+      });
+      porItem[k].sort(function(a, b){ return b.ts - a.ts; });
+    });
+
+    _histCache[sedeKey] = porItem;
+    _histGuardarCachePersistente(sedeKey, porItem);
+    delete _histInFlight[sedeKey];
+    return porItem;
+  }).catch(function(err) {
+    delete _histInFlight[sedeKey];
+    throw err;
+  });
+
+  _histInFlight[sedeKey] = promesa;
+  return promesa;
+}
+
+// Se llama al cambiar de sede: dispara la descarga en segundo plano de inmediato,
+// para que cuando el auditor abra el panel de ítem los datos ya estén listos.
+function recPrecargarHistoricoSedeActual() {
+  const sedeEl = document.getElementById('sede');
+  if (!sedeEl || !sedeEl.value) return;
+  cargarHistoricoSede(sedeEl.value).catch(function(){ /* silencioso: se reintenta al abrir el panel */ });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DETECCIÓN AUTOMÁTICA — 3 meses consecutivos de hallazgo (NC/CP)
+// La ventana es fija: el mes de la auditoría en curso (#fecha) y los
+// 2 meses inmediatamente anteriores, para la sede seleccionada.
+// ═══════════════════════════════════════════════════════════════
+
+// Vuelve a ejecutar la detección automática solo si la regla del 80% ya está activa
+// (se llama al cambiar sede o fecha, para mantener las sugerencias al día)
+function recRedetectarSiActivo() {
+  var cb = document.getElementById('recActivo');
+  if (cb && cb.checked) recDetectarConsecutivos();
+}
+
+// Igual que recRedetectarSiActivo, pero con un breve retraso — se usa en el listener
+// de cambios de radio del checklist para no recalcular en cada clic consecutivo
+let _recRedetectTimer = null;
+function recRedetectarSiActivoDebounced() {
+  clearTimeout(_recRedetectTimer);
+  _recRedetectTimer = setTimeout(recRedetectarSiActivo, 500);
+}
+
+function _labelMes(year, month) {
+  return MESES_ES[month].charAt(0).toUpperCase() + MESES_ES[month].slice(1) + ' ' + year;
+}
+
+async function recDetectarConsecutivos() {
+  const wrap = document.getElementById('recAutoWrap');
+  const body = document.getElementById('recAutoBody');
+  if (!wrap || !body) return;
+
+  const sedeEl  = document.getElementById('sede');
+  const fechaEl = document.getElementById('fecha');
+  const sede    = sedeEl ? sedeEl.value : '';
+
+  if (!sede) {
+    wrap.style.display = 'block';
+    body.innerHTML = '<div class="rec-auto-empty">Seleccione primero la sede y la fecha de la auditoría para detectar hallazgos recurrentes.</div>';
+    return;
+  }
+
+  wrap.style.display = 'block';
+  const sedeKey = _normTxt(sede);
+  let _loadingTimer = null;
+  if (!_histCache[sedeKey]) {
+    const mensajesCarga = [
+      'Analizando histórico de la sede',
+      'Seguimos consultando, un momento',
+      'La conexión está algo lenta, reintentando'
+    ];
+    let _mIdx = 0;
+    let _dots = 0;
+    const _pintarLoading = function() {
+      _dots = (_dots + 1) % 4;
+      body.innerHTML = '<div class="rec-auto-loading"><i class="fas fa-spinner fa-spin"></i> '
+        + mensajesCarga[_mIdx] + '.'.repeat(_dots) + '</div>';
+    };
+    _pintarLoading();
+    _loadingTimer = setInterval(_pintarLoading, 600);
+    _histOnRetry = function(intento) {
+      _mIdx = Math.min(intento, mensajesCarga.length - 1);
+    };
+  }
+
+  let porItem;
+  try {
+    porItem = await cargarHistoricoSede(sede);
+    if (_loadingTimer) clearInterval(_loadingTimer);
+    _histOnRetry = null;
+  } catch (e) {
+    if (_loadingTimer) clearInterval(_loadingTimer);
+    _histOnRetry = null;
+    body.innerHTML = '<div class="rec-auto-empty">No fue posible analizar el histórico en este intento. '
+      + '<a href="#" class="rec-hist-retry" onclick="event.preventDefault(); recDetectarConsecutivos();">Reintentar</a></div>';
+    return;
+  }
+
+  // Ventana fija de 3 meses: el mes de la auditoría en curso (#fecha) y los 2 anteriores
+  const base = (function() {
+    if (fechaEl && fechaEl.value) {
+      const m = fechaEl.value.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (m) return new Date(+m[1], +m[2] - 1, 1);
+    }
+    return new Date(); // si aún no hay fecha, usar el mes actual del sistema
+  })();
+  const mesActual = { year: base.getFullYear(), month: base.getMonth() };
+  const mesAnt1   = { year: new Date(base.getFullYear(), base.getMonth() - 1, 1).getFullYear(), month: new Date(base.getFullYear(), base.getMonth() - 1, 1).getMonth() };
+  const mesAnt2   = { year: new Date(base.getFullYear(), base.getMonth() - 2, 1).getFullYear(), month: new Date(base.getFullYear(), base.getMonth() - 2, 1).getMonth() };
+
+  const encontrados = [];
+
+  DATA.forEach(function(sec) {
+    sec.items.forEach(function(itxt, idx) {
+      const key = _itemKeyOf(sec.name, itxt);
+      const registros = porItem[key] || [];
+
+      // Mes en curso: cuenta si ya está marcado NC/CP en esta misma lista,
+      // o si el histórico de Sheets ya tiene un registro NC/CP para ese mismo mes
+      // (por ejemplo, si se está revisando/reabriendo la auditoría más tarde).
+      const itemId = makeId(sec.name, idx);
+      let valorActual = '';
+      document.getElementsByName(itemId).forEach(function(r) { if (r.checked) valorActual = r.value; });
+      const actualEsHallazgo = (valorActual === 'NC' || valorActual === 'CP');
+      const actualEnHistorico = registros.some(function(r){ return r.year === mesActual.year && r.month === mesActual.month; });
+      if (!actualEsHallazgo && !actualEnHistorico) return;
+
+      // Los 2 meses anteriores deben venir confirmados por el histórico de Sheets
+      const ant1Cubierto = registros.some(function(r){ return r.year === mesAnt1.year && r.month === mesAnt1.month; });
+      const ant2Cubierto = registros.some(function(r){ return r.year === mesAnt2.year && r.month === mesAnt2.month; });
+      if (!ant1Cubierto || !ant2Cubierto) return;
+
+      const mesesTxt = [
+        _labelMes(mesAnt2.year, mesAnt2.month),
+        _labelMes(mesAnt1.year, mesAnt1.month),
+        _labelMes(mesActual.year, mesActual.month) + (actualEsHallazgo && !actualEnHistorico ? ' (en curso)' : '')
+      ];
+      encontrados.push({ cat: sec.name, iIdx: idx, itxt: itxt, meses: mesesTxt });
+    });
+  });
+
+  if (!encontrados.length) {
+    body.innerHTML = '<div class="rec-auto-empty">No se detectaron ítems con hallazgo en los 3 meses consecutivos ('
+      + _labelMes(mesAnt2.year, mesAnt2.month) + ', ' + _labelMes(mesAnt1.year, mesAnt1.month) + ', ' + _labelMes(mesActual.year, mesActual.month)
+      + ') para "' + sede + '".</div>';
+    return;
+  }
+
+  body.innerHTML = '';
+  const frag = document.createDocumentFragment();
+  encontrados.forEach(function(it) {
+    const yaAgregado = recItems.some(function(ri){ return ri.cat === it.cat && ri.itxt === it.itxt; });
+    const row = document.createElement('div');
+    row.className = 'rec-auto-item';
+    row.innerHTML =
+      '<div class="rec-auto-item-txt">' +
+        '<div class="rec-auto-item-cat">' + it.cat + '</div>' +
+        '<div class="rec-auto-item-nom">' + it.itxt + '</div>' +
+        '<div class="rec-auto-item-meses"><i class="fas fa-calendar-check"></i> ' + it.meses.join(', ') + '</div>' +
+      '</div>';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'rec-auto-item-btn';
+    if (yaAgregado) { btn.textContent = 'Ya agregado'; btn.classList.add('added'); btn.disabled = true; }
+    else {
+      btn.innerHTML = '<i class="fas fa-plus"></i> Agregar';
+      btn.onclick = function() {
+        recItems.push({ cat: it.cat, iIdx: String(it.iIdx), itxt: it.itxt, obs: '', meses: it.meses.slice() });
+        recRender();
+        saveToLocalStorage();
+        btn.textContent = 'Ya agregado';
+        btn.classList.add('added');
+        btn.disabled = true;
+      };
+    }
+    row.appendChild(btn);
+    frag.appendChild(row);
+  });
+  body.appendChild(frag);
+}
+
+// ═══════════════════════════════════════════════════════════════
 // HALLAZGO RECURRENTE 80%
 // ═══════════════════════════════════════════════════════════════
 var recItems = [];
 
-function recPopulate() {
-  var sel = document.getElementById('recCat');
-  if (!sel) return;
-  sel.innerHTML = '<option value="">— Seleccione la categoría —</option>';
-  DATA.forEach(function(s) {
-    var o = document.createElement('option');
-    o.value = s.name; o.textContent = s.name;
-    sel.appendChild(o);
-  });
-}
-
-function recUpdateItems() {
-  var cat = document.getElementById('recCat').value;
-  var sel = document.getElementById('recItem');
-  sel.innerHTML = '<option value="">— Seleccione el ítem —</option>';
-  if (!cat) return;
-  var sec = DATA.find(function(s){ return s.name === cat; });
-  if (!sec) return;
-  sec.items.forEach(function(item, i) {
-    var o = document.createElement('option');
-    o.value = i;
-    o.textContent = item.length > 90 ? item.substring(0, 90) + '…' : item;
-    sel.appendChild(o);
-  });
-}
-
-function recAdd() {
-  var catSel = document.getElementById('recCat');
-  var itmSel = document.getElementById('recItem');
-  var obsEl  = document.getElementById('recObsInput');
-  var cat    = catSel.value;
-  if (!cat) { catSel.focus(); return; }
-  var sec  = DATA.find(function(s){ return s.name === cat; });
-  var iIdx = itmSel.value;
-  var itxt = (sec && iIdx !== '') ? sec.items[parseInt(iIdx)] : '';
-  var obs  = obsEl ? obsEl.value.trim() : '';
-  recItems.push({ cat: cat, iIdx: iIdx, itxt: itxt, obs: obs });
-  recRender();
-  catSel.value = ''; itmSel.innerHTML = '<option value="">— Seleccione el ítem —</option>';
-  if (obsEl) obsEl.value = '';
-  saveToLocalStorage();
-}
-
 function recRender() {
   var ul = document.getElementById('recList');
+  var label = document.getElementById('recListLabel');
   if (!ul) return;
   ul.innerHTML = '';
+  if (label) label.style.display = recItems.length ? 'flex' : 'none';
   recItems.forEach(function(it, idx) {
     var li   = document.createElement('li');
     var body = document.createElement('div');
@@ -3261,6 +3579,12 @@ function recRender() {
     txtDiv.textContent = it.itxt || '(categoría completa)';
     body.appendChild(catDiv);
     body.appendChild(txtDiv);
+    if (it.meses && it.meses.length) {
+      var mesesDiv = document.createElement('div');
+      mesesDiv.className = 'rec-li-meses';
+      mesesDiv.innerHTML = '<i class="fas fa-calendar-check"></i> ' + it.meses.join(', ');
+      body.appendChild(mesesDiv);
+    }
     if (it.obs) {
       var obsDiv = document.createElement('div');
       obsDiv.className = 'rec-li-obs';
@@ -3270,7 +3594,7 @@ function recRender() {
     var del = document.createElement('button');
     del.className = 'rec-li-del';
     del.innerHTML = '<i class="fas fa-times"></i>';
-    (function(i){ del.onclick = function(){ recItems.splice(i,1); recRender(); saveToLocalStorage(); }; })(idx);
+    (function(i){ del.onclick = function(){ recItems.splice(i,1); recRender(); saveToLocalStorage(); recRedetectarSiActivo(); }; })(idx);
     li.appendChild(body);
     li.appendChild(del);
     ul.appendChild(li);
@@ -3285,6 +3609,7 @@ function toggleRec() {
   var active = cb.checked;
   if (sw)     sw.classList.toggle('on', active);
   if (fields) fields.classList.toggle('open', active);
+  if (active) recDetectarConsecutivos();
   computeResults();
   saveToLocalStorage();
 }
@@ -3292,7 +3617,6 @@ function toggleRec() {
 
 document.addEventListener('DOMContentLoaded', async ()=>{
   renderChecklist();
-  recPopulate();
   initDropZone();
 
   if (_fbEnabled) {
@@ -3324,6 +3648,13 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   // Mostrar badge de sincronización si viene del portal
   _fbShowBadge();
 
+  // Si el borrador ya trae una sede seleccionada, precargar su histórico en segundo plano
+  recPrecargarHistoricoSedeActual();
+  // Si el borrador ya traía activa la regla del 80%, volver a detectar consecutivos
+  if (document.getElementById('recActivo') && document.getElementById('recActivo').checked) {
+    recDetectarConsecutivos();
+  }
+
   computeResults();
   initializeCharts();
   document.getElementById('generate-report').addEventListener('click', openReportModal);
@@ -3333,6 +3664,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   document.body.addEventListener('change', e => {
     if (e.target.type === 'radio') {
       computeResults(); saveToLocalStorage();
+      recRedetectarSiActivoDebounced();
       // If NC or CP selected, mark obs as required
       if (e.target.value === 'NC' || e.target.value === 'CP') {
         var row = e.target.closest('tr');
