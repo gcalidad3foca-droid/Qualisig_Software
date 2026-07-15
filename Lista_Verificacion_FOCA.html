@@ -705,10 +705,17 @@ const DATA = [
     "Verificar instalación y funcionamiento del sistema de alarma en los baños para discapacitados"
   ]},
   { name:"PQRS", weight:0.1, items:[
-    "Verificar buzón encendido",
-    "Verificar papelería en el buzón",
-    "Verificar funcionamiento del aplicativo",
-    "Solicitar y verificar últimas aperturas de Buzón en el mes"
+    "Verificar la disponibilidad de los mecanismos para la recepción de PQRSF.",
+    "Verificar el adecuado funcionamiento de los mecanismos de recepción de PQRSF.",
+    "Validar la disponibilidad de formatos físicos y elementos de escritura para la presentación de PQRSF.",
+    "Verificar la ausencia de barreras para la presentación de PQRSF por parte de los usuarios.",
+    "Revisar los registros de apertura del buzón de sugerencias del último mes."
+  ]},
+  { name:"ATENCIÓN Y EXPERIENCIA AL USUARIO", weight:0, items:[
+    "Verificar trato cordial, respetuoso y empático durante la atención al usuario.",
+    "Verificar la actualización de los datos de contacto del usuario.",
+    "Verificar claridad y oportunidad en la información suministrada al usuario.",
+    "Verificar adecuada gestión y direccionamiento de solicitudes, inquietudes o inconformidades manifestadas por el usuario."
   ]},
   { name:"PROTOCOLO DE IMAGEN", weight:0.1, items:[
     "Verificar porte individual de carnet",
@@ -1120,7 +1127,8 @@ function computeResults() {
   results.forEach(r => {
     const w=Number(r.weight||0), p=r.percentage;
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${r.name}</td><td class="radio-cell">${Math.round(w*100)}%</td><td class="radio-cell">${p}%</td><td>${legendFor(p)}</td>`;
+    const pondTxt = w>0 ? Math.round(w*100)+'%' : '—';
+    tr.innerHTML=`<td>${r.name}</td><td class="radio-cell">${pondTxt}</td><td class="radio-cell">${p}%</td><td>${legendFor(p)}</td>`;
     wtbody.appendChild(tr); totalsum+=(p/100)*w;
   });
   const _calc=Math.round(totalsum*100);
@@ -1412,7 +1420,7 @@ async function exportToPDF() {
     doc.setTextColor(30,60,114); doc.setFontSize(12); doc.setFont('helvetica','bold');
     doc.text('META DE SEGURIDAD',PW/2,yPos,{align:'center'}); yPos+=8;
     doc.setFontSize(10); doc.text('Resultados por Criterio',PW/2,yPos,{align:'center'}); yPos+=10;
-    doc.autoTable({startY:yPos,head:[['Criterio','Ponderación','Resultado %','Estado de Cumplimiento']],body:results.map(r=>[r.name,`${Math.round(r.weight*100)}%`,`${r.percentage}%`,legendFor(r.percentage)]),theme:'grid',headStyles:{fillColor:[30,60,114],textColor:[255,255,255],fontSize:9,fontStyle:'bold',halign:'center'},bodyStyles:{fontSize:8,textColor:[44,62,80]},columnStyles:{0:{cellWidth:65,halign:'left'},1:{cellWidth:30,halign:'center'},2:{cellWidth:30,halign:'center'},3:{cellWidth:'auto',halign:'center'}},margin:{left:M,right:M}});
+    doc.autoTable({startY:yPos,head:[['Criterio','Ponderación','Resultado %','Estado de Cumplimiento']],body:results.map(r=>[r.name,(r.weight>0?`${Math.round(r.weight*100)}%`:'—'),`${r.percentage}%`,legendFor(r.percentage)]),theme:'grid',headStyles:{fillColor:[30,60,114],textColor:[255,255,255],fontSize:9,fontStyle:'bold',halign:'center'},bodyStyles:{fontSize:8,textColor:[44,62,80]},columnStyles:{0:{cellWidth:65,halign:'left'},1:{cellWidth:30,halign:'center'},2:{cellWidth:30,halign:'center'},3:{cellWidth:'auto',halign:'center'}},margin:{left:M,right:M}});
     yPos=doc.lastAutoTable.finalY+15;
 
     let sBG; if(finalPct>=92)sBG=[76,175,80]; else if(finalPct>=85)sBG=[255,152,0]; else sBG=[244,67,54];
@@ -2243,7 +2251,7 @@ async function generateFullReport(reportFecha, reportMes, auditorLider, oportuni
     doc.text('META DE SEGURIDAD',PW/2,yPos,{align:'center'}); yPos+=8;
     doc.setFontSize(10); doc.text('Resultados por Criterio',PW/2,yPos,{align:'center'}); yPos+=10;
     doc.autoTable({startY:yPos,head:[['Criterio','Ponderación','Resultado %','Estado de Cumplimiento']],
-      body:results.map(r=>[r.name,`${Math.round(r.weight*100)}%`,`${r.percentage}%`,legendFor(r.percentage)]),
+      body:results.map(r=>[r.name,(r.weight>0?`${Math.round(r.weight*100)}%`:'—'),`${r.percentage}%`,legendFor(r.percentage)]),
       theme:'grid',headStyles:{fillColor:[30,60,114],textColor:[255,255,255],fontSize:9,fontStyle:'bold',halign:'center'},
       bodyStyles:{fontSize:8,textColor:[44,62,80]},
       columnStyles:{0:{cellWidth:65,halign:'left'},1:{cellWidth:30,halign:'center'},2:{cellWidth:30,halign:'center'},3:{cellWidth:'auto',halign:'center'}},
