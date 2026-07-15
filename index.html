@@ -1803,7 +1803,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
           <select class="db-fsel" id="df-cat-filter" onchange="applyDashFilters()"><option value="">Todas las categorías</option>
             <option>ADMISIÓN</option><option>PRESTACIÓN DEL SERVICIO</option>
             <option>SEGURIDAD DEL PACIENTE</option><option>AMBIENTE HUMANIZADO</option>
-            <option>PQRS</option><option>PROTOCOLO DE IMAGEN</option>
+            <option>PQRS</option><option>ATENCIÓN Y EXPERIENCIA AL USUARIO</option><option>PROTOCOLO DE IMAGEN</option>
           </select>
           <select class="db-fsel" id="df-sede" onchange="applyDashFilters()"><option value="">Todas las sedes</option></select>
           <select class="db-fsel" id="df-mes"  onchange="applyDashFilters()">
@@ -1951,7 +1951,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
                 <option value="">Todas las categorías</option>
                 <option>ADMISIÓN</option><option>PRESTACIÓN DEL SERVICIO</option>
                 <option>SEGURIDAD DEL PACIENTE</option><option>AMBIENTE HUMANIZADO</option>
-                <option>PQRS</option><option>PROTOCOLO DE IMAGEN</option>
+                <option>PQRS</option><option>ATENCIÓN Y EXPERIENCIA AL USUARIO</option><option>PROTOCOLO DE IMAGEN</option>
               </select>
             </div>
           </div>
@@ -3094,8 +3094,8 @@ let dbCM, _activeCat=null, _activeEnt='all', _activeRes='NC';
 const _DB_LOGOS = {foca:'https://i.imgur.com/5pNuFBp.png', viu:'https://i.imgur.com/qQ4lN8v.png'};
 const FOCA_SEDES = ['FOCA VIVA','FOCA ALKARAWI','FOCA SEDE 2','FOCA SEDE 51B','FOCA ALEGRA','FOCA VALLEDUPAR','FOCA RIOHACHA','FOCA SANTA MARTA','FOCA SANTA MARTA BURANO','FOCA CARTAGENA','FOCA BARANOA','FOCA GALAPA','FOCA SABANALARGA 1','FOCA SABANALARGA 2','FOCA MALAMBO','FOCA CASONA'];
 const VIU_SEDES  = ['SALA AZUL MALL PLAZA','SALA AZUL SEDE 51B','SALA AZUL VALLEDUPAR','VIU'];
-const CATS = ['ADMISIÓN','PRESTACIÓN DEL SERVICIO','SEGURIDAD DEL PACIENTE','AMBIENTE HUMANIZADO','PQRS','PROTOCOLO DE IMAGEN'];
-const CAT_SHORT = {'ADMISIÓN':'ADM','PRESTACIÓN DEL SERVICIO':'PREST','SEGURIDAD DEL PACIENTE':'SEG','AMBIENTE HUMANIZADO':'AMB','PQRS':'PQRS','PROTOCOLO DE IMAGEN':'IMAGEN'};
+const CATS = ['ADMISIÓN','PRESTACIÓN DEL SERVICIO','SEGURIDAD DEL PACIENTE','AMBIENTE HUMANIZADO','PQRS','ATENCIÓN Y EXPERIENCIA AL USUARIO','PROTOCOLO DE IMAGEN'];
+const CAT_SHORT = {'ADMISIÓN':'ADM','PRESTACIÓN DEL SERVICIO':'PREST','SEGURIDAD DEL PACIENTE':'SEG','AMBIENTE HUMANIZADO':'AMB','PQRS':'PQRS','ATENCIÓN Y EXPERIENCIA AL USUARIO':'AT. USUARIO','PROTOCOLO DE IMAGEN':'IMAGEN'};
 
 function _gv(row,...keys){for(const k of keys){if(row[k]!==undefined&&row[k]!==''&&row[k]!==null)return row[k];}return '';}
 function _id(r)  {return _gv(r,'id_auditoria','id','ID');}
