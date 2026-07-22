@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Encuesta de Experiencia del Paciente - VIU</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{box-sizing:border-box}
+:root{--blue:#123b6d;--blue2:#1f5d9c;--soft:#eef5fc;--line:#dbe7f3;--text:#24364b;--muted:#6b7c91;}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;margin:0;color:var(--text);background:linear-gradient(180deg,#f7fbff 0%,#eaf3fb 100%);min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:22px 14px}
+.card{background:#fff;border-radius:22px;box-shadow:0 18px 45px rgba(18,59,109,.12);overflow:hidden;border:1px solid #e8f0f8}
+.header{background:linear-gradient(135deg,#ffffff 0%,#f8fbff 52%,#edf6ff 100%);padding:22px 28px 18px;border-bottom:1px solid var(--line);position:relative}
+.header::after{content:'';position:absolute;right:-80px;top:-80px;width:220px;height:220px;background:rgba(31,93,156,.10);border-radius:50%}
+.header-content{position:relative;z-index:1}
+.logo-section{display:grid;grid-template-columns:150px 1fr 150px;align-items:center;gap:16px;margin-bottom:12px;min-height:78px}
+.logo{width:140px;height:76px;background:transparent;display:flex;align-items:center;justify-content:center;overflow:visible;padding:0}
+.logo img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+.org-name{font-size:23px;font-weight:900;color:var(--blue);letter-spacing:.4px;line-height:1.18;text-align:center;text-transform:uppercase;align-self:center;display:flex;align-items:center;justify-content:center;min-height:56px}
+.main-title{text-align:center;font-size:20px;font-weight:800;margin:4px 0 0;color:var(--blue);letter-spacing:.1px;line-height:1.34;max-width:620px;margin-left:auto;margin-right:auto}
+.doc-info-row{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:10px;font-size:11.5px;color:var(--muted)}
+.doc-info-row span{display:flex;align-items:center;gap:4px}
+.doc-info-row span:not(:last-child)::after{content:'·';margin-left:10px;color:var(--line)}
+.doc-info-row strong{color:var(--blue2);font-weight:700}
+.header-spacer{display:block}
+.meta-section{padding:20px 26px;background:#fff;border-bottom:1px solid var(--line)}
+.meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.field label{display:block;font-size:12px;font-weight:800;color:var(--blue);margin-bottom:7px;text-transform:uppercase;letter-spacing:.55px}
+.field select{width:100%;padding:13px;border:1.8px solid var(--line);border-radius:12px;font-size:14px;background:#fbfdff;color:var(--text);font-family:inherit;transition:.2s}
+.field select:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 4px rgba(31,93,156,.10);background:#fff}
+.progress-wrap{padding:16px 26px 0;}
+.progress-bar-outer{height:8px;background:var(--soft);border-radius:20px;overflow:hidden}
+.progress-bar-inner{height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--blue2));border-radius:20px;transition:width .3s ease}
+.progress-label{font-size:11.5px;color:var(--muted);margin-top:7px;text-align:right;font-weight:600}
+.survey-section{padding:14px 26px 26px}
+.section-title{background:linear-gradient(90deg,var(--blue),var(--blue2));color:#fff;font-weight:900;font-size:14px;padding:14px 18px;border-radius:13px;margin:18px 0 14px;text-transform:uppercase;letter-spacing:.6px;box-shadow:0 8px 20px rgba(18,59,109,.12)}
+.section-title small{display:block;font-weight:500;text-transform:none;font-size:11.5px;opacity:.9;margin-top:3px;letter-spacing:0}
+.question{border:1px solid var(--line);border-radius:16px;padding:17px;margin-bottom:14px;background:#fff;box-shadow:0 3px 14px rgba(18,59,109,.04)}
+.question.invalid{border-color:#e0433d;box-shadow:0 0 0 3px rgba(224,67,61,.12)}
+.question-text{font-weight:800;margin-bottom:13px;color:var(--blue);line-height:1.45}
+.qnum{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:50%;background:var(--soft);color:var(--blue2);margin-right:5px;font-size:13px}
+.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.option{display:flex;align-items:center;gap:8px;padding:11px;border:1.7px solid var(--line);border-radius:12px;cursor:pointer;transition:.2s;background:#fbfdff;color:#34465b}
+.option:hover,.option:has(input:checked){border-color:var(--blue2);background:#f2f8fe;box-shadow:0 3px 12px rgba(31,93,156,.08)}
+.option input{accent-color:var(--blue2);width:18px;height:18px}
+.option span{font-size:13.5px;font-weight:600}
+.textarea-field{margin-top:8px}
+.textarea-field label{display:block;font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px}
+.textarea-field textarea{width:100%;padding:13px;border:1.8px solid var(--line);border-radius:12px;font-size:14px;font-family:inherit;resize:vertical;min-height:90px;background:#fbfdff;color:var(--text);transition:.2s}
+.textarea-field textarea:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 4px rgba(31,93,156,.10);background:#fff}
+.notice{margin:4px 26px 18px;background:#f3f8fd;border:1px solid #e1ecf7;border-radius:12px;padding:14px;font-size:13px;color:#29436b}
+.actions{background:#fff;padding:22px 26px 28px;border-top:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:10px}
+.btn{display:flex;align-items:center;gap:9px;padding:14px 26px;border:0;border-radius:13px;font-weight:900;font-size:15px;cursor:pointer;transition:.25s;min-width:260px;justify-content:center}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(18,59,109,.18)}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff}
+.btn-primary:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+.pending-hint{font-size:12px;color:#c0392b;font-weight:700;display:none;align-items:center;gap:6px}
+.pending-hint.show{display:flex}
+.success-screen{position:fixed;inset:0;background:linear-gradient(160deg,#f7fbff 0%,#eaf3fb 55%,#e1eefa 100%);display:none;align-items:center;justify-content:center;padding:24px;z-index:9999}
+.success-screen.show{display:flex;animation:fadeIn .35s ease}
+.success-content{width:100%;max-width:480px;text-align:center;animation:popIn .45s cubic-bezier(.2,.9,.3,1.2)}
+.success-icon{width:104px;height:104px;border-radius:50%;background:linear-gradient(135deg,#e9f8ef,#d7f1e1);color:#237a3b;display:flex;align-items:center;justify-content:center;font-size:46px;margin:0 auto 26px;box-shadow:0 16px 38px rgba(35,122,59,.18)}
+.success-logo{width:120px;height:64px;margin:0 auto 22px;display:flex;align-items:center;justify-content:center}
+.success-logo img{max-width:100%;max-height:100%;object-fit:contain}
+.success-content h1{margin:0 0 14px;color:var(--blue);font-size:34px;font-weight:900;letter-spacing:.2px}
+.success-content p{margin:0 0 8px;color:var(--muted);font-size:16px;line-height:1.65;max-width:400px;margin-left:auto;margin-right:auto}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:#2c3e50;color:#fff;padding:13px 22px;border-radius:12px;font-size:13.5px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:9998;transition:transform .3s ease;max-width:90%;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:768px){
+  body{background:#f8fbff}
+  .container{padding:0;max-width:100%}
+  .card{border-radius:0;box-shadow:none;border:0;min-height:100vh}
+  .header{padding:18px 16px 16px}
+  .header::after{width:165px;height:165px;right:-72px;top:-72px}
+  .logo-section{grid-template-columns:1fr;justify-items:center;text-align:center;gap:7px;margin-bottom:10px;min-height:auto}
+  .logo{width:138px;height:72px;margin:0 auto 2px}
+  .org-name{font-size:17px;line-height:1.22;text-align:center;min-height:auto;max-width:92%;margin:0 auto;display:block}
+  .main-title{font-size:16px;line-height:1.34;margin-top:2px;max-width:94%}
+  .doc-info-row{gap:6px;font-size:10px;margin-top:8px;flex-wrap:wrap}
+  .doc-info-row span:not(:last-child)::after{margin-left:6px}
+  .header-spacer{display:none}
+  .meta-section{padding:16px 14px}
+  .progress-wrap{padding:14px 14px 0}
+  .survey-section{padding:2px 14px 18px}
+  .section-title{font-size:12.5px;padding:12px 14px;border-radius:12px;margin:16px 0 12px}
+  .question{padding:15px 13px;border-radius:15px;margin-bottom:12px}
+  .question-text{font-size:14.2px;line-height:1.42;margin-bottom:12px}
+  .qnum{min-width:24px;height:24px;font-size:12px}
+  .options{grid-template-columns:1fr;gap:8px}
+  .option{padding:12px 13px;min-height:48px}
+  .notice{margin:0 14px 18px;font-size:12.5px;line-height:1.45;padding:12px}
+  .actions{padding:18px 14px 24px;position:sticky;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px)}
+  .btn{width:100%;min-width:0;padding:15px 18px;font-size:15px;border-radius:14px}
+  .success-content{max-width:340px}
+  .success-icon{width:84px;height:84px;font-size:38px;margin-bottom:20px}
+  .success-logo{width:100px;height:54px;margin-bottom:18px}
+  .success-content h1{font-size:26px}
+  .success-content p{font-size:14.5px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+
+    <div class="header">
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="logo"><img src="https://i.imgur.com/qQ4lN8v.png" alt="Logo VIU"></div>
+          <div class="org-name">CLÍNICA OFTALMOLÓGICA INTERNACIONAL</div>
+          <div class="header-spacer"></div>
+        </div>
+        <h1 class="main-title">Instrumento de Evaluación de la Experiencia del Paciente Incógnito</h1>
+        <div class="doc-info-row">
+          <span><strong>Código:</strong> F-SYM-1393</span>
+          <span><strong>Versión:</strong> 001</span>
+          <span><strong>Vigencia:</strong> 2026-06-17</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="meta-section">
+      <div class="meta-grid">
+        <div class="field">
+          <label>Sede donde fue atendido</label>
+          <select id="sede" name="sede" required>
+            <option value="">Seleccione la sede</option>
+            <option value="SALA AZUL MALL PLAZA">SALA AZUL MALL PLAZA</option>
+            <option value="SALA AZUL SEDE 51B">SALA AZUL SEDE 51B</option>
+            <option value="SALA AZUL VALLEDUPAR">SALA AZUL VALLEDUPAR</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar"></div></div>
+      <div class="progress-label" id="progressLabel">0 de 31 respondidas</div>
+    </div>
+
+    <form id="piForm">
+      <div class="survey-section" id="surveySection"></div>
+
+      <p class="notice"><i class="fas fa-circle-info" style="margin-right:6px;color:#1f5d9c"></i>Todas las preguntas son obligatorias. Sus respuestas son confidenciales y se usan únicamente para fortalecer la calidad de nuestra atención.</p>
+
+      <div class="actions">
+        <span class="pending-hint" id="pendingHint"><i class="fas fa-triangle-exclamation"></i> Por favor responda todas las preguntas antes de finalizar</span>
+        <button class="btn btn-primary" type="submit" id="btnFinalizar"><i class="fas fa-check-circle"></i> Finalizar Encuesta</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="success-screen" id="successModal" role="dialog" aria-modal="true" aria-labelledby="successTitle">
+  <div class="success-content">
+    <div class="success-icon"><i class="fas fa-check"></i></div>
+    <div class="success-logo"><img src="https://i.imgur.com/qQ4lN8v.png" alt="Logo VIU"></div>
+    <h1 id="successTitle">¡Muchas gracias!</h1>
+    <p>Su respuesta ha sido registrada exitosamente.<br>Agradecemos el tiempo dedicado a compartir su experiencia con nosotros.</p>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// ENCUESTA DE EXPERIENCIA DEL PACIENTE INCÓGNITO — VIU
+// Instrumento oficial F-FSYM-1394 — sin porcentajes visibles
+// ══════════════════════════════════════════════
+const INSTITUCION = 'viu';
+const CODIGO_DOC  = 'F-SYM-1393';
+
+const PI_DATA = [
+  { momento:"MOMENTO 1", nombre:"ANTES DE INGRESAR", items:[
+    {n:1, texto:"La facilidad para encontrar la institución fue:", atributo:"Accesibilidad"},
+    {n:2, texto:"La facilidad para ingresar a la institución fue:", atributo:"Accesibilidad"},
+    {n:3, texto:"La primera impresión que tuvo de la institución fue:", atributo:"Percepción institucional"}
+  ]},
+  { momento:"MOMENTO 2", nombre:"AL INGRESAR", items:[
+    {n:4, texto:"El saludo y la actitud del personal al momento de su ingreso fueron:", atributo:"Humanización"},
+    {n:5, texto:"La orientación recibida para llegar al servicio donde sería atendido fue:", atributo:"Orientación al usuario"},
+    {n:6, texto:"La señalización y los apoyos brindados para ubicar el servicio donde sería atendido fueron:", atributo:"Accesibilidad"}
+  ]},
+  { momento:"MOMENTO 3", nombre:"ADMISIÓN", items:[
+    {n:7, texto:"La atención recibida durante el proceso de admisión fue:", atributo:"Calidad atención administrativa"},
+    {n:8, texto:"El tiempo de espera para ser atendido durante el proceso de admisión fue:", atributo:"Oportunidad"},
+    {n:9, texto:"El trato recibido por el personal durante el proceso de admisión fue:", atributo:"Humanización"},
+    {n:10, texto:"Durante el proceso de admisión, el manejo de su información personal y la privacidad fueron:", atributo:"Privacidad y confidencialidad"},
+    {n:11, texto:"La claridad de la información recibida durante el proceso de admisión fue:", atributo:"Comunicación"}
+  ]},
+  { momento:"MOMENTO 4", nombre:"MIENTRAS ESPERABA LA ATENCIÓN", items:[
+    {n:12, texto:"El tiempo de espera para recibir la atención fue:", atributo:"Oportunidad"},
+    {n:13, texto:"La información recibida durante la espera sobre demoras, cambios o llamados fue:", atributo:"Comunicación"},
+    {n:14, texto:"La comodidad de la sala de espera fue:", atributo:"Comodidad"},
+    {n:15, texto:"La limpieza de la sala de espera fue:", atributo:"Ambiente físico"},
+    {n:16, texto:"El orden y las condiciones generales de la sala de espera fueron:", atributo:"Ambiente físico"},
+    {n:17, texto:"La información sobre sus derechos y deberes como paciente estuvo disponible y fue fácil de identificar.", atributo:"Derechos y deberes"},
+    {n:18, texto:"La información disponible sobre sus derechos y deberes como paciente fue clara y fácil de comprender.", atributo:"Derechos y deberes"}
+  ]},
+  { momento:"MOMENTO 5", nombre:"DURANTE LA ATENCIÓN", items:[
+    {n:19, texto:"El trato recibido por el profesional que lo atendió fue:", atributo:"Humanización"},
+    {n:20, texto:"El interés del profesional por escuchar sus necesidades e inquietudes fue:", atributo:"Escucha activa"},
+    {n:21, texto:"Las explicaciones brindadas por el profesional sobre su estado de salud, diagnóstico o motivo de la atención fueron:", atributo:"Comunicación"},
+    {n:22, texto:"Las explicaciones brindadas por el profesional fueron claras y fáciles de comprender.", atributo:"Comprensión de la información"},
+    {n:23, texto:"Durante la atención, el respeto por su privacidad fue:", atributo:"Privacidad y confidencialidad"},
+    {n:24, texto:"La confianza que le generó el profesional durante la atención fue:", atributo:"Confianza"},
+    {n:25, texto:"La oportunidad para expresar sus dudas e inquietudes durante la atención fue:", atributo:"Participación del paciente"},
+    {n:26, texto:"Durante la atención, el profesional tuvo en cuenta sus opiniones y necesidades al brindarle la atención.", atributo:"Participación del paciente"}
+  ]},
+  { momento:"MOMENTO 6", nombre:"AL FINALIZAR LA ATENCIÓN", items:[
+    {n:27, texto:"Las recomendaciones e indicaciones recibidas para continuar con su atención (órdenes, controles, medicamentos, autorizaciones o citas, según aplique) fueron:", atributo:"Continuidad de la atención"},
+    {n:28, texto:"La claridad de las indicaciones entregadas al finalizar la atención fue:", atributo:"Comprensión de indicaciones"}
+  ]},
+  { momento:"MOMENTO 7", nombre:"EXPERIENCIA GENERAL", items:[
+    {n:29, texto:"En términos generales, su experiencia durante la atención recibida fue:", atributo:"Experiencia general"}
+  ]}
+];
+
+const SCALE = [
+  {v:'E', label:'Excelente'},
+  {v:'B', label:'Buena'},
+  {v:'A', label:'Aceptable'},
+  {v:'D', label:'Deficiente'}
+];
+const TOTAL_REQUIRED = 29; // 29 preguntas cerradas obligatorias (30 y 31 son abiertas, opcionales)
+
+function renderSurvey(){
+  const section = document.getElementById('surveySection');
+  let html = '';
+  PI_DATA.forEach(mom=>{
+    html += `<div class="section-title">${mom.momento}<small>${mom.nombre}</small></div>`;
+    mom.items.forEach(it=>{
+      html += `<div class="question" id="q-wrap-${it.n}">
+        <div class="question-text"><span class="qnum">${it.n}.</span> ${it.texto}</div>
+        <div class="options">
+          ${SCALE.map(s=>`<label class="option"><input type="radio" name="q${it.n}" value="${s.v}" data-required="true" onchange="onAnswer()"><span>${s.label}</span></label>`).join('')}
+        </div>
+      </div>`;
+    });
+  });
+  // Preguntas abiertas (30 y 31) — opcionales, comentario libre del paciente
+  html += `<div class="section-title">COMENTARIOS<small>Opcional</small></div>
+    <div class="question">
+      <div class="textarea-field">
+        <label><span class="qnum">30.</span> ¿Qué considera que podríamos mejorar para brindarle una mejor atención?</label>
+        <textarea id="comentario30" name="comentario30" placeholder="Escriba aquí su respuesta (opcional)..."></textarea>
+      </div>
+    </div>
+    <div class="question">
+      <div class="textarea-field">
+        <label><span class="qnum">31.</span> ¿Desea resaltar o reconocer la atención de algún colaborador o compartir algún comentario adicional?</label>
+        <textarea id="comentario31" name="comentario31" placeholder="Escriba aquí su respuesta (opcional)..."></textarea>
+      </div>
+    </div>`;
+  section.innerHTML = html;
+}
+
+function countAnswered(){
+  let n=0;
+  PI_DATA.forEach(mom=>mom.items.forEach(it=>{
+    const radios=document.getElementsByName('q'+it.n);
+    for(const r of radios) if(r.checked){ n++; break; }
+  }));
+  return n;
+}
+
+function onAnswer(){
+  const answered = countAnswered();
+  const pct = Math.round((answered/TOTAL_REQUIRED)*100);
+  document.getElementById('progressBar').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = answered+' de '+TOTAL_REQUIRED+' respondidas';
+  document.querySelectorAll('.question.invalid').forEach(q=>{
+    const radios = q.querySelectorAll('input[type="radio"]');
+    if(radios.length){ for(const r of radios) if(r.checked){ q.classList.remove('invalid'); break; } }
+  });
+  saveProgressToFirebase();
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+</script>
+<script>
+// ══════════════════════════════════════════════
+// FIREBASE — se guarda directamente en el nodo
+// 'auditorias_pi' que también usa/observa QUALISIG.
+// El paciente ingresa por QR: si la URL no trae un
+// auditId (caso normal desde QR), se crea un registro
+// nuevo "en-progreso" apenas carga la página, para que
+// el equipo pueda verla llenándose en vivo en QUALISIG.
+// ══════════════════════════════════════════════
+const _fbConfig = {
+  apiKey: "AIzaSyDdATmr1x7nNObgKjcqKiexbM2YNMP0D9Y",
+  authDomain: "qualisig-auditorias.firebaseapp.com",
+  databaseURL: "https://qualisig-auditorias-default-rtdb.firebaseio.com",
+  projectId: "qualisig-auditorias",
+  storageBucket: "qualisig-auditorias.firebasestorage.app",
+  messagingSenderId: "155027246268",
+  appId: "1:155027246268:web:75a8394fbb0a2a2ccb54b9"
+};
+if (!firebase.apps.length) firebase.initializeApp(_fbConfig);
+const _fbDB = firebase.database();
+const FB_NODE = 'auditorias_pi';
+
+const _urlParams = new URLSearchParams(window.location.search);
+let _auditId = _urlParams.get('auditId');
+const _uidParam = _urlParams.get('uid') || '';
+
+const SCORE = { E:1, B:0.75, A:0.5, D:0 };
+
+function legendFor(pct){ if(pct>=92) return 'Experiencia altamente favorable'; if(pct>=85) return 'Experiencia favorable'; return 'Experiencia por fortalecer'; }
+function legendShort(pct){ if(pct>=92) return 'Favorable'; if(pct>=85) return 'Aceptable'; return 'Por fortalecer'; }
+
+function getAllAttributes(){
+  const set=[]; PI_DATA.forEach(m=>m.items.forEach(it=>{ if(!set.includes(it.atributo)) set.push(it.atributo); }));
+  return set.sort((a,b)=>a.localeCompare(b));
+}
+
+// Calcula resultados internos (nunca se muestran al paciente) para que
+// QUALISIG los reciba ya listos mientras la encuesta está en curso.
+function computeInternalResults(){
+  const results=[]; let totalSum=0,totalN=0; let cE=0,cB=0,cA=0,cD=0;
+  PI_DATA.forEach(mom=>{
+    let sum=0,n=0;
+    mom.items.forEach(it=>{
+      const radios=document.getElementsByName('q'+it.n);
+      let v=''; for(const r of radios) if(r.checked) v=r.value;
+      if(v){ sum+=SCORE[v]; n++; totalSum+=SCORE[v]; totalN++; if(v==='E')cE++; else if(v==='B')cB++; else if(v==='A')cA++; else if(v==='D')cD++; }
+    });
+    const pct = n>0 ? Math.round((sum/n)*100) : null;
+    results.push({momento:mom.momento, nombre:mom.nombre, percentage:pct==null?0:pct, n});
+  });
+  const attrMap={};
+  PI_DATA.forEach(mom=>mom.items.forEach(it=>{
+    const radios=document.getElementsByName('q'+it.n);
+    let v=''; for(const r of radios) if(r.checked) v=r.value;
+    if(!attrMap[it.atributo]) attrMap[it.atributo]={sum:0,n:0};
+    if(v){ attrMap[it.atributo].sum+=SCORE[v]; attrMap[it.atributo].n+=1; }
+  }));
+  const attrResults = getAllAttributes().map(name=>{
+    const d=attrMap[name]||{sum:0,n:0};
+    return { name, percentage: d.n>0 ? Math.round((d.sum/d.n)*100) : null };
+  });
+  const finalPct = totalN>0 ? Math.round((totalSum/totalN)*100) : 0;
+  const itemsDeficientes=[];
+  PI_DATA.forEach(mom=>mom.items.forEach(it=>{
+    const radios=document.getElementsByName('q'+it.n);
+    let v=''; for(const r of radios) if(r.checked) v=r.value;
+    if(v==='D') itemsDeficientes.push(it.n);
+  }));
+  return { results, attrResults, finalPct, dist:{E:cE,B:cB,A:cA,D:cD,NA:0}, itemsDeficientes };
+}
+
+function collectRespuestas(){
+  const respuestas={};
+  PI_DATA.forEach(mom=>mom.items.forEach(it=>{
+    const radios=document.getElementsByName('q'+it.n);
+    let v=''; for(const r of radios) if(r.checked) v=r.value;
+    if(v) respuestas['q'+it.n]=v;
+  }));
+  return respuestas;
+}
+
+let _fbSaveTimer=null;
+// Hora de inicio: se captura sola apenas carga la página (no la escribe el paciente)
+const _horaInicio = new Date().toTimeString().slice(0,5);
+const _fechaAuditoria = new Date().toISOString().split('T')[0];
+
+function saveProgressToFirebase(){
+  if(!_auditId) return;
+  clearTimeout(_fbSaveTimer);
+  _fbSaveTimer=setTimeout(async ()=>{
+    try{
+      const resultado = computeInternalResults();
+      const sede = document.getElementById('sede') ? document.getElementById('sede').value : '';
+      await _fbDB.ref(FB_NODE+'/'+_auditId).update({
+        estado:'en-progreso',
+        sede,
+        porcentaje: resultado.finalPct,
+        resultadosPorMomento: resultado.results,
+        resultadosPorAtributo: resultado.attrResults,
+        distribucion: resultado.dist,
+        itemsDeficientes: resultado.itemsDeficientes,
+        respuestas: collectRespuestas(),
+        comentario30: document.getElementById('comentario30') ? document.getElementById('comentario30').value : '',
+        comentario31: document.getElementById('comentario31') ? document.getElementById('comentario31').value : '',
+        updatedAt: Date.now()
+      });
+    }catch(e){ console.warn('Error guardando progreso:', e); }
+  }, 1200);
+}
+
+async function ensureAuditRecord(){
+  // Si la URL ya trae un auditId (por ejemplo, el equipo abrió esta misma
+  // lista desde "Nueva Auditoría PI" en QUALISIG), se reutiliza ese registro.
+  if(_auditId){
+    try{ await _fbDB.ref(FB_NODE+'/'+_auditId).update({ horaInicio: _horaInicio, updatedAt: Date.now() }); }catch(e){}
+    return;
+  }
+  // Caso normal: el paciente entra por QR sin auditId — se crea un registro
+  // nuevo automáticamente, marcado desde ya como "en-progreso".
+  // Fecha y hora de inicio quedan registradas de forma automática — el
+  // paciente nunca las diligencia.
+  const ts = Date.now();
+  _auditId = 'PI-' + INSTITUCION.toUpperCase() + '-' + _fechaAuditoria.replace(/-/g,'') + '-' + ts.toString().slice(-4);
+  try{
+    await _fbDB.ref(FB_NODE+'/'+_auditId).set({
+      tipo:'paciente-incognito',
+      institucion: INSTITUCION,
+      origen:'qr-paciente',
+      sede:'',
+      fecha: _fechaAuditoria,
+      horaInicio: _horaInicio,
+      estado:'en-progreso',
+      porcentaje:null,
+      createdAt:ts,
+      updatedAt:ts
+    });
+  }catch(e){ console.warn('Error creando registro:', e); }
+}
+
+async function finalizarEncuesta(){
+  const btn = document.getElementById('btnFinalizar');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+  // Validar sede seleccionada
+  const sedeEl = document.getElementById('sede');
+  const sede = sedeEl.value;
+  if(!sede){
+    btn.disabled=false;
+    btn.innerHTML = '<i class="fas fa-check-circle"></i> Finalizar Encuesta';
+    showToast('Por favor seleccione la sede donde fue atendido');
+    sedeEl.focus();
+    sedeEl.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
+  // Validar que las 29 preguntas cerradas estén respondidas
+  let firstInvalid = null;
+  let allValid = true;
+  PI_DATA.forEach(mom=>mom.items.forEach(it=>{
+    const radios=document.getElementsByName('q'+it.n);
+    let checked=false; for(const r of radios) if(r.checked) checked=true;
+    const wrap=document.getElementById('q-wrap-'+it.n);
+    if(!checked){
+      allValid=false;
+      wrap.classList.add('invalid');
+      if(!firstInvalid) firstInvalid=wrap;
+    } else {
+      wrap.classList.remove('invalid');
+    }
+  }));
+
+  if(!allValid){
+    btn.disabled=false;
+    btn.innerHTML = '<i class="fas fa-check-circle"></i> Finalizar Encuesta';
+    document.getElementById('pendingHint').classList.add('show');
+    showToast('Por favor responda todas las preguntas antes de finalizar');
+    if(firstInvalid) firstInvalid.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  document.getElementById('pendingHint').classList.remove('show');
+
+  try{
+    const resultado = computeInternalResults();
+    const horaFin = new Date().toTimeString().slice(0,5);
+    await _fbDB.ref(FB_NODE+'/'+_auditId).update({
+      tipo:'paciente-incognito',
+      institucion: INSTITUCION,
+      estado:'completada',
+      sede,
+      fecha: _fechaAuditoria,
+      horaInicio: _horaInicio,
+      horaFin,
+      porcentaje: resultado.finalPct,
+      clasificacion: legendFor(resultado.finalPct),
+      resultadosPorMomento: resultado.results,
+      resultadosPorAtributo: resultado.attrResults,
+      distribucion: resultado.dist,
+      itemsDeficientes: resultado.itemsDeficientes,
+      respuestas: collectRespuestas(),
+      comentario30: document.getElementById('comentario30').value,
+      comentario31: document.getElementById('comentario31').value,
+      finalizadoEn: new Date().toISOString(),
+      updatedAt: Date.now()
+    });
+    document.getElementById('successModal').classList.add('show');
+  }catch(e){
+    showToast('Ocurrió un error al enviar. Intente nuevamente.');
+    btn.disabled=false;
+    btn.innerHTML = '<i class="fas fa-check-circle"></i> Finalizar Encuesta';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async function(){
+  renderSurvey();
+  await ensureAuditRecord();
+  onAnswer();
+
+  document.getElementById('piForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    finalizarEncuesta();
+  });
+});
+</script>
+</body>
+</html>
