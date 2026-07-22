@@ -367,6 +367,32 @@ function collectRespuestas(){
   return respuestas;
 }
 
+// Marca en pantalla las respuestas, sede y comentarios que ya estaban
+// guardados en Firebase — para que reabrir la encuesta (por el paciente
+// o por el equipo desde QUALISIG) nunca borre el progreso ya hecho.
+function restoreRespuestas(data){
+  if(!data) return;
+  if(data.respuestas){
+    Object.keys(data.respuestas).forEach(key=>{
+      const val = data.respuestas[key];
+      const radios = document.getElementsByName(key);
+      radios.forEach(r=>{ if(r.value===val) r.checked = true; });
+    });
+  }
+  if(data.sede){
+    const sedeEl = document.getElementById('sede');
+    if(sedeEl) sedeEl.value = data.sede;
+  }
+  if(data.comentario30){
+    const el = document.getElementById('comentario30');
+    if(el) el.value = data.comentario30;
+  }
+  if(data.comentario31){
+    const el = document.getElementById('comentario31');
+    if(el) el.value = data.comentario31;
+  }
+}
+
 let _fbSaveTimer=null;
 // Hora de inicio: se captura sola apenas carga la página (no la escribe el paciente)
 const _horaInicio = new Date().toTimeString().slice(0,5);
@@ -396,17 +422,47 @@ function saveProgressToFirebase(){
   }, 1200);
 }
 
+const LS_KEY_AUDITID = 'pi_' + INSTITUCION + '_auditId_actual';
+
 async function ensureAuditRecord(){
-  // Si la URL ya trae un auditId (por ejemplo, el equipo abrió esta misma
-  // lista desde "Nueva Auditoría PI" en QUALISIG), se reutiliza ese registro.
+  // Caso 1: la URL ya trae un auditId (el equipo abrió esta lista desde
+  // "Continuar" / "Ver en vivo" en QUALISIG, o el propio QR ya lo incluía).
+  // Se carga el registro existente y se restauran las respuestas guardadas
+  // — nunca se sobrescribe ni se borra el progreso previo.
   if(_auditId){
-    try{ await _fbDB.ref(FB_NODE+'/'+_auditId).update({ horaInicio: _horaInicio, updatedAt: Date.now() }); }catch(e){}
+    try{
+      const snap = await _fbDB.ref(FB_NODE+'/'+_auditId).once('value');
+      if(snap.exists()){
+        restoreRespuestas(snap.val());
+      }
+      await _fbDB.ref(FB_NODE+'/'+_auditId).update({ horaInicio: _horaInicio, updatedAt: Date.now() });
+    }catch(e){ console.warn('Error cargando registro existente:', e); }
     return;
   }
-  // Caso normal: el paciente entra por QR sin auditId — se crea un registro
-  // nuevo automáticamente, marcado desde ya como "en-progreso".
-  // Fecha y hora de inicio quedan registradas de forma automática — el
-  // paciente nunca las diligencia.
+
+  // Caso 2: el paciente entra por QR sin auditId en la URL. Antes de crear
+  // uno nuevo, se revisa si este mismo navegador ya tenía una encuesta en
+  // curso guardada localmente — así, si cierra y vuelve a abrir el mismo
+  // enlace, retoma exactamente donde iba en vez de empezar de cero.
+  const idGuardado = localStorage.getItem(LS_KEY_AUDITID);
+  if(idGuardado){
+    try{
+      const snap = await _fbDB.ref(FB_NODE+'/'+idGuardado).once('value');
+      if(snap.exists() && snap.val().estado !== 'completada'){
+        _auditId = idGuardado;
+        restoreRespuestas(snap.val());
+        await _fbDB.ref(FB_NODE+'/'+_auditId).update({ updatedAt: Date.now() });
+        return;
+      } else {
+        // La auditoría guardada ya fue finalizada o ya no existe: se limpia
+        // la referencia local para no reutilizarla por error.
+        localStorage.removeItem(LS_KEY_AUDITID);
+      }
+    }catch(e){ console.warn('Error verificando encuesta previa:', e); }
+  }
+
+  // No había nada que retomar: se crea un registro nuevo, marcado desde
+  // ya como "en-progreso", y se guarda su ID en este navegador.
   const ts = Date.now();
   _auditId = 'PI-' + INSTITUCION.toUpperCase() + '-' + _fechaAuditoria.replace(/-/g,'') + '-' + ts.toString().slice(-4);
   try{
@@ -422,6 +478,7 @@ async function ensureAuditRecord(){
       createdAt:ts,
       updatedAt:ts
     });
+    localStorage.setItem(LS_KEY_AUDITID, _auditId);
   }catch(e){ console.warn('Error creando registro:', e); }
 }
 
@@ -491,6 +548,10 @@ async function finalizarEncuesta(){
       finalizadoEn: new Date().toISOString(),
       updatedAt: Date.now()
     });
+    // La encuesta ya quedó completada: se limpia la referencia local para
+    // que un futuro uso del mismo dispositivo/enlace inicie una encuesta
+    // nueva en vez de reabrir esta que ya se envió.
+    try{ localStorage.removeItem(LS_KEY_AUDITID); }catch(e){}
     document.getElementById('successModal').classList.add('show');
   }catch(e){
     showToast('Ocurrió un error al enviar. Intente nuevamente.');
