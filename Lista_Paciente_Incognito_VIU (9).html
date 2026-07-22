@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>Encuesta de Experiencia del Paciente Incognito - VIU</title>
+<title>Encuesta de Experiencia del Paciente - VIU</title>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -224,7 +224,8 @@ const SCALE = [
   {v:'E', label:'Excelente'},
   {v:'B', label:'Buena'},
   {v:'A', label:'Aceptable'},
-  {v:'D', label:'Deficiente'}
+  {v:'D', label:'Deficiente'},
+  {v:'NA', label:'No aplica'}
 ];
 const TOTAL_REQUIRED = 29; // 29 preguntas cerradas obligatorias (30 y 31 son abiertas, opcionales)
 
@@ -324,14 +325,17 @@ function getAllAttributes(){
 
 // Calcula resultados internos (nunca se muestran al paciente) para que
 // QUALISIG los reciba ya listos mientras la encuesta está en curso.
+// "No aplica" se cuenta en la distribución pero se excluye del promedio,
+// igual que en el instrumento de Auditoría de Servicio.
 function computeInternalResults(){
-  const results=[]; let totalSum=0,totalN=0; let cE=0,cB=0,cA=0,cD=0;
+  const results=[]; let totalSum=0,totalN=0; let cE=0,cB=0,cA=0,cD=0,cNA=0;
   PI_DATA.forEach(mom=>{
     let sum=0,n=0;
     mom.items.forEach(it=>{
       const radios=document.getElementsByName('q'+it.n);
       let v=''; for(const r of radios) if(r.checked) v=r.value;
-      if(v){ sum+=SCORE[v]; n++; totalSum+=SCORE[v]; totalN++; if(v==='E')cE++; else if(v==='B')cB++; else if(v==='A')cA++; else if(v==='D')cD++; }
+      if(v==='NA'){ cNA++; }
+      else if(v){ sum+=SCORE[v]; n++; totalSum+=SCORE[v]; totalN++; if(v==='E')cE++; else if(v==='B')cB++; else if(v==='A')cA++; else if(v==='D')cD++; }
     });
     const pct = n>0 ? Math.round((sum/n)*100) : null;
     results.push({momento:mom.momento, nombre:mom.nombre, percentage:pct==null?0:pct, n});
@@ -341,7 +345,7 @@ function computeInternalResults(){
     const radios=document.getElementsByName('q'+it.n);
     let v=''; for(const r of radios) if(r.checked) v=r.value;
     if(!attrMap[it.atributo]) attrMap[it.atributo]={sum:0,n:0};
-    if(v){ attrMap[it.atributo].sum+=SCORE[v]; attrMap[it.atributo].n+=1; }
+    if(v && v!=='NA'){ attrMap[it.atributo].sum+=SCORE[v]; attrMap[it.atributo].n+=1; }
   }));
   const attrResults = getAllAttributes().map(name=>{
     const d=attrMap[name]||{sum:0,n:0};
@@ -354,7 +358,7 @@ function computeInternalResults(){
     let v=''; for(const r of radios) if(r.checked) v=r.value;
     if(v==='D') itemsDeficientes.push(it.n);
   }));
-  return { results, attrResults, finalPct, dist:{E:cE,B:cB,A:cA,D:cD,NA:0}, itemsDeficientes };
+  return { results, attrResults, finalPct, dist:{E:cE,B:cB,A:cA,D:cD,NA:cNA}, itemsDeficientes };
 }
 
 function collectRespuestas(){
