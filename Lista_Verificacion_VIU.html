@@ -1004,8 +1004,11 @@ function processEvidenceFiles(files) {
           evidenceStore[itemId][idx].uploading = false;
           // Mantener dataUrl como fallback local también
           await saveEvidenceToIDB(itemId);
-          // Sincronizar URLs en Firebase si está habilitado
-          _fbSaveDraft();
+          // Guardar YA en Firebase (sin esperar el debounce de 2s): si el
+          // auditor recarga o reabre la lista justo después de subir la
+          // foto, _fbLoadDraft() no debe traer un borrador viejo sin ella.
+          saveToLocalStorage();
+          _fbFlushImmediate();
           if (currentEvidenceItem === itemId) updateEvidencePreview();
         }
       } else {
@@ -2383,6 +2386,8 @@ async function guardarAuditoria(){
     const payload={id:auditID,fecha,sede,auditor,porcentaje_final:resultado.finalPct,estado:legendFor(resultado.finalPct),timestamp:new Date().toISOString(),items,oportunidades_mejora:collectAllOMs()};
     // Guardar en Google Sheets (flujo original) — el Apps Script borra filas previas con este mismo id antes de insertar
     await fetch('https://script.google.com/macros/s/AKfycby9YVrSoK38cY8z8zOB-dnzrFdgbsQwWbAIQnMtyQS1TH-7PQ7CLEbV63GKK633Gl-_OQ/exec',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    // Asegurar que el último borrador quede escrito antes de marcar como completada
+    _fbFlushNow();
     // Marcar como completada en Firebase (si viene del portal)
     await _fbMarcarCompleta();
     showNotification(`✔ Auditoría guardada – ID: ${auditID}`,'success');
@@ -2433,48 +2438,86 @@ const _fbEnabled = !!_auditId;
 
 // Throttle: evitar escribir en Firebase más de 1 vez cada 2 segundos
 let _fbSaveTimer = null;
+let _fbDirty = false; // true si hay cambios locales que aún no se escribieron en Firebase
+
+// Escribe inmediatamente en Firebase (sin esperar el debounce).
+// Se usa tanto desde el timer normal como desde el "flush" forzado
+// al cerrar/ocultar la pestaña, para que ningún cambio se pierda.
+function _fbWriteNow() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    const draft = JSON.parse(raw);
+    const pctEl = document.getElementById('total-pct');
+    const pct   = pctEl ? (parseInt(pctEl.textContent) || 0) : 0;
+
+    // Construir mapa de URLs de Cloudinary (sin dataUrl — son muy pesados para Firebase)
+    const cloudPhotos = {};
+    Object.keys(evidenceStore).forEach(itemId => {
+      const photos = evidenceStore[itemId];
+      if (!photos || !photos.length) return;
+      cloudPhotos[itemId] = photos.map(p => ({
+        cloudUrl: p.cloudUrl || null,
+        title:    p.title    || ''
+      }));
+    });
+
+    // Guardar borrador completo + URLs de fotos
+    _fbDB.ref('auditorias/' + _auditId + '/draft').set({
+      ...draft,
+      cloudPhotos,
+      updatedAt: Date.now()
+    });
+    // Actualizar sede, fecha, porcentaje y estado en el registro raíz
+    // Se hace aquí para que el portal siempre refleje lo que el auditor escribió
+    const sedeActual  = document.getElementById('sede')  ? document.getElementById('sede').value  : '';
+    const fechaActual = document.getElementById('fecha') ? document.getElementById('fecha').value : '';
+    _fbDB.ref('auditorias/' + _auditId).update({
+      porcentaje: pct,
+      estado:     'en-progreso',
+      sede:       sedeActual,
+      fecha:      fechaActual,
+      updatedAt:  Date.now()
+    });
+    _fbDirty = false;
+  } catch(e) { console.warn('Firebase save error:', e); }
+}
+
 function _fbSaveDraft() {
   if (!_fbEnabled) return;
+  _fbDirty = true;
   clearTimeout(_fbSaveTimer);
-  _fbSaveTimer = setTimeout(() => {
-    try {
-      const raw = localStorage.getItem(LS_KEY);
-      if (!raw) return;
-      const draft = JSON.parse(raw);
-      const pctEl = document.getElementById('total-pct');
-      const pct   = pctEl ? (parseInt(pctEl.textContent) || 0) : 0;
-
-      // Construir mapa de URLs de Cloudinary (sin dataUrl — son muy pesados para Firebase)
-      const cloudPhotos = {};
-      Object.keys(evidenceStore).forEach(itemId => {
-        const photos = evidenceStore[itemId];
-        if (!photos || !photos.length) return;
-        cloudPhotos[itemId] = photos.map(p => ({
-          cloudUrl: p.cloudUrl || null,
-          title:    p.title    || ''
-        }));
-      });
-
-      // Guardar borrador completo + URLs de fotos
-      _fbDB.ref('auditorias/' + _auditId + '/draft').set({
-        ...draft,
-        cloudPhotos,
-        updatedAt: Date.now()
-      });
-      // Actualizar sede, fecha, porcentaje y estado en el registro raíz
-      // Se hace aquí para que el portal siempre refleje lo que el auditor escribió
-      const sedeActual  = document.getElementById('sede')  ? document.getElementById('sede').value  : '';
-      const fechaActual = document.getElementById('fecha') ? document.getElementById('fecha').value : '';
-      _fbDB.ref('auditorias/' + _auditId).update({
-        porcentaje: pct,
-        estado:     'en-progreso',
-        sede:       sedeActual,
-        fecha:      fechaActual,
-        updatedAt:  Date.now()
-      });
-    } catch(e) { console.warn('Firebase save error:', e); }
-  }, 2000);
+  _fbSaveTimer = setTimeout(_fbWriteNow, 2000);
 }
+
+// Fuerza el guardado inmediato si hay cambios pendientes (cancela el debounce).
+// Se llama al ocultar/cerrar la pestaña o perder el foco, para que el
+// último cambio del auditor nunca se pierda por cerrar antes de los 2s.
+function _fbFlushNow() {
+  if (!_fbEnabled || !_fbDirty) return;
+  clearTimeout(_fbSaveTimer);
+  _fbWriteNow();
+}
+
+// Igual que _fbFlushNow, pero SIEMPRE escribe (no depende de _fbDirty).
+// Se usa justo después de confirmar la cloudUrl de una foto: es un evento
+// poco frecuente y crítico, no debe esperar el debounce de 2s ni depender
+// de que otro cambio haya marcado _fbDirty primero.
+function _fbFlushImmediate() {
+  if (!_fbEnabled) return;
+  clearTimeout(_fbSaveTimer);
+  _fbWriteNow();
+}
+
+// Página oculta (cambio de pestaña, minimizar, apagar pantalla, o cierre en móvil)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') _fbFlushNow();
+});
+// Página se descarga (cerrar pestaña/navegador en escritorio)
+window.addEventListener('pagehide', _fbFlushNow);
+window.addEventListener('beforeunload', _fbFlushNow);
+// Pérdida de foco de la ventana (cambio de app en móvil, alt-tab en escritorio)
+window.addEventListener('blur', _fbFlushNow);
 
 // Cargar borrador desde Firebase (tiene prioridad sobre localStorage)
 async function _fbLoadDraft() {
