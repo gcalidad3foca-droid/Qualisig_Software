@@ -2745,6 +2745,14 @@ async function restoreEvidenceFromIDB() {
     if (db) db.close();
   }
 }
+// Firebase Realtime Database prohíbe . # $ [ ] en las claves de un objeto.
+// Los textos de los ítems (usados como clave de "obs") a veces terminan en
+// punto u otro caracter prohibido — sin esto, Firebase rechaza TODO el nodo
+// "obs" y con él se pierde la observación y la foto de ese guardado.
+function _safeObsKey(text) {
+  return text.replace(/[.#$\[\]\/]/g, '_');
+}
+
 function saveToLocalStorage() {
   try {
     const radios = {};
@@ -2753,7 +2761,7 @@ function saveToLocalStorage() {
     document.querySelectorAll('#tbody tr').forEach(row => {
       const fc = row.cells && row.cells[0];
       const oi = row.querySelector('.obs-input');
-      if (fc && oi && oi.value) obs[fc.textContent.trim()] = oi.value;
+      if (fc && oi && oi.value) obs[_safeObsKey(fc.textContent.trim())] = oi.value;
     });
     // Save ha items
     var _haSave = {};
@@ -2796,7 +2804,16 @@ function restoreFromLocalStorage() {
       document.querySelectorAll('#tbody tr').forEach(row => {
         const fc = row.cells && row.cells[0];
         const oi = row.querySelector('.obs-input');
-        if (fc && oi && draft.obs[fc.textContent.trim()]) oi.value = draft.obs[fc.textContent.trim()];
+        if (fc && oi) {
+          const rawKey  = fc.textContent.trim();
+          const safeKey = _safeObsKey(rawKey);
+          // Preferir la clave saneada (nueva); si no existe, intentar la
+          // clave cruda por compatibilidad con borradores guardados antes
+          // de este arreglo (aunque esos pudieron no haberse guardado nunca
+          // por el mismo problema).
+          const val = draft.obs[safeKey] !== undefined ? draft.obs[safeKey] : draft.obs[rawKey];
+          if (val) oi.value = val;
+        }
       });
     }
     if (draft.omStore) {
