@@ -1794,7 +1794,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
               <option value="Directora de Calidad">Directora de Calidad</option>
               <option value="Gestor de Calidad">Gestor de Calidad</option>
               <option value="Asistente de Calidad">Asistente de Calidad</option>
-              <option value="Directora de Calidad">Jefe SIAU</option>
+              <option value="Jefe SIAU">Jefe SIAU</option>
             </select>
           </div>
           <div class="pf-group">
@@ -4432,7 +4432,41 @@ function loadProfileFromFirebase(uid, defaultName, email) {
     document.getElementById('pf-cargo').value    = cargo;
     document.getElementById('pf-telefono').value = tel;
 
+    // Restricciones de acceso según cargo
+    applyRoleRestrictions(cargo);
+
   }).catch(e => console.warn('loadProfile error:', e));
+}
+
+// ══════════════════════════════════════════════════════════════
+// RESTRICCIONES POR CARGO: Jefe SIAU solo ve Paciente Incógnito
+// ══════════════════════════════════════════════════════════════
+function applyRoleRestrictions(cargo) {
+  window._perfilCargo = cargo;
+  const esJefeSiau = (cargo === 'Jefe SIAU');
+
+  // 1) Ocultar el tab "Equipo" del menú superior
+  const tabEquipo = document.getElementById('tab-equipo');
+  if (tabEquipo) tabEquipo.style.display = esJefeSiau ? 'none' : '';
+
+  // 2) Ocultar la sub-pestaña "Auditorías de Servicio" en el módulo Auditorías
+  const subtabAuditServicio = document.getElementById('subtab-audit-servicio');
+  if (subtabAuditServicio) subtabAuditServicio.style.display = esJefeSiau ? 'none' : '';
+
+  // 3) Ocultar la sub-pestaña "Auditorías de Servicio" en el módulo Dashboard
+  const subtabDashServicio = document.getElementById('subtab-dash-servicio');
+  if (subtabDashServicio) subtabDashServicio.style.display = esJefeSiau ? 'none' : '';
+
+  if (esJefeSiau) {
+    // Forzar vista de Paciente Incógnito en Auditorías y Dashboard
+    switchAuditView('pi');
+    switchDashView('pi');
+
+    // Si el Jefe SIAU quedara en el módulo Equipo (p.ej. sesión previa), redirigir a Auditorías
+    if (document.getElementById('module-equipo').classList.contains('active')) {
+      switchModule('auditorias');
+    }
+  }
 }
 
 function _setAvatarImage(url) {
@@ -4570,6 +4604,7 @@ function showToast(msg, type='info') {
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby9YVrSoK38cY8z8zOB-dnzrFdgbsQwWbAIQnMtyQS1TH-7PQ7CLEbV63GKK633Gl-_OQ/exec';
 
 function switchModule(name) {
+  if (name === 'equipo' && window._perfilCargo === 'Jefe SIAU') return; // bloqueado para Jefe SIAU
   document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
   document.querySelectorAll('#main-nav-tabs .nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('module-' + name).classList.add('active');
@@ -4583,6 +4618,7 @@ function switchModule(name) {
 // SUB-VISTAS: AUDITORÍAS (Servicio ⇄ Paciente Incógnito)
 // ══════════════════════════════════════════════════════════════
 function switchAuditView(view){
+  if (view === 'servicio' && window._perfilCargo === 'Jefe SIAU') return; // bloqueado para Jefe SIAU
   document.querySelectorAll('#module-auditorias .audit-view').forEach(v => {
     v.classList.remove('active'); v.style.display = 'none';
   });
@@ -4596,6 +4632,7 @@ function switchAuditView(view){
 // SUB-VISTAS: DASHBOARD (Servicio ⇄ Paciente Incógnito)
 // ══════════════════════════════════════════════════════════════
 function switchDashView(view){
+  if (view === 'servicio' && window._perfilCargo === 'Jefe SIAU') return; // bloqueado para Jefe SIAU
   document.querySelectorAll('#module-dashboard .dash-view').forEach(v => {
     v.classList.remove('active'); v.style.display = 'none';
   });
