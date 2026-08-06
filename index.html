@@ -4381,7 +4381,11 @@ function loadProfileFromFirebase(uid, defaultName, email) {
   db.ref('perfiles/' + uid).once('value').then(snap => {
     const p = snap.exists() ? snap.val() : {};
     const nombre = p.nombre || defaultName;
-    const cargo  = p.cargo  || 'Gestor de Calidad';
+    // Jefe SIAU se determina por correo (fuente de verdad), sin depender de que el cargo
+    // se haya guardado antes correctamente en Firebase.
+    const esJefeSiauPorEmail = (email || '').trim().toLowerCase() === 'jefesiau@cofca.com';
+    let cargo = p.cargo || (esJefeSiauPorEmail ? 'Jefe SIAU' : 'Gestor de Calidad');
+    if (esJefeSiauPorEmail && cargo !== 'Jefe SIAU') cargo = 'Jefe SIAU';
     const tel    = p.telefono || '';
 
     const avatar = p.avatarUrl || null;
@@ -4524,8 +4528,10 @@ async function saveProfile() {
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
 
   const nombre   = document.getElementById('pf-nombre').value.trim()   || currentUser.email.split('@')[0];
-  const cargo    = document.getElementById('pf-cargo').value;
+  let   cargo    = document.getElementById('pf-cargo').value;
   const telefono = document.getElementById('pf-telefono').value.trim();
+  // Jefe SIAU siempre se guarda con este cargo exacto, sin importar el select
+  if ((currentUser.email || '').trim().toLowerCase() === 'jefesiau@cofca.com') cargo = 'Jefe SIAU';
   const profileData = {
     nombre, cargo, telefono,
     email:     currentUser.email,
