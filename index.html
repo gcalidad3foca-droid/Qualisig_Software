@@ -7392,9 +7392,17 @@ function openEvidenciaPreviewModal(url, fileName, tipo) {
     loading.style.display = 'flex';
     iframeEl.onload = () => { loading.style.display = 'none'; iframeEl.style.display = 'block'; };
     iframeEl.src = url;
+  } else if (tipo === 'word' || tipo === 'excel') {
+    // Word y Excel se previsualizan embebidos usando el visor público de
+    // Office Online — requiere que la URL del archivo sea pública y
+    // accesible por internet (ya lo es, al estar alojada en R2).
+    loading.style.display = 'flex';
+    const urlVisor = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(url);
+    iframeEl.onload = () => { loading.style.display = 'none'; iframeEl.style.display = 'block'; };
+    iframeEl.src = urlVisor;
   } else {
-    // Word, Excel u otro tipo sin visor nativo posible en el navegador
-    noViewerEl.querySelector('i').className = tipo === 'word' ? 'fas fa-file-word' : tipo === 'excel' ? 'fas fa-file-excel' : 'fas fa-file-alt';
+    // Otro tipo de archivo sin visor posible en el navegador
+    noViewerEl.querySelector('i').className = 'fas fa-file-alt';
     noViewerEl.style.display = 'flex';
   }
 
@@ -7884,6 +7892,7 @@ function renderInformeIndividual() {
   } else {
     estadoHtml = '<div class="ind-estado-bar borrador">'
       + '<div class="ind-estado-txt"><i class="fas fa-pen" style="color:var(--gray500)"></i> Borrador<small>Aún no se ha enviado a revisión para este periodo</small></div>'
+      + '<button class="btn-primary-sm" style="background:linear-gradient(135deg,#64748b,#475569)" onclick="exportIndicadoresPDF(\''+miUid+'\',null,null,true)"><i class="fas fa-eye"></i> Previsualizar informe</button>'
       + '<button class="btn-primary-sm" onclick="enviarInformeARevision()"><i class="fas fa-paper-plane"></i> Enviar a revisión</button>'
       + '</div>';
   }
