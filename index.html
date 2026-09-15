@@ -10341,8 +10341,7 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
             ? urlOriginal.replace('/upload/', '/upload/fl_attachment:' + nombreConExtension + '/')
             : urlOriginal;
           doc.setFont('helvetica','normal'); doc.setFontSize(7.8); doc.setTextColor(CT[0],CT[1],CT[2]);
-          anexoContador++;
-          const etiqueta = '-  Anexo '+anexoContador+' — '+(ev.mes||'')+': ';
+          const etiqueta = '-  '+(ev.mes||'')+': ';
           doc.text(etiqueta, M+2, yPos);
           const etiquetaW = doc.getTextWidth(etiqueta);
           doc.setFont('helvetica','bold'); doc.setTextColor(CB[0],CB[1],CB[2]);
