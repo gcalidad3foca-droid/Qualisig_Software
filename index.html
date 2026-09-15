@@ -3324,7 +3324,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 
       <div class="modal-form-group">
         <label class="modal-label">Evidencias (imágenes o archivos)</label>
-        <input type="file" id="seg-file-input" accept="image/*,.pdf,.doc,.docx" multiple style="display:none" onchange="handleSegEvidencias(event)">
+        <input type="file" id="seg-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple style="display:none" onchange="handleSegEvidencias(event)">
         <button type="button" class="btn-primary-sm" onclick="document.getElementById('seg-file-input').click()">
           <i class="fas fa-paperclip"></i> Adjuntar evidencia
         </button>
@@ -7333,6 +7333,7 @@ function _indTipoArchivo(fileName) {
   if (['png','jpg','jpeg','gif','webp'].includes(ext)) return 'imagen';
   if (ext === 'pdf') return 'pdf';
   if (['doc','docx'].includes(ext)) return 'word';
+  if (['xls','xlsx','csv'].includes(ext)) return 'excel';
   return 'otro';
 }
 
@@ -7392,8 +7393,8 @@ function openEvidenciaPreviewModal(url, fileName, tipo) {
     iframeEl.onload = () => { loading.style.display = 'none'; iframeEl.style.display = 'block'; };
     iframeEl.src = url;
   } else {
-    // Word u otro tipo sin visor nativo posible en el navegador
-    noViewerEl.querySelector('i').className = tipo === 'word' ? 'fas fa-file-word' : 'fas fa-file-alt';
+    // Word, Excel u otro tipo sin visor nativo posible en el navegador
+    noViewerEl.querySelector('i').className = tipo === 'word' ? 'fas fa-file-word' : tipo === 'excel' ? 'fas fa-file-excel' : 'fas fa-file-alt';
     noViewerEl.style.display = 'flex';
   }
 
@@ -7423,35 +7424,34 @@ function handleSegEvidencias(event) {
       _indEvidencias.push(entry);
       renderSegEvidencias();
 
-      // Cloudinary requiere el endpoint "raw" para Word y el endpoint "image"
-      // para imágenes y PDF (los PDF los procesa igual que una imagen/documento).
-      const endpoint = tipo === 'word'
-        ? 'https://api.cloudinary.com/v1_1/dqstmx4u8/raw/upload'
-        : 'https://api.cloudinary.com/v1_1/dqstmx4u8/image/upload';
+      // Nombre único de archivo en R2: carpeta "indicadores/" + timestamp +
+      // nombre original saneado, para evitar colisiones entre archivos con
+      // el mismo nombre subidos por personas distintas.
+      const nombreSano = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const key = 'indicadores/' + Date.now() + '_' + nombreSano;
+      const contentTypeMap = {
+        imagen: file.type || 'image/jpeg',
+        pdf: 'application/pdf',
+        word: file.name.toLowerCase().endsWith('.docx')
+          ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+          : 'application/msword',
+        excel: file.name.toLowerCase().endsWith('.xlsx')
+          ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          : 'application/vnd.ms-excel',
+        otro: file.type || 'application/octet-stream',
+      };
+      const contentType = contentTypeMap[tipo] || 'application/octet-stream';
 
-      const fd = new FormData();
-      fd.append('file', e.target.result);
-      fd.append('upload_preset', 'qualisig_fotos');
-      fd.append('folder', 'indicadores');
-      // Para documentos (Word/otros raw), Cloudinary por defecto no conserva la
-      // extensión real en la URL final, lo que hace que el navegador no sepa
-      // qué tipo de archivo está abriendo al descargar. Estos dos parámetros
-      // fuerzan a que el nombre de archivo (con su extensión) se mantenga.
-      if (tipo === 'word' || tipo === 'otro') {
-        fd.append('use_filename', 'true');
-        fd.append('unique_filename', 'false');
-      }
-
-      fetch(endpoint, { method:'POST', body:fd })
-        .then(r=>r.json()).then(data => {
-          const idx = _indEvidencias.findIndex(ev => ev.dataUrl === e.target.result);
-          if (idx !== -1 && data.secure_url) {
-            _indEvidencias[idx].cloudUrl = data.secure_url;
-            renderSegEvidencias();
-          } else if (idx !== -1) {
-            console.warn('Cloudinary no devolvió secure_url para', file.name, data);
-          }
-        }).catch(err => console.warn('Cloudinary indicadores error:', err));
+      _r2SubirArchivo(file, key, contentType).then(publicUrl => {
+        const idx = _indEvidencias.findIndex(ev => ev.dataUrl === e.target.result);
+        if (idx !== -1) {
+          _indEvidencias[idx].cloudUrl = publicUrl;
+          renderSegEvidencias();
+        }
+      }).catch(err => {
+        console.warn('R2 upload error:', err);
+        showToast('No se pudo subir "'+file.name+'" — inténtalo de nuevo', 'error');
+      });
     };
     reader.readAsDataURL(file);
   });
@@ -7922,8 +7922,8 @@ function renderInformeIndividual() {
           const url = e.cloudUrl||e.dataUrl;
           const fileNameEsc = _indEsc(e.name || 'archivo');
           if (tipo === 'imagen') return '<img src="'+url+'" title="'+_indEsc(e.titulo||'')+'" onclick="openEvidenciaPreviewModal(\''+url+'\',\''+fileNameEsc+'\',\'imagen\')">';
-          const icon = tipo === 'pdf' ? 'fa-file-pdf' : tipo === 'word' ? 'fa-file-word' : 'fa-file-alt';
-          const color = tipo === 'pdf' ? '#dc2626' : tipo === 'word' ? '#2563eb' : '#94a3b8';
+          const icon = tipo === 'pdf' ? 'fa-file-pdf' : tipo === 'word' ? 'fa-file-word' : tipo === 'excel' ? 'fa-file-excel' : 'fa-file-alt';
+          const color = tipo === 'pdf' ? '#dc2626' : tipo === 'word' ? '#2563eb' : tipo === 'excel' ? '#15803d' : '#94a3b8';
           return '<div class="ind-informe-ev-filechip" style="color:'+color+'" title="'+_indEsc(e.titulo||'')+'" onclick="openEvidenciaPreviewModal(\''+url+'\',\''+fileNameEsc+'\',\''+tipo+'\')"><i class="fas '+icon+'"></i></div>';
         }).join('')+'</div>'
       : '';
@@ -8183,7 +8183,19 @@ function _indAprobCardHtml(inf) {
   const bim = IND_BIMESTRES.find(b=>b.id===inf.bimId);
   const misIndicadores = Object.values(_indIndicadores).filter(i => i.activo !== false && i.asignadoUid === inf.uid);
   let cumplen = 0;
-  misIndicadores.forEach(ind => { if (indCalcularBimestre(ind, inf.year, bim).cumpleBimestre) cumplen++; });
+  let sumaPonderadaAprob = 0, sumaPesosAprob = 0;
+  misIndicadores.forEach(ind => {
+    const resAprob = indCalcularBimestre(ind, inf.year, bim);
+    if (resAprob.cumpleBimestre) cumplen++;
+    const pesoAprob = ind.peso != null ? ind.peso : 0;
+    const pctIndAprob = ind.soloPresentar ? (resAprob.cumpleBimestre ? 100 : 0) : (resAprob.pctFinal != null ? resAprob.pctFinal : 0);
+    sumaPonderadaAprob += pctIndAprob * pesoAprob;
+    sumaPesosAprob += pesoAprob;
+  });
+  // Cumplimiento global ponderado por el peso de cada indicador — el mismo
+  // criterio que se usa en el PDF del informe — para que la Directora tenga
+  // el panorama real de un vistazo, no solo un conteo de "cuántos cumplen".
+  const pctGlobalAprob = sumaPesosAprob > 0 ? Math.round((sumaPonderadaAprob / sumaPesosAprob) * 10) / 10 : null;
 
   const isExpanded = _indAprobExpanded.has(inf.key);
   const estadoBadge = inf.estado === 'enviado'
@@ -8195,7 +8207,7 @@ function _indAprobCardHtml(inf) {
   const headHtml = '<div class="ind-aprob-head-compact" onclick="toggleAprobExpand(\''+inf.key+'\')">'
     + '<div class="ind-aprob-head-info">'
     +   '<div class="ind-aprob-name">'+_indEsc(perfil.nombre||'—')+'</div>'
-    +   '<div class="ind-aprob-meta">'+_indEsc(perfil.cargo||'')+' · '+(bim?bim.label:'')+' '+inf.year+' · '+cumplen+'/'+misIndicadores.length+' cumplen</div>'
+    +   '<div class="ind-aprob-meta">'+_indEsc(perfil.cargo||'')+' · '+(bim?bim.label:'')+' '+inf.year+' · '+cumplen+'/'+misIndicadores.length+' cumplen'+(pctGlobalAprob!=null?' · <b>'+pctGlobalAprob+'% global</b>':'')+'</div>'
     + '</div>'
     +   estadoBadge
     +   '<i class="fas fa-chevron-'+(isExpanded?'up':'down')+' ind-aprob-chevron"></i>'
@@ -8508,8 +8520,8 @@ function _indRenderBitacora(ind, rango) {
           const url = e.cloudUrl||e.dataUrl;
           const fileNameEsc = _indEsc(e.name || 'archivo');
           if (tipo === 'imagen') return '<img src="'+url+'" title="'+_indEsc(e.titulo||'')+'" onclick="openEvidenciaPreviewModal(\''+url+'\',\''+fileNameEsc+'\',\'imagen\')">';
-          const icon = tipo === 'pdf' ? 'fa-file-pdf' : tipo === 'word' ? 'fa-file-word' : 'fa-file-alt';
-          const color = tipo === 'pdf' ? '#dc2626' : tipo === 'word' ? '#2563eb' : '#94a3b8';
+          const icon = tipo === 'pdf' ? 'fa-file-pdf' : tipo === 'word' ? 'fa-file-word' : tipo === 'excel' ? 'fa-file-excel' : 'fa-file-alt';
+          const color = tipo === 'pdf' ? '#dc2626' : tipo === 'word' ? '#2563eb' : tipo === 'excel' ? '#15803d' : '#94a3b8';
           return '<div class="ind-informe-ev-filechip" style="color:'+color+'" title="'+_indEsc(e.titulo||'')+'" onclick="openEvidenciaPreviewModal(\''+url+'\',\''+fileNameEsc+'\',\''+tipo+'\')"><i class="fas '+icon+'"></i></div>';
         }).join('')+'</div>'
       : '';
@@ -8664,6 +8676,87 @@ const IND_FIRMAS_MAP = {
 
 // Carga una imagen externa (firma) como dataURL usando un <img> con canvas,
 // más tolerante a CORS que fetch() para hosts como imgur.
+// ══════════════════════════════════════════════════════════════
+// SUBIDA DE ARCHIVOS A CLOUDFLARE R2 (reemplaza a Cloudinary) —
+// R2 es compatible con la API de S3, así que las peticiones deben
+// firmarse con el algoritmo AWS Signature V4. Se implementa aquí
+// de forma nativa con Web Crypto API (sin depender de cargar el
+// SDK completo de AWS, que es pesado y frágil vía CDN).
+// ══════════════════════════════════════════════════════════════
+const R2_CONFIG = {
+  accountId: 'a8f01266658c31ae2191081d0eb43fb8',
+  accessKeyId: '27539ebbc09a5a6bde2338bb86396a42',
+  secretAccessKey: 'ddfabe6a19013902dc5208058ed7ff9086c201db8721597eb39e00d5500d3110',
+  bucket: 'qualisigev',
+  publicUrlBase: 'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev',
+  region: 'auto',
+};
+
+async function _r2Sha256Hex(data) {
+  const buf = typeof data === 'string' ? new TextEncoder().encode(data) : data;
+  const hashBuf = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+async function _r2HmacRaw(keyBytes, msg) {
+  const key = await crypto.subtle.importKey('raw', keyBytes, {name:'HMAC', hash:'SHA-256'}, false, ['sign']);
+  const sig = await crypto.subtle.sign('HMAC', key, typeof msg === 'string' ? new TextEncoder().encode(msg) : msg);
+  return new Uint8Array(sig);
+}
+function _r2Hex(bytes) { return Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join(''); }
+
+// Sube un archivo (Blob/ArrayBuffer) a R2 usando una petición PUT firmada con
+// AWS Signature V4, calculada en el propio navegador. Devuelve la URL pública
+// final del archivo subido, o lanza un error si algo falla.
+async function _r2SubirArchivo(fileBlob, key, contentType) {
+  const method = 'PUT';
+  const host = R2_CONFIG.accountId + '.r2.cloudflarestorage.com';
+  const canonicalUri = '/' + R2_CONFIG.bucket + '/' + key.split('/').map(encodeURIComponent).join('/');
+  const now = new Date();
+  const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, ''); // YYYYMMDDTHHMMSSZ
+  const dateStamp = amzDate.slice(0, 8);
+
+  const fileBuffer = await fileBlob.arrayBuffer();
+  const payloadHash = await _r2Sha256Hex(fileBuffer);
+
+  const canonicalHeaders = 'content-type:' + contentType + '\n'
+    + 'host:' + host + '\n'
+    + 'x-amz-content-sha256:' + payloadHash + '\n'
+    + 'x-amz-date:' + amzDate + '\n';
+  const signedHeaders = 'content-type;host;x-amz-content-sha256;x-amz-date';
+
+  const canonicalRequest = [method, canonicalUri, '', canonicalHeaders, signedHeaders, payloadHash].join('\n');
+  const credentialScope = dateStamp + '/' + R2_CONFIG.region + '/s3/aws4_request';
+  const stringToSign = ['AWS4-HMAC-SHA256', amzDate, credentialScope, await _r2Sha256Hex(canonicalRequest)].join('\n');
+
+  const kDate = await _r2HmacRaw(new TextEncoder().encode('AWS4' + R2_CONFIG.secretAccessKey), dateStamp);
+  const kRegion = await _r2HmacRaw(kDate, R2_CONFIG.region);
+  const kService = await _r2HmacRaw(kRegion, 's3');
+  const kSigning = await _r2HmacRaw(kService, 'aws4_request');
+  const signature = _r2Hex(await _r2HmacRaw(kSigning, stringToSign));
+
+  const authHeader = 'AWS4-HMAC-SHA256 Credential=' + R2_CONFIG.accessKeyId + '/' + credentialScope
+    + ', SignedHeaders=' + signedHeaders + ', Signature=' + signature;
+
+  const uploadUrl = 'https://' + host + canonicalUri;
+  const resp = await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': contentType,
+      'x-amz-content-sha256': payloadHash,
+      'x-amz-date': amzDate,
+      'Authorization': authHeader,
+    },
+    body: fileBuffer,
+  });
+
+  if (!resp.ok) {
+    const errTxt = await resp.text().catch(()=> '');
+    throw new Error('R2 respondió ' + resp.status + ': ' + errTxt.slice(0,200));
+  }
+
+  return R2_CONFIG.publicUrlBase + '/' + key;
+}
+
 function _indLoadImageAsBase64(url) {
   return new Promise((resolve) => {
     const img = new Image();
@@ -9037,7 +9130,7 @@ function _indDetalleAlimentarHtml(ind) {
     + '</div>'
     + '<div class="modal-form-group">'
     +   '<label class="modal-label">Evidencias (imágenes o archivos)</label>'
-    +   '<input type="file" id="alim-file-input" accept="image/*,.pdf,.doc,.docx" multiple style="display:none" onchange="handleSegEvidencias(event)">'
+    +   '<input type="file" id="alim-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple style="display:none" onchange="handleSegEvidencias(event)">'
     +   '<button type="button" class="btn-primary-sm" onclick="document.getElementById(\'alim-file-input\').click()"><i class="fas fa-paperclip"></i> Adjuntar evidencia</button>'
     +   '<div id="alim-ev-preview" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px"></div>'
     + '</div>'
@@ -9241,7 +9334,7 @@ function _indHistorialFilaHtml(ind, mesKey, seg, puedeEditar) {
       + '</div>'
       + '<div class="ind-detalle-tabla-edit-campo" style="margin-top:12px">'
       +   '<label class="ind-detalle-tabla-edit-label">Evidencias</label>'
-      +   '<input type="file" id="edit-file-input" accept="image/*,.pdf,.doc,.docx" multiple style="display:none" onchange="handleSegEvidencias(event)">'
+      +   '<input type="file" id="edit-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple style="display:none" onchange="handleSegEvidencias(event)">'
       +   '<button type="button" class="btn-primary-sm" onclick="document.getElementById(\'edit-file-input\').click()"><i class="fas fa-paperclip"></i> Adjuntar evidencia</button>'
       +   '<div id="det-ev-preview" style="margin-top:10px"></div>'
       + '</div>'
@@ -9259,8 +9352,8 @@ function _indHistorialFilaHtml(ind, mesKey, seg, puedeEditar) {
         const url = e.cloudUrl||e.dataUrl;
         const fileNameEsc = _indEsc(e.name || 'archivo');
         if (tipo === 'imagen') return '<img src="'+url+'" title="'+_indEsc(e.titulo||'')+'" onclick="openEvidenciaPreviewModal(\''+url+'\',\''+fileNameEsc+'\',\'imagen\')" class="ind-detalle-tabla-ev-thumb">';
-        const icon = tipo === 'pdf' ? 'fa-file-pdf' : tipo === 'word' ? 'fa-file-word' : 'fa-file-alt';
-        const color2 = tipo === 'pdf' ? '#dc2626' : tipo === 'word' ? '#2563eb' : '#94a3b8';
+        const icon = tipo === 'pdf' ? 'fa-file-pdf' : tipo === 'word' ? 'fa-file-word' : tipo === 'excel' ? 'fa-file-excel' : 'fa-file-alt';
+        const color2 = tipo === 'pdf' ? '#dc2626' : tipo === 'word' ? '#2563eb' : tipo === 'excel' ? '#15803d' : '#94a3b8';
         return '<div class="ind-informe-ev-filechip" style="color:'+color2+'" title="'+_indEsc(e.titulo||'')+'" onclick="openEvidenciaPreviewModal(\''+url+'\',\''+fileNameEsc+'\',\''+tipo+'\')"><i class="fas '+icon+'"></i></div>';
       }).join('')
     : '<span class="ind-detalle-tabla-sin">—</span>';
@@ -10083,7 +10176,12 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
         doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(CB[0],CB[1],CB[2]);
         doc.text('Evidencias de Gestión:', M, yPos); yPos += 8;
 
-        const EV_W = 90, EV_H = 68, EV_GAP = 10;
+        // Ancho de cada imagen ajustado para que quepan exactamente 2 por fila
+        // (antes 90mm hacía que cupiera solo 1, dejando cada evidencia sola en
+        // su propia línea). Con el ancho útil de página (~178mm) y un espacio
+        // de 10mm entre ellas, 82mm de ancho por imagen deja las dos bien
+        // proporcionadas lado a lado.
+        const EV_W = 82, EV_H = 62, EV_GAP = 10;
         let col = 0;
         const colsPerRow = Math.max(1, Math.floor((CW+EV_GAP) / (EV_W+EV_GAP)));
         let rowStartY = yPos;
