@@ -13,6 +13,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.28/dist/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.0/dist/docx-preview.min.js"></script>
 <script>
   if(typeof ChartDataLabels !== 'undefined') Chart.register(ChartDataLabels);
 </script>
@@ -809,6 +811,10 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 @media(max-width:720px){ .ind-pdf-preview-box{ width:96vw; } .ind-pdf-preview-body{ height:70vh; } }
 .ind-ev-preview-img { max-width:100%; max-height:100%; margin:auto; object-fit:contain; }
 .ind-ev-preview-noviewer { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:var(--gray400); font-size:13px; text-align:center; padding:20px; }
+.ind-ev-preview-doc { flex:1; width:100%; overflow:auto; background:#fff; padding:20px; box-sizing:border-box; }
+.ind-ev-preview-doc table { border-collapse:collapse; font-size:12.5px; }
+.ind-ev-preview-doc table td, .ind-ev-preview-doc table th { border:1px solid var(--gray200); padding:4px 8px; }
+.ind-ev-preview-doc .docx-wrapper { background:transparent; padding:0; }
 .ind-ev-preview-noviewer i { font-size:48px; color:#2563eb; }
 
 .ind-summary-bar {
@@ -3377,6 +3383,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
       </div>
       <img id="ev-preview-img" class="ind-ev-preview-img" style="display:none">
       <iframe id="ev-preview-iframe" class="ind-pdf-preview-iframe" style="display:none"></iframe>
+      <div id="ev-preview-doc" class="ind-ev-preview-doc" style="display:none"></div>
       <div id="ev-preview-noviewer" class="ind-ev-preview-noviewer" style="display:none">
         <i class="fas fa-file-word"></i>
         <p>Este tipo de archivo no se puede previsualizar aquí.<br>Usa el botón de abajo para descargarlo.</p>
@@ -7376,12 +7383,14 @@ function openEvidenciaPreviewModal(url, fileName, tipo) {
   const loading = document.getElementById('ev-preview-loading');
   const imgEl = document.getElementById('ev-preview-img');
   const iframeEl = document.getElementById('ev-preview-iframe');
+  const docEl = document.getElementById('ev-preview-doc');
   const noViewerEl = document.getElementById('ev-preview-noviewer');
 
   sub.textContent = fileName || '';
   loading.style.display = 'none';
   imgEl.style.display = 'none'; imgEl.src = '';
   iframeEl.style.display = 'none'; iframeEl.src = '';
+  docEl.style.display = 'none'; docEl.innerHTML = '';
   noViewerEl.style.display = 'none';
 
   if (tipo === 'imagen') {
@@ -7392,14 +7401,42 @@ function openEvidenciaPreviewModal(url, fileName, tipo) {
     loading.style.display = 'flex';
     iframeEl.onload = () => { loading.style.display = 'none'; iframeEl.style.display = 'block'; };
     iframeEl.src = url;
-  } else if (tipo === 'word' || tipo === 'excel') {
-    // Word y Excel se previsualizan embebidos usando el visor público de
-    // Office Online — requiere que la URL del archivo sea pública y
-    // accesible por internet (ya lo es, al estar alojada en R2).
+  } else if (tipo === 'word') {
+    // Word se renderiza LOCALMENTE en el navegador con docx-preview — mucho
+    // más rápido que el visor de Office Online, que depende de subir el
+    // archivo a los servidores de Microsoft antes de mostrarlo.
     loading.style.display = 'flex';
-    const urlVisor = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(url);
-    iframeEl.onload = () => { loading.style.display = 'none'; iframeEl.style.display = 'block'; };
-    iframeEl.src = urlVisor;
+    fetch(url).then(r => r.blob()).then(blob => {
+      docEl.style.display = 'block';
+      return docx.renderAsync(blob, docEl, null, { inWrapper: true, ignoreWidth: false });
+    }).then(() => {
+      loading.style.display = 'none';
+    }).catch(err => {
+      console.warn('No se pudo renderizar el Word localmente:', err);
+      loading.style.display = 'none';
+      docEl.style.display = 'none';
+      noViewerEl.querySelector('i').className = 'fas fa-file-word';
+      noViewerEl.style.display = 'flex';
+    });
+  } else if (tipo === 'excel') {
+    // Excel se renderiza LOCALMENTE en el navegador con SheetJS, mostrando la
+    // primera hoja como una tabla HTML — igual de rápido que abrir una
+    // imagen, sin depender de ningún visor externo.
+    loading.style.display = 'flex';
+    fetch(url).then(r => r.arrayBuffer()).then(buf => {
+      const wb = XLSX.read(buf, { type: 'array' });
+      const primeraHoja = wb.Sheets[wb.SheetNames[0]];
+      const htmlTabla = XLSX.utils.sheet_to_html(primeraHoja, { editable: false });
+      docEl.innerHTML = htmlTabla;
+      docEl.style.display = 'block';
+      loading.style.display = 'none';
+    }).catch(err => {
+      console.warn('No se pudo renderizar el Excel localmente:', err);
+      loading.style.display = 'none';
+      docEl.style.display = 'none';
+      noViewerEl.querySelector('i').className = 'fas fa-file-excel';
+      noViewerEl.style.display = 'flex';
+    });
   } else {
     // Otro tipo de archivo sin visor posible en el navegador
     noViewerEl.querySelector('i').className = 'fas fa-file-alt';
@@ -7413,6 +7450,7 @@ function closeEvidenciaPreviewModal() {
   document.getElementById('modal-evidencia-preview').classList.remove('open');
   document.getElementById('ev-preview-img').src = '';
   document.getElementById('ev-preview-iframe').src = '';
+  document.getElementById('ev-preview-doc').innerHTML = '';
   _indEvPreviewUrl = null;
   _indEvPreviewFileName = null;
 }
