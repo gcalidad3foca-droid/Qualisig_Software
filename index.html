@@ -7031,20 +7031,30 @@ function _indProgressRing(pct, colorHex, soloPresentar, presentado) {
 }
 
 function _indCardBiHtml(ind, mesKey) {
-  const seg = _indSegDe(ind, mesKey);
-  const pct = indCalcularPct(seg, ind);
-  const status = _indCardStatusInfo(pct, seg, ind);
+  const segActual = _indSegDe(ind, mesKey);
 
-  const ring = _indProgressRing(pct, status.colorHex, ind.soloPresentar, seg && seg.presentado);
-
-  // ── Último valor efectivamente capturado (puede no ser el mes actual, si aún
-  // no se ha registrado este mes) y a qué mes corresponde ──
+  // ── Último valor efectivamente capturado (puede no ser el bimestre actual,
+  // si aún no se ha registrado este periodo) y a qué bimestre corresponde ──
   const { mesesKeys: mesesTend, serieValores: serieTend } = _indBuildSerie(ind, 12);
   let ultimoIdxConDato = -1;
   for (let i = serieTend.length-1; i>=0; i--) { if (serieTend[i] != null) { ultimoIdxConDato = i; break; } }
   const ultimoValor = ultimoIdxConDato >= 0 ? serieTend[ultimoIdxConDato] : null;
   const ultimoMesLabel = ultimoIdxConDato >= 0 ? _indMesLabelFromKey(mesesTend[ultimoIdxConDato]) : null;
+  const esUltimoElActual = ultimoIdxConDato >= 0 && mesesTend[ultimoIdxConDato] === mesKey;
   const penultimoValor = ultimoIdxConDato > 0 ? serieTend[ultimoIdxConDato-1] : null;
+
+  // La tarjeta ya no se queda en gris solo porque el bimestre calendario
+  // actual todavía no tenga datos: si existe un registro más reciente (de un
+  // bimestre anterior), el color y el estado de la tarjeta reflejan ESE
+  // último registro real — el gris queda reservado únicamente para cuando el
+  // indicador nunca se ha alimentado en absoluto.
+  const segParaColor = esUltimoElActual ? segActual : (ultimoIdxConDato >= 0 ? _indSegDe(ind, mesesTend[ultimoIdxConDato]) : null);
+  const pctParaColor = ultimoValor;
+  const seg = segParaColor;
+  const pct = pctParaColor;
+  const status = _indCardStatusInfo(pct, seg, ind);
+
+  const ring = _indProgressRing(pct, status.colorHex, ind.soloPresentar, seg && seg.presentado);
 
   const ultimoValorTxt = ind.espejoDeId ? '<i class="fas fa-link"></i> Espejo' : (ultimoValor!=null ? ultimoValor+'%' : '—');
   const ultimoValorMetaTxt = ind.espejoDeId
@@ -7054,7 +7064,7 @@ function _indCardBiHtml(ind, mesKey) {
   const fracTxt = ind.soloPresentar
     ? '<span style="font-style:italic">Se cumple solo con presentar el informe</span>'
     : (seg && pct != null
-        ? '<b>'+seg.numerador+'</b> / '+seg.denominador+' registrados este bimestre'
+        ? '<b>'+seg.numerador+'</b> / '+seg.denominador+' registrados'+(esUltimoElActual?' este bimestre':' ('+ultimoMesLabel+')')
         : '<b>'+_indEsc(ind.numerador||'Numerador')+'</b> / '+_indEsc(ind.denominador||'Denominador'));
 
   const barPct = ind.soloPresentar ? (seg && seg.presentado ? 100 : 0) : (pct != null ? Math.min(pct,100) : 0);
@@ -7118,10 +7128,20 @@ function renderSeguimiento() {
     return;
   }
 
-  // Clasificar cada indicador según su estado en el bimestre seleccionado
+  // Clasificar cada indicador según su ÚLTIMO bimestre efectivamente
+  // registrado (no forzosamente el bimestre calendario actual, que puede
+  // seguir vacío de forma legítima si aún no se alimenta) — mismo criterio
+  // que usa la tarjeta individual, para que el resumen de arriba sea
+  // consistente con lo que se ve en cada tarjeta.
+  const _indUltimoSegRegistrado = (ind) => {
+    const { mesesKeys: mk, serieValores: sv } = _indBuildSerie(ind, 12);
+    for (let i = sv.length-1; i>=0; i--) { if (sv[i] != null) return _indSegDe(ind, mk[i]); }
+    return null;
+  };
+
   const grupos = { riesgo:[], pendiente:[], ok:[] };
   indicadores.forEach(ind => {
-    const seg = _indSegDe(ind, mesKey);
+    const seg = _indUltimoSegRegistrado(ind);
     const pct = indCalcularPct(seg, ind);
     const status = _indCardStatusInfo(pct, seg, ind);
     grupos[status.grupo].push(ind);
@@ -7129,11 +7149,11 @@ function renderSeguimiento() {
 
   // ── KPIs resumen del mes ──
   const totalConDatos = indicadores.filter(ind => {
-    const seg = _indSegDe(ind, mesKey);
+    const seg = _indUltimoSegRegistrado(ind);
     return indCalcularPct(seg, ind) != null || (ind.soloPresentar && seg && seg.presentado);
   });
   const promedios = indicadores.map(ind => {
-    const seg = _indSegDe(ind, mesKey);
+    const seg = _indUltimoSegRegistrado(ind);
     return ind.soloPresentar ? null : indCalcularPct(seg, ind);
   }).filter(v => v != null);
   const promedioGlobal = promedios.length ? Math.round((promedios.reduce((s,v)=>s+v,0)/promedios.length)*10)/10 : null;
@@ -7344,6 +7364,20 @@ function _indTipoArchivo(fileName) {
   return 'otro';
 }
 
+// Arma el nombre con el que se descarga una evidencia: el título que la
+// persona le puso al adjuntarla (editable), conservando la extensión real
+// del archivo original — así la descarga siempre abre con la aplicación
+// correcta, mostrando al usuario el nombre que él mismo eligió, no el
+// nombre técnico del archivo original.
+function _indNombreDescargaEvidencia(ev) {
+  const nombreOriginal = ev.name || 'archivo';
+  const extension = (nombreOriginal.split('.').pop() || '').toLowerCase();
+  const tituloUsuario = (ev.titulo || '').trim();
+  if (!tituloUsuario) return nombreOriginal; // sin título propio, se usa el nombre real tal cual
+  const tituloYaTieneExt = extension && tituloUsuario.toLowerCase().endsWith('.'+extension);
+  return tituloYaTieneExt ? tituloUsuario : (extension ? tituloUsuario+'.'+extension : tituloUsuario);
+}
+
 // Descarga un archivo (PDF/Word/etc) directamente al dispositivo usando fetch+blob.
 // Esto SIEMPRE fuerza la descarga real (a diferencia de abrir la URL en una pestaña,
 // que en muchos navegadores solo abre el visor de PDF integrado en vez de descargar).
@@ -7543,7 +7577,7 @@ function _indRenderEvidenciasEn(contId) {
     }
     const status = ev.cloudUrl ? '<i class="fas fa-check-circle" style="color:#15803d"></i> Subida' : '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
     const rawUrl = ev.cloudUrl || ev.dataUrl;
-    const clickAction = "openEvidenciaPreviewModal('"+rawUrl+"','"+_indEsc(ev.name||'archivo')+"','"+tipo+"')";
+    const clickAction = "openEvidenciaPreviewModal('"+rawUrl+"','"+_indEsc(_indNombreDescargaEvidencia(ev))+"','"+tipo+"')";
     const tituloHtml = soloLectura
       ? '<div class="ind-ev-row-title-readonly">'+(ev.titulo?_indEsc(ev.titulo):'<span style="color:var(--gray400);font-style:italic">Sin título</span>')+'</div>'
       : '<input class="ind-ev-row-title-input" type="text" placeholder="Título del archivo (ej: Correo enviado a Farmacia)" value="'+_indEsc(ev.titulo||'')+'" oninput="updateSegEvidenciaTitulo('+i+',this.value)">';
@@ -7967,7 +8001,7 @@ function renderInformeIndividual() {
       ? '<div class="ind-informe-ev-thumbs">'+evidencias.map(e=>{
           const tipo = e.tipo || _indTipoArchivo(e.name||'');
           const url = e.cloudUrl||e.dataUrl;
-          const fileNameEsc = _indEsc(e.name || 'archivo');
+          const fileNameEsc = _indEsc(_indNombreDescargaEvidencia(e));
           if (tipo === 'imagen') return '<img src="'+url+'" title="'+_indEsc(e.titulo||'')+'" onclick="openEvidenciaPreviewModal(\''+url+'\',\''+fileNameEsc+'\',\'imagen\')">';
           const icon = tipo === 'pdf' ? 'fa-file-pdf' : tipo === 'word' ? 'fa-file-word' : tipo === 'excel' ? 'fa-file-excel' : 'fa-file-alt';
           const color = tipo === 'pdf' ? '#dc2626' : tipo === 'word' ? '#2563eb' : tipo === 'excel' ? '#15803d' : '#94a3b8';
@@ -8565,7 +8599,7 @@ function _indRenderBitacora(ind, rango) {
       ? '<div class="ind-informe-ev-thumbs" style="margin-top:6px">'+evidencias.map(e=>{
           const tipo = e.tipo || _indTipoArchivo(e.name||'');
           const url = e.cloudUrl||e.dataUrl;
-          const fileNameEsc = _indEsc(e.name || 'archivo');
+          const fileNameEsc = _indEsc(_indNombreDescargaEvidencia(e));
           if (tipo === 'imagen') return '<img src="'+url+'" title="'+_indEsc(e.titulo||'')+'" onclick="openEvidenciaPreviewModal(\''+url+'\',\''+fileNameEsc+'\',\'imagen\')">';
           const icon = tipo === 'pdf' ? 'fa-file-pdf' : tipo === 'word' ? 'fa-file-word' : tipo === 'excel' ? 'fa-file-excel' : 'fa-file-alt';
           const color = tipo === 'pdf' ? '#dc2626' : tipo === 'word' ? '#2563eb' : tipo === 'excel' ? '#15803d' : '#94a3b8';
@@ -8806,6 +8840,9 @@ async function _r2SubirArchivo(fileBlob, key, contentType) {
 
 function _indLoadImageAsBase64(url) {
   return new Promise((resolve) => {
+    let resuelto = false;
+    const resolverUnaVez = (valor) => { if (!resuelto) { resuelto = true; resolve(valor); } };
+
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = function() {
@@ -8815,11 +8852,17 @@ function _indLoadImageAsBase64(url) {
         canvas.height = img.naturalHeight || img.height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
-        resolve(canvas.toDataURL('image/jpeg', 0.92));
-      } catch(e) { resolve(null); }
+        resolverUnaVez(canvas.toDataURL('image/jpeg', 0.92));
+      } catch(e) { resolverUnaVez(null); }
     };
-    img.onerror = () => resolve(null);
+    img.onerror = () => resolverUnaVez(null);
     img.src = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+
+    // Si la imagen no carga ni falla explícitamente en 4 segundos (bloqueada
+    // por CORS, Imgur lento, sin red), se continúa sin ella en vez de dejar
+    // la generación del PDF esperando indefinidamente — este era exactamente
+    // el mismo problema que ya se corrigió para los logos institucionales.
+    setTimeout(() => resolverUnaVez(null), 4000);
   });
 }
 
@@ -9397,7 +9440,7 @@ function _indHistorialFilaHtml(ind, mesKey, seg, puedeEditar) {
     ? evidencias.map(e=>{
         const tipo = e.tipo || _indTipoArchivo(e.name||'');
         const url = e.cloudUrl||e.dataUrl;
-        const fileNameEsc = _indEsc(e.name || 'archivo');
+        const fileNameEsc = _indEsc(_indNombreDescargaEvidencia(e));
         if (tipo === 'imagen') return '<img src="'+url+'" title="'+_indEsc(e.titulo||'')+'" onclick="openEvidenciaPreviewModal(\''+url+'\',\''+fileNameEsc+'\',\'imagen\')" class="ind-detalle-tabla-ev-thumb">';
         const icon = tipo === 'pdf' ? 'fa-file-pdf' : tipo === 'word' ? 'fa-file-word' : tipo === 'excel' ? 'fa-file-excel' : 'fa-file-alt';
         const color2 = tipo === 'pdf' ? '#dc2626' : tipo === 'word' ? '#2563eb' : tipo === 'excel' ? '#15803d' : '#94a3b8';
@@ -10285,12 +10328,11 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
 
         documentosEv.forEach((ev) => {
           chk(6);
-          // Se inserta el flag fl_attachment directamente en la URL de Cloudinary
-          // (justo después de "/upload/") para que sea el propio servidor el que
-          // responda con la descarga forzada. El nombre incluye la extensión real
-          // (.docx, .pdf, etc.) para que el sistema operativo reconozca el tipo de
-          // archivo al guardarlo — sin la extensión, llega como "archivo" genérico.
-          const fileName = ev.name || (ev.titulo || 'archivo');
+          // El nombre de descarga usa el título que la persona le puso a la
+          // evidencia al adjuntarla (editable), no el nombre técnico del
+          // archivo original — pero conservando la extensión real, para que
+          // el sistema operativo reconozca el tipo de archivo al guardarlo.
+          const fileName = _indNombreDescargaEvidencia(ev);
           const urlOriginal = ev.cloudUrl || ev.dataUrl;
           const extension = (fileName.split('.').pop() || '').toLowerCase();
           const nombreBase = fileName.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 70);
@@ -10345,7 +10387,11 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
     const sigLineY = yPos + 16;
 
     async function drawFirma(nombrePersona, cargoPersona, xStart) {
-      const firmaUrl = IND_FIRMAS_MAP[nombrePersona];
+      // Se normalizan espacios extra al inicio/final o dobles espacios internos
+      // antes de buscar en el mapa, para tolerar variaciones menores del
+      // nombre guardado en el perfil sin dejar de encontrar la firma.
+      const nombreNormalizado = (nombrePersona||'').trim().replace(/\s+/g,' ');
+      const firmaUrl = IND_FIRMAS_MAP[nombreNormalizado] || IND_FIRMAS_MAP[nombrePersona];
       if (firmaUrl) {
         try {
           const ext = firmaUrl.toLowerCase().endsWith('.jpeg') || firmaUrl.toLowerCase().endsWith('.jpg') ? 'JPEG' : 'PNG';
@@ -10355,8 +10401,16 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
             _indFirmasCache[firmaUrl] = await _indLoadImageAsBase64(firmaUrl);
           }
           const sigImg = _indFirmasCache[firmaUrl];
-          if (sigImg) doc.addImage(sigImg, ext, xStart+8, sigLineY-14, sigW2-16, 12);
-        } catch(e) {}
+          if (sigImg) {
+            doc.addImage(sigImg, ext, xStart+8, sigLineY-14, sigW2-16, 12);
+          } else {
+            console.warn('Firma de "'+nombrePersona+'" encontrada en IND_FIRMAS_MAP pero no se pudo cargar la imagen desde: '+firmaUrl);
+          }
+        } catch(e) {
+          console.warn('Error al dibujar la firma de "'+nombrePersona+'":', e);
+        }
+      } else {
+        console.warn('No hay firma registrada en IND_FIRMAS_MAP para: "'+nombrePersona+'" — revisa que coincida EXACTAMENTE con el nombre del perfil en Firebase.');
       }
       doc.setDrawColor(180,190,210); doc.setLineWidth(0.4);
       doc.line(xStart, sigLineY, xStart+sigW2, sigLineY);
