@@ -8785,6 +8785,17 @@ async function _r2HmacRaw(keyBytes, msg) {
 }
 function _r2Hex(bytes) { return Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join(''); }
 
+// encodeURIComponent nativo de JavaScript deja SIN codificar los caracteres
+// ! * ' ( ) — pero el algoritmo AWS Signature V4 exige que también estos se
+// codifiquen en la query string firmada. Sin esto, la firma que calcula el
+// código nunca coincide con la que R2 recalcula (R2 sí los codifica), dando
+// SignatureDoesNotMatch en cualquier nombre de archivo que contenga
+// paréntesis, apóstrofes o asteriscos — como ocurre con el propio
+// "filename*=UTF-8''..." del header de descarga forzada.
+function _r2UriEncode(str) {
+  return encodeURIComponent(str).replace(/[!*'()]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+}
+
 // Sube un archivo (Blob/ArrayBuffer) a R2 usando una petición PUT firmada con
 // AWS Signature V4, calculada en el propio navegador. Devuelve la URL pública
 // final del archivo subido, o lanza un error si algo falla.
@@ -8806,7 +8817,7 @@ function _r2KeyDesdeUrlPublica(url) {
 async function _r2GenerarUrlDescargaFirmada(key, nombreDescarga) {
   const method = 'GET';
   const host = R2_CONFIG.accountId + '.r2.cloudflarestorage.com';
-  const canonicalUri = '/' + R2_CONFIG.bucket + '/' + key.split('/').map(encodeURIComponent).join('/');
+  const canonicalUri = '/' + R2_CONFIG.bucket + '/' + key.split('/').map(_r2UriEncode).join('/');
   const now = new Date();
   const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, '');
   const dateStamp = amzDate.slice(0, 8);
@@ -8829,7 +8840,7 @@ async function _r2GenerarUrlDescargaFirmada(key, nombreDescarga) {
     'response-content-disposition': "attachment; filename*=UTF-8''" + dispositionFilename,
   };
   const canonicalQuerystring = Object.keys(queryParams).sort()
-    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(queryParams[k]))
+    .map(k => _r2UriEncode(k) + '=' + _r2UriEncode(queryParams[k]))
     .join('&');
 
   const canonicalHeaders = 'host:' + host + '\n';
@@ -8851,7 +8862,7 @@ async function _r2GenerarUrlDescargaFirmada(key, nombreDescarga) {
 async function _r2SubirArchivo(fileBlob, key, contentType) {
   const method = 'PUT';
   const host = R2_CONFIG.accountId + '.r2.cloudflarestorage.com';
-  const canonicalUri = '/' + R2_CONFIG.bucket + '/' + key.split('/').map(encodeURIComponent).join('/');
+  const canonicalUri = '/' + R2_CONFIG.bucket + '/' + key.split('/').map(_r2UriEncode).join('/');
   const now = new Date();
   const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, ''); // YYYYMMDDTHHMMSSZ
   const dateStamp = amzDate.slice(0, 8);
