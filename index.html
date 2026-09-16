@@ -8812,9 +8812,13 @@ async function _r2GenerarUrlDescargaFirmada(key, nombreDescarga) {
   const dateStamp = amzDate.slice(0, 8);
   const credentialScope = dateStamp + '/' + R2_CONFIG.region + '/s3/aws4_request';
 
-  // Nombre de archivo saneado para el header Content-Disposition (evita
-  // caracteres que rompan el encabezado HTTP; los acentos/ñ se codifican aparte).
-  const dispositionFilename = encodeURIComponent(nombreDescarga).replace(/'/g, '%27');
+  // El nombre de archivo va COMPLETAMENTE SIN codificar aquí — ninguna capa
+  // de encodeURIComponent manual. El encodeURIComponent() que arma la query
+  // string más abajo se encarga de codificar el valor completo del parámetro
+  // exactamente una vez. Aplicar encodeURIComponent aquí Y en la query string
+  // codifica dos veces (el "%" de la primera pasada se vuelve a codificar en
+  // la segunda), lo que hace que R2 rechace la firma con SignatureDoesNotMatch.
+  const dispositionFilename = nombreDescarga.replace(/"/g, "'");
 
   const queryParams = {
     'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',
