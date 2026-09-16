@@ -6954,11 +6954,11 @@ function indCalcularPct(seg, ind) {
   if (!seg) return null;
   if (ind.soloPresentar) return (seg.presentado ? 100 : null);
   const num = seg.numerador, den = seg.denominador;
-  if (num == null || den == null || num === 0) return null;
-  // El numerador es el total PROGRAMADO y el denominador es lo REALIZADO
-  // (etiquetas ya corregidas en pantalla) — el % de cumplimiento es
-  // realizado/programado, es decir denominador/numerador.
-  return Math.round((den/num)*1000)/10;
+  if (num == null || den == null || den === 0) return null;
+  // El numerador es lo REALIZADO (lo que ya se ejecutó) y el denominador es
+  // lo PROGRAMADO (el total planeado) — el % de cumplimiento es
+  // realizado/programado, es decir numerador/denominador.
+  return Math.round((num/den)*1000)/10;
 }
 
 // Devuelve el mapa de seguimientos (todos los meses) que corresponde a un
@@ -7343,7 +7343,7 @@ function _indUpdateSegPreview() {
   if (!numEl || !denEl) { prev.style.display='none'; return; }
   const num = numEl.value === '' ? null : parseFloat(numEl.value);
   const den = denEl.value === '' ? null : parseFloat(denEl.value);
-  const pct = (num!=null && den!=null && num!==0) ? Math.round((den/num)*1000)/10 : null;
+  const pct = (num!=null && den!=null && den!==0) ? Math.round((num/den)*1000)/10 : null;
   if (pct == null) { prev.style.display='none'; return; }
   prev.style.display = 'block';
   prev.innerHTML = indSemaforoHtml(pct, ind);
@@ -9346,7 +9346,7 @@ function _indAlimentarUpdatePreview() {
   if (!numEl || !denEl) { prev.style.display='none'; return; }
   const num = numEl.value === '' ? null : parseFloat(numEl.value);
   const den = denEl.value === '' ? null : parseFloat(denEl.value);
-  const pct = (num!=null && den!=null && num!==0) ? Math.round((den/num)*1000)/10 : null;
+  const pct = (num!=null && den!=null && den!==0) ? Math.round((num/den)*1000)/10 : null;
   if (pct == null) { prev.style.display='none'; return; }
   prev.style.display = 'block';
   prev.innerHTML = indSemaforoHtml(pct, ind);
@@ -9566,7 +9566,7 @@ function _indHistorialUpdatePreview(mesKey) {
   if (!numEl || !denEl) return;
   const num = numEl.value === '' ? null : parseFloat(numEl.value);
   const den = denEl.value === '' ? null : parseFloat(denEl.value);
-  const pct = (num!=null && den!=null && num!==0) ? Math.round((den/num)*1000)/10 : null;
+  const pct = (num!=null && den!=null && den!==0) ? Math.round((num/den)*1000)/10 : null;
   prev.textContent = pct != null ? pct+'%' : '—';
 }
 
@@ -10542,19 +10542,19 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
 // IMPORTAR INDICADORES BASE (parametrización inicial de la reunión)
 // ══════════════════════════════════════════════════════════════
 const IND_SEED_DATA = [
-  {usuario_nombre:"Jennifer", nombre:"Informe de reporte de indicadores", numerador:"Total de reportes que se deben realizar en el periodo", denominador:"Número de reportes a EPS realizados oportunamente en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:20},
-  {usuario_nombre:"Jennifer", nombre:"Informe de cumplimiento de cronograma de PAMEC", numerador:"Total de actividades programadas en el periodo", denominador:"Número de actividades realizadas en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:35},
-  {usuario_nombre:"Jennifer", nombre:"Informe de cumplimiento de cronograma de SARLAFT", numerador:"Total de actividades programadas en el periodo", denominador:"Número de actividades realizadas en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:20},
-  {usuario_nombre:"Jennifer", nombre:"Informe de auditoría en BANFOCA", numerador:"Total de actividades programadas en el periodo", denominador:"Número de actividades realizadas en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:25},
+  {usuario_nombre:"Jennifer", nombre:"Informe de reporte de indicadores", numerador:"Número de reportes a EPS realizados oportunamente en el periodo", denominador:"Total de reportes que se deben realizar en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:20},
+  {usuario_nombre:"Jennifer", nombre:"Informe de cumplimiento de cronograma de PAMEC", numerador:"Número de actividades realizadas en el periodo", denominador:"Total de actividades programadas en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:35},
+  {usuario_nombre:"Jennifer", nombre:"Informe de cumplimiento de cronograma de SARLAFT", numerador:"Número de actividades realizadas en el periodo", denominador:"Total de actividades programadas en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:20},
+  {usuario_nombre:"Jennifer", nombre:"Informe de auditoría en BANFOCA", numerador:"Número de actividades realizadas en el periodo", denominador:"Total de actividades programadas en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:25},
 
-  {usuario_nombre:"Daniel", nombre:"Cumplimiento de cronograma de auditoría mensuales", numerador:"Total de auditorías programadas en el periodo", denominador:"Número de auditorías realizadas en periodo", metaMin:95,metaNom:97,metaMax:100,peso:35},
-  {usuario_nombre:"Daniel", nombre:"Sistema de protección de datos", numerador:"Total de actividades programadas en el periodo", denominador:"Número de actividades realizadas en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:30},
-  {usuario_nombre:"Daniel", nombre:"Seguimiento a cumplimiento de comités institucionales", numerador:"Total de comités programados en el periodo", denominador:"Número de comités realizados oportunamente en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:25},
-  {usuario_nombre:"Daniel", nombre:"Actualización en página de bases de datos", numerador:"Total de bases de datos gestionadas por el sistema de protección de datos", denominador:"Número de bases de datos actualizadas correctamente en la SIC", metaMin:95,metaNom:97,metaMax:100,peso:10},
+  {usuario_nombre:"Daniel", nombre:"Cumplimiento de cronograma de auditoría mensuales", numerador:"Número de auditorías realizadas en periodo", denominador:"Total de auditorías programadas en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:35},
+  {usuario_nombre:"Daniel", nombre:"Sistema de protección de datos", numerador:"Número de actividades realizadas en el periodo", denominador:"Total de actividades programadas en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:30},
+  {usuario_nombre:"Daniel", nombre:"Seguimiento a cumplimiento de comités institucionales", numerador:"Número de comités realizados oportunamente en el periodo", denominador:"Total de comités programados en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:25},
+  {usuario_nombre:"Daniel", nombre:"Actualización en página de bases de datos", numerador:"Número de bases de datos actualizadas correctamente en la SIC", denominador:"Total de bases de datos gestionadas por el sistema de protección de datos", metaMin:95,metaNom:97,metaMax:100,peso:10},
 
-  {usuario_nombre:"Luis", nombre:"Informe de cumplimiento de cargue de indicadores en Daruma tanto de FOCA", numerador:"Total de indicadores a reportar en el periodo", denominador:"Número de indicadores reportados oportunamente en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:40},
-  {usuario_nombre:"Luis", nombre:"Informe de cumplimiento de cronograma de capacitación de calidad 2025", numerador:"Número de capacitaciones programadas en el periodo", denominador:"Número de capacitaciones realizadas en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:20},
-  {usuario_nombre:"Luis", nombre:"Informe de seguimiento a cumplimiento de planes de acción asignados en el periodo, resultado de las diferentes auditorías externas recibidas", numerador:"Total de planes existentes en el periodo", denominador:"Número de seguimientos realizados a planes en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:30},
+  {usuario_nombre:"Luis", nombre:"Informe de cumplimiento de cargue de indicadores en Daruma tanto de FOCA", numerador:"Número de indicadores reportados oportunamente en el periodo", denominador:"Total de indicadores a reportar en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:40},
+  {usuario_nombre:"Luis", nombre:"Informe de cumplimiento de cronograma de capacitación de calidad 2025", numerador:"Número de capacitaciones realizadas en el periodo", denominador:"Número de capacitaciones programadas en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:20},
+  {usuario_nombre:"Luis", nombre:"Informe de seguimiento a cumplimiento de planes de acción asignados en el periodo, resultado de las diferentes auditorías externas recibidas", numerador:"Número de seguimientos realizados a planes en el periodo", denominador:"Total de planes existentes en el periodo", metaMin:95,metaNom:97,metaMax:100,peso:30},
   {usuario_nombre:"Luis", nombre:"Ítem variable cada 2 meses asignado por la dirección de calidad y gestor de calidad", soloPresentar:true, peso:10},
 
   // Los 3 primeros indicadores de María Clara son "espejo": según la nota explícita
@@ -10565,7 +10565,7 @@ const IND_SEED_DATA = [
   {usuario_nombre:"María Clara", nombre:"Informe de cumplimiento de cronograma de PAMEC", espejoDe:{usuario_nombre:"Jennifer", nombre:"Informe de cumplimiento de cronograma de PAMEC"}, metaMin:95,metaNom:97,metaMax:100,peso:25},
   {usuario_nombre:"María Clara", nombre:"Cumplimiento de cronograma de auditoría mensuales", espejoDe:{usuario_nombre:"Daniel", nombre:"Cumplimiento de cronograma de auditoría mensuales"}, metaMin:95,metaNom:97,metaMax:100,peso:25},
   {usuario_nombre:"María Clara", nombre:"Seguimiento a cumplimiento de comités institucionales", espejoDe:{usuario_nombre:"Daniel", nombre:"Seguimiento a cumplimiento de comités institucionales"}, metaMin:95,metaNom:97,metaMax:100,peso:25},
-  {usuario_nombre:"María Clara", nombre:"Reportes obligatorios: Res 256 y Res 012", numerador:"Número de reportes obligatorios programados en el periodo", denominador:"Número de reportes obligatorios realizados en el periodo", metaMin:100,metaNom:100,metaMax:100,peso:25},
+  {usuario_nombre:"María Clara", nombre:"Reportes obligatorios: Res 256 y Res 012", numerador:"Número de reportes obligatorios realizados en el periodo", denominador:"Número de reportes obligatorios programados en el periodo", metaMin:100,metaNom:100,metaMax:100,peso:25},
 ];
 
 function _indNormalizeName(s) {
