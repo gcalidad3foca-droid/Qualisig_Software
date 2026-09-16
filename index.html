@@ -8788,6 +8788,62 @@ function _r2Hex(bytes) { return Array.from(bytes).map(b => b.toString(16).padSta
 // Sube un archivo (Blob/ArrayBuffer) a R2 usando una petición PUT firmada con
 // AWS Signature V4, calculada en el propio navegador. Devuelve la URL pública
 // final del archivo subido, o lanza un error si algo falla.
+// Genera una URL PREFIRMADA de descarga (GET) que incluye
+// response-content-disposition=attachment, forzando al navegador a
+// descargar el archivo directo al disco en vez de abrirlo en una pestaña.
+// Esto solo funciona con URLs firmadas — un bucket público sin firma no
+// puede recibir ese parámetro, por eso es necesario firmar cada descarga
+// puntualmente (con el mismo algoritmo AWS Signature V4 ya usado para subir).
+// Extrae el "key" (ruta dentro del bucket) de una URL pública de R2, para
+// poder generar sobre ella una descarga firmada. Si la URL no corresponde a
+// este bucket (por ejemplo, es una evidencia vieja que aún vive en
+// Cloudinary), devuelve null y el llamador debe usar la URL tal cual.
+function _r2KeyDesdeUrlPublica(url) {
+  if (!url || !url.startsWith(R2_CONFIG.publicUrlBase + '/')) return null;
+  return url.slice((R2_CONFIG.publicUrlBase + '/').length);
+}
+
+async function _r2GenerarUrlDescargaFirmada(key, nombreDescarga) {
+  const method = 'GET';
+  const host = R2_CONFIG.accountId + '.r2.cloudflarestorage.com';
+  const canonicalUri = '/' + R2_CONFIG.bucket + '/' + key.split('/').map(encodeURIComponent).join('/');
+  const now = new Date();
+  const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, '');
+  const dateStamp = amzDate.slice(0, 8);
+  const credentialScope = dateStamp + '/' + R2_CONFIG.region + '/s3/aws4_request';
+
+  // Nombre de archivo saneado para el header Content-Disposition (evita
+  // caracteres que rompan el encabezado HTTP; los acentos/ñ se codifican aparte).
+  const dispositionFilename = encodeURIComponent(nombreDescarga).replace(/'/g, '%27');
+
+  const queryParams = {
+    'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',
+    'X-Amz-Credential': R2_CONFIG.accessKeyId + '/' + credentialScope,
+    'X-Amz-Date': amzDate,
+    'X-Amz-Expires': '3600',
+    'X-Amz-SignedHeaders': 'host',
+    'response-content-disposition': "attachment; filename*=UTF-8''" + dispositionFilename,
+  };
+  const canonicalQuerystring = Object.keys(queryParams).sort()
+    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(queryParams[k]))
+    .join('&');
+
+  const canonicalHeaders = 'host:' + host + '\n';
+  const signedHeaders = 'host';
+  const payloadHash = 'UNSIGNED-PAYLOAD';
+
+  const canonicalRequest = [method, canonicalUri, canonicalQuerystring, canonicalHeaders, signedHeaders, payloadHash].join('\n');
+  const stringToSign = ['AWS4-HMAC-SHA256', amzDate, credentialScope, await _r2Sha256Hex(canonicalRequest)].join('\n');
+
+  const kDate = await _r2HmacRaw(new TextEncoder().encode('AWS4' + R2_CONFIG.secretAccessKey), dateStamp);
+  const kRegion = await _r2HmacRaw(kDate, R2_CONFIG.region);
+  const kService = await _r2HmacRaw(kRegion, 's3');
+  const kSigning = await _r2HmacRaw(kService, 'aws4_request');
+  const signature = _r2Hex(await _r2HmacRaw(kSigning, stringToSign));
+
+  return 'https://' + host + canonicalUri + '?' + canonicalQuerystring + '&X-Amz-Signature=' + signature;
+}
+
 async function _r2SubirArchivo(fileBlob, key, contentType) {
   const method = 'PUT';
   const host = R2_CONFIG.accountId + '.r2.cloudflarestorage.com';
@@ -10326,7 +10382,7 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
         doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(CB[0],CB[1],CB[2]);
         doc.text('Documentos adjuntos:', M, yPos); yPos += 7;
 
-        documentosEv.forEach((ev) => {
+        for (const ev of documentosEv) {
           chk(6);
           // El nombre de descarga usa el título que la persona le puso a la
           // evidencia al adjuntarla (editable), no el nombre técnico del
@@ -10334,20 +10390,39 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
           // el sistema operativo reconozca el tipo de archivo al guardarlo.
           const fileName = _indNombreDescargaEvidencia(ev);
           const urlOriginal = ev.cloudUrl || ev.dataUrl;
-          const extension = (fileName.split('.').pop() || '').toLowerCase();
-          const nombreBase = fileName.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 70);
-          const nombreConExtension = extension ? nombreBase + '_' + extension : nombreBase;
-          const url = urlOriginal.includes('/upload/')
-            ? urlOriginal.replace('/upload/', '/upload/fl_attachment:' + nombreConExtension + '/')
-            : urlOriginal;
+          let url = urlOriginal;
+
+          // Si el archivo vive en R2 (bucket de evidencias actual), se genera
+          // una URL FIRMADA con response-content-disposition=attachment, que
+          // fuerza al navegador a descargar el archivo directo al disco en
+          // vez de abrirlo en una pestaña — un bucket público sin firma no
+          // puede recibir ese parámetro.
+          const r2Key = _r2KeyDesdeUrlPublica(urlOriginal);
+          if (r2Key) {
+            try {
+              url = await _r2GenerarUrlDescargaFirmada(r2Key, fileName);
+            } catch(e) {
+              console.warn('No se pudo firmar la descarga de "'+fileName+'", se usará el enlace normal:', e);
+            }
+          } else {
+            // Respaldo para evidencias antiguas que puedan seguir en Cloudinary:
+            // se mantiene el mismo truco de fl_attachment que ya se usaba antes.
+            const extension = (fileName.split('.').pop() || '').toLowerCase();
+            const nombreBase = fileName.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 70);
+            const nombreConExtension = extension ? nombreBase + '_' + extension : nombreBase;
+            if (urlOriginal.includes('/upload/')) {
+              url = urlOriginal.replace('/upload/', '/upload/fl_attachment:' + nombreConExtension + '/');
+            }
+          }
+
           doc.setFont('helvetica','normal'); doc.setFontSize(7.8); doc.setTextColor(CT[0],CT[1],CT[2]);
-          const etiqueta = '-  '+(ev.mes||'')+': ';
+          const etiqueta = '-  ';
           doc.text(etiqueta, M+2, yPos);
           const etiquetaW = doc.getTextWidth(etiqueta);
           doc.setFont('helvetica','bold'); doc.setTextColor(CB[0],CB[1],CB[2]);
           doc.textWithLink(fileName, M+2+etiquetaW, yPos, { url });
           yPos += 5.2;
-        });
+        }
         yPos += 3;
       }
       yPos += 3;
