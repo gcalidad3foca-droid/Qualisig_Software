@@ -8753,6 +8753,13 @@ const IND_FIRMAS_MAP = {
   'Jennifer Melendez':        'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/Firma%20Jennifer%20Melendez.png',
   'Valentina Jimeno':         'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/firma%20Valentina%20Jimeno.png',
   'Daniel Rodriguez Galofre': 'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/firma%20Daniel%20Rodriguez.png',
+  // Variantes de nombre corto, tal como aparecen realmente en algunos
+  // perfiles de Firebase (sin apellido completo, con o sin tilde) — apuntan
+  // a la misma imagen que la versión con nombre completo de arriba.
+  'María Clara':   'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/firma%20maria%20pizarro.png',
+  'Maria Clara':   'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/firma%20maria%20pizarro.png',
+  'Luis Bolaño':   'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/firma%20LUIS%20BOLA%C3%91O.jpeg',
+  'Daniel Rodriguez': 'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/firma%20Daniel%20Rodriguez.png',
 };
 
 // Carga una imagen externa (firma) como dataURL usando un <img> con canvas,
@@ -10510,7 +10517,23 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
       // antes de buscar en el mapa, para tolerar variaciones menores del
       // nombre guardado en el perfil sin dejar de encontrar la firma.
       const nombreNormalizado = (nombrePersona||'').trim().replace(/\s+/g,' ');
-      const firmaUrl = IND_FIRMAS_MAP[nombreNormalizado] || IND_FIRMAS_MAP[nombrePersona];
+      let firmaUrl = IND_FIRMAS_MAP[nombreNormalizado] || IND_FIRMAS_MAP[nombrePersona];
+
+      // Último recurso: coincidencia parcial insensible a mayúsculas y tildes,
+      // por si el nombre real del perfil difiere en algo que no se anticipó
+      // en el mapa (ej. "María Clara" vs "Maria Clara Pizarro" — uno contiene
+      // al otro). Evita que un perfil se quede sin firma solo por una
+      // diferencia de tilde o de qué tan completo está el nombre.
+      if (!firmaUrl && nombreNormalizado) {
+        const quitarTildes = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const nombreBuscado = quitarTildes(nombreNormalizado);
+        const claveCoincidente = Object.keys(IND_FIRMAS_MAP).find(clave => {
+          const claveNorm = quitarTildes(clave);
+          return claveNorm.includes(nombreBuscado) || nombreBuscado.includes(claveNorm);
+        });
+        if (claveCoincidente) firmaUrl = IND_FIRMAS_MAP[claveCoincidente];
+      }
+
       if (firmaUrl) {
         try {
           // _indLoadImageAsBase64 siempre convierte la imagen a JPEG (vía canvas),
