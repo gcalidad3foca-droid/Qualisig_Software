@@ -3247,7 +3247,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
           <input class="modal-input-field" type="text" id="ind-f-denominador" placeholder="Ej: Total de reportes que se deben realizar en el periodo">
         </div>
       </div>
-      <div class="ind-numden-hint"><i class="fas fa-lightbulb"></i> El numerador siempre es la cantidad <b>lograda/realizada</b>; el denominador es el <b>total programado/esperado</b>. Si un indicador ya creado quedó al revés, usa el botón <i class="fas fa-right-left"></i> para intercambiarlos sin perder los datos.</div>
+      <div class="ind-numden-hint"><i class="fas fa-lightbulb"></i> El numerador siempre es la cantidad <b>lograda/realizada</b>; el denominador es el <b>total programado/esperado</b>. Si en el periodo no se programó nada (p. ej. no te asignaron planes de acción), registra <b>0 y 0</b>: el sistema lo toma como <b>cumplimiento del 100 %</b>. Si un indicador ya creado quedó al revés, usa el botón <i class="fas fa-right-left"></i> para intercambiarlos sin perder los datos.</div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
         <div class="modal-form-group">
@@ -6950,15 +6950,33 @@ function indSemaforoHtml(pct, ind) {
   return '<span class="ind-semaforo ind-sem-'+cls+'"><span class="dot"></span>'+pctTxt+' · '+indSemaforoLabel(cls)+'</span>';
 }
 
+// Regla única de cálculo del % de cumplimiento a partir de numerador y
+// denominador. El numerador es lo REALIZADO y el denominador lo PROGRAMADO,
+// así que el % es numerador/denominador.
+// CASO ESPECIAL: si el denominador es 0 Y el numerador es 0, significa que en
+// el periodo no se programó/asignó nada (p. ej. no se asignaron planes de
+// acción). Como no hubo nada que cumplir ni fue responsabilidad del
+// responsable, se considera CUMPLIMIENTO TOTAL (100 %). Un denominador 0 con
+// numerador distinto de 0 sigue siendo un dato inválido (null).
+function indCalcularPctDeValores(num, den) {
+  if (num == null || den == null) return null;
+  if (den === 0) return (num === 0) ? 100 : null;
+  return Math.round((num/den)*1000)/10;
+}
+
+// Nota aclaratoria que se muestra junto al semáforo cuando el resultado viene
+// del caso especial 0/0 (nada programado en el periodo).
+function _indNotaSinProgramacionHtml(num, den) {
+  if (num === 0 && den === 0) {
+    return '<div style="font-size:11px;color:var(--gray500);margin-top:6px"><i class="fas fa-circle-info"></i> Sin actividades programadas en el periodo (0/0): se considera cumplimiento del 100 %.</div>';
+  }
+  return '';
+}
+
 function indCalcularPct(seg, ind) {
   if (!seg) return null;
   if (ind.soloPresentar) return (seg.presentado ? 100 : null);
-  const num = seg.numerador, den = seg.denominador;
-  if (num == null || den == null || den === 0) return null;
-  // El numerador es lo REALIZADO (lo que ya se ejecutó) y el denominador es
-  // lo PROGRAMADO (el total planeado) — el % de cumplimiento es
-  // realizado/programado, es decir numerador/denominador.
-  return Math.round((num/den)*1000)/10;
+  return indCalcularPctDeValores(seg.numerador, seg.denominador);
 }
 
 // Devuelve el mapa de seguimientos (todos los meses) que corresponde a un
@@ -7343,10 +7361,10 @@ function _indUpdateSegPreview() {
   if (!numEl || !denEl) { prev.style.display='none'; return; }
   const num = numEl.value === '' ? null : parseFloat(numEl.value);
   const den = denEl.value === '' ? null : parseFloat(denEl.value);
-  const pct = (num!=null && den!=null && den!==0) ? Math.round((num/den)*1000)/10 : null;
+  const pct = indCalcularPctDeValores(num, den);
   if (pct == null) { prev.style.display='none'; return; }
   prev.style.display = 'block';
-  prev.innerHTML = indSemaforoHtml(pct, ind);
+  prev.innerHTML = indSemaforoHtml(pct, ind) + _indNotaSinProgramacionHtml(num, den);
 }
 
 function closeSeguimientoModal() {
@@ -9299,7 +9317,7 @@ function _indDetalleAlimentarHtml(ind) {
   _indCurrentSegKey = ind.id + '|' + _indAlimentarMesSel;
 
   const pctSel = indCalcularPct(segDelSel, ind);
-  const previewInicialHtml = pctSel != null ? indSemaforoHtml(pctSel, ind) : '';
+  const previewInicialHtml = pctSel != null ? indSemaforoHtml(pctSel, ind) + _indNotaSinProgramacionHtml(segDelSel.numerador, segDelSel.denominador) : '';
   const previewStyle = pctSel != null ? 'margin:12px 0' : 'display:none;margin:12px 0';
 
   const formularioHtml = '<div class="ind-alim-form-wrap">'
@@ -9369,10 +9387,10 @@ function _indAlimentarUpdatePreview() {
   if (!numEl || !denEl) { prev.style.display='none'; return; }
   const num = numEl.value === '' ? null : parseFloat(numEl.value);
   const den = denEl.value === '' ? null : parseFloat(denEl.value);
-  const pct = (num!=null && den!=null && den!==0) ? Math.round((num/den)*1000)/10 : null;
+  const pct = indCalcularPctDeValores(num, den);
   if (pct == null) { prev.style.display='none'; return; }
   prev.style.display = 'block';
-  prev.innerHTML = indSemaforoHtml(pct, ind);
+  prev.innerHTML = indSemaforoHtml(pct, ind) + _indNotaSinProgramacionHtml(num, den);
 }
 
 async function guardarAlimentarPendiente() {
@@ -9589,7 +9607,7 @@ function _indHistorialUpdatePreview(mesKey) {
   if (!numEl || !denEl) return;
   const num = numEl.value === '' ? null : parseFloat(numEl.value);
   const den = denEl.value === '' ? null : parseFloat(denEl.value);
-  const pct = (num!=null && den!=null && den!==0) ? Math.round((num/den)*1000)/10 : null;
+  const pct = indCalcularPctDeValores(num, den);
   prev.textContent = pct != null ? pct+'%' : '—';
 }
 
