@@ -8914,26 +8914,36 @@ function _indLoadImageAsBase64(url) {
     let resuelto = false;
     const resolverUnaVez = (valor) => { if (!resuelto) { resuelto = true; resolve(valor); } };
 
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = function() {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth || img.width;
-        canvas.height = img.naturalHeight || img.height;
-        const ctx = canvas.getContext('2d');
-        // Se rellena el canvas con blanco antes de dibujar la imagen encima:
-        // esta función siempre exporta a JPEG (que no soporta transparencia),
-        // así que sin este relleno, cualquier firma PNG con fondo transparente
-        // saldría con fondo NEGRO en vez de blanco al convertirse.
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0);
-        resolverUnaVez(canvas.toDataURL('image/jpeg', 0.92));
-      } catch(e) { resolverUnaVez(null); }
-    };
-    img.onerror = () => resolverUnaVez(null);
-    img.src = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+    // Se usa fetch()+blob() en vez de <img crossOrigin="anonymous">: el
+    // método de <img> exige que el servidor de origen (R2, Imgur, etc.)
+    // responda con el header CORS correcto o el canvas queda "contaminado"
+    // (tainted) y toDataURL() falla en silencio, dejando la firma vacía sin
+    // ningún error visible. fetch() es más tolerante y es el mismo mecanismo
+    // que ya funciona de forma confiable para las evidencias.
+    fetch(url, { mode: 'cors' })
+      .then(resp => { if (!resp.ok) throw new Error('HTTP '+resp.status); return resp.blob(); })
+      .then(blob => createImageBitmap(blob))
+      .then(bitmap => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = bitmap.width;
+          canvas.height = bitmap.height;
+          const ctx = canvas.getContext('2d');
+          // Se rellena el canvas con blanco antes de dibujar la imagen encima:
+          // esta función siempre exporta a JPEG (que no soporta transparencia),
+          // así que sin este relleno, cualquier firma PNG con fondo transparente
+          // saldría con fondo NEGRO en vez de blanco al convertirse.
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(bitmap, 0, 0);
+          bitmap.close && bitmap.close();
+          resolverUnaVez(canvas.toDataURL('image/jpeg', 0.92));
+        } catch(e) { resolverUnaVez(null); }
+      })
+      .catch(err => {
+        console.warn('No se pudo cargar la imagen (firma/evidencia) desde '+url+':', err);
+        resolverUnaVez(null);
+      });
 
     // Si la imagen no carga ni falla explícitamente en 4 segundos (bloqueada
     // por CORS, Imgur lento, sin red), se continúa sin ella en vez de dejar
