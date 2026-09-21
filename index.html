@@ -8748,11 +8748,11 @@ async function _indUrlToDataUrl(url) {
 // Mapa de firmas reales del equipo (imágenes alojadas externamente).
 // La clave debe coincidir EXACTAMENTE con el campo "nombre" del perfil en Firebase.
 const IND_FIRMAS_MAP = {
-  'Luis Angel Bolaño Castro': 'https://i.imgur.com/tnzkeRM.jpeg',
-  'Maria Clara Pizarro':      'https://i.imgur.com/yHTJ5yd.png',
-  'Jennifer Melendez':        'https://i.imgur.com/M1M56No.png',
-  'Valentina Jimeno':         'https://i.imgur.com/zPcSbbo.png',
-  'Daniel Rodriguez Galofre': 'https://i.imgur.com/mvOQWiB.png',
+  'Luis Angel Bolaño Castro': 'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/firma%20LUIS%20BOLA%C3%91O.jpeg',
+  'Maria Clara Pizarro':      'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/firma%20maria%20pizarro.png',
+  'Jennifer Melendez':        'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/Firma%20Jennifer%20Melendez.png',
+  'Valentina Jimeno':         'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/firma%20Valentina%20Jimeno.png',
+  'Daniel Rodriguez Galofre': 'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/firma%20Daniel%20Rodriguez.png',
 };
 
 // Carga una imagen externa (firma) como dataURL usando un <img> con canvas,
@@ -8922,6 +8922,12 @@ function _indLoadImageAsBase64(url) {
         canvas.width = img.naturalWidth || img.width;
         canvas.height = img.naturalHeight || img.height;
         const ctx = canvas.getContext('2d');
+        // Se rellena el canvas con blanco antes de dibujar la imagen encima:
+        // esta función siempre exporta a JPEG (que no soporta transparencia),
+        // así que sin este relleno, cualquier firma PNG con fondo transparente
+        // saldría con fondo NEGRO en vez de blanco al convertirse.
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0);
         resolverUnaVez(canvas.toDataURL('image/jpeg', 0.92));
       } catch(e) { resolverUnaVez(null); }
@@ -10466,6 +10472,20 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
       paragraph(informe.observacionesDirectora, 8.5);
     }
 
+    // Porcentaje de comisión otorgado por la Dirección de Calidad al aprobar
+    // el informe — se muestra antes de las firmas, como parte del resultado
+    // formal de la aprobación.
+    if (informe.estado === 'aprobado' && informe.comisionPct != null) {
+      chk(16);
+      doc.setFillColor(255,251,235); doc.setDrawColor(253,230,138);
+      doc.roundedRect(M, yPos, CW, 12, 2, 2, 'FD');
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(146,64,14);
+      doc.text('Comisión otorgada por la Dirección de Calidad:', M+5, yPos+7.5);
+      doc.setFontSize(11);
+      doc.text(informe.comisionPct + '%', M+CW-5, yPos+7.7, {align:'right'});
+      yPos += 18;
+    }
+
     chk(46);
     yPos += 12;
 
@@ -10483,7 +10503,11 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
       const firmaUrl = IND_FIRMAS_MAP[nombreNormalizado] || IND_FIRMAS_MAP[nombrePersona];
       if (firmaUrl) {
         try {
-          const ext = firmaUrl.toLowerCase().endsWith('.jpeg') || firmaUrl.toLowerCase().endsWith('.jpg') ? 'JPEG' : 'PNG';
+          // _indLoadImageAsBase64 siempre convierte la imagen a JPEG (vía canvas),
+          // sin importar el formato original del archivo (PNG, JPEG, etc.) — el
+          // formato pasado a jsPDF debe coincidir con eso siempre, no con la
+          // extensión de la URL original, o la imagen se ve distorsionada.
+          const ext = 'JPEG';
           // La firma de cada persona es siempre la misma imagen — se cachea en
           // memoria tras la primera descarga para no repetirla en cada informe.
           if (!(firmaUrl in _indFirmasCache)) {
