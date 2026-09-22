@@ -1123,6 +1123,14 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 .ind-alim-cal-mes { font-size:10.5px; font-weight:800; }
 .ind-alim-cal-icono { font-size:10px; }
 .ind-alim-cal-leyenda { display:flex; gap:18px; margin-top:8px; font-size:10.5px; color:var(--gray400); font-weight:600; flex-wrap:wrap; }
+
+/* Zona de "Adjuntar evidencias": botón normal + puede recibir archivos
+   arrastrados o una imagen pegada del portapapeles (Ctrl+V). El borde
+   punteado se resalta solo mientras algo se arrastra encima, para no
+   sobrecargar visualmente el formulario en su estado normal. */
+.ind-evidencia-dropzone { border: 1.5px dashed var(--gray200); border-radius: 10px; padding: 12px; transition: border-color .15s, background-color .15s; outline: none; }
+.ind-evidencia-dropzone-activa { border-color: var(--blue); background: rgba(59,130,246,.06); }
+.ind-evidencia-dropzone-hint { display:block; font-size:11px; color:var(--gray400); margin-top:6px; }
 .ind-alim-cal-leyenda span { display:inline-flex; align-items:center; gap:6px; }
 .ind-alim-form-wrap { border-top:2px dashed var(--gray200); padding-top:18px; }
 @media(max-width:640px){
@@ -3325,16 +3333,19 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 
       <div class="modal-form-group">
         <label class="modal-label">Observaciones</label>
-        <textarea class="modal-input-field" id="seg-f-observaciones" rows="3" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió, se adjunta soporte del correo enviado..." style="resize:vertical;font-family:inherit"></textarea>
+        <textarea class="modal-input-field" id="seg-f-observaciones" rows="3" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió, se adjunta soporte del correo enviado..." style="resize:vertical;font-family:inherit" oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,'seg-f-')"></textarea>
       </div>
 
       <div class="modal-form-group">
         <label class="modal-label">Evidencias (imágenes o archivos)</label>
-        <input type="file" id="seg-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple style="display:none" onchange="handleSegEvidencias(event)">
-        <button type="button" class="btn-primary-sm" onclick="document.getElementById('seg-file-input').click()">
-          <i class="fas fa-paperclip"></i> Adjuntar evidencia
-        </button>
-        <div id="seg-ev-preview" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px"></div>
+        <div id="seg-ev-dropzone" class="ind-evidencia-dropzone">
+          <input type="file" id="seg-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple style="display:none" onchange="handleSegEvidencias(event)">
+          <button type="button" class="btn-primary-sm" onclick="document.getElementById('seg-file-input').click()">
+            <i class="fas fa-paperclip"></i> Adjuntar evidencia
+          </button>
+          <span class="ind-evidencia-dropzone-hint">o arrastra archivos aquí, o pega una imagen (Ctrl+V)</span>
+          <div id="seg-ev-preview" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px"></div>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -7335,19 +7346,21 @@ function _indCargarSegModalContenido(indId, mesKey) {
   if (ind.soloPresentar) {
     numWrap.innerHTML = '<div class="modal-form-group" style="grid-column:1/-1">'
       + '<label class="modal-label" style="display:flex;align-items:center;gap:8px;cursor:pointer">'
-      + '<input type="checkbox" id="seg-f-presentado" style="width:15px;height:15px;margin:0" '+(seg.presentado?'checked':'')+'> '
+      + '<input type="checkbox" id="seg-f-presentado" style="width:15px;height:15px;margin:0" '+(seg.presentado?'checked':'')+' onchange="_indProgramarGuardadoBorrador(_indCurrentSegKey,\'seg-f-\')"> '
       + 'Informe presentado en este bimestre</label></div>';
   } else {
     numWrap.innerHTML = '<div class="modal-form-group"><label class="modal-label" id="seg-label-numerador">'+_indEsc(ind.numerador||'Numerador (valor)')+'</label>'
-      + '<input class="modal-input-field" type="number" id="seg-f-numerador" placeholder="0" step="1" value="'+(seg.numerador!=null?seg.numerador:'')+'" oninput="_indUpdateSegPreview()"></div>'
+      + '<input class="modal-input-field" type="number" id="seg-f-numerador" placeholder="0" step="1" value="'+(seg.numerador!=null?seg.numerador:'')+'" oninput="_indUpdateSegPreview(); _indProgramarGuardadoBorrador(_indCurrentSegKey,\'seg-f-\')"></div>'
       + '<div class="modal-form-group"><label class="modal-label" id="seg-label-denominador">'+_indEsc(ind.denominador||'Denominador (valor)')+'</label>'
-      + '<input class="modal-input-field" type="number" id="seg-f-denominador" placeholder="0" step="1" value="'+(seg.denominador!=null?seg.denominador:'')+'" oninput="_indUpdateSegPreview()"></div>';
+      + '<input class="modal-input-field" type="number" id="seg-f-denominador" placeholder="0" step="1" value="'+(seg.denominador!=null?seg.denominador:'')+'" oninput="_indUpdateSegPreview(); _indProgramarGuardadoBorrador(_indCurrentSegKey,\'seg-f-\')"></div>';
   }
 
   document.getElementById('seg-f-observaciones').value = seg.observaciones || '';
   _indEvidencias = seg.evidencias ? seg.evidencias.map(e=>({...e})) : [];
   renderSegEvidencias();
   _indUpdateSegPreview();
+  _indHabilitarDropYPegado('seg-ev-dropzone');
+  _indRestaurarBorradorSiExiste(_indCurrentSegKey, 'seg-f-', seg);
 }
 
 function _indUpdateSegPreview() {
@@ -7511,9 +7524,12 @@ function downloadEvidenciaPreview() {
   if (_indEvPreviewUrl) _indDownloadFile(_indEvPreviewUrl, _indEvPreviewFileName);
 }
 
-function handleSegEvidencias(event) {
-  const files = event.target.files;
-  if (!files.length) return;
+// Procesa una lista de archivos y los sube como evidencias — compartida por
+// los tres orígenes posibles: el <input type="file"> de toda la vida, soltar
+// archivos arrastrados sobre la zona de evidencias, y pegar una imagen del
+// portapapeles (Ctrl+V) estando la zona de evidencias enfocada.
+function _indProcesarArchivosEvidencia(files) {
+  if (!files || !files.length) return;
   Array.from(files).forEach(file => {
     const tipo = _indTipoArchivo(file.name);
     const reader = new FileReader();
@@ -7553,7 +7569,68 @@ function handleSegEvidencias(event) {
     };
     reader.readAsDataURL(file);
   });
+}
+
+function handleSegEvidencias(event) {
+  _indProcesarArchivosEvidencia(event.target.files);
   event.target.value = '';
+}
+
+// Tipos de archivo admitidos como evidencia, para filtrar lo que llega por
+// arrastrar/soltar o pegar (el <input> ya filtra por su atributo "accept",
+// pero el drop y el paste no pasan por ahí y hay que revisarlo a mano).
+const IND_EXTENSIONES_EVIDENCIA = /\.(png|jpe?g|gif|webp|bmp|heic|pdf|docx?|xlsx?)$/i;
+function _indEsArchivoDeEvidenciaValido(file) {
+  if (!file) return false;
+  if (file.type && file.type.startsWith('image/')) return true;
+  if (file.type === 'application/pdf') return true;
+  if (file.type.includes('word') || file.type.includes('excel') || file.type.includes('spreadsheetml') || file.type.includes('wordprocessingml')) return true;
+  return IND_EXTENSIONES_EVIDENCIA.test(file.name||'');
+}
+
+// Habilita, sobre un contenedor dado, arrastrar-y-soltar archivos y pegar una
+// imagen del portapapeles (Ctrl+V / Cmd+V). Se llama una vez por cada zona de
+// evidencias que se pinta en pantalla (modal de seguimiento, detalle del
+// indicador, edición de fila del historial), ya que cada una es HTML nuevo
+// insertado dinámicamente y sus listeners no persisten de una pintura a otra.
+function _indHabilitarDropYPegado(zonaId) {
+  const zona = document.getElementById(zonaId);
+  if (!zona || zona.dataset.dropListo) return; // evita engancharlo dos veces sobre el mismo nodo
+  zona.dataset.dropListo = '1';
+
+  ['dragenter','dragover'].forEach(evt => {
+    zona.addEventListener(evt, e => {
+      e.preventDefault(); e.stopPropagation();
+      zona.classList.add('ind-evidencia-dropzone-activa');
+    });
+  });
+  ['dragleave','drop'].forEach(evt => {
+    zona.addEventListener(evt, e => {
+      e.preventDefault(); e.stopPropagation();
+      zona.classList.remove('ind-evidencia-dropzone-activa');
+    });
+  });
+  zona.addEventListener('drop', e => {
+    const files = Array.from(e.dataTransfer.files || []).filter(_indEsArchivoDeEvidenciaValido);
+    if (!files.length) { showToast('Ese archivo no es un tipo de evidencia admitido', 'error'); return; }
+    _indProcesarArchivosEvidencia(files);
+  });
+
+  // Pegar (Ctrl+V) una imagen copiada del portapapeles del dispositivo —
+  // típicamente una captura de pantalla. tabIndex hace que el div pueda
+  // recibir foco y por tanto el evento "paste" del teclado.
+  zona.tabIndex = 0;
+  zona.addEventListener('paste', e => {
+    const items = Array.from((e.clipboardData && e.clipboardData.items) || []);
+    const archivosImagen = items.filter(it => it.kind === 'file' && it.type.startsWith('image/'))
+      .map(it => it.getAsFile()).filter(Boolean);
+    if (!archivosImagen.length) return;
+    e.preventDefault();
+    // El portapapeles no trae nombre de archivo real: se le da uno con marca
+    // de tiempo para que no queden todas como "image.png" repetido.
+    const conNombre = archivosImagen.map((f,i) => new File([f], 'pegado_'+Date.now()+'_'+i+'.png', {type:f.type}));
+    _indProcesarArchivosEvidencia(conNombre);
+  });
 }
 
 function removeSegEvidencia(i) { _indEvidencias.splice(i,1); renderSegEvidencias(); }
@@ -7638,6 +7715,7 @@ async function guardarSeguimiento() {
 
   try {
     await db.ref('indicadores_seguimiento/' + indId + '/' + mesKey).set(data);
+    _indBorrarBorrador(_indCurrentSegKey);
     closeSeguimientoModal();
     showToast('Seguimiento guardado ✓', 'success');
   } catch(e) {
@@ -8722,45 +8800,99 @@ function _indRenderExpandedChart(ind, rango) {
   }
 }
 
-// Convierte una URL de imagen (Cloudinary u otra) a dataURL base64 para incrustarla en el PDF.
+// Redimensiona un ImageBitmap/HTMLImageElement ya cargado a un ancho máximo
+// razonable y lo convierte a dataURL JPEG. Compartido por las dos rutas de
+// carga (createImageBitmap y <img>) para no duplicar la lógica de escalado.
+function _indBitmapADataUrl(bitmapOImg, wOrig, hOrig) {
+  const MAX_W = 900;
+  const escala = wOrig > MAX_W ? MAX_W / wOrig : 1;
+  const w = Math.round(wOrig * escala);
+  const h = Math.round(hOrig * escala);
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(bitmapOImg, 0, 0, w, h);
+  return canvas.toDataURL('image/jpeg', 0.82);
+}
+
+// Ruta de carga vía <img> + canvas. Es más tolerante que fetch()+
+// createImageBitmap en navegadores móviles: Safari iOS y varios navegadores/
+// WebViews de Android tienen soporte parcial o inconsistente de
+// createImageBitmap, y ahí la ruta principal fallaba en silencio dejando la
+// evidencia fuera del PDF sin ningún aviso. Se usa como respaldo automático.
+function _indUrlToDataUrlViaImg(url) {
+  return new Promise((resolve) => {
+    let resuelto = false;
+    const resolverUnaVez = (valor) => { if (!resuelto) { resuelto = true; resolve(valor); } };
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+        if (!w || !h) { resolverUnaVez(null); return; }
+        resolverUnaVez({ dataUrl: _indBitmapADataUrl(img, w, h), format: 'JPEG' });
+      } catch(e) { resolverUnaVez(null); }
+    };
+    img.onerror = () => resolverUnaVez(null);
+    img.src = url;
+    // Igual que con los logos y las firmas: si no responde en unos segundos
+    // (red móvil lenta, pestaña en segundo plano), se sigue sin esta
+    // evidencia en vez de dejar el PDF esperando indefinidamente.
+    setTimeout(() => resolverUnaVez(null), 8000);
+  });
+}
+
+// Convierte una URL de imagen (R2 u otra) a dataURL base64 para incrustarla en el PDF.
 // Devuelve null si falla (ej. no es imagen, CORS, red) para no romper la generación del documento.
 async function _indUrlToDataUrl(url) {
   if (!url) return null;
+
+  // Vía principal: fetch() + createImageBitmap. Con timeout propio, porque en
+  // datos móviles un fetch puede quedarse "colgado" sin resolver ni fallar
+  // nunca (a diferencia de escritorio con buena conexión), y eso congelaba
+  // todo el lote de evidencias sin que apareciera ningún error.
   try {
-    let blob;
-    if (url.startsWith('data:')) {
-      const res0 = await fetch(url);
-      blob = await res0.blob();
-    } else {
-      const res = await fetch(url, { mode:'cors' });
-      if (!res.ok) return null;
-      blob = await res.blob();
-    }
-    if (!blob.type.startsWith('image/')) return null;
+    const resultado = await Promise.race([
+      (async () => {
+        let blob;
+        if (url.startsWith('data:')) {
+          const res0 = await fetch(url);
+          blob = await res0.blob();
+        } else {
+          const res = await fetch(url, { mode:'cors' });
+          if (!res.ok) return null;
+          blob = await res.blob();
+        }
+        if (!blob.type.startsWith('image/')) return null;
 
-    // Se redimensiona la imagen a un ancho máximo razonable ANTES de convertirla
-    // a base64. Las fotos de celular pueden venir de varios MB y varios miles de
-    // píxeles de ancho; incrustarlas a tamaño original en el PDF (aunque se vean
-    // chiquitas) hace que jsPDF procese esa imagen completa y puede congelar el
-    // navegador durante varios segundos por cada foto. 900px de ancho es más que
-    // suficiente para verse nítido en el tamaño en que se muestra dentro del PDF.
-    const bitmap = await createImageBitmap(blob);
-    const MAX_W = 900;
-    const escala = bitmap.width > MAX_W ? MAX_W / bitmap.width : 1;
-    const w = Math.round(bitmap.width * escala);
-    const h = Math.round(bitmap.height * escala);
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(bitmap, 0, 0, w, h);
-    bitmap.close && bitmap.close();
-
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
-    return { dataUrl, format: 'JPEG' };
+        // Se redimensiona la imagen a un ancho máximo razonable ANTES de
+        // convertirla a base64. Las fotos de celular pueden venir de varios
+        // MB y varios miles de píxeles de ancho; incrustarlas a tamaño
+        // original en el PDF (aunque se vean chiquitas) hace que jsPDF
+        // procese esa imagen completa y puede congelar el navegador durante
+        // varios segundos por cada foto.
+        if (typeof createImageBitmap !== 'function') return 'SIN_BITMAP';
+        const bitmap = await createImageBitmap(blob);
+        const dataUrl = _indBitmapADataUrl(bitmap, bitmap.width, bitmap.height);
+        bitmap.close && bitmap.close();
+        return { dataUrl, format: 'JPEG' };
+      })(),
+      new Promise(resolve => setTimeout(() => resolve('TIMEOUT'), 8000)),
+    ]);
+    if (resultado && resultado !== 'TIMEOUT' && resultado !== 'SIN_BITMAP') return resultado;
   } catch(e) {
-    console.warn('No se pudo incrustar evidencia en PDF:', url, e);
-    return null;
+    console.warn('Vía fetch/createImageBitmap falló, se intenta con <img>:', url, e);
   }
+
+  // Vía de respaldo: <img> + canvas. Se intenta siempre que la principal no
+  // haya devuelto un resultado utilizable (falló, dio timeout, o el
+  // navegador no soporta createImageBitmap), que es justo el caso típico en
+  // celulares con Safari iOS o WebViews de Android.
+  const viaImg = await _indUrlToDataUrlViaImg(url);
+  if (viaImg) return viaImg;
+
+  console.warn('No se pudo incrustar evidencia en PDF (ninguna vía funcionó):', url);
+  return null;
 }
 
 // Mapa de firmas reales del equipo (imágenes alojadas externamente).
@@ -9186,6 +9318,11 @@ function _indRenderDetalleIndicador() {
 
   _indRenderExpandedChart(ind, rango);
   _indRenderHistorialTabla(ind, rango);
+  if (puedeEditar) {
+    _indHabilitarDropYPegado('alim-ev-dropzone');
+    const segGuardado = (_indSeguimientos[ind.id] || {})[_indAlimentarMesSel] || null;
+    _indRestaurarBorradorSiExiste(_indCurrentSegKey, 'alim-f-', segGuardado);
+  }
 }
 
 // Bloque "Alimentar pendiente": solo se muestra si existe al menos un mes sin
@@ -9301,14 +9438,14 @@ function _indDetalleAlimentarHtml(ind) {
   if (ind.soloPresentar) {
     camposHtml = '<div class="modal-form-group" style="grid-column:1/-1">'
       + '<label class="modal-label" style="display:flex;align-items:center;gap:8px;cursor:pointer">'
-      + '<input type="checkbox" id="alim-f-presentado" style="width:15px;height:15px;margin:0" '+(segDelSel.presentado?'checked':'')+'> '
+      + '<input type="checkbox" id="alim-f-presentado" style="width:15px;height:15px;margin:0" '+(segDelSel.presentado?'checked':'')+' onchange="_indProgramarGuardadoBorrador(_indCurrentSegKey,\'alim-f-\')"> '
       + 'Informe presentado en este bimestre</label></div>';
   } else {
     camposHtml = '<div class="modal-form-group"><label class="modal-label">Numerador</label>'
-      + '<input class="modal-input-field" type="number" id="alim-f-numerador" placeholder="0" step="1" value="'+(segDelSel.numerador!=null?segDelSel.numerador:'')+'" oninput="_indAlimentarUpdatePreview()">'
+      + '<input class="modal-input-field" type="number" id="alim-f-numerador" placeholder="0" step="1" value="'+(segDelSel.numerador!=null?segDelSel.numerador:'')+'" oninput="_indAlimentarUpdatePreview(); _indProgramarGuardadoBorrador(_indCurrentSegKey,\'alim-f-\')">'
       + '<div class="ind-detalle-campo-desc">'+_indEsc(ind.numerador||'—')+'</div></div>'
       + '<div class="modal-form-group"><label class="modal-label">Denominador</label>'
-      + '<input class="modal-input-field" type="number" id="alim-f-denominador" placeholder="0" step="1" value="'+(segDelSel.denominador!=null?segDelSel.denominador:'')+'" oninput="_indAlimentarUpdatePreview()">'
+      + '<input class="modal-input-field" type="number" id="alim-f-denominador" placeholder="0" step="1" value="'+(segDelSel.denominador!=null?segDelSel.denominador:'')+'" oninput="_indAlimentarUpdatePreview(); _indProgramarGuardadoBorrador(_indCurrentSegKey,\'alim-f-\')">'
       + '<div class="ind-detalle-campo-desc">'+_indEsc(ind.denominador||'—')+'</div></div>';
   }
 
@@ -9328,13 +9465,16 @@ function _indDetalleAlimentarHtml(ind) {
     + '<div id="alim-resultado-preview" style="'+previewStyle+'">'+previewInicialHtml+'</div>'
     + '<div class="modal-form-group">'
     +   '<label class="modal-label">Observaciones</label>'
-    +   '<textarea class="modal-input-field" id="alim-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió..." style="resize:vertical;font-family:inherit">'+_indEsc(segDelSel.observaciones||'')+'</textarea>'
+    +   '<textarea class="modal-input-field" id="alim-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió..." style="resize:vertical;font-family:inherit" oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,\'alim-f-\')">'+_indEsc(segDelSel.observaciones||'')+'</textarea>'
     + '</div>'
     + '<div class="modal-form-group">'
     +   '<label class="modal-label">Evidencias (imágenes o archivos)</label>'
-    +   '<input type="file" id="alim-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple style="display:none" onchange="handleSegEvidencias(event)">'
-    +   '<button type="button" class="btn-primary-sm" onclick="document.getElementById(\'alim-file-input\').click()"><i class="fas fa-paperclip"></i> Adjuntar evidencia</button>'
-    +   '<div id="alim-ev-preview" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px"></div>'
+    +   '<div id="alim-ev-dropzone" class="ind-evidencia-dropzone">'
+    +     '<input type="file" id="alim-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple style="display:none" onchange="handleSegEvidencias(event)">'
+    +     '<button type="button" class="btn-primary-sm" onclick="document.getElementById(\'alim-file-input\').click()"><i class="fas fa-paperclip"></i> Adjuntar evidencia</button>'
+    +     '<span class="ind-evidencia-dropzone-hint">o arrastra archivos aquí, o pega una imagen (Ctrl+V)</span>'
+    +     '<div id="alim-ev-preview" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px"></div>'
+    +   '</div>'
     + '</div>'
     + '<div style="display:flex;gap:10px;margin-top:6px">'
     +   '<button class="btn-modal-create" id="btn-guardar-alimentar" onclick="guardarAlimentarPendiente()"><i class="fas fa-check"></i> Guardar seguimiento</button>'
@@ -9364,6 +9504,9 @@ function _indAlimentarToggleAnio(anio) {
   const formWrap = document.querySelector('.ind-detalle-form-card');
   if (formWrap) formWrap.outerHTML = _indDetalleAlimentarHtml(ind);
   renderSegEvidencias();
+  _indHabilitarDropYPegado('alim-ev-dropzone');
+  const segGuardado = (_indSeguimientos[ind.id] || {})[_indAlimentarMesSel] || null;
+  _indRestaurarBorradorSiExiste(_indCurrentSegKey, 'alim-f-', segGuardado);
 }
 
 function _indAlimentarCambiarMes(nuevoMesKey) {
@@ -9375,6 +9518,9 @@ function _indAlimentarCambiarMes(nuevoMesKey) {
   const formWrap = document.querySelector('.ind-detalle-form-card');
   if (formWrap) formWrap.outerHTML = _indDetalleAlimentarHtml(ind);
   renderSegEvidencias();
+  _indHabilitarDropYPegado('alim-ev-dropzone');
+  const segGuardado = (_indSeguimientos[ind.id] || {})[nuevoMesKey] || null;
+  _indRestaurarBorradorSiExiste(_indCurrentSegKey, 'alim-f-', segGuardado);
 }
 
 function _indAlimentarUpdatePreview() {
@@ -9419,6 +9565,7 @@ async function guardarAlimentarPendiente() {
 
   try {
     await db.ref('indicadores_seguimiento/' + ind.id + '/' + mesKey).set(data);
+    _indBorrarBorrador(ind.id + '|' + mesKey);
     showToast('Seguimiento guardado ✓', 'success');
     _indAlimentarMesSel = null; // se recalcula al siguiente pendiente
     _indRenderDetalleIndicador();
@@ -9440,6 +9587,7 @@ async function eliminarRegistroAlimentar() {
 
   try {
     await db.ref('indicadores_seguimiento/' + ind.id + '/' + mesKey).remove();
+    _indBorrarBorrador(ind.id + '|' + mesKey);
     showToast('Registro eliminado ✓', 'success');
     _indRenderDetalleIndicador();
   } catch(e) {
@@ -9536,9 +9684,12 @@ function _indHistorialFilaHtml(ind, mesKey, seg, puedeEditar) {
       + '</div>'
       + '<div class="ind-detalle-tabla-edit-campo" style="margin-top:12px">'
       +   '<label class="ind-detalle-tabla-edit-label">Evidencias</label>'
-      +   '<input type="file" id="edit-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple style="display:none" onchange="handleSegEvidencias(event)">'
-      +   '<button type="button" class="btn-primary-sm" onclick="document.getElementById(\'edit-file-input\').click()"><i class="fas fa-paperclip"></i> Adjuntar evidencia</button>'
-      +   '<div id="det-ev-preview" style="margin-top:10px"></div>'
+      +   '<div id="edit-ev-dropzone" class="ind-evidencia-dropzone">'
+      +     '<input type="file" id="edit-file-input" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple style="display:none" onchange="handleSegEvidencias(event)">'
+      +     '<button type="button" class="btn-primary-sm" onclick="document.getElementById(\'edit-file-input\').click()"><i class="fas fa-paperclip"></i> Adjuntar evidencia</button>'
+      +     '<span class="ind-evidencia-dropzone-hint">o arrastra archivos aquí, o pega una imagen (Ctrl+V)</span>'
+      +     '<div id="det-ev-preview" style="margin-top:10px"></div>'
+      +   '</div>'
       + '</div>'
       + '</div>';
   }
@@ -9587,6 +9738,7 @@ function abrirEdicionHistorial(mesKey) {
   const ind = _indIndicadores[_indDetalleCurrentId];
   _indRenderHistorialTabla(ind, 12);
   renderSegEvidencias();
+  _indHabilitarDropYPegado('edit-ev-dropzone');
 }
 
 function cancelarEdicionHistorial() {
@@ -10404,10 +10556,6 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
             try {
               doc.addImage(converted.dataUrl, converted.format, x+2, rowStartY+2, EV_W-4, EV_H-4, undefined, 'FAST');
               doc.link(x+2, rowStartY+2, EV_W-4, EV_H-4, { url });
-              // Distintivo de "ampliar" en la esquina para que se note que es interactivo
-              doc.setFillColor(14,42,77); doc.circle(x+EV_W-8, rowStartY+8, 4.5, 'F');
-              doc.setTextColor(255,255,255); doc.setFontSize(7);
-              doc.text('+', x+EV_W-8, rowStartY+9.5, {align:'center'});
             } catch(imgErr) {
               doc.setFont('helvetica','italic'); doc.setFontSize(7.5); doc.setTextColor(150,150,150);
               doc.text('Imagen no disponible', x+EV_W/2, rowStartY+EV_H/2, {align:'center'});
@@ -11061,12 +11209,96 @@ document.addEventListener('click', e => {
 });
 
 // Detecta si el modal de seguimiento tiene datos capturados que se perderían al cerrar.
+// ══════════════════════════════════════════════════════════════
+// BORRADOR AUTOMÁTICO DE ALIMENTACIÓN DE INDICADORES
+// Guarda en localStorage, mientras se escribe, lo que aún no se ha
+// enviado a Firebase — para no perderlo si el celular se bloquea, la
+// pestaña se cierra por error, la conexión falla al intentar guardar, o
+// simplemente el usuario se distrae y sale sin darle a "Guardar
+// seguimiento". Es solo un respaldo local: no reemplaza el guardado real,
+// se borra en cuanto ese guardado se completa con éxito.
+// ══════════════════════════════════════════════════════════════
+const IND_BORRADOR_PREFIX = 'qualisig_ind_borrador_';
+
+function _indBorradorKey(segKey) { return IND_BORRADOR_PREFIX + segKey; }
+
+// Lee los valores actuales de un formulario (por prefijo 'seg-f-' o
+// 'alim-f-') y los guarda como borrador local, con marca de tiempo.
+function _indGuardarBorrador(segKey, prefijo) {
+  if (!segKey) return;
+  try {
+    const numEl = document.getElementById(prefijo+'numerador');
+    const denEl = document.getElementById(prefijo+'denominador');
+    const chkEl = document.getElementById(prefijo+'presentado');
+    const obsEl = document.getElementById(prefijo+'observaciones');
+    const borrador = {
+      numerador: numEl ? numEl.value : '',
+      denominador: denEl ? denEl.value : '',
+      presentado: chkEl ? chkEl.checked : false,
+      observaciones: obsEl ? obsEl.value : '',
+      evidencias: (_indEvidencias||[]).map(e=>({...e})),
+      guardadoEn: Date.now(),
+    };
+    localStorage.setItem(_indBorradorKey(segKey), JSON.stringify(borrador));
+  } catch(e) { /* localStorage lleno o no disponible: se sigue sin borrador, sin romper nada */ }
+}
+
+function _indLeerBorrador(segKey) {
+  try {
+    const raw = localStorage.getItem(_indBorradorKey(segKey));
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function _indBorrarBorrador(segKey) {
+  try { localStorage.removeItem(_indBorradorKey(segKey)); } catch(e) {}
+}
+
+// Si existe un borrador local más reciente que lo ya guardado en Firebase
+// para este indicador+bimestre, lo aplica sobre el formulario recién
+// pintado y avisa al usuario con un toast (sin interrumpir con un confirm,
+// para no entorpecer la apertura normal del formulario).
+function _indRestaurarBorradorSiExiste(segKey, prefijo, segGuardado) {
+  const borrador = _indLeerBorrador(segKey);
+  if (!borrador) return;
+  const huboGuardadoPosterior = segGuardado && segGuardado.updatedAt && segGuardado.updatedAt >= borrador.guardadoEn;
+  if (huboGuardadoPosterior) { _indBorrarBorrador(segKey); return; }
+
+  const numEl = document.getElementById(prefijo+'numerador');
+  const denEl = document.getElementById(prefijo+'denominador');
+  const chkEl = document.getElementById(prefijo+'presentado');
+  const obsEl = document.getElementById(prefijo+'observaciones');
+  if (numEl && borrador.numerador !== '') numEl.value = borrador.numerador;
+  if (denEl && borrador.denominador !== '') denEl.value = borrador.denominador;
+  if (chkEl) chkEl.checked = !!borrador.presentado;
+  if (obsEl && borrador.observaciones) obsEl.value = borrador.observaciones;
+  if (borrador.evidencias && borrador.evidencias.length) _indEvidencias = borrador.evidencias.map(e=>({...e}));
+
+  if (prefijo === 'seg-f-') { _indUpdateSegPreview(); renderSegEvidencias(); }
+  else { _indAlimentarUpdatePreview(); renderSegEvidencias(); }
+
+  showToast('Se restauró un borrador que no se había guardado', 'info');
+}
+
+// Debounce simple: agenda un guardado de borrador 600ms después de la
+// última tecla, en vez de escribir en localStorage con cada pulsación.
+let _indBorradorTimer = null;
+function _indProgramarGuardadoBorrador(segKey, prefijo) {
+  clearTimeout(_indBorradorTimer);
+  _indBorradorTimer = setTimeout(() => _indGuardarBorrador(segKey, prefijo), 600);
+}
+
 function _indSeguimientoTieneCambiosSinGuardar() {
   if (!_indCurrentSegKey) return false;
-  const numEl = document.getElementById('seg-f-numerador');
-  const denEl = document.getElementById('seg-f-denominador');
-  const chkEl = document.getElementById('seg-f-presentado');
-  const obsEl = document.getElementById('seg-f-observaciones');
+  // Revisa el formulario que esté realmente en pantalla, sea el del modal
+  // "Mi seguimiento" (prefijo seg-f-) o el del detalle del indicador
+  // (prefijo alim-f-) — antes solo miraba seg-f-, así que esta advertencia
+  // nunca se activaba dentro del detalle.
+  const prefijo = document.getElementById('alim-f-numerador') || document.getElementById('alim-f-presentado') ? 'alim-f-' : 'seg-f-';
+  const numEl = document.getElementById(prefijo+'numerador');
+  const denEl = document.getElementById(prefijo+'denominador');
+  const chkEl = document.getElementById(prefijo+'presentado');
+  const obsEl = document.getElementById(prefijo+'observaciones');
   const tieneNumeros = (numEl && numEl.value !== '') || (denEl && denEl.value !== '');
   const tieneCheck = chkEl && chkEl.checked;
   const tieneObs = obsEl && obsEl.value.trim() !== '';
