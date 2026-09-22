@@ -8886,10 +8886,19 @@ async function _indDescargarComoBlob(url) {
     catch(e) { return { blob: null, motivo: 'data URL inválida' }; }
   }
 
+  // Cloudflare cachea la respuesta completa, headers CORS incluidos. Si una
+  // imagen se pidió ANTES de corregir la regla CORS del bucket, esa versión
+  // vieja (sin el header correcto) puede seguir sirviéndose desde caché,
+  // aunque la regla ya esté bien — es la causa típica de que "algunas
+  // imágenes sí, otras no" con el mismo bucket y la misma configuración.
+  // Se agrega un parámetro único a cada intento para forzar una respuesta
+  // fresca, sin caché, en vez de la posible copia vieja.
+  const urlSinCache = url + (url.includes('?') ? '&' : '?') + '_cb=' + Date.now();
+
   let ultimoMotivo = 'Error desconocido';
 
   try {
-    const res = await fetch(url);
+    const res = await fetch(urlSinCache, { cache: 'no-store' });
     if (res.ok) return { blob: await res.blob() };
     ultimoMotivo = 'El servidor respondió ' + res.status;
     console.warn('[evidencia] fetch simple respondió', res.status, 'para', url);
@@ -8899,7 +8908,7 @@ async function _indDescargarComoBlob(url) {
   }
 
   try {
-    const res2 = await fetch(url, { mode: 'cors' });
+    const res2 = await fetch(urlSinCache, { mode: 'cors', cache: 'no-store' });
     if (res2.ok) return { blob: await res2.blob() };
     ultimoMotivo = 'El servidor respondió ' + res2.status + ' (CORS)';
     console.warn('[evidencia] fetch cors respondió', res2.status, 'para', url);
@@ -10700,13 +10709,16 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
             }
           } else {
             // Se muestra el motivo REAL del fallo (sin conexión, tiempo
-            // agotado, bloqueado por CORS, etc.) en vez de un genérico
-            // "Imagen no disponible" que no ayuda a diagnosticar nada desde
-            // el celular, donde no hay acceso fácil a la consola del navegador.
+            // agotado, bloqueado por CORS, etc.) junto con el DOMINIO real de
+            // donde viene la evidencia — esto es clave para diagnosticar si
+            // el problema es de R2 (nuevo) o de una fuente antigua distinta
+            // (ej. Cloudinary) que la evidencia todavía usa.
             doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(150,150,150);
             const motivo = (converted && converted.error) ? converted.error : 'Imagen no disponible';
-            const motivoLines = doc.splitTextToSize(motivo, EV_W-8);
-            doc.text(motivoLines.slice(0,3), x+EV_W/2, rowStartY+EV_H/2, {align:'center'});
+            let dominioUrl = '';
+            try { dominioUrl = new URL(url).hostname; } catch(e) { dominioUrl = url.slice(0, 30); }
+            const motivoLines = doc.splitTextToSize(motivo + '\n[' + dominioUrl + ']', EV_W-8);
+            doc.text(motivoLines.slice(0,4), x+EV_W/2, rowStartY+EV_H/2, {align:'center'});
             doc.link(x+2, rowStartY+2, EV_W-4, EV_H-4, { url });
           }
 
