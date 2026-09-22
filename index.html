@@ -9121,7 +9121,7 @@ function abrirModalMejorarRedaccion(textoOriginal, haySeleccion) {
 
 // Llama a la API de Gemini con el modelo indicado. Google actualiza su
 // catálogo de modelos con cierta frecuencia (nombres específicos como
-// "gemini-3.8-flash" pueden quedar obsoletos) — por eso, si el modelo
+// "gemini-3.6-flash" pueden quedar obsoletos) — por eso, si el modelo
 // principal responde 404 "no encontrado", se reintenta automáticamente con
 // "gemini-flash-latest", un alias que Google mantiene apuntando siempre al
 // modelo flash vigente, en vez de que la función quede rota hasta que
@@ -9141,7 +9141,7 @@ async function _indLlamarGeminiConModelo(modelo, prompt) {
 
 async function _indLlamarGeminiMejorarTexto(texto, intento) {
   intento = intento || 1;
-  const MAX_INTENTOS = 3;
+  const MAX_INTENTOS = 4;
   const loadingEl = document.getElementById('mejorar-ia-loading');
   const resultadoWrap = document.getElementById('mejorar-ia-resultado-wrap');
   const errorEl = document.getElementById('mejorar-ia-error');
@@ -9152,11 +9152,15 @@ async function _indLlamarGeminiMejorarTexto(texto, intento) {
     + 'Responde ÚNICAMENTE con el texto mejorado, sin comillas, sin explicaciones, sin encabezados.\n\nTexto original:\n' + texto;
 
   try {
-    // Se alterna entre el modelo principal y el de respaldo en cada intento
-    // — no solo cuando el modelo no existe (404), sino también cuando está
-    // temporalmente saturado (503 "alta demanda"), ya que suelen tener
-    // capacidad separada y uno puede estar libre mientras el otro no.
-    const modelo = intento % 2 === 1 ? 'gemini-3.8-flash' : 'gemini-flash-latest';
+    // Se rota entre 3 modelos estables (no el recién salido 3.8, que aún
+    // puede estar saturado por ser muy nuevo): gemini-3.6-flash como
+    // principal (GA desde julio 2026, maduro), gemini-3.5-flash-lite como
+    // segunda opción (el más rápido de todos, ideal si se necesita
+    // velocidad), y gemini-flash-latest como alias de respaldo final. Si
+    // alguno está temporalmente saturado (503) o no existe (404), se
+    // reintenta con el siguiente antes de rendirse.
+    const modelosRotacion = ['gemini-3.6-flash', 'gemini-3.5-flash-lite', 'gemini-flash-latest'];
+    const modelo = modelosRotacion[(intento - 1) % modelosRotacion.length];
     const resultado = await _indLlamarGeminiConModelo(modelo, prompt);
 
     const { ok, status, data } = resultado;
