@@ -9139,25 +9139,38 @@ async function _indLlamarGeminiConModelo(modelo, prompt) {
   return { ok: resp.ok, status: resp.status, data };
 }
 
-async function _indLlamarGeminiMejorarTexto(texto) {
+async function _indLlamarGeminiMejorarTexto(texto, intento) {
+  intento = intento || 1;
+  const MAX_INTENTOS = 3;
   const loadingEl = document.getElementById('mejorar-ia-loading');
   const resultadoWrap = document.getElementById('mejorar-ia-resultado-wrap');
   const errorEl = document.getElementById('mejorar-ia-error');
+  const loadingTexto = loadingEl.querySelector('p');
 
   const prompt = 'Mejora la redacción del siguiente texto de una observación de calidad en una empresa colombiana. '
     + 'Corrige gramática y ortografía, hazlo más claro y profesional, pero conserva TODOS los datos, cifras, nombres y hechos exactamente igual — no inventes ni agregues información nueva. '
     + 'Responde ÚNICAMENTE con el texto mejorado, sin comillas, sin explicaciones, sin encabezados.\n\nTexto original:\n' + texto;
 
   try {
-    let resultado = await _indLlamarGeminiConModelo('gemini-3.8-flash', prompt);
+    // Se alterna entre el modelo principal y el de respaldo en cada intento
+    // — no solo cuando el modelo no existe (404), sino también cuando está
+    // temporalmente saturado (503 "alta demanda"), ya que suelen tener
+    // capacidad separada y uno puede estar libre mientras el otro no.
+    const modelo = intento % 2 === 1 ? 'gemini-3.8-flash' : 'gemini-flash-latest';
+    const resultado = await _indLlamarGeminiConModelo(modelo, prompt);
 
-    if (!resultado.ok && resultado.status === 404) {
-      console.warn('Modelo gemini-3.8-flash no disponible, reintentando con gemini-flash-latest...');
-      resultado = await _indLlamarGeminiConModelo('gemini-flash-latest', prompt);
+    const { ok, status, data } = resultado;
+    if (!ok) {
+      const mensajeError = data.error && data.error.message ? data.error.message : 'Error de la API de Gemini';
+      const esSaturacionOModeloNoExiste = status === 404 || status === 503 || status === 429;
+      if (esSaturacionOModeloNoExiste && intento < MAX_INTENTOS) {
+        console.warn('Intento '+intento+' falló ('+status+'): '+mensajeError+' — reintentando con otro modelo...');
+        if (loadingTexto) loadingTexto.textContent = 'El modelo está ocupado, reintentando...';
+        await new Promise(r => setTimeout(r, 1500 * intento));
+        return _indLlamarGeminiMejorarTexto(texto, intento + 1);
+      }
+      throw new Error(mensajeError);
     }
-
-    const { ok, data } = resultado;
-    if (!ok) throw new Error(data.error && data.error.message ? data.error.message : 'Error de la API de Gemini');
 
     const textoMejorado = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]
       ? data.candidates[0].content.parts[0].text.trim() : null;
@@ -9169,7 +9182,7 @@ async function _indLlamarGeminiMejorarTexto(texto) {
   } catch(e) {
     console.warn('Error al mejorar redacción con Gemini:', e);
     loadingEl.style.display = 'none';
-    errorEl.textContent = 'No se pudo mejorar el texto: ' + e.message;
+    errorEl.textContent = 'No se pudo mejorar el texto tras varios intentos: ' + e.message + ' — intenta de nuevo en un momento.';
     errorEl.style.display = 'block';
   }
 }
