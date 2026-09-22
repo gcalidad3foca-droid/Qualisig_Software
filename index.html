@@ -8870,20 +8870,37 @@ function _indBlobADataUrl(blob) {
 // en Safari iOS que forzar mode:'cors' explícitamente) y, si eso falla,
 // reintenta una vez más forzándolo. Devuelve el Blob, o null si ninguna de
 // las dos formas funcionó.
+// Intenta descargar la evidencia por 3 vías distintas y devuelve tanto el
+// blob (si algo funcionó) como el MOTIVO exacto del fallo si nada funcionó —
+// para poder mostrar ese motivo en el propio PDF en vez de un genérico
+// "no disponible" que no dice nada quando se revisa desde el celular.
 async function _indDescargarComoBlob(url) {
   if (url.startsWith('data:')) {
-    try { const r = await fetch(url); return await r.blob(); } catch(e) { return null; }
+    try { const r = await fetch(url); return { blob: await r.blob() }; }
+    catch(e) { return { blob: null, motivo: 'data URL inválida' }; }
   }
+
+  let ultimoMotivo = 'Error desconocido';
+
   try {
     const res = await fetch(url);
-    if (res.ok) return await res.blob();
+    if (res.ok) return { blob: await res.blob() };
+    ultimoMotivo = 'El servidor respondió ' + res.status;
     console.warn('[evidencia] fetch simple respondió', res.status, 'para', url);
-  } catch(e) { console.warn('[evidencia] fetch simple falló para', url, e); }
+  } catch(e) {
+    ultimoMotivo = navigator.onLine === false ? 'Sin conexión a internet' : 'Red bloqueada (fetch simple)';
+    console.warn('[evidencia] fetch simple falló para', url, e);
+  }
+
   try {
     const res2 = await fetch(url, { mode: 'cors' });
-    if (res2.ok) return await res2.blob();
+    if (res2.ok) return { blob: await res2.blob() };
+    ultimoMotivo = 'El servidor respondió ' + res2.status + ' (CORS)';
     console.warn('[evidencia] fetch cors respondió', res2.status, 'para', url);
-  } catch(e) { console.warn('[evidencia] fetch cors falló para', url, e); }
+  } catch(e) {
+    ultimoMotivo = navigator.onLine === false ? 'Sin conexión a internet' : 'Bloqueado por CORS';
+    console.warn('[evidencia] fetch cors falló para', url, e);
+  }
 
   // Tercera vía, específica para navegadores móviles (Safari/Chrome iOS,
   // algunos Android): en varios de ellos fetch() a un origen cruzado se
@@ -8892,7 +8909,7 @@ async function _indDescargarComoBlob(url) {
   // la carga de imágenes no está sujeta a la misma política. Se dibuja en
   // un canvas y se exporta como blob desde ahí.
   try {
-    const blobDesdeImg = await new Promise((resolve) => {
+    const resultadoImg = await new Promise((resolve) => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
       let resuelto = false;
@@ -8904,52 +8921,78 @@ async function _indDescargarComoBlob(url) {
           canvas.height = img.naturalHeight || img.height;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0);
-          canvas.toBlob(b => resolverUnaVez(b), 'image/jpeg', 0.9);
-        } catch(e) { console.warn('[evidencia] canvas manchado (CORS) para', url, e); resolverUnaVez(null); }
+          canvas.toBlob(b => resolverUnaVez({ blob: b, motivo: b ? null : 'Canvas vacío tras <img>' }), 'image/jpeg', 0.9);
+        } catch(e) {
+          console.warn('[evidencia] canvas manchado (CORS) para', url, e);
+          resolverUnaVez({ blob: null, motivo: 'Imagen bloqueada por seguridad (CORS)' });
+        }
       };
-      img.onerror = (e) => { console.warn('[evidencia] <img> onerror para', url, e); resolverUnaVez(null); };
+      img.onerror = (e) => {
+        console.warn('[evidencia] <img> onerror para', url, e);
+        resolverUnaVez({ blob: null, motivo: 'La imagen no cargó (enlace roto o bloqueado)' });
+      };
       img.src = url;
-      setTimeout(() => resolverUnaVez(null), 8000);
+      setTimeout(() => resolverUnaVez({ blob: null, motivo: 'Tiempo de espera agotado (<img>)' }), 15000);
     });
-    if (blobDesdeImg) return blobDesdeImg;
-  } catch(e) { console.warn('[evidencia] vía <img> falló por completo para', url, e); }
+    if (resultadoImg.blob) return { blob: resultadoImg.blob };
+    ultimoMotivo = resultadoImg.motivo || ultimoMotivo;
+  } catch(e) {
+    console.warn('[evidencia] vía <img> falló por completo para', url, e);
+  }
 
-  console.warn('[evidencia] LAS 3 VÍAS FALLARON para', url, '— revisar CORS del bucket o la URL.');
-  return null;
+  console.warn('[evidencia] LAS 3 VÍAS FALLARON para', url, '— motivo:', ultimoMotivo);
+  return { blob: null, motivo: ultimoMotivo };
 }
 
 // Convierte una URL de imagen (R2 u otra) a dataURL base64 para incrustarla en
-// el PDF. Devuelve null si falla (ej. no es imagen, red) para no romper la
-// generación del documento.
+// el PDF. Devuelve { dataUrl, format } si funciona, o { error: '<motivo>' } si
+// falla — el motivo se usa para mostrar un mensaje útil en el propio PDF en
+// vez de un genérico "no disponible" sin ninguna pista.
 //
-// Antes esta función dependía de createImageBitmap para TODO el proceso, y de
-// <img crossOrigin='anonymous'> + canvas.toDataURL() como respaldo. Ambas
-// rutas fallan igual quando el servidor de las evidencias no envía cabeceras
-// CORS explícitas (el canvas queda "manchado" y toDataURL lanza un error de
-// seguridad en silencio) — que es justo lo típico en un bucket público
-// básico. Ahora la conversión principal usa FileReader (no necesita CORS
-// para leer el archivo en absoluto) y solo usa canvas para el paso opcional
-// de redimensionar, con una imagen a tamaño completo como respaldo si ese
-// paso concreto falla — así nunca se pierde la evidencia solo por eso.
-async function _indUrlToDataUrl(url) {
-  if (!url) return null;
+// Reintenta hasta 3 veces con una pequeña espera creciente entre intentos,
+// porque en redes móviles una falla puntual (paquete perdido, cambio de
+// antena) es frecuente y no significa que la imagen sea inaccesible — antes
+// un solo intento fallido descartaba la evidencia para siempre.
+async function _indUrlToDataUrl(url, intento) {
+  if (!url) return { error: 'Sin URL' };
+  intento = intento || 1;
+  const MAX_INTENTOS = 3;
+  // En móvil se da mucho más margen por intento (redes 3G/4G variables); en
+  // escritorio el límite se mantiene generoso pero menor, ya que ahí las
+  // fallas casi siempre son de CORS/servidor, no de tiempo de descarga.
+  const esMovil = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  const TIMEOUT_MS = esMovil ? 45000 : 25000;
 
-  const blob = await Promise.race([
-    _indDescargarComoBlob(url),
-    new Promise(resolve => setTimeout(() => resolve('TIMEOUT'), 40000)),
-  ]);
-  if (!blob || blob === 'TIMEOUT') {
-    console.warn('No se pudo descargar la evidencia (red o CORS):', url);
-    return null;
+  let resultadoDescarga;
+  let timeoutId;
+  const timeoutPromise = new Promise(resolve => {
+    timeoutId = setTimeout(() => resolve({ blob: null, motivo: 'Tiempo de espera agotado ('+Math.round(TIMEOUT_MS/1000)+'s)' }), TIMEOUT_MS);
+  });
+  try {
+    resultadoDescarga = await Promise.race([_indDescargarComoBlob(url), timeoutPromise]);
+  } finally {
+    clearTimeout(timeoutId);
   }
-  if (blob.type && !blob.type.startsWith('image/')) return null;
+
+  const { blob, motivo } = resultadoDescarga;
+  if (!blob) {
+    if (intento < MAX_INTENTOS) {
+      // Espera creciente entre reintentos (1.5s, 3s) para no insistir de
+      // inmediato sobre una red que ya está saturada o inestable.
+      await new Promise(r => setTimeout(r, 1500 * intento));
+      console.warn('[evidencia] reintentando ('+(intento+1)+'/'+MAX_INTENTOS+') para', url, '— motivo del fallo anterior:', motivo);
+      return _indUrlToDataUrl(url, intento + 1);
+    }
+    return { error: motivo || 'No se pudo descargar' };
+  }
+  if (blob.type && !blob.type.startsWith('image/')) return { error: 'El archivo no es una imagen' };
 
   // Paso 1: el archivo completo, tal cual, vía FileReader — esto casi nunca
   // falla, sea cual sea el origen o el tamaño.
   const dataUrlCompleto = await _indBlobADataUrl(blob);
   if (!dataUrlCompleto) {
     console.warn('No se pudo leer la evidencia descargada:', url);
-    return null;
+    return { error: 'No se pudo leer el archivo descargado' };
   }
 
   // Paso 2 (opcional): redimensionar a un ancho máximo razonable para que
@@ -10676,18 +10719,25 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
           doc.setDrawColor(220,226,240); doc.setFillColor(250,251,253);
           doc.roundedRect(x, rowStartY, EV_W, EV_H, 2, 2, 'FD');
 
-          if (converted) {
+          if (converted && converted.dataUrl) {
             try {
               doc.addImage(converted.dataUrl, converted.format, x+2, rowStartY+2, EV_W-4, EV_H-4, undefined, 'FAST');
               doc.link(x+2, rowStartY+2, EV_W-4, EV_H-4, { url });
             } catch(imgErr) {
-              doc.setFont('helvetica','italic'); doc.setFontSize(7.5); doc.setTextColor(150,150,150);
-              doc.text('Imagen no disponible', x+EV_W/2, rowStartY+EV_H/2, {align:'center'});
+              doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(150,150,150);
+              const motivoTxt = 'No se pudo mostrar\n(' + (imgErr.message || 'error al insertar') + ')';
+              doc.text(motivoTxt, x+EV_W/2, rowStartY+EV_H/2, {align:'center'});
               doc.link(x+2, rowStartY+2, EV_W-4, EV_H-4, { url });
             }
           } else {
-            doc.setFont('helvetica','italic'); doc.setFontSize(7.5); doc.setTextColor(150,150,150);
-            doc.text('Imagen no disponible', x+EV_W/2, rowStartY+EV_H/2, {align:'center'});
+            // Se muestra el motivo REAL del fallo (sin conexión, tiempo
+            // agotado, bloqueado por CORS, etc.) en vez de un genérico
+            // "Imagen no disponible" que no ayuda a diagnosticar nada desde
+            // el celular, donde no hay acceso fácil a la consola del navegador.
+            doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(150,150,150);
+            const motivo = (converted && converted.error) ? converted.error : 'Imagen no disponible';
+            const motivoLines = doc.splitTextToSize(motivo, EV_W-8);
+            doc.text(motivoLines.slice(0,3), x+EV_W/2, rowStartY+EV_H/2, {align:'center'});
             doc.link(x+2, rowStartY+2, EV_W-4, EV_H-4, { url });
           }
 
