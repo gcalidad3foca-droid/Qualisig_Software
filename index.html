@@ -9127,16 +9127,38 @@ function abrirModalMejorarRedaccion(textoOriginal, haySeleccion) {
 // modelo flash vigente, en vez de que la función quede rota hasta que
 // alguien actualice el código a mano.
 async function _indLlamarGeminiConModelo(modelo, prompt) {
-  const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + modelo + ':generateContent?key=' + GEMINI_API_KEY, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.4, maxOutputTokens: 1000 },
-    }),
-  });
-  const data = await resp.json();
-  return { ok: resp.ok, status: resp.status, data };
+  // Sin timeout, si Gemini se queda sin responder por cualquier motivo (red
+  // lenta, servidor colgado sin llegar a dar error explícito), la petición
+  // esperaba indefinidamente — el botón se quedaba "cargando" para siempre
+  // sin nunca fallar ni completar. Ahora, tras 12 segundos sin respuesta, se
+  // aborta y se pasa al siguiente modelo de la rotación automáticamente.
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+  try {
+    const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + modelo + ':generateContent?key=' + GEMINI_API_KEY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      // maxOutputTokens reducido (antes 1000): un texto de observaciones es
+      // corto, y pedirle a Gemini margen para generar hasta 1000 tokens hace
+      // que a veces se demore de más sin necesidad. 400 tokens (~300 palabras)
+      // es más que suficiente y acelera la respuesta real.
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.4, maxOutputTokens: 400 },
+      }),
+      signal: controller.signal,
+    });
+    const data = await resp.json();
+    return { ok: resp.ok, status: resp.status, data };
+  } catch(e) {
+    if (e.name === 'AbortError') {
+      return { ok: false, status: 408, data: { error: { message: 'Tiempo de espera agotado (12s)' } } };
+    }
+    return { ok: false, status: 0, data: { error: { message: e.message || 'Error de red' } } };
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 async function _indLlamarGeminiMejorarTexto(texto, intento) {
@@ -9166,11 +9188,15 @@ async function _indLlamarGeminiMejorarTexto(texto, intento) {
     const { ok, status, data } = resultado;
     if (!ok) {
       const mensajeError = data.error && data.error.message ? data.error.message : 'Error de la API de Gemini';
-      const esSaturacionOModeloNoExiste = status === 404 || status === 503 || status === 429;
+      const esSaturacionOModeloNoExiste = status === 404 || status === 503 || status === 429 || status === 408 || status === 0;
       if (esSaturacionOModeloNoExiste && intento < MAX_INTENTOS) {
         console.warn('Intento '+intento+' falló ('+status+'): '+mensajeError+' — reintentando con otro modelo...');
         if (loadingTexto) loadingTexto.textContent = 'El modelo está ocupado, reintentando...';
-        await new Promise(r => setTimeout(r, 1500 * intento));
+        // Espera corta y fija (no creciente) entre reintentos: como cada
+        // intento ya tiene su propio límite de 12 segundos, no hace falta
+        // una pausa larga entre ellos — solo lo justo para no golpear la
+        // API de inmediato al cambiar de modelo.
+        await new Promise(r => setTimeout(r, 400));
         return _indLlamarGeminiMejorarTexto(texto, intento + 1);
       }
       throw new Error(mensajeError);
