@@ -9119,6 +9119,26 @@ function abrirModalMejorarRedaccion(textoOriginal, haySeleccion) {
   document.getElementById('modal-mejorar-ia').classList.add('open');
 }
 
+// Llama a la API de Gemini con el modelo indicado. Google actualiza su
+// catálogo de modelos con cierta frecuencia (nombres específicos como
+// "gemini-3.8-flash" pueden quedar obsoletos) — por eso, si el modelo
+// principal responde 404 "no encontrado", se reintenta automáticamente con
+// "gemini-flash-latest", un alias que Google mantiene apuntando siempre al
+// modelo flash vigente, en vez de que la función quede rota hasta que
+// alguien actualice el código a mano.
+async function _indLlamarGeminiConModelo(modelo, prompt) {
+  const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + modelo + ':generateContent?key=' + GEMINI_API_KEY, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.4, maxOutputTokens: 1000 },
+    }),
+  });
+  const data = await resp.json();
+  return { ok: resp.ok, status: resp.status, data };
+}
+
 async function _indLlamarGeminiMejorarTexto(texto) {
   const loadingEl = document.getElementById('mejorar-ia-loading');
   const resultadoWrap = document.getElementById('mejorar-ia-resultado-wrap');
@@ -9129,16 +9149,15 @@ async function _indLlamarGeminiMejorarTexto(texto) {
     + 'Responde ÚNICAMENTE con el texto mejorado, sin comillas, sin explicaciones, sin encabezados.\n\nTexto original:\n' + texto;
 
   try {
-    const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_API_KEY, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.4, maxOutputTokens: 1000 },
-      }),
-    });
-    const data = await resp.json();
-    if (!resp.ok) throw new Error(data.error && data.error.message ? data.error.message : 'Error de la API de Gemini');
+    let resultado = await _indLlamarGeminiConModelo('gemini-3.8-flash', prompt);
+
+    if (!resultado.ok && resultado.status === 404) {
+      console.warn('Modelo gemini-3.8-flash no disponible, reintentando con gemini-flash-latest...');
+      resultado = await _indLlamarGeminiConModelo('gemini-flash-latest', prompt);
+    }
+
+    const { ok, data } = resultado;
+    if (!ok) throw new Error(data.error && data.error.message ? data.error.message : 'Error de la API de Gemini');
 
     const textoMejorado = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]
       ? data.candidates[0].content.parts[0].text.trim() : null;
