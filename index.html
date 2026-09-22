@@ -8928,7 +8928,7 @@ async function _indDescargarComoBlob(url) {
         }
       };
       img.onerror = (e) => {
-        console.warn('[evidencia] <img> onerror para', url, e);
+        console.warn('[evidencia] <img crossOrigin> onerror para', url, e);
         resolverUnaVez({ blob: null, motivo: 'La imagen no cargó (enlace roto o bloqueado)' });
       };
       img.src = url;
@@ -8937,7 +8937,31 @@ async function _indDescargarComoBlob(url) {
     if (resultadoImg.blob) return { blob: resultadoImg.blob };
     ultimoMotivo = resultadoImg.motivo || ultimoMotivo;
   } catch(e) {
-    console.warn('[evidencia] vía <img> falló por completo para', url, e);
+    console.warn('[evidencia] vía <img crossOrigin> falló por completo para', url, e);
+  }
+
+  // Cuarta vía, la más permisiva de todas: <img> SIN crossOrigin. El servidor
+  // de R2 puede estar rechazando la petición completa (no solo "manchando" el
+  // canvas) cuando no reconoce el origen — típico en algunos navegadores
+  // móviles más estrictos que el desktop con el mismo bucket. Sin
+  // crossOrigin, el navegador SÍ puede mostrar la imagen (no hay política de
+  // seguridad que lo impida para una carga simple), solo no se puede leer su
+  // contenido con canvas — así que en vez de intentar leerla, se devuelve el
+  // propio elemento <img> ya cargado, para que jsPDF lo use directamente con
+  // doc.addImage(img, ...), sin pasar por blob/base64 en absoluto.
+  try {
+    const imgDirecta = await new Promise((resolve) => {
+      const img = new Image();
+      let resuelto = false;
+      const resolverUnaVez = (v) => { if (!resuelto) { resuelto = true; resolve(v); } };
+      img.onload = () => resolverUnaVez(img);
+      img.onerror = (e) => { console.warn('[evidencia] <img> sin crossOrigin también falló para', url, e); resolverUnaVez(null); };
+      img.src = url;
+      setTimeout(() => resolverUnaVez(null), 15000);
+    });
+    if (imgDirecta) return { imgElement: imgDirecta };
+  } catch(e) {
+    console.warn('[evidencia] vía <img> sin crossOrigin falló por completo para', url, e);
   }
 
   console.warn('[evidencia] LAS 3 VÍAS FALLARON para', url, '— motivo:', ultimoMotivo);
@@ -8974,7 +8998,14 @@ async function _indUrlToDataUrl(url, intento) {
     clearTimeout(timeoutId);
   }
 
-  const { blob, motivo } = resultadoDescarga;
+  const { blob, imgElement, motivo } = resultadoDescarga;
+
+  // Caso especial: la cuarta vía devolvió un <img> ya cargado sin poder
+  // leerlo (CORS bloqueaba el canvas, pero la carga simple sí funcionó).
+  // Se entrega tal cual a jsPDF, que sabe leer un elemento <img> directamente
+  // sin necesitar convertirlo a base64 primero.
+  if (imgElement) return { imgElement, format: 'JPEG' };
+
   if (!blob) {
     if (intento < MAX_INTENTOS) {
       // Espera creciente entre reintentos (1.5s, 3s) para no insistir de
@@ -10719,9 +10750,10 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
           doc.setDrawColor(220,226,240); doc.setFillColor(250,251,253);
           doc.roundedRect(x, rowStartY, EV_W, EV_H, 2, 2, 'FD');
 
-          if (converted && converted.dataUrl) {
+          if (converted && (converted.dataUrl || converted.imgElement)) {
             try {
-              doc.addImage(converted.dataUrl, converted.format, x+2, rowStartY+2, EV_W-4, EV_H-4, undefined, 'FAST');
+              const fuenteImagen = converted.dataUrl || converted.imgElement;
+              doc.addImage(fuenteImagen, converted.format, x+2, rowStartY+2, EV_W-4, EV_H-4, undefined, 'FAST');
               doc.link(x+2, rowStartY+2, EV_W-4, EV_H-4, { url });
             } catch(imgErr) {
               doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(150,150,150);
