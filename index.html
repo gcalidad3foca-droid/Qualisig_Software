@@ -8870,11 +8870,44 @@ async function _indDescargarComoBlob(url) {
   try {
     const res = await fetch(url);
     if (res.ok) return await res.blob();
-  } catch(e) { /* se intenta el modo explícito a continuación */ }
+    console.warn('[evidencia] fetch simple respondió', res.status, 'para', url);
+  } catch(e) { console.warn('[evidencia] fetch simple falló para', url, e); }
   try {
     const res2 = await fetch(url, { mode: 'cors' });
     if (res2.ok) return await res2.blob();
-  } catch(e) { /* ninguna de las dos vías funcionó */ }
+    console.warn('[evidencia] fetch cors respondió', res2.status, 'para', url);
+  } catch(e) { console.warn('[evidencia] fetch cors falló para', url, e); }
+
+  // Tercera vía, específica para navegadores móviles (Safari/Chrome iOS,
+  // algunos Android): en varios de ellos fetch() a un origen cruzado se
+  // bloquea de forma más estricta que en escritorio, aunque el bucket sí
+  // tenga CORS configurado — pero <img> sí carga la imagen igual, porque
+  // la carga de imágenes no está sujeta a la misma política. Se dibuja en
+  // un canvas y se exporta como blob desde ahí.
+  try {
+    const blobDesdeImg = await new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      let resuelto = false;
+      const resolverUnaVez = (v) => { if (!resuelto) { resuelto = true; resolve(v); } };
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth || img.width;
+          canvas.height = img.naturalHeight || img.height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          canvas.toBlob(b => resolverUnaVez(b), 'image/jpeg', 0.9);
+        } catch(e) { console.warn('[evidencia] canvas manchado (CORS) para', url, e); resolverUnaVez(null); }
+      };
+      img.onerror = (e) => { console.warn('[evidencia] <img> onerror para', url, e); resolverUnaVez(null); };
+      img.src = url;
+      setTimeout(() => resolverUnaVez(null), 8000);
+    });
+    if (blobDesdeImg) return blobDesdeImg;
+  } catch(e) { console.warn('[evidencia] vía <img> falló por completo para', url, e); }
+
+  console.warn('[evidencia] LAS 3 VÍAS FALLARON para', url, '— revisar CORS del bucket o la URL.');
   return null;
 }
 
@@ -8896,7 +8929,7 @@ async function _indUrlToDataUrl(url) {
 
   const blob = await Promise.race([
     _indDescargarComoBlob(url),
-    new Promise(resolve => setTimeout(() => resolve('TIMEOUT'), 10000)),
+    new Promise(resolve => setTimeout(() => resolve('TIMEOUT'), 20000)),
   ]);
   if (!blob || blob === 'TIMEOUT') {
     console.warn('No se pudo descargar la evidencia (red o CORS):', url);
