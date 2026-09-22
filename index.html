@@ -1131,6 +1131,14 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 .ind-evidencia-dropzone { border: 1.5px dashed var(--gray200); border-radius: 10px; padding: 12px; transition: border-color .15s, background-color .15s; outline: none; }
 .ind-evidencia-dropzone-activa { border-color: var(--blue); background: rgba(59,130,246,.06); }
 .ind-evidencia-dropzone-hint { display:block; font-size:11px; color:var(--gray400); margin-top:6px; }
+
+/* Textarea de Observaciones: crece solo según lo que se escribe o pega (en
+   vez de quedar fijo en 2-3 líneas con scroll interno incómodo), con texto
+   justificado para que se lea prolijo incluso pegando párrafos largos. La
+   altura la ajusta _indAutoAjustarTextarea() en cada tecla/pegado; el resize
+   manual del usuario (esquina inferior derecha) sigue disponible por si
+   quiere un alto propio distinto al automático. */
+.ind-obs-textarea { text-align: justify; line-height: 1.5; min-height: 62px; max-height: 420px; overflow-y: auto; resize: none; }
 .ind-alim-cal-leyenda span { display:inline-flex; align-items:center; gap:6px; }
 .ind-alim-form-wrap { border-top:2px dashed var(--gray200); padding-top:18px; }
 @media(max-width:640px){
@@ -3333,7 +3341,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 
       <div class="modal-form-group">
         <label class="modal-label">Observaciones</label>
-        <textarea class="modal-input-field" id="seg-f-observaciones" rows="3" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió, se adjunta soporte del correo enviado..." style="resize:vertical;font-family:inherit" oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,'seg-f-')"></textarea>
+        <textarea class="modal-input-field ind-obs-textarea" id="seg-f-observaciones" rows="3" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió, se adjunta soporte del correo enviado..." oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,'seg-f-'); _indAutoAjustarTextarea(this)"></textarea>
       </div>
 
       <div class="modal-form-group">
@@ -7020,6 +7028,20 @@ function _indEsc(str) {
   const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML;
 }
 
+// Ajusta la altura de un <textarea> de Observaciones al contenido real que
+// tiene en ese momento — crece con lo que se escribe o pega, y se encoge de
+// nuevo si se borra texto. Se llama en cada tecla, al pegar, y justo al
+// pintar el formulario con un valor ya guardado (para que abra con el alto
+// correcto desde el inicio, no con un textarea corto y una barra de scroll).
+function _indAutoAjustarTextarea(el) {
+  if (!el) return;
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 420) + 'px';
+}
+function _indAutoAjustarTextareaPorId(id) {
+  _indAutoAjustarTextarea(document.getElementById(id));
+}
+
 // ══════════════════════════════════════════════════════════════
 // VISTA: MI SEGUIMIENTO — SOLO indicadores propios (privacidad)
 // Diseño BI: KPIs resumen + agrupación por estado + tarjeta con
@@ -7356,6 +7378,7 @@ function _indCargarSegModalContenido(indId, mesKey) {
   }
 
   document.getElementById('seg-f-observaciones').value = seg.observaciones || '';
+  _indAutoAjustarTextareaPorId('seg-f-observaciones');
   _indEvidencias = seg.evidencias ? seg.evidencias.map(e=>({...e})) : [];
   renderSegEvidencias();
   _indUpdateSegPreview();
@@ -8801,98 +8824,110 @@ function _indRenderExpandedChart(ind, rango) {
 }
 
 // Redimensiona un ImageBitmap/HTMLImageElement ya cargado a un ancho máximo
-// razonable y lo convierte a dataURL JPEG. Compartido por las dos rutas de
-// carga (createImageBitmap y <img>) para no duplicar la lógica de escalado.
+// razonable y lo convierte a dataURL JPEG. Si el redimensionado por canvas
+// falla por cualquier motivo (imagen "tainted" por CORS, navegador raro),
+// devuelve null para que el llamador pueda usar la imagen sin redimensionar
+// en vez de perderla por completo.
 function _indBitmapADataUrl(bitmapOImg, wOrig, hOrig) {
-  const MAX_W = 900;
-  const escala = wOrig > MAX_W ? MAX_W / wOrig : 1;
-  const w = Math.round(wOrig * escala);
-  const h = Math.round(hOrig * escala);
-  const canvas = document.createElement('canvas');
-  canvas.width = w; canvas.height = h;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(bitmapOImg, 0, 0, w, h);
-  return canvas.toDataURL('image/jpeg', 0.82);
+  try {
+    const MAX_W = 900;
+    const escala = wOrig > MAX_W ? MAX_W / wOrig : 1;
+    const w = Math.round(wOrig * escala);
+    const h = Math.round(hOrig * escala);
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(bitmapOImg, 0, 0, w, h);
+    return canvas.toDataURL('image/jpeg', 0.82);
+  } catch(e) {
+    return null;
+  }
 }
 
-// Ruta de carga vía <img> + canvas. Es más tolerante que fetch()+
-// createImageBitmap en navegadores móviles: Safari iOS y varios navegadores/
-// WebViews de Android tienen soporte parcial o inconsistente de
-// createImageBitmap, y ahí la ruta principal fallaba en silencio dejando la
-// evidencia fuera del PDF sin ningún aviso. Se usa como respaldo automático.
-function _indUrlToDataUrlViaImg(url) {
+// Convierte un Blob directamente a dataURL usando FileReader, SIN pasar por
+// <img>/canvas. Es la vía más confiable en móvil: no depende de
+// createImageBitmap (soporte inconsistente en Safari iOS/WebViews Android) ni
+// de que el servidor mande cabeceras CORS para no "manchar" el canvas — eso
+// solo hace falta para REDIMENSIONAR con canvas, no para leer el archivo.
+function _indBlobADataUrl(blob) {
   return new Promise((resolve) => {
-    let resuelto = false;
-    const resolverUnaVez = (valor) => { if (!resuelto) { resuelto = true; resolve(valor); } };
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      try {
-        const w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
-        if (!w || !h) { resolverUnaVez(null); return; }
-        resolverUnaVez({ dataUrl: _indBitmapADataUrl(img, w, h), format: 'JPEG' });
-      } catch(e) { resolverUnaVez(null); }
-    };
-    img.onerror = () => resolverUnaVez(null);
-    img.src = url;
-    // Igual que con los logos y las firmas: si no responde en unos segundos
-    // (red móvil lenta, pestaña en segundo plano), se sigue sin esta
-    // evidencia en vez de dejar el PDF esperando indefinidamente.
-    setTimeout(() => resolverUnaVez(null), 8000);
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(blob);
   });
 }
 
-// Convierte una URL de imagen (R2 u otra) a dataURL base64 para incrustarla en el PDF.
-// Devuelve null si falla (ej. no es imagen, CORS, red) para no romper la generación del documento.
+// Descarga una URL con fetch, probando primero sin forzar el modo CORS
+// (deja que el navegador use su comportamiento por defecto, más compatible
+// en Safari iOS que forzar mode:'cors' explícitamente) y, si eso falla,
+// reintenta una vez más forzándolo. Devuelve el Blob, o null si ninguna de
+// las dos formas funcionó.
+async function _indDescargarComoBlob(url) {
+  if (url.startsWith('data:')) {
+    try { const r = await fetch(url); return await r.blob(); } catch(e) { return null; }
+  }
+  try {
+    const res = await fetch(url);
+    if (res.ok) return await res.blob();
+  } catch(e) { /* se intenta el modo explícito a continuación */ }
+  try {
+    const res2 = await fetch(url, { mode: 'cors' });
+    if (res2.ok) return await res2.blob();
+  } catch(e) { /* ninguna de las dos vías funcionó */ }
+  return null;
+}
+
+// Convierte una URL de imagen (R2 u otra) a dataURL base64 para incrustarla en
+// el PDF. Devuelve null si falla (ej. no es imagen, red) para no romper la
+// generación del documento.
+//
+// Antes esta función dependía de createImageBitmap para TODO el proceso, y de
+// <img crossOrigin='anonymous'> + canvas.toDataURL() como respaldo. Ambas
+// rutas fallan igual quando el servidor de las evidencias no envía cabeceras
+// CORS explícitas (el canvas queda "manchado" y toDataURL lanza un error de
+// seguridad en silencio) — que es justo lo típico en un bucket público
+// básico. Ahora la conversión principal usa FileReader (no necesita CORS
+// para leer el archivo en absoluto) y solo usa canvas para el paso opcional
+// de redimensionar, con una imagen a tamaño completo como respaldo si ese
+// paso concreto falla — así nunca se pierde la evidencia solo por eso.
 async function _indUrlToDataUrl(url) {
   if (!url) return null;
 
-  // Vía principal: fetch() + createImageBitmap. Con timeout propio, porque en
-  // datos móviles un fetch puede quedarse "colgado" sin resolver ni fallar
-  // nunca (a diferencia de escritorio con buena conexión), y eso congelaba
-  // todo el lote de evidencias sin que apareciera ningún error.
-  try {
-    const resultado = await Promise.race([
-      (async () => {
-        let blob;
-        if (url.startsWith('data:')) {
-          const res0 = await fetch(url);
-          blob = await res0.blob();
-        } else {
-          const res = await fetch(url, { mode:'cors' });
-          if (!res.ok) return null;
-          blob = await res.blob();
-        }
-        if (!blob.type.startsWith('image/')) return null;
+  const blob = await Promise.race([
+    _indDescargarComoBlob(url),
+    new Promise(resolve => setTimeout(() => resolve('TIMEOUT'), 10000)),
+  ]);
+  if (!blob || blob === 'TIMEOUT') {
+    console.warn('No se pudo descargar la evidencia (red o CORS):', url);
+    return null;
+  }
+  if (blob.type && !blob.type.startsWith('image/')) return null;
 
-        // Se redimensiona la imagen a un ancho máximo razonable ANTES de
-        // convertirla a base64. Las fotos de celular pueden venir de varios
-        // MB y varios miles de píxeles de ancho; incrustarlas a tamaño
-        // original en el PDF (aunque se vean chiquitas) hace que jsPDF
-        // procese esa imagen completa y puede congelar el navegador durante
-        // varios segundos por cada foto.
-        if (typeof createImageBitmap !== 'function') return 'SIN_BITMAP';
-        const bitmap = await createImageBitmap(blob);
-        const dataUrl = _indBitmapADataUrl(bitmap, bitmap.width, bitmap.height);
-        bitmap.close && bitmap.close();
-        return { dataUrl, format: 'JPEG' };
-      })(),
-      new Promise(resolve => setTimeout(() => resolve('TIMEOUT'), 8000)),
-    ]);
-    if (resultado && resultado !== 'TIMEOUT' && resultado !== 'SIN_BITMAP') return resultado;
-  } catch(e) {
-    console.warn('Vía fetch/createImageBitmap falló, se intenta con <img>:', url, e);
+  // Paso 1: el archivo completo, tal cual, vía FileReader — esto casi nunca
+  // falla, sea cual sea el origen o el tamaño.
+  const dataUrlCompleto = await _indBlobADataUrl(blob);
+  if (!dataUrlCompleto) {
+    console.warn('No se pudo leer la evidencia descargada:', url);
+    return null;
   }
 
-  // Vía de respaldo: <img> + canvas. Se intenta siempre que la principal no
-  // haya devuelto un resultado utilizable (falló, dio timeout, o el
-  // navegador no soporta createImageBitmap), que es justo el caso típico en
-  // celulares con Safari iOS o WebViews de Android.
-  const viaImg = await _indUrlToDataUrlViaImg(url);
-  if (viaImg) return viaImg;
+  // Paso 2 (opcional): redimensionar a un ancho máximo razonable para que
+  // jsPDF no tenga que procesar fotos de celular de varios MB completas.
+  // Si algo falla aquí (navegador sin createImageBitmap, o el redimensionado
+  // por canvas no puede leer la imagen), se usa igual el archivo completo
+  // del paso 1 en vez de perder la evidencia.
+  try {
+    if (typeof createImageBitmap === 'function') {
+      const bitmap = await createImageBitmap(blob);
+      const reducido = _indBitmapADataUrl(bitmap, bitmap.width, bitmap.height);
+      bitmap.close && bitmap.close();
+      if (reducido) return { dataUrl: reducido, format: 'JPEG' };
+    }
+  } catch(e) { /* se usa el archivo completo sin redimensionar */ }
 
-  console.warn('No se pudo incrustar evidencia en PDF (ninguna vía funcionó):', url);
-  return null;
+  const formatoOriginal = (blob.type||'').includes('png') ? 'PNG' : 'JPEG';
+  return { dataUrl: dataUrlCompleto, format: formatoOriginal };
 }
 
 // Mapa de firmas reales del equipo (imágenes alojadas externamente).
@@ -9320,6 +9355,7 @@ function _indRenderDetalleIndicador() {
   _indRenderHistorialTabla(ind, rango);
   if (puedeEditar) {
     _indHabilitarDropYPegado('alim-ev-dropzone');
+    _indAutoAjustarTextareaPorId('alim-f-observaciones');
     const segGuardado = (_indSeguimientos[ind.id] || {})[_indAlimentarMesSel] || null;
     _indRestaurarBorradorSiExiste(_indCurrentSegKey, 'alim-f-', segGuardado);
   }
@@ -9465,7 +9501,7 @@ function _indDetalleAlimentarHtml(ind) {
     + '<div id="alim-resultado-preview" style="'+previewStyle+'">'+previewInicialHtml+'</div>'
     + '<div class="modal-form-group">'
     +   '<label class="modal-label">Observaciones</label>'
-    +   '<textarea class="modal-input-field" id="alim-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió..." style="resize:vertical;font-family:inherit" oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,\'alim-f-\')">'+_indEsc(segDelSel.observaciones||'')+'</textarea>'
+    +   '<textarea class="modal-input-field ind-obs-textarea" id="alim-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió..." oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,\'alim-f-\'); _indAutoAjustarTextarea(this)">'+_indEsc(segDelSel.observaciones||'')+'</textarea>'
     + '</div>'
     + '<div class="modal-form-group">'
     +   '<label class="modal-label">Evidencias (imágenes o archivos)</label>'
@@ -9505,6 +9541,7 @@ function _indAlimentarToggleAnio(anio) {
   if (formWrap) formWrap.outerHTML = _indDetalleAlimentarHtml(ind);
   renderSegEvidencias();
   _indHabilitarDropYPegado('alim-ev-dropzone');
+  _indAutoAjustarTextareaPorId('alim-f-observaciones');
   const segGuardado = (_indSeguimientos[ind.id] || {})[_indAlimentarMesSel] || null;
   _indRestaurarBorradorSiExiste(_indCurrentSegKey, 'alim-f-', segGuardado);
 }
@@ -9519,6 +9556,7 @@ function _indAlimentarCambiarMes(nuevoMesKey) {
   if (formWrap) formWrap.outerHTML = _indDetalleAlimentarHtml(ind);
   renderSegEvidencias();
   _indHabilitarDropYPegado('alim-ev-dropzone');
+  _indAutoAjustarTextareaPorId('alim-f-observaciones');
   const segGuardado = (_indSeguimientos[ind.id] || {})[nuevoMesKey] || null;
   _indRestaurarBorradorSiExiste(_indCurrentSegKey, 'alim-f-', segGuardado);
 }
@@ -9680,7 +9718,7 @@ function _indHistorialFilaHtml(ind, mesKey, seg, puedeEditar) {
       + '<div class="ind-detalle-tabla-edit-campos">'+camposEdicionHtml+'</div>'
       + '<div class="ind-detalle-tabla-edit-campo" style="margin-top:12px">'
       +   '<label class="ind-detalle-tabla-edit-label">Observaciones</label>'
-      +   '<textarea class="ind-detalle-tabla-textarea" id="edit-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió...">'+_indEsc(seg.observaciones||'')+'</textarea>'
+      +   '<textarea class="ind-detalle-tabla-textarea ind-obs-textarea" id="edit-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió..." oninput="_indAutoAjustarTextarea(this)">'+_indEsc(seg.observaciones||'')+'</textarea>'
       + '</div>'
       + '<div class="ind-detalle-tabla-edit-campo" style="margin-top:12px">'
       +   '<label class="ind-detalle-tabla-edit-label">Evidencias</label>'
@@ -9739,6 +9777,7 @@ function abrirEdicionHistorial(mesKey) {
   _indRenderHistorialTabla(ind, 12);
   renderSegEvidencias();
   _indHabilitarDropYPegado('edit-ev-dropzone');
+  _indAutoAjustarTextareaPorId('edit-f-observaciones');
 }
 
 function cancelarEdicionHistorial() {
