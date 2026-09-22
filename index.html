@@ -1139,6 +1139,37 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
    manual del usuario (esquina inferior derecha) sigue disponible por si
    quiere un alto propio distinto al automático. */
 .ind-obs-textarea { text-align: justify; line-height: 1.5; min-height: 62px; max-height: 420px; overflow-y: auto; resize: none; }
+
+/* Envuelve cada textarea de Observaciones con su botón "Mejorar con IA" en la
+   esquina superior derecha, superpuesto sin quitar espacio al campo. */
+.ind-obs-wrap { position:relative; }
+.btn-mejorar-ia {
+  position:absolute; top:8px; right:8px; z-index:2;
+  display:flex; align-items:center; gap:6px;
+  background:linear-gradient(135deg,#7c3aed,#6d28d9); color:#fff;
+  border:none; border-radius:20px; padding:5px 12px 5px 10px;
+  font-size:11px; font-weight:700; font-family:inherit; cursor:pointer;
+  box-shadow:0 2px 8px rgba(124,58,237,0.35);
+  transition:transform .15s, box-shadow .15s;
+}
+.btn-mejorar-ia:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(124,58,237,0.45); }
+.btn-mejorar-ia:active { transform:translateY(0); }
+.btn-mejorar-ia i { font-size:11px; }
+@media(max-width:640px){
+  .btn-mejorar-ia { padding:5px 10px; font-size:10px; }
+  .btn-mejorar-ia span { display:none; } /* solo ícono en móvil, para no tapar el texto */
+}
+
+/* Modal de comparación original / mejorado con IA */
+.ia-compare-col { display:flex; flex-direction:column; gap:6px; }
+.ia-compare-label { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; color:var(--gray400); display:flex; align-items:center; gap:6px; }
+.ia-compare-box {
+  background:var(--gray50); border:1px solid var(--gray200); border-radius:10px;
+  padding:12px 14px; font-size:13px; line-height:1.55; color:var(--gray700);
+  text-align:justify; white-space:pre-wrap; max-height:180px; overflow-y:auto;
+}
+.ia-compare-box-mejorado { background:#faf5ff; border-color:#e9d5ff; color:#3b0764; }
+
 .ind-alim-cal-leyenda span { display:inline-flex; align-items:center; gap:6px; }
 .ind-alim-form-wrap { border-top:2px dashed var(--gray200); padding-top:18px; }
 @media(max-width:640px){
@@ -3341,7 +3372,12 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 
       <div class="modal-form-group">
         <label class="modal-label">Observaciones</label>
-        <textarea class="modal-input-field ind-obs-textarea" id="seg-f-observaciones" rows="3" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió, se adjunta soporte del correo enviado..." oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,'seg-f-'); _indAutoAjustarTextarea(this)"></textarea>
+        <div class="ind-obs-wrap">
+          <button type="button" class="btn-mejorar-ia" onclick="mejorarRedaccionIA('seg-f-observaciones')" title="Mejorar redacción con IA">
+            <i class="fas fa-wand-magic-sparkles"></i><span>Mejorar con IA</span>
+          </button>
+          <textarea class="modal-input-field ind-obs-textarea" id="seg-f-observaciones" rows="3" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió, se adjunta soporte del correo enviado..." oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,'seg-f-'); _indAutoAjustarTextarea(this)"></textarea>
+        </div>
       </div>
 
       <div class="modal-form-group">
@@ -3458,6 +3494,44 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
       <button class="btn-modal-create" id="btn-generar-ficha-rango" onclick="confirmarGenerarFichaPDF()" style="margin-top:6px">
         <i class="fas fa-file-pdf"></i> Generar PDF
       </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-mejorar-ia">
+  <div class="modal-box" style="max-width:600px">
+    <div class="modal-header" style="background:linear-gradient(145deg,#4c1d95,#6d28d9,#7c3aed)">
+      <button class="modal-close" onclick="cerrarModalMejorarRedaccion()"><i class="fas fa-times"></i></button>
+      <h2><i class="fas fa-wand-magic-sparkles" style="margin-right:8px"></i>Mejorar redacción con IA</h2>
+      <p id="mejorar-ia-alcance">Se mejorará el texto</p>
+    </div>
+    <div class="modal-body">
+      <div class="modal-divider" style="margin-top:0"></div>
+
+      <div class="ia-compare-col">
+        <div class="ia-compare-label"><i class="fas fa-align-left"></i> Original</div>
+        <div class="ia-compare-box" id="mejorar-ia-original"></div>
+      </div>
+
+      <div id="mejorar-ia-loading" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:28px 0;color:var(--gray400)">
+        <div class="spinner-sm"></div>
+        <p style="margin:0;font-size:13px">Mejorando redacción...</p>
+      </div>
+
+      <div id="mejorar-ia-resultado-wrap" style="display:none">
+        <div class="ia-compare-col" style="margin-top:14px">
+          <div class="ia-compare-label" style="color:#7c3aed"><i class="fas fa-sparkles"></i> Mejorado con IA</div>
+          <div class="ia-compare-box ia-compare-box-mejorado" id="mejorar-ia-resultado"></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <button class="btn-modal-cancel" onclick="cerrarModalMejorarRedaccion()">Descartar</button>
+          <button class="btn-modal-create" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)" onclick="aplicarTextoMejorado()">
+            <i class="fas fa-check"></i> Usar este texto
+          </button>
+        </div>
+      </div>
+
+      <div id="mejorar-ia-error" style="display:none;margin-top:14px;padding:12px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;color:#b91c1c;font-size:12.5px"></div>
     </div>
   </div>
 </div>
@@ -8993,6 +9067,126 @@ async function _indUrlToDataUrl(url, intento) {
 
 // Mapa de firmas reales del equipo (imágenes alojadas externamente).
 // La clave debe coincidir EXACTAMENTE con el campo "nombre" del perfil en Firebase.
+// ══════════════════════════════════════════════════════════════
+// MEJORAR REDACCIÓN CON IA (Google Gemini) — botón junto a cada
+// campo de Observaciones que reescribe el texto (seleccionado, o
+// todo el campo si no hay selección) en un tono más claro y
+// profesional, mostrando el resultado en un modal de comparación
+// antes de aplicarlo — nunca sobrescribe directamente.
+// ══════════════════════════════════════════════════════════════
+
+// Pega aquí tu API key gratuita de Google Gemini (aistudio.google.com/apikey).
+// Es gratis de forma permanente, con límite generoso de peticiones por minuto.
+const GEMINI_API_KEY = 'AQ.Ab8RN6LTQ7ZJOu4bcvkwZManPzgfYWh1Z46m5le_KNbuqLahew';
+
+let _indMejorarTextareaId = null;   // id del textarea que se está mejorando
+let _indMejorarSeleccion = null;    // {start, end} si había texto seleccionado, o null si es todo el campo
+let _indMejorarTextoOriginal = '';
+
+async function mejorarRedaccionIA(textareaId) {
+  const textarea = document.getElementById(textareaId);
+  if (!textarea) return;
+
+  if (!GEMINI_API_KEY || GEMINI_API_KEY.includes('PEGA_AQUI')) {
+    showToast('Falta configurar la API key de Gemini en el código', 'error');
+    return;
+  }
+
+  const inicioSel = textarea.selectionStart;
+  const finSel = textarea.selectionEnd;
+  const haySeleccion = finSel > inicioSel;
+  const textoAMejorar = haySeleccion ? textarea.value.slice(inicioSel, finSel) : textarea.value;
+
+  if (!textoAMejorar || !textoAMejorar.trim()) {
+    showToast('No hay texto para mejorar', 'error');
+    return;
+  }
+
+  _indMejorarTextareaId = textareaId;
+  _indMejorarSeleccion = haySeleccion ? { start: inicioSel, end: finSel } : null;
+  _indMejorarTextoOriginal = textoAMejorar;
+
+  abrirModalMejorarRedaccion(textoAMejorar, haySeleccion);
+  await _indLlamarGeminiMejorarTexto(textoAMejorar);
+}
+
+function abrirModalMejorarRedaccion(textoOriginal, haySeleccion) {
+  document.getElementById('mejorar-ia-original').textContent = textoOriginal;
+  document.getElementById('mejorar-ia-alcance').textContent = haySeleccion ? 'Se mejorará el texto seleccionado' : 'Se mejorará todo el campo';
+  document.getElementById('mejorar-ia-loading').style.display = 'flex';
+  document.getElementById('mejorar-ia-resultado-wrap').style.display = 'none';
+  document.getElementById('mejorar-ia-error').style.display = 'none';
+  document.getElementById('modal-mejorar-ia').classList.add('open');
+}
+
+async function _indLlamarGeminiMejorarTexto(texto) {
+  const loadingEl = document.getElementById('mejorar-ia-loading');
+  const resultadoWrap = document.getElementById('mejorar-ia-resultado-wrap');
+  const errorEl = document.getElementById('mejorar-ia-error');
+
+  const prompt = 'Mejora la redacción del siguiente texto de una observación de calidad en una empresa colombiana. '
+    + 'Corrige gramática y ortografía, hazlo más claro y profesional, pero conserva TODOS los datos, cifras, nombres y hechos exactamente igual — no inventes ni agregues información nueva. '
+    + 'Responde ÚNICAMENTE con el texto mejorado, sin comillas, sin explicaciones, sin encabezados.\n\nTexto original:\n' + texto;
+
+  try {
+    const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_API_KEY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.4, maxOutputTokens: 1000 },
+      }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error && data.error.message ? data.error.message : 'Error de la API de Gemini');
+
+    const textoMejorado = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]
+      ? data.candidates[0].content.parts[0].text.trim() : null;
+    if (!textoMejorado) throw new Error('Gemini no devolvió ningún texto');
+
+    document.getElementById('mejorar-ia-resultado').textContent = textoMejorado;
+    loadingEl.style.display = 'none';
+    resultadoWrap.style.display = 'block';
+  } catch(e) {
+    console.warn('Error al mejorar redacción con Gemini:', e);
+    loadingEl.style.display = 'none';
+    errorEl.textContent = 'No se pudo mejorar el texto: ' + e.message;
+    errorEl.style.display = 'block';
+  }
+}
+
+// Aplica el texto mejorado al textarea original, reemplazando solo la
+// selección si la hubo, o todo el campo si no — y dispara el guardado de
+// borrador correspondiente, igual que si el usuario lo hubiera escrito.
+function aplicarTextoMejorado() {
+  const textarea = document.getElementById(_indMejorarTextareaId);
+  const textoMejorado = document.getElementById('mejorar-ia-resultado').textContent;
+  if (!textarea || !textoMejorado) return;
+
+  if (_indMejorarSeleccion) {
+    const antes = textarea.value.slice(0, _indMejorarSeleccion.start);
+    const despues = textarea.value.slice(_indMejorarSeleccion.end);
+    textarea.value = antes + textoMejorado + despues;
+  } else {
+    textarea.value = textoMejorado;
+  }
+
+  // Dispara el mismo evento 'input' que el textarea ya escucha, para que el
+  // autoguardado de borrador y el autoajuste de altura se activen igual que
+  // si la persona hubiera escrito el texto a mano.
+  textarea.dispatchEvent(new Event('input', { bubbles: true }));
+
+  cerrarModalMejorarRedaccion();
+  showToast('Redacción mejorada ✓', 'success');
+}
+
+function cerrarModalMejorarRedaccion() {
+  document.getElementById('modal-mejorar-ia').classList.remove('open');
+  _indMejorarTextareaId = null;
+  _indMejorarSeleccion = null;
+  _indMejorarTextoOriginal = '';
+}
+
 const IND_FIRMAS_MAP = {
   'Luis Angel Bolaño Castro': 'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/firma%20LUIS%20BOLA%C3%91O.jpeg',
   'Maria Clara Pizarro':      'https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/firma%20maria%20pizarro.png',
@@ -9586,7 +9780,10 @@ function _indDetalleAlimentarHtml(ind) {
     + '<div id="alim-resultado-preview" style="'+previewStyle+'">'+previewInicialHtml+'</div>'
     + '<div class="modal-form-group">'
     +   '<label class="modal-label">Observaciones</label>'
-    +   '<textarea class="modal-input-field ind-obs-textarea" id="alim-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió..." oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,\'alim-f-\'); _indAutoAjustarTextarea(this)">'+_indEsc(segDelSel.observaciones||'')+'</textarea>'
+    +   '<div class="ind-obs-wrap">'
+    +     '<button type="button" class="btn-mejorar-ia" onclick="mejorarRedaccionIA(\'alim-f-observaciones\')" title="Mejorar redacción con IA"><i class="fas fa-wand-magic-sparkles"></i><span>Mejorar con IA</span></button>'
+    +     '<textarea class="modal-input-field ind-obs-textarea" id="alim-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió..." oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,\'alim-f-\'); _indAutoAjustarTextarea(this)">'+_indEsc(segDelSel.observaciones||'')+'</textarea>'
+    +   '</div>'
     + '</div>'
     + '<div class="modal-form-group">'
     +   '<label class="modal-label">Evidencias (imágenes o archivos)</label>'
@@ -9803,7 +10000,10 @@ function _indHistorialFilaHtml(ind, mesKey, seg, puedeEditar) {
       + '<div class="ind-detalle-tabla-edit-campos">'+camposEdicionHtml+'</div>'
       + '<div class="ind-detalle-tabla-edit-campo" style="margin-top:12px">'
       +   '<label class="ind-detalle-tabla-edit-label">Observaciones</label>'
-      +   '<textarea class="ind-detalle-tabla-textarea ind-obs-textarea" id="edit-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió..." oninput="_indAutoAjustarTextarea(this)">'+_indEsc(seg.observaciones||'')+'</textarea>'
+      +   '<div class="ind-obs-wrap">'
+      +     '<button type="button" class="btn-mejorar-ia" onclick="mejorarRedaccionIA(\'edit-f-observaciones\')" title="Mejorar redacción con IA"><i class="fas fa-wand-magic-sparkles"></i><span>Mejorar con IA</span></button>'
+      +     '<textarea class="ind-detalle-tabla-textarea ind-obs-textarea" id="edit-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió..." oninput="_indAutoAjustarTextarea(this)">'+_indEsc(seg.observaciones||'')+'</textarea>'
+      +   '</div>'
       + '</div>'
       + '<div class="ind-detalle-tabla-edit-campo" style="margin-top:12px">'
       +   '<label class="ind-detalle-tabla-edit-label">Evidencias</label>'
@@ -11361,6 +11561,7 @@ document.addEventListener('click', e => {
   if (e.target.id === 'modal-evidencia-preview') closeEvidenciaPreviewModal();
   if (e.target.id === 'modal-ind-diagnostico') document.getElementById('modal-ind-diagnostico').classList.remove('open');
   if (e.target.id === 'modal-ficha-rango') document.getElementById('modal-ficha-rango').classList.remove('open');
+  if (e.target.id === 'modal-mejorar-ia') cerrarModalMejorarRedaccion();
 });
 
 // Detecta si el modal de seguimiento tiene datos capturados que se perderían al cerrar.
