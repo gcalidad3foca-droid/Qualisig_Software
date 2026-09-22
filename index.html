@@ -3379,6 +3379,13 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
         <div class="spinner-sm"></div><p>Preparando documento...</p>
       </div>
       <iframe id="pdf-preview-iframe" class="ind-pdf-preview-iframe" style="display:none"></iframe>
+      <div id="pdf-preview-mobile-hint" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;flex:1;padding:24px;text-align:center;color:var(--gray500)">
+        <i class="fas fa-file-pdf" style="font-size:48px;color:#dc2626"></i>
+        <p style="margin:0;font-size:13px">En tu teléfono, el documento se ve mejor abriéndolo en el visor de PDF del sistema.</p>
+        <button class="btn-modal-create" id="btn-pdf-preview-abrir-movil" style="display:none" onclick="abrirPdfPreviewEnPestana()">
+          <i class="fas fa-up-right-from-square"></i> Abrir vista previa
+        </button>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-modal-cancel" onclick="closePdfPreviewModal()">Cerrar</button>
@@ -8929,7 +8936,7 @@ async function _indUrlToDataUrl(url) {
 
   const blob = await Promise.race([
     _indDescargarComoBlob(url),
-    new Promise(resolve => setTimeout(() => resolve('TIMEOUT'), 20000)),
+    new Promise(resolve => setTimeout(() => resolve('TIMEOUT'), 40000)),
   ]);
   if (!blob || blob === 'TIMEOUT') {
     console.warn('No se pudo descargar la evidencia (red o CORS):', url);
@@ -9229,14 +9236,38 @@ function openPdfPreviewModal(doc, fileName) {
   const iframe = document.getElementById('pdf-preview-iframe');
   const loading = document.getElementById('pdf-preview-loading');
   const sub = document.getElementById('pdf-preview-sub');
+  const mobileHint = document.getElementById('pdf-preview-mobile-hint');
+  const abrirBtn = document.getElementById('btn-pdf-preview-abrir-movil');
   sub.textContent = fileName;
 
-  loading.style.display = 'flex';
-  iframe.style.display = 'none';
-  iframe.src = _indPreviewBlobUrl;
-  iframe.onload = () => { loading.style.display = 'none'; iframe.style.display = 'block'; };
+  // En iOS/Android, un <iframe> con blob: URL casi nunca renderiza el PDF
+  // (problema documentado y conocido de los visores móviles con iframes) —
+  // el propio visor nativo de PDF del sistema SÍ funciona, pero solo si se
+  // abre como pestaña/ventana completa, no embebido. Por eso en móvil se
+  // omite el iframe y se ofrece un botón grande para abrir el PDF en el
+  // visor nativo del teléfono.
+  const esMovil = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+  if (esMovil) {
+    loading.style.display = 'none';
+    iframe.style.display = 'none';
+    if (mobileHint) mobileHint.style.display = 'flex';
+    if (abrirBtn) abrirBtn.style.display = 'inline-flex';
+  } else {
+    if (mobileHint) mobileHint.style.display = 'none';
+    loading.style.display = 'flex';
+    iframe.style.display = 'none';
+    iframe.src = _indPreviewBlobUrl;
+    iframe.onload = () => { loading.style.display = 'none'; iframe.style.display = 'block'; };
+  }
 
   document.getElementById('modal-pdf-preview').classList.add('open');
+}
+
+// Abre el PDF ya generado en una pestaña nueva, usando el visor nativo del
+// dispositivo — es la vía que sí funciona en móvil, donde el iframe no sirve.
+function abrirPdfPreviewEnPestana() {
+  if (_indPreviewBlobUrl) window.open(_indPreviewBlobUrl, '_blank');
 }
 
 function closePdfPreviewModal() {
@@ -10430,26 +10461,47 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
         completadas++;
         if (btnEl) btnEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando... ('+completadas+'/'+urlsUnicas.length+' evidencias)';
       };
-      // Se procesan en LOTES pequeños (4 a la vez) en vez de todas de golpe.
-      // Descargar y redimensionar decenas de fotos en paralelo satura la red y
-      // la memoria del navegador de una sola vez, lo cual puede sentirse como
-      // que la página "no responde". Procesar por lotes, con una pequeña
-      // pausa entre cada uno, le da tiempo al navegador de repintar la
-      // pantalla y mantenerse fluido mientras trabaja.
-      const TAMANO_LOTE = 4;
-      for (let i = 0; i < urlsUnicas.length; i += TAMANO_LOTE) {
-        const lote = urlsUnicas.slice(i, i + TAMANO_LOTE);
-        await Promise.all(lote.map(async (url) => {
+
+      // En móvil se procesa UNA imagen a la vez (secuencial), no en lotes
+      // paralelos: un teléfono tiene memoria y ancho de banda mucho más
+      // limitados que una computadora, y 4 descargas simultáneas compitiendo
+      // por la misma conexión móvil suelen hacer que cada una individualmente
+      // supere su propio tiempo de espera — por eso las imágenes salían como
+      // "no disponible" solo en teléfono. En escritorio se mantiene el
+      // procesamiento en lotes, que sí es seguro con más recursos disponibles.
+      const esMovil = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+      if (esMovil) {
+        for (const url of urlsUnicas) {
           try {
             _indImgCache[url] = await _indUrlToDataUrl(url);
           } catch(e) {
             _indImgCache[url] = null;
           }
           actualizarProgreso();
-        }));
-        // Cede el control al navegador brevemente entre lotes para que no se
-        // sienta congelado mientras procesa muchas evidencias.
-        await new Promise(r => setTimeout(r, 0));
+        }
+      } else {
+        // Se procesan en LOTES pequeños (4 a la vez) en vez de todas de golpe.
+        // Descargar y redimensionar decenas de fotos en paralelo satura la red y
+        // la memoria del navegador de una sola vez, lo cual puede sentirse como
+        // que la página "no responde". Procesar por lotes, con una pequeña
+        // pausa entre cada uno, le da tiempo al navegador de repintar la
+        // pantalla y mantenerse fluido mientras trabaja.
+        const TAMANO_LOTE = 4;
+        for (let i = 0; i < urlsUnicas.length; i += TAMANO_LOTE) {
+          const lote = urlsUnicas.slice(i, i + TAMANO_LOTE);
+          await Promise.all(lote.map(async (url) => {
+            try {
+              _indImgCache[url] = await _indUrlToDataUrl(url);
+            } catch(e) {
+              _indImgCache[url] = null;
+            }
+            actualizarProgreso();
+          }));
+          // Cede el control al navegador brevemente entre lotes para que no se
+          // sienta congelado mientras procesa muchas evidencias.
+          await new Promise(r => setTimeout(r, 0));
+        }
       }
       if (btnEl) btnEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Componiendo documento...';
     }
