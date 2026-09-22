@@ -1140,24 +1140,30 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
    quiere un alto propio distinto al automático. */
 .ind-obs-textarea { text-align: justify; line-height: 1.5; min-height: 62px; max-height: 420px; overflow-y: auto; resize: none; }
 
-/* Envuelve cada textarea de Observaciones con su botón "Mejorar con IA" en la
-   esquina superior derecha, superpuesto sin quitar espacio al campo. */
-.ind-obs-wrap { position:relative; }
+/* El botón "Mejorar con IA" vive AFUERA del textarea, en la misma fila que
+   el label "Observaciones" — así nunca tapa el texto que la persona está
+   escribiendo, sin importar cuánto escriba. */
+.ind-obs-label-row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px; }
+.ind-obs-label-row .modal-label { margin:0; }
 .btn-mejorar-ia {
-  position:absolute; top:8px; right:8px; z-index:2;
-  display:flex; align-items:center; gap:6px;
-  background:linear-gradient(135deg,#7c3aed,#6d28d9); color:#fff;
-  border:none; border-radius:20px; padding:5px 12px 5px 10px;
-  font-size:11px; font-weight:700; font-family:inherit; cursor:pointer;
-  box-shadow:0 2px 8px rgba(124,58,237,0.35);
+  display:inline-flex; align-items:center; gap:6px;
+  background:linear-gradient(135deg,#8b5cf6,#7c3aed,#6d28d9);
+  background-size:200% 200%;
+  color:#fff; border:none; border-radius:20px; padding:6px 14px 6px 11px;
+  font-size:11.5px; font-weight:700; font-family:inherit; cursor:pointer;
+  box-shadow:0 2px 8px rgba(124,58,237,0.3);
   transition:transform .15s, box-shadow .15s;
+  animation: mejorarIaBrillo 4s ease infinite;
 }
-.btn-mejorar-ia:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(124,58,237,0.45); }
-.btn-mejorar-ia:active { transform:translateY(0); }
-.btn-mejorar-ia i { font-size:11px; }
+.btn-mejorar-ia:hover { transform:translateY(-1px) scale(1.03); box-shadow:0 4px 14px rgba(124,58,237,0.45); }
+.btn-mejorar-ia:active { transform:translateY(0) scale(1); }
+.btn-mejorar-ia i { font-size:11.5px; }
+@keyframes mejorarIaBrillo {
+  0%, 100% { background-position:0% 50%; }
+  50% { background-position:100% 50%; }
+}
 @media(max-width:640px){
-  .btn-mejorar-ia { padding:5px 10px; font-size:10px; }
-  .btn-mejorar-ia span { display:none; } /* solo ícono en móvil, para no tapar el texto */
+  .btn-mejorar-ia { padding:6px 11px; font-size:10.5px; }
 }
 
 /* Modal de comparación original / mejorado con IA */
@@ -1169,6 +1175,22 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   text-align:justify; white-space:pre-wrap; max-height:180px; overflow-y:auto;
 }
 .ia-compare-box-mejorado { background:#faf5ff; border-color:#e9d5ff; color:#3b0764; }
+
+/* Ícono animado mientras la IA procesa el texto — pulso + ligero giro, en vez
+   de un spinner genérico, para reforzar que "algo con IA" está pasando. */
+.ia-varita-girando { font-size:26px; animation: iaVaritaPulso 1.2s ease-in-out infinite; }
+@keyframes iaVaritaPulso {
+  0%, 100% { transform:scale(1) rotate(0deg); opacity:.75; }
+  50% { transform:scale(1.15) rotate(-8deg); opacity:1; }
+}
+
+/* El resultado aparece con una entrada suave (fade + desplazamiento breve),
+   en vez de aparecer de golpe, para que se sienta como una revelación. */
+.ia-fade-in { animation: iaFadeIn .45s ease; }
+@keyframes iaFadeIn {
+  from { opacity:0; transform:translateY(6px); }
+  to { opacity:1; transform:translateY(0); }
+}
 
 .ind-alim-cal-leyenda span { display:inline-flex; align-items:center; gap:6px; }
 .ind-alim-form-wrap { border-top:2px dashed var(--gray200); padding-top:18px; }
@@ -3371,13 +3393,13 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
       <div id="seg-resultado-preview" style="display:none;margin-bottom:16px"></div>
 
       <div class="modal-form-group">
-        <label class="modal-label">Observaciones</label>
-        <div class="ind-obs-wrap">
+        <div class="ind-obs-label-row">
+          <label class="modal-label">Observaciones</label>
           <button type="button" class="btn-mejorar-ia" onclick="mejorarRedaccionIA('seg-f-observaciones')" title="Mejorar redacción con IA">
             <i class="fas fa-wand-magic-sparkles"></i><span>Mejorar con IA</span>
           </button>
-          <textarea class="modal-input-field ind-obs-textarea" id="seg-f-observaciones" rows="3" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió, se adjunta soporte del correo enviado..." oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,'seg-f-'); _indAutoAjustarTextarea(this)"></textarea>
         </div>
+        <textarea class="modal-input-field ind-obs-textarea" id="seg-f-observaciones" rows="3" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió, se adjunta soporte del correo enviado..." oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,'seg-f-'); _indAutoAjustarTextarea(this)"></textarea>
       </div>
 
       <div class="modal-form-group">
@@ -3513,15 +3535,15 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
         <div class="ia-compare-box" id="mejorar-ia-original"></div>
       </div>
 
-      <div id="mejorar-ia-loading" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:28px 0;color:var(--gray400)">
-        <div class="spinner-sm"></div>
-        <p style="margin:0;font-size:13px">Mejorando redacción...</p>
+      <div id="mejorar-ia-loading" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:22px 0 8px;color:#7c3aed">
+        <i class="fas fa-wand-magic-sparkles ia-varita-girando"></i>
+        <p style="margin:0;font-size:13px;color:var(--gray400)">Mejorando redacción...</p>
       </div>
 
       <div id="mejorar-ia-resultado-wrap" style="display:none">
-        <div class="ia-compare-col" style="margin-top:14px">
+        <div class="ia-compare-col" style="margin-top:6px">
           <div class="ia-compare-label" style="color:#7c3aed"><i class="fas fa-sparkles"></i> Mejorado con IA</div>
-          <div class="ia-compare-box ia-compare-box-mejorado" id="mejorar-ia-resultado"></div>
+          <div class="ia-compare-box ia-compare-box-mejorado ia-fade-in" id="mejorar-ia-resultado"></div>
         </div>
         <div style="display:flex;gap:10px;margin-top:16px">
           <button class="btn-modal-cancel" onclick="cerrarModalMejorarRedaccion()">Descartar</button>
@@ -9837,11 +9859,11 @@ function _indDetalleAlimentarHtml(ind) {
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px" id="alim-numeros-wrap">'+camposHtml+'</div>'
     + '<div id="alim-resultado-preview" style="'+previewStyle+'">'+previewInicialHtml+'</div>'
     + '<div class="modal-form-group">'
-    +   '<label class="modal-label">Observaciones</label>'
-    +   '<div class="ind-obs-wrap">'
+    +   '<div class="ind-obs-label-row">'
+    +     '<label class="modal-label">Observaciones</label>'
     +     '<button type="button" class="btn-mejorar-ia" onclick="mejorarRedaccionIA(\'alim-f-observaciones\')" title="Mejorar redacción con IA"><i class="fas fa-wand-magic-sparkles"></i><span>Mejorar con IA</span></button>'
-    +     '<textarea class="modal-input-field ind-obs-textarea" id="alim-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió..." oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,\'alim-f-\'); _indAutoAjustarTextarea(this)">'+_indEsc(segDelSel.observaciones||'')+'</textarea>'
     +   '</div>'
+    +   '<textarea class="modal-input-field ind-obs-textarea" id="alim-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió..." oninput="_indProgramarGuardadoBorrador(_indCurrentSegKey,\'alim-f-\'); _indAutoAjustarTextarea(this)">'+_indEsc(segDelSel.observaciones||'')+'</textarea>'
     + '</div>'
     + '<div class="modal-form-group">'
     +   '<label class="modal-label">Evidencias (imágenes o archivos)</label>'
@@ -10057,11 +10079,11 @@ function _indHistorialFilaHtml(ind, mesKey, seg, puedeEditar) {
       + '</div>'
       + '<div class="ind-detalle-tabla-edit-campos">'+camposEdicionHtml+'</div>'
       + '<div class="ind-detalle-tabla-edit-campo" style="margin-top:12px">'
-      +   '<label class="ind-detalle-tabla-edit-label">Observaciones</label>'
-      +   '<div class="ind-obs-wrap">'
+      +   '<div class="ind-obs-label-row">'
+      +     '<label class="ind-detalle-tabla-edit-label" style="margin:0">Observaciones</label>'
       +     '<button type="button" class="btn-mejorar-ia" onclick="mejorarRedaccionIA(\'edit-f-observaciones\')" title="Mejorar redacción con IA"><i class="fas fa-wand-magic-sparkles"></i><span>Mejorar con IA</span></button>'
-      +     '<textarea class="ind-detalle-tabla-textarea ind-obs-textarea" id="edit-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió..." oninput="_indAutoAjustarTextarea(this)">'+_indEsc(seg.observaciones||'')+'</textarea>'
       +   '</div>'
+      +   '<textarea class="ind-detalle-tabla-textarea ind-obs-textarea" id="edit-f-observaciones" rows="2" placeholder="Ej: No queda al 100% dado que Farmacia no lo envió..." oninput="_indAutoAjustarTextarea(this)">'+_indEsc(seg.observaciones||'')+'</textarea>'
       + '</div>'
       + '<div class="ind-detalle-tabla-edit-campo" style="margin-top:12px">'
       +   '<label class="ind-detalle-tabla-edit-label">Evidencias</label>'
