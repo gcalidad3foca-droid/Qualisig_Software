@@ -9068,16 +9068,19 @@ async function _indUrlToDataUrl(url, intento) {
 // Mapa de firmas reales del equipo (imágenes alojadas externamente).
 // La clave debe coincidir EXACTAMENTE con el campo "nombre" del perfil en Firebase.
 // ══════════════════════════════════════════════════════════════
-// MEJORAR REDACCIÓN CON IA (Google Gemini) — botón junto a cada
+// MEJORAR REDACCIÓN CON IA (Groq) — botón junto a cada
 // campo de Observaciones que reescribe el texto (seleccionado, o
 // todo el campo si no hay selección) en un tono más claro y
 // profesional, mostrando el resultado en un modal de comparación
 // antes de aplicarlo — nunca sobrescribe directamente.
 // ══════════════════════════════════════════════════════════════
 
-// Pega aquí tu API key gratuita de Google Gemini (aistudio.google.com/apikey).
-// Es gratis de forma permanente, con límite generoso de peticiones por minuto.
-const GEMINI_API_KEY = 'AQ.Ab8RN6LTQ7ZJOu4bcvkwZManPzgfYWh1Z46m5le_KNbuqLahew';
+// Pega aquí tu API key gratuita de Groq (console.groq.com/keys).
+// Groq corre modelos open-source (Llama) en hardware especializado, mucho
+// más rápido (100-300ms) y con un tier gratuito más estable que Gemini para
+// este uso — la razón del cambio fue que Gemini 3.x, por ser muy reciente,
+// daba "modelo ocupado" con frecuencia.
+const GROQ_API_KEY = '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';
 
 let _indMejorarTextareaId = null;   // id del textarea que se está mejorando
 let _indMejorarSeleccion = null;    // {start, end} si había texto seleccionado, o null si es todo el campo
@@ -9087,8 +9090,8 @@ async function mejorarRedaccionIA(textareaId) {
   const textarea = document.getElementById(textareaId);
   if (!textarea) return;
 
-  if (!GEMINI_API_KEY || GEMINI_API_KEY.includes('PEGA_AQUI')) {
-    showToast('Falta configurar la API key de Gemini en el código', 'error');
+  if (!GROQ_API_KEY || GROQ_API_KEY.includes('PEGA_AQUI')) {
+    showToast('Falta configurar la API key de Groq en el código', 'error');
     return;
   }
 
@@ -9107,7 +9110,7 @@ async function mejorarRedaccionIA(textareaId) {
   _indMejorarTextoOriginal = textoAMejorar;
 
   abrirModalMejorarRedaccion(textoAMejorar, haySeleccion);
-  await _indLlamarGeminiMejorarTexto(textoAMejorar);
+  await _indLlamarGroqMejorarTexto(textoAMejorar);
 }
 
 function abrirModalMejorarRedaccion(textoOriginal, haySeleccion) {
@@ -9119,33 +9122,30 @@ function abrirModalMejorarRedaccion(textoOriginal, haySeleccion) {
   document.getElementById('modal-mejorar-ia').classList.add('open');
 }
 
-// Llama a la API de Gemini con el modelo indicado. Google actualiza su
-// catálogo de modelos con cierta frecuencia (nombres específicos como
-// "gemini-3.6-flash" pueden quedar obsoletos) — por eso, si el modelo
-// principal responde 404 "no encontrado", se reintenta automáticamente con
-// "gemini-flash-latest", un alias que Google mantiene apuntando siempre al
-// modelo flash vigente, en vez de que la función quede rota hasta que
-// alguien actualice el código a mano.
-async function _indLlamarGeminiConModelo(modelo, prompt) {
-  // Sin timeout, si Gemini se queda sin responder por cualquier motivo (red
-  // lenta, servidor colgado sin llegar a dar error explícito), la petición
-  // esperaba indefinidamente — el botón se quedaba "cargando" para siempre
-  // sin nunca fallar ni completar. Ahora, tras 12 segundos sin respuesta, se
-  // aborta y se pasa al siguiente modelo de la rotación automáticamente.
+// Llama a la API de Groq con el modelo indicado (formato compatible con
+// OpenAI). Si el modelo principal falla o está ocupado, la función que la
+// invoca (_indLlamarGroqMejorarTexto) reintenta con otro modelo de la
+// rotación automáticamente.
+async function _indLlamarGroqConModelo(modelo, prompt) {
+  // Groq responde típicamente en 100-300ms (hardware especializado LPU), así
+  // que un timeout de 12s ya es holgado — si tarda más que eso, algo real
+  // está mal (red caída, clave inválida) y es mejor avisar rápido que
+  // dejar al usuario esperando.
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 12000);
 
   try {
-    const resp = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + modelo + ':generateContent?key=' + GEMINI_API_KEY, {
+    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      // maxOutputTokens reducido (antes 1000): un texto de observaciones es
-      // corto, y pedirle a Gemini margen para generar hasta 1000 tokens hace
-      // que a veces se demore de más sin necesidad. 400 tokens (~300 palabras)
-      // es más que suficiente y acelera la respuesta real.
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + GROQ_API_KEY,
+      },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.4, maxOutputTokens: 400 },
+        model: modelo,
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.4,
+        max_tokens: 400,
       }),
       signal: controller.signal,
     });
@@ -9161,9 +9161,9 @@ async function _indLlamarGeminiConModelo(modelo, prompt) {
   }
 }
 
-async function _indLlamarGeminiMejorarTexto(texto, intento) {
+async function _indLlamarGroqMejorarTexto(texto, intento) {
   intento = intento || 1;
-  const MAX_INTENTOS = 4;
+  const MAX_INTENTOS = 3;
   const loadingEl = document.getElementById('mejorar-ia-loading');
   const resultadoWrap = document.getElementById('mejorar-ia-resultado-wrap');
   const errorEl = document.getElementById('mejorar-ia-error');
@@ -9174,43 +9174,39 @@ async function _indLlamarGeminiMejorarTexto(texto, intento) {
     + 'Responde ÚNICAMENTE con el texto mejorado, sin comillas, sin explicaciones, sin encabezados.\n\nTexto original:\n' + texto;
 
   try {
-    // Se rota entre 3 modelos estables (no el recién salido 3.8, que aún
-    // puede estar saturado por ser muy nuevo): gemini-3.6-flash como
-    // principal (GA desde julio 2026, maduro), gemini-3.5-flash-lite como
-    // segunda opción (el más rápido de todos, ideal si se necesita
-    // velocidad), y gemini-flash-latest como alias de respaldo final. Si
-    // alguno está temporalmente saturado (503) o no existe (404), se
-    // reintenta con el siguiente antes de rendirse.
-    const modelosRotacion = ['gemini-3.6-flash', 'gemini-3.5-flash-lite', 'gemini-flash-latest'];
+    // Se rota entre 3 modelos de Groq: llama-3.3-70b-versatile como
+    // principal (buena calidad de redacción), llama-3.1-8b-instant como
+    // segunda opción (el más rápido de todos), y gpt-oss-20b como respaldo
+    // final. Groq corre en hardware especializado (100-300ms típico), así
+    // que a diferencia de Gemini, es raro que estos modelos estén ocupados.
+    const modelosRotacion = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'openai/gpt-oss-20b'];
     const modelo = modelosRotacion[(intento - 1) % modelosRotacion.length];
-    const resultado = await _indLlamarGeminiConModelo(modelo, prompt);
+    const resultado = await _indLlamarGroqConModelo(modelo, prompt);
 
     const { ok, status, data } = resultado;
     if (!ok) {
-      const mensajeError = data.error && data.error.message ? data.error.message : 'Error de la API de Gemini';
+      const mensajeError = data.error && data.error.message ? data.error.message : 'Error de la API de Groq';
       const esSaturacionOModeloNoExiste = status === 404 || status === 503 || status === 429 || status === 408 || status === 0;
       if (esSaturacionOModeloNoExiste && intento < MAX_INTENTOS) {
         console.warn('Intento '+intento+' falló ('+status+'): '+mensajeError+' — reintentando con otro modelo...');
-        if (loadingTexto) loadingTexto.textContent = 'El modelo está ocupado, reintentando...';
-        // Espera corta y fija (no creciente) entre reintentos: como cada
-        // intento ya tiene su propio límite de 12 segundos, no hace falta
-        // una pausa larga entre ellos — solo lo justo para no golpear la
-        // API de inmediato al cambiar de modelo.
-        await new Promise(r => setTimeout(r, 400));
-        return _indLlamarGeminiMejorarTexto(texto, intento + 1);
+        if (loadingTexto) loadingTexto.textContent = 'Reintentando...';
+        await new Promise(r => setTimeout(r, 300));
+        return _indLlamarGroqMejorarTexto(texto, intento + 1);
       }
       throw new Error(mensajeError);
     }
 
-    const textoMejorado = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]
-      ? data.candidates[0].content.parts[0].text.trim() : null;
-    if (!textoMejorado) throw new Error('Gemini no devolvió ningún texto');
+    // Groq usa el formato de respuesta de OpenAI (choices[0].message.content),
+    // distinto al de Gemini (candidates[0].content.parts[0].text).
+    const textoMejorado = data.choices && data.choices[0] && data.choices[0].message
+      ? data.choices[0].message.content.trim() : null;
+    if (!textoMejorado) throw new Error('Groq no devolvió ningún texto');
 
     document.getElementById('mejorar-ia-resultado').textContent = textoMejorado;
     loadingEl.style.display = 'none';
     resultadoWrap.style.display = 'block';
   } catch(e) {
-    console.warn('Error al mejorar redacción con Gemini:', e);
+    console.warn('Error al mejorar redacción con Groq:', e);
     loadingEl.style.display = 'none';
     errorEl.textContent = 'No se pudo mejorar el texto tras varios intentos: ' + e.message + ' — intenta de nuevo en un momento.';
     errorEl.style.display = 'block';
