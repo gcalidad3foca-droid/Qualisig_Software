@@ -1166,6 +1166,7 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   .btn-mejorar-ia { padding:6px 11px; font-size:10.5px; }
 }
 
+.ind-obs-escribiendo { border-color:#7c3aed !important; box-shadow:0 0 0 3px rgba(124,58,237,0.18) !important; caret-color:#7c3aed; }
 /* Modal de comparación original / mejorado con IA */
 .ia-compare-col { display:flex; flex-direction:column; gap:6px; }
 .ia-compare-label { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; color:var(--gray400); display:flex; align-items:center; gap:6px; }
@@ -9243,21 +9244,55 @@ function aplicarTextoMejorado() {
   const textoMejorado = document.getElementById('mejorar-ia-resultado').textContent;
   if (!textarea || !textoMejorado) return;
 
+  let antes = '', despues = '';
   if (_indMejorarSeleccion) {
-    const antes = textarea.value.slice(0, _indMejorarSeleccion.start);
-    const despues = textarea.value.slice(_indMejorarSeleccion.end);
-    textarea.value = antes + textoMejorado + despues;
-  } else {
-    textarea.value = textoMejorado;
+    antes = textarea.value.slice(0, _indMejorarSeleccion.start);
+    despues = textarea.value.slice(_indMejorarSeleccion.end);
   }
 
-  // Dispara el mismo evento 'input' que el textarea ya escucha, para que el
-  // autoguardado de borrador y el autoajuste de altura se activen igual que
-  // si la persona hubiera escrito el texto a mano.
-  textarea.dispatchEvent(new Event('input', { bubbles: true }));
-
   cerrarModalMejorarRedaccion();
-  showToast('Redacción mejorada ✓', 'success');
+
+  // Animación inteligente: se escribe palabra por palabra con un tiempo total
+  // proporcional al largo (0,6 s – 3 s), sin importar cuántos párrafos sean.
+  // Hace una pausa breve entre párrafos y mantiene visible el final del texto.
+  textarea.readOnly = true;
+  textarea.classList.add('ind-obs-escribiendo');
+  textarea.focus();
+
+  const tokens = textoMejorado.match(/\S+\s*|\s+/g) || [textoMejorado];
+  const saltos = tokens.filter(t => t.includes('\n')).length;
+  const duracion = Math.min(3000, Math.max(600, textoMejorado.length * 4));
+  const pausaParrafo = saltos ? Math.min(180, (duracion * 0.3) / saltos) : 0;
+  const porToken = (duracion - pausaParrafo * saltos) / tokens.length;
+
+  // Momento (ms) en que debe aparecer cada token
+  const agenda = [];
+  let t = 0;
+  tokens.forEach(tok => { t += porToken; agenda.push(t); if (tok.includes('\n')) t += pausaParrafo; });
+
+  let mostrado = 0, texto = '';
+  const inicio = performance.now();
+  const frame = (ahora) => {
+    const trans = ahora - inicio;
+    while (mostrado < tokens.length && agenda[mostrado] <= trans) texto += tokens[mostrado++];
+    textarea.value = antes + texto + despues;
+    const pos = antes.length + texto.length;
+    textarea.setSelectionRange(pos, pos);
+    if (typeof _indAutoAjustarTextarea === 'function') _indAutoAjustarTextarea(textarea);
+    textarea.scrollTop = textarea.scrollHeight;
+    const r = textarea.getBoundingClientRect();
+    if (r.bottom > window.innerHeight) textarea.scrollIntoView({ block: 'end' });
+
+    if (mostrado < tokens.length) {
+      requestAnimationFrame(frame);
+    } else {
+      textarea.readOnly = false;
+      textarea.classList.remove('ind-obs-escribiendo');
+      textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      showToast('Redacción mejorada ✓', 'success');
+    }
+  };
+  requestAnimationFrame(frame);
 }
 
 function cerrarModalMejorarRedaccion() {
