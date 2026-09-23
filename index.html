@@ -9595,94 +9595,157 @@ function abrirModalMejorarRedaccion(textoOriginal, haySeleccion) {
   document.getElementById('modal-mejorar-ia').classList.add('open');
 }
 
-// Llama a la API de Groq con el modelo indicado (formato compatible con
-// OpenAI). Si el modelo principal falla o está ocupado, la función que la
-// invoca (_indLlamarGroqMejorarTexto) reintenta con otro modelo de la
-// rotación automáticamente.
-async function _indLlamarGroqConModelo(modelo, prompt) {
-  // Groq responde típicamente en 100-300ms (hardware especializado LPU), así
-  // que un timeout de 12s ya es holgado — si tarda más que eso, algo real
-  // está mal (red caída, clave inválida) y es mejor avisar rápido que
-  // dejar al usuario esperando.
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 12000);
+// ── Mejorar redacción con Groq ──
+// Parafrasea de verdad (no solo corrige), escala tokens y tiempo al largo
+// del texto, divide textos largos en bloques por párrafos (2 en paralelo),
+// detecta respuestas cortadas o copiadas y rota de modelo si algo falla.
+const _GROQ_MODELOS = ['llama-3.3-70b-versatile', 'openai/gpt-oss-20b', 'llama-3.1-8b-instant'];
+const _GROQ_BLOQUE_MAX = 2200;   // caracteres por bloque
+let _indMejorarPeticion = 0;     // invalida respuestas de solicitudes anteriores
 
+const _GROQ_SISTEMA = 'Eres un corrector de estilo profesional especializado en informes de gestión de calidad del sector salud en Colombia. '
+  + 'Tu tarea es PARAFRASEAR y mejorar la redacción del texto que recibas:\n'
+  + '- Reescribe cada oración con otras palabras: cambia la estructura, los conectores y el vocabulario para que quede claro, formal y profesional. No copies oraciones tal cual.\n'
+  + '- Corrige ortografía, tildes, puntuación, concordancia y redundancias.\n'
+  + '- Conserva exactamente todos los datos: cifras, porcentajes, fechas, nombres de personas, áreas, cargos, siglas y hechos. No inventes, no agregues, no elimines información y no resumas.\n'
+  + '- Mantén la misma cantidad de párrafos y el mismo orden de ideas. Si hay viñetas (•) o numeración (1., 2.), consérvalas con el mismo formato, un elemento por línea.\n'
+  + '- Usa español de Colombia con un tono institucional e impersonal.\n'
+  + '- Responde únicamente con el texto final, sin títulos, comillas, notas ni explicaciones.';
+
+async function _indLlamarGroqConModelo(modelo, mensajes, maxTokens, timeoutMs, temperatura) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  const cuerpo = { model: modelo, messages: mensajes, temperature: temperatura, max_tokens: maxTokens };
+  if (modelo.startsWith('openai/gpt-oss')) { cuerpo.reasoning_effort = 'low'; cuerpo.max_tokens = maxTokens + 1500; }
   try {
     const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + GROQ_API_KEY,
-      },
-      body: JSON.stringify({
-        model: modelo,
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.4,
-        max_tokens: 400,
-      }),
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_API_KEY },
+      body: JSON.stringify(cuerpo),
       signal: controller.signal,
     });
-    const data = await resp.json();
-    return { ok: resp.ok, status: resp.status, data };
-  } catch(e) {
-    if (e.name === 'AbortError') {
-      return { ok: false, status: 408, data: { error: { message: 'Tiempo de espera agotado (12s)' } } };
-    }
+    const data = await resp.json().catch(() => ({}));
+    return { ok: resp.ok, status: resp.status, data, retryAfter: parseFloat(resp.headers.get('retry-after')) || 0 };
+  } catch (e) {
+    if (e.name === 'AbortError') return { ok: false, status: 408, data: { error: { message: 'Tiempo de espera agotado' } } };
     return { ok: false, status: 0, data: { error: { message: e.message || 'Error de red' } } };
   } finally {
     clearTimeout(timeoutId);
   }
 }
 
-async function _indLlamarGroqMejorarTexto(texto, intento) {
-  intento = intento || 1;
-  const MAX_INTENTOS = 3;
+function _indLimpiarSalidaIA(t) {
+  return (t || '')
+    .replace(/<think>[\s\S]*?<\/think>/gi, '')
+    .replace(/^\s*```[a-z]*\s*|\s*```\s*$/g, '')
+    .replace(/^\s*(texto (mejorado|parafraseado|final|corregido)|aquí (está|tienes)[^\n]*|claro[^\n]*)\s*:?\s*\n+/i, '')
+    .replace(/^\s*["“«]([\s\S]*)["”»]\s*$/, '$1')
+    .trim();
+}
+
+// Divide en bloques por párrafos (y por oraciones si un párrafo es enorme),
+// guardando el separador original para rearmar el texto igual.
+function _indDividirEnBloques(texto, max) {
+  const partes = texto.split(/(\n+)/);
+  const unidades = [];
+  for (let i = 0; i < partes.length; i += 2) {
+    const par = partes[i], sep = partes[i + 1] || '';
+    if (par.length <= max) { unidades.push({ texto: par, sep }); continue; }
+    const oraciones = par.match(/[^.!?]+[.!?]+[\s]*|[^.!?]+$/g) || [par];
+    let acc = '';
+    oraciones.forEach(o => { if (acc && (acc + o).length > max) { unidades.push({ texto: acc.trimEnd(), sep: ' ' }); acc = ''; } acc += o; });
+    unidades.push({ texto: acc.trimEnd(), sep });
+  }
+  const bloques = [];
+  let actual = null;
+  unidades.forEach(u => {
+    if (actual && (actual.texto + actual.sep + u.texto).length <= max) { actual.texto += actual.sep + u.texto; actual.sep = u.sep; }
+    else { actual = { texto: u.texto, sep: u.sep }; bloques.push(actual); }
+  });
+  return bloques.filter(b => b.texto.trim() || b.sep);
+}
+
+const _indNormalizarComparar = t => (t || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+
+async function _indGroqParafrasearBloque(texto, esFragmento) {
+  const maxTokens = Math.min(8000, Math.ceil(texto.length / 2.6) + 300);
+  const timeoutMs = Math.min(60000, 15000 + texto.length * 10);
+  const mensajes = [
+    { role: 'system', content: _GROQ_SISTEMA },
+    { role: 'user', content: (esFragmento ? 'Este es un fragmento de un texto más largo; parafrasea solo este fragmento, sin introducciones ni cierres.\n\n' : '') + 'TEXTO:\n' + texto }
+  ];
+  let ultimoError = 'Error de la API de Groq';
+  for (let i = 0; i < _GROQ_MODELOS.length; i++) {
+    const modelo = _GROQ_MODELOS[i];
+    let r = await _indLlamarGroqConModelo(modelo, mensajes, maxTokens, timeoutMs, i === 0 ? 0.5 : 0.6);
+    if (r.status === 429 && r.retryAfter && r.retryAfter <= 6) {
+      await new Promise(res => setTimeout(res, r.retryAfter * 1000));
+      r = await _indLlamarGroqConModelo(modelo, mensajes, maxTokens, timeoutMs, 0.5);
+    }
+    if (!r.ok) {
+      ultimoError = (r.data.error && r.data.error.message) || ('Error ' + r.status);
+      if (r.status === 401 || r.status === 403) throw new Error('La API key de Groq no es válida');
+      console.warn('Groq ' + modelo + ' falló (' + r.status + '): ' + ultimoError);
+      continue;
+    }
+    const choice = r.data.choices && r.data.choices[0];
+    const salida = _indLimpiarSalidaIA(choice && choice.message && choice.message.content);
+    const cortada = choice && choice.finish_reason === 'length';
+    const muyCorta = salida.length < texto.length * 0.45;
+    const copiada = texto.length > 80 && _indNormalizarComparar(salida) === _indNormalizarComparar(texto);
+    if (!salida || cortada || muyCorta || copiada) {
+      ultimoError = copiada ? 'El modelo devolvió el mismo texto' : 'La respuesta llegó incompleta';
+      console.warn('Groq ' + modelo + ': ' + ultimoError + ' — probando otro modelo');
+      continue;
+    }
+    return salida;
+  }
+  throw new Error(ultimoError);
+}
+
+async function _indLlamarGroqMejorarTexto(texto) {
+  const id = ++_indMejorarPeticion;
   const loadingEl = document.getElementById('mejorar-ia-loading');
   const resultadoWrap = document.getElementById('mejorar-ia-resultado-wrap');
   const errorEl = document.getElementById('mejorar-ia-error');
   const loadingTexto = loadingEl.querySelector('p');
 
-  const prompt = 'Mejora la redacción del siguiente texto de una observación de calidad en una empresa colombiana. '
-    + 'Corrige gramática y ortografía, hazlo más claro y profesional, pero conserva TODOS los datos, cifras, nombres y hechos exactamente igual — no inventes ni agregues información nueva. '
-    + 'Responde ÚNICAMENTE con el texto mejorado, sin comillas, sin explicaciones, sin encabezados.\n\nTexto original:\n' + texto;
-
   try {
-    // Se rota entre 3 modelos de Groq: llama-3.3-70b-versatile como
-    // principal (buena calidad de redacción), llama-3.1-8b-instant como
-    // segunda opción (el más rápido de todos), y gpt-oss-20b como respaldo
-    // final. Groq corre en hardware especializado (100-300ms típico), así
-    // que a diferencia de Gemini, es raro que estos modelos estén ocupados.
-    const modelosRotacion = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'openai/gpt-oss-20b'];
-    const modelo = modelosRotacion[(intento - 1) % modelosRotacion.length];
-    const resultado = await _indLlamarGroqConModelo(modelo, prompt);
+    const bloques = _indDividirEnBloques(texto, _GROQ_BLOQUE_MAX);
+    const total = bloques.length;
+    const resultados = new Array(total);
+    let hechos = 0;
+    const avisar = () => {
+      if (loadingTexto && id === _indMejorarPeticion)
+        loadingTexto.textContent = total > 1 ? 'Mejorando redacción… (' + hechos + ' de ' + total + ' partes)' : 'Mejorando redacción...';
+    };
+    avisar();
 
-    const { ok, status, data } = resultado;
-    if (!ok) {
-      const mensajeError = data.error && data.error.message ? data.error.message : 'Error de la API de Groq';
-      const esSaturacionOModeloNoExiste = status === 404 || status === 503 || status === 429 || status === 408 || status === 0;
-      if (esSaturacionOModeloNoExiste && intento < MAX_INTENTOS) {
-        console.warn('Intento '+intento+' falló ('+status+'): '+mensajeError+' — reintentando con otro modelo...');
-        if (loadingTexto) loadingTexto.textContent = 'Reintentando...';
-        await new Promise(r => setTimeout(r, 300));
-        return _indLlamarGroqMejorarTexto(texto, intento + 1);
+    let siguiente = 0;
+    const trabajador = async () => {
+      while (siguiente < total) {
+        const i = siguiente++;
+        const b = bloques[i];
+        resultados[i] = b.texto.trim() ? await _indGroqParafrasearBloque(b.texto, total > 1) : b.texto;
+        if (id !== _indMejorarPeticion) return;
+        hechos++; avisar();
       }
-      throw new Error(mensajeError);
-    }
+    };
+    await Promise.all([trabajador(), trabajador()]);
+    if (id !== _indMejorarPeticion) return;   // el modal se cerró o se pidió otra mejora
 
-    // Groq usa el formato de respuesta de OpenAI (choices[0].message.content),
-    // distinto al de Gemini (candidates[0].content.parts[0].text).
-    const textoMejorado = data.choices && data.choices[0] && data.choices[0].message
-      ? data.choices[0].message.content.trim() : null;
-    if (!textoMejorado) throw new Error('Groq no devolvió ningún texto');
-
+    const textoMejorado = bloques.map((b, i) => resultados[i] + b.sep).join('').trim();
     document.getElementById('mejorar-ia-resultado').textContent = textoMejorado;
     loadingEl.style.display = 'none';
     resultadoWrap.style.display = 'block';
-  } catch(e) {
+  } catch (e) {
+    if (id !== _indMejorarPeticion) return;
     console.warn('Error al mejorar redacción con Groq:', e);
     loadingEl.style.display = 'none';
-    errorEl.textContent = 'No se pudo mejorar el texto tras varios intentos: ' + e.message + ' — intenta de nuevo en un momento.';
+    errorEl.textContent = 'No se pudo mejorar el texto: ' + e.message + ' — intenta de nuevo en un momento.';
     errorEl.style.display = 'block';
+  } finally {
+    if (loadingTexto && id === _indMejorarPeticion) loadingTexto.textContent = 'Mejorando redacción...';
   }
 }
 
@@ -9768,6 +9831,7 @@ function aplicarTextoMejorado() {
 
 function cerrarModalMejorarRedaccion() {
   document.getElementById('modal-mejorar-ia').classList.remove('open');
+  _indMejorarPeticion++;
   _indMejorarTextareaId = null;
   _indMejorarSeleccion = null;
   _indMejorarTextoOriginal = '';
