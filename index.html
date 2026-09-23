@@ -1128,9 +1128,13 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
    arrastrados o una imagen pegada del portapapeles (Ctrl+V). El borde
    punteado se resalta solo mientras algo se arrastra encima, para no
    sobrecargar visualmente el formulario en su estado normal. */
-.ind-evidencia-dropzone { border: 1.5px dashed var(--gray200); border-radius: 10px; padding: 12px; transition: border-color .15s, background-color .15s; outline: none; }
-.ind-evidencia-dropzone-activa { border-color: var(--blue); background: rgba(59,130,246,.06); }
-.ind-evidencia-dropzone-hint { display:block; font-size:11px; color:var(--gray400); margin-top:6px; }
+.ind-evidencia-dropzone { border:2px dashed #93c5fd; border-radius:10px; padding:12px; background:#f8fbff; transition:border-color .2s, background-color .2s; outline:none; }
+.ind-evidencia-dropzone:hover { border-color:#60a5fa; }
+.ind-evidencia-dropzone-activa { border-color:#2563eb; border-style:solid; background:#eef5ff; }
+.ind-evidencia-dropzone-hint { display:block; font-size:11px; color:#64748b; margin-top:6px; }
+.ind-evidencia-dropzone-hint::before { content:"\f0ee"; font-family:"Font Awesome 6 Free","Font Awesome 5 Free"; font-weight:900; color:#3b82f6; margin-right:6px; }
+.ind-evidencia-dropzone .ind-ev-row { background:#fff; border-color:#e2e8f0; box-shadow:0 1px 2px rgba(15,23,42,.05), 0 1px 3px rgba(15,23,42,.04); transition:border-color .2s, box-shadow .2s; }
+.ind-evidencia-dropzone .ind-ev-row:hover { border-color:#bfdbfe; box-shadow:0 2px 8px rgba(37,99,235,.08); }
 
 /* Textarea de Observaciones: crece solo según lo que se escribe o pega (en
    vez de quedar fijo en 2-3 líneas con scroll interno incómodo), con texto
@@ -1166,6 +1170,44 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   .btn-mejorar-ia { padding:6px 11px; font-size:10.5px; }
 }
 
+/* ── Editor enriquecido de Observaciones ── */
+.ind-rte { border:1.5px solid var(--gray200); border-radius:10px; background:#fff; overflow:hidden; transition:border-color .2s, box-shadow .2s; }
+.ind-rte:focus-within { border-color:var(--accent); box-shadow:0 0 0 3px rgba(91,140,214,0.1); }
+.ind-rte-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:2px; padding:5px 6px; background:linear-gradient(180deg, #f6f9fe 0%, #eef3fb 100%); border-bottom:1px solid #e1e9f5; }
+.ind-rte-btn { position:relative; width:30px; height:28px; border:none; background:transparent; border-radius:6px; color:#4a5a78; font-size:12.5px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:background-color .15s, color .15s; }
+.ind-rte-btn:hover { background:#e0e9f8; color:#1e3a8a; }
+.ind-rte-btn.activo, .ind-rte-btn.abierto { background:#d9e6fc; color:#1d4ed8; box-shadow:inset 0 0 0 1px #c3d6f7; }
+.ind-rte-btn:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+.ind-rte-barra { position:absolute; left:8px; right:8px; bottom:3px; height:3px; border-radius:2px; }
+.ind-rte-btn[data-cmd="color"] i, .ind-rte-btn[data-cmd="resaltado"] i { margin-top:-4px; }
+.ind-rte-aa { font-weight:700; font-size:12.5px; letter-spacing:-.2px; }
+.ind-rte-sep { width:1px; height:18px; background:#d5dfee; margin:0 4px; }
+.ind-rte-editor { position:relative; min-height:72px; max-height:420px; overflow-y:auto; padding:12px 14px; font-size:14px; line-height:1.55; color:var(--gray800); text-align:justify; white-space:pre-wrap; word-wrap:break-word; outline:none; cursor:text; background:#fff; }
+.ind-rte-editor.vacio::before { content:attr(data-placeholder); position:absolute; top:12px; left:14px; right:14px; color:#94a3b8; text-align:left; pointer-events:none; }
+.ind-rte-editor ul, .ind-rte-editor ol, .ind-obs-rich ul, .ind-obs-rich ol { margin:4px 0; padding-left:22px; white-space:normal; }
+.ind-rte-editor li, .ind-obs-rich li { margin:2px 0; }
+.ind-rte-editor a, .ind-obs-rich a { color:#2563eb; text-decoration:underline; text-underline-offset:2px; }
+.ind-rte-compacto { border-width:1px; border-radius:8px; }
+.ind-rte-compacto .ind-rte-toolbar { padding:3px 4px; }
+.ind-rte-compacto .ind-rte-btn { width:26px; height:24px; font-size:11.5px; }
+.ind-rte-compacto .ind-rte-editor { min-height:52px; padding:7px 9px; font-size:12.5px; }
+.ind-rte-compacto .ind-rte-editor.vacio::before { top:7px; left:9px; right:9px; }
+.ind-rte-pop { position:fixed; z-index:100000; background:#fff; border:1px solid var(--gray200); border-radius:10px; box-shadow:0 10px 30px rgba(15,23,42,.14), 0 2px 6px rgba(15,23,42,.06); padding:8px; animation:indRtePop .14s ease-out; }
+@keyframes indRtePop { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+.ind-rte-pop-ninguno { display:flex; align-items:center; gap:8px; width:100%; padding:6px 8px; margin-bottom:6px; border:none; background:transparent; border-radius:6px; font-size:12px; color:#475569; cursor:pointer; font-family:inherit; }
+.ind-rte-pop-ninguno:hover, .ind-rte-pop-item:hover { background:var(--gray100); }
+.ind-rte-swatches { display:grid; grid-template-columns:repeat(4, 24px); gap:8px; padding:0 4px 4px; }
+.ind-rte-swatch { width:24px; height:24px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 0 1px var(--gray200); cursor:pointer; transition:transform .12s, box-shadow .12s; }
+.ind-rte-swatch:hover { transform:scale(1.12); box-shadow:0 0 0 1.5px #94a3b8; }
+.ind-rte-pop-item { display:block; width:100%; min-width:150px; text-align:left; padding:7px 10px; border:none; background:transparent; border-radius:6px; font-size:12.5px; color:var(--gray800); cursor:pointer; font-family:inherit; }
+.ind-rte-pop-link { display:flex; align-items:center; gap:8px; min-width:300px; }
+.ind-rte-pop-link > i { color:#94a3b8; font-size:12px; padding-left:4px; }
+.ind-rte-pop-link input { flex:1; border:1px solid var(--gray200); border-radius:7px; padding:7px 9px; font-size:12.5px; font-family:inherit; outline:none; }
+.ind-rte-pop-link input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(91,140,214,0.1); }
+.ind-rte-pop-ok { border:none; background:#2563eb; color:#fff; border-radius:7px; padding:7px 12px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; }
+.ind-rte-pop-ok:hover { background:#1d4ed8; }
+.ind-rte-pop-quitar { border:none; background:#fef2f2; color:#b91c1c; border-radius:7px; width:30px; height:30px; cursor:pointer; }
+.ind-obs-rich { white-space:normal; }
 .ind-obs-escribiendo { border-color:#7c3aed !important; box-shadow:0 0 0 3px rgba(124,58,237,0.18) !important; caret-color:#7c3aed; }
 /* Modal de comparación original / mejorado con IA */
 .ia-compare-col { display:flex; flex-direction:column; gap:6px; }
@@ -6899,7 +6941,7 @@ async function _indAutoMigrarSeguimientoAMensualBimestral() {
           if (seg.numerador != null) { numSum += seg.numerador; huboNumerico = true; }
           if (seg.denominador != null) { denSum += seg.denominador; huboNumerico = true; }
           if (seg.presentado) presentadoFinal = true;
-          if (seg.observaciones) observacionesPartes.push(_indMesLabelFromKey(mesKey) + ': ' + seg.observaciones);
+          if (seg.observaciones) observacionesPartes.push(_indMesLabelFromKey(mesKey) + ': ' + _indObsTexto(seg.observaciones));
           if (seg.evidencias && seg.evidencias.length) evidenciasCombinadas.push(...seg.evidencias);
         });
 
@@ -7138,7 +7180,7 @@ function _indEsc(str) {
 // pintar el formulario con un valor ya guardado (para que abra con el alto
 // correcto desde el inicio, no con un textarea corto y una barra de scroll).
 function _indAutoAjustarTextarea(el) {
-  if (!el) return;
+  if (!el || el.tagName !== 'TEXTAREA') return;
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 420) + 'px';
 }
@@ -7829,6 +7871,8 @@ async function guardarSeguimiento() {
     updatedAt: Date.now(),
     updatedBy: currentUser ? currentUser.uid : null,
   };
+  // Copia en texto limpio (sin formato) para herramientas externas que lean Firebase, p. ej. el agente de WhatsApp
+  data.observacionesTexto = _indObsTexto(data.observaciones);
 
   if (ind.soloPresentar) {
     const chk = document.getElementById('seg-f-presentado');
@@ -8211,7 +8255,7 @@ function renderInformeIndividual() {
       : '<span class="ind-semaforo ind-sem-'+cls+'"><span class="dot"></span>'+(res.pctFinal!=null?res.pctFinal+'%':'—')+' · '+(res.cumpleBimestre?'Cumple':'No cumple')+'</span>';
 
     const mesesDetail = res.mesesData.map(m => {
-      const obsTxt = m.seg && m.seg.observaciones ? ' — "'+_indEsc(m.seg.observaciones)+'"' : '';
+      const obsTxt = m.seg && m.seg.observaciones ? ' — "'+_indEsc(_indObsTexto(m.seg.observaciones))+'"' : '';
       const valTxt = ind.soloPresentar
         ? (m.seg && m.seg.presentado ? 'presentado' : 'sin presentar')
         : (m.pct != null ? m.pct+'%' : 'sin datos');
@@ -8527,7 +8571,7 @@ function _indAprobCardHtml(inf) {
       ? '<span class="ind-semaforo ind-sem-'+(res.cumpleBimestre?'verde':'rojo')+'"><span class="dot"></span>'+(res.cumpleBimestre?'Presentado':'Pendiente')+'</span>'
       : indSemaforoHtml(res.pctFinal, ind);
     const mesesDetail = res.mesesData.map(m=>{
-      const obsTxt = m.seg && m.seg.observaciones ? ' — "'+_indEsc(m.seg.observaciones)+'"' : '';
+      const obsTxt = m.seg && m.seg.observaciones ? ' — "'+_indEsc(_indObsTexto(m.seg.observaciones))+'"' : '';
       const valTxt = ind.soloPresentar ? (m.seg&&m.seg.presentado?'presentado':'sin presentar') : (m.pct!=null?m.pct+'%':'sin datos');
       return m.label+': '+valTxt+obsTxt;
     }).join(' · ');
@@ -8814,7 +8858,7 @@ function _indRenderBitacora(ind, rango) {
       ? (seg.presentado ? 'Presentado' : 'Sin presentar')
       : (pct != null ? seg.numerador+' / '+seg.denominador+' ('+pct+'%)' : 'Sin datos numéricos');
     const obsHtml = seg.observaciones
-      ? '<div class="ind-bitacora-obs">'+_indEsc(seg.observaciones)+'</div>'
+      ? '<div class="ind-bitacora-obs ind-obs-rich">'+_indObsHtml(seg.observaciones)+'</div>'
       : '<div class="ind-bitacora-obs" style="font-style:italic;color:var(--gray400)">Sin observaciones</div>';
 
     const evidencias = seg.evidencias || [];
@@ -9105,6 +9149,405 @@ async function _indUrlToDataUrl(url, intento) {
 // daba "modelo ocupado" con frecuencia.
 const GROQ_API_KEY = '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';
 
+// ═══════════════════════════════════════════════════════════════════════
+// EDITOR ENRIQUECIDO DE OBSERVACIONES
+// Convierte cada <textarea class="ind-obs-textarea"> en un editor con barra
+// de formato (negrita, cursiva, subrayado, color, resaltado, alineación,
+// mayúsculas/minúsculas, viñetas, numeración y enlaces). No se permite
+// cambiar fuente ni tamaño para mantener la uniformidad. El editor conserva
+// el mismo id y expone .value, así que el guardado, el borrador y la IA
+// siguen funcionando igual. Si el texto no tiene formato se guarda como
+// texto plano (compatible con lo ya guardado); si lo tiene, como HTML saneado.
+// ═══════════════════════════════════════════════════════════════════════
+const _RTE_COLORES = [
+  ['#1e293b','Negro'],['#64748b','Gris'],['#2563eb','Azul'],['#0e7490','Azul petróleo'],
+  ['#15803d','Verde'],['#b45309','Ámbar'],['#dc2626','Rojo'],['#7c3aed','Morado']
+];
+const _RTE_RESALTADOS = [
+  ['#fef08a','Amarillo'],['#bbf7d0','Verde'],['#bfdbfe','Azul'],['#fbcfe8','Rosa'],
+  ['#fed7aa','Naranja'],['#e9d5ff','Lila']
+];
+
+function _indObsEsHtml(v) {
+  return typeof v === 'string' && /<(b|strong|i|em|u|span|mark|ul|ol|li|a|div|p|br|font)\b[^>]*>/i.test(v);
+}
+
+function _indObsSanitizar(html) {
+  const tpl = document.createElement('template');
+  tpl.innerHTML = html || '';
+  const PERMITIDAS = { B:1, STRONG:1, I:1, EM:1, U:1, SPAN:1, MARK:1, UL:1, OL:1, LI:1, A:1, BR:1, DIV:1, P:1 };
+  const ESTILOS = ['color','background-color','text-align','font-weight','font-style','text-decoration','text-decoration-line'];
+  const limpiar = (padre) => {
+    [...padre.childNodes].forEach(n => {
+      if (n.nodeType === 3) return;
+      if (n.nodeType !== 1 || /^(SCRIPT|STYLE|IFRAME|OBJECT|EMBED|TEMPLATE|NOSCRIPT|TITLE|META|LINK|SVG|MATH)$/i.test(n.tagName)) { n.remove(); return; }
+      limpiar(n);
+      let el = n;
+      if (n.tagName === 'FONT') {
+        const sp = document.createElement('span');
+        if (n.getAttribute('color')) sp.style.color = n.getAttribute('color');
+        sp.append(...n.childNodes); n.replaceWith(sp); el = sp;
+      } else if (!PERMITIDAS[n.tagName]) { n.replaceWith(...n.childNodes); return; }
+      const conservar = {};
+      ESTILOS.forEach(p => {
+        const v = el.style.getPropertyValue(p);
+        if (v && !/^(transparent|rgba\(0, 0, 0, 0\)|initial|inherit|normal|none)$/.test(v.trim())) conservar[p] = v;
+      });
+      const href = el.tagName === 'A' ? (el.getAttribute('href') || '') : '';
+      [...el.attributes].forEach(a => el.removeAttribute(a.name));
+      Object.entries(conservar).forEach(([p, v]) => el.style.setProperty(p, v));
+      if (el.tagName === 'A') {
+        if (/^(https?:|mailto:)/i.test(href)) {
+          el.setAttribute('href', href); el.setAttribute('target', '_blank'); el.setAttribute('rel', 'noopener noreferrer');
+        } else { el.replaceWith(...el.childNodes); return; }
+      }
+      if (el.tagName === 'SPAN' && !el.getAttribute('style')) el.replaceWith(...el.childNodes);
+    });
+  };
+  limpiar(tpl.content);
+  const d = document.createElement('div'); d.appendChild(tpl.content);
+  return d.innerHTML;
+}
+
+// Texto plano (para PDF, Excel, resúmenes y la IA). Viñetas → "• ", numeración → "1. "
+function _indObsTexto(v) {
+  if (!v) return '';
+  if (!_indObsEsHtml(v)) return v;
+  const d = document.createElement('div'); d.innerHTML = _indObsSanitizar(v);
+  let out = '';
+  const nl = () => { if (out && !out.endsWith('\n')) out += '\n'; };
+  const recorrer = (nodo) => nodo.childNodes.forEach(c => {
+    if (c.nodeType === 3) { out += c.nodeValue; return; }
+    const t = c.tagName;
+    if (t === 'BR') { out += '\n'; return; }
+    if (t === 'LI') {
+      nl();
+      const p = c.parentNode;
+      out += (p && p.tagName === 'OL') ? ([...p.children].indexOf(c) + 1) + '. ' : '• ';
+      recorrer(c); nl(); return;
+    }
+    const bloque = /^(DIV|P|UL|OL)$/.test(t);
+    if (bloque) nl();
+    recorrer(c);
+    if (bloque) nl();
+  });
+  recorrer(d);
+  return out.replace(/\n{3,}/g, '\n\n').trim();
+}
+
+// HTML seguro para mostrar una observación guardada (texto plano o con formato)
+function _indObsHtml(v) {
+  if (!v) return '';
+  return _indObsEsHtml(v) ? _indObsSanitizar(v) : _indEsc(v).replace(/\n/g, '<br>');
+}
+
+function _rteSerializar(ed) {
+  const html = _indObsSanitizar(ed.innerHTML);
+  const tmp = document.createElement('div'); tmp.innerHTML = html;
+  const tieneFormato = [...tmp.querySelectorAll('*')].some(el => !/^(BR|DIV|P)$/.test(el.tagName) || el.getAttribute('style'));
+  const texto = _indObsTexto(html);
+  if (!texto.trim() && !tmp.querySelector('li')) return '';
+  return tieneFormato ? html : texto;
+}
+
+function _rteActualizarVacio(ed, sinLimpiar) {
+  const vacio = !ed.textContent.length && !ed.querySelector('li');
+  if (vacio && !sinLimpiar && ed.innerHTML !== '') {
+    ed.innerHTML = '';
+    if (document.activeElement === ed) {
+      const r = document.createRange(); r.setStart(ed, 0); r.collapse(true);
+      const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    }
+  }
+  ed.classList.toggle('vacio', vacio);
+}
+
+function _rteToolbarHtml() {
+  const b = (cmd, icono, titulo, extra) =>
+    '<button type="button" class="ind-rte-btn" data-cmd="'+cmd+'" title="'+titulo+'" aria-label="'+titulo+'">'+icono+(extra||'')+'</button>';
+  const sep = '<span class="ind-rte-sep"></span>';
+  return '<div class="ind-rte-toolbar" role="toolbar" aria-label="Formato de texto">'
+    + b('bold','<i class="fas fa-bold"></i>','Negrita (Ctrl+B)')
+    + b('italic','<i class="fas fa-italic"></i>','Cursiva (Ctrl+I)')
+    + b('underline','<i class="fas fa-underline"></i>','Subrayado (Ctrl+U)')
+    + sep
+    + b('color','<i class="fas fa-font"></i>','Color de letra','<span class="ind-rte-barra" data-barra="color" style="background:#dc2626"></span>')
+    + b('resaltado','<i class="fas fa-highlighter"></i>','Resaltar','<span class="ind-rte-barra" data-barra="resaltado" style="background:#fde047"></span>')
+    + sep
+    + b('justifyLeft','<i class="fas fa-align-left"></i>','Alinear a la izquierda')
+    + b('justifyCenter','<i class="fas fa-align-center"></i>','Centrar')
+    + b('justifyRight','<i class="fas fa-align-right"></i>','Alinear a la derecha')
+    + b('justifyFull','<i class="fas fa-align-justify"></i>','Justificar')
+    + sep
+    + b('mayus','<span class="ind-rte-aa">Aa</span>','Mayúsculas / minúsculas')
+    + b('insertUnorderedList','<i class="fas fa-list-ul"></i>','Viñetas')
+    + b('insertOrderedList','<i class="fas fa-list-ol"></i>','Numeración')
+    + sep
+    + b('enlace','<i class="fas fa-link"></i>','Insertar enlace')
+    + b('removeFormat','<i class="fas fa-eraser"></i>','Quitar formato')
+    + '</div>';
+}
+
+function _indObsEnriquecer(ta) {
+  if (!ta || !ta.parentNode) return;
+  const compacto = ta.classList.contains('ind-detalle-tabla-textarea');
+  const wrap = document.createElement('div');
+  wrap.className = 'ind-rte' + (compacto ? ' ind-rte-compacto' : '');
+  wrap.innerHTML = _rteToolbarHtml();
+  const ed = document.createElement('div');
+  ed.className = 'ind-rte-editor';
+  ed.id = ta.id;
+  ed.contentEditable = 'true';
+  ed.spellcheck = true;
+  ed.setAttribute('role', 'textbox');
+  ed.setAttribute('aria-multiline', 'true');
+  ed.dataset.placeholder = 'Escribe aquí tus observaciones...';
+  const oi = ta.getAttribute('oninput');
+  if (oi) ed.setAttribute('oninput', oi);
+  Object.defineProperty(ed, 'value', {
+    configurable: true,
+    get() { return _rteSerializar(ed); },
+    set(v) { ed.innerHTML = v ? (_indObsEsHtml(v) ? _indObsSanitizar(v) : _indEsc(v)) : ''; _rteActualizarVacio(ed); }
+  });
+  ed.value = ta.value;
+  wrap.appendChild(ed);
+  ta.replaceWith(wrap);
+  _rteVincular(wrap, ed);
+}
+
+function _rteDisparar(ed) {
+  _rteActualizarVacio(ed);
+  ed.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+function _rteExec(ed, cmd, valor) {
+  ed.focus();
+  try { document.execCommand('styleWithCSS', false, true); } catch (e) {}
+  document.execCommand(cmd, false, valor);
+  _rteActualizarVacio(ed);
+  _rteEstado(ed);
+}
+
+function _rteSeleccionDentro(ed) {
+  const s = window.getSelection();
+  if (!s.rangeCount) return null;
+  const r = s.getRangeAt(0);
+  return ed.contains(r.commonAncestorContainer) ? r : null;
+}
+
+function _rteRestaurar(rango) {
+  if (!rango) return;
+  const s = window.getSelection(); s.removeAllRanges(); s.addRange(rango);
+}
+
+function _rteEstado(ed) {
+  const wrap = ed.closest('.ind-rte');
+  if (!wrap) return;
+  ['bold','italic','underline','justifyLeft','justifyCenter','justifyRight','justifyFull','insertUnorderedList','insertOrderedList'].forEach(cmd => {
+    const btn = wrap.querySelector('[data-cmd="'+cmd+'"]');
+    let on = false;
+    try { on = document.queryCommandState(cmd); } catch (e) {}
+    if (btn) btn.classList.toggle('activo', !!on);
+  });
+  const r = _rteSeleccionDentro(ed);
+  const enLink = r && (r.startContainer.nodeType === 1 ? r.startContainer : r.startContainer.parentNode).closest('a');
+  const bl = wrap.querySelector('[data-cmd="enlace"]');
+  if (bl) bl.classList.toggle('activo', !!enLink);
+}
+
+// Mayúsculas / minúsculas / tipo oración sobre la selección, sin perder el formato
+function _rteTransformarCaso(ed, modo) {
+  const r = _rteSeleccionDentro(ed);
+  if (!r || r.collapsed) { showToast('Selecciona el texto que quieres transformar', 'error'); return; }
+  const { startContainer: sc, startOffset: so, endContainer: ec, endOffset: eo } = r;
+  const walker = document.createTreeWalker(ed, NodeFilter.SHOW_TEXT);
+  const nodos = [];
+  while (walker.nextNode()) if (r.intersectsNode(walker.currentNode)) nodos.push(walker.currentNode);
+  let inicioOracion = true;
+  nodos.forEach(n => {
+    const ini = n === sc ? so : 0;
+    const fin = n === ec ? eo : n.nodeValue.length;
+    let seg = n.nodeValue.slice(ini, fin);
+    if (modo === 'upper') seg = seg.toLocaleUpperCase('es');
+    else if (modo === 'lower') seg = seg.toLocaleLowerCase('es');
+    else {
+      let res = '';
+      for (const ch of seg.toLocaleLowerCase('es')) {
+        if (inicioOracion && /\p{L}/u.test(ch)) { res += ch.toLocaleUpperCase('es'); inicioOracion = false; }
+        else { res += ch; if (/[.!?¡¿\n]/.test(ch)) inicioOracion = true; }
+      }
+      seg = res;
+    }
+    n.nodeValue = n.nodeValue.slice(0, ini) + seg + n.nodeValue.slice(fin);
+  });
+  try { r.setStart(sc, so); r.setEnd(ec, eo); _rteRestaurar(r); } catch (e) {}
+  _rteDisparar(ed);
+}
+
+// ── Menú flotante (paletas, mayúsculas, enlace) ──
+let _rtePop = null;
+function _rteCerrarPop() {
+  if (_rtePop) { _rtePop.remove(); _rtePop = null; }
+  document.querySelectorAll('.ind-rte-btn.abierto').forEach(b => b.classList.remove('abierto'));
+}
+function _rteAbrirPop(btn, html, alMontar) {
+  const yaAbierto = btn.classList.contains('abierto');
+  _rteCerrarPop();
+  if (yaAbierto) return;
+  const p = document.createElement('div');
+  p.className = 'ind-rte-pop';
+  p.innerHTML = html;
+  p.addEventListener('mousedown', e => { if (!e.target.closest('input')) e.preventDefault(); });
+  document.body.appendChild(p);
+  const r = btn.getBoundingClientRect();
+  p.style.top = Math.min(r.bottom + 6, window.innerHeight - p.offsetHeight - 8) + 'px';
+  p.style.left = Math.max(8, Math.min(r.left, window.innerWidth - p.offsetWidth - 8)) + 'px';
+  btn.classList.add('abierto');
+  _rtePop = p;
+  alMontar(p);
+}
+
+function _rtePaletaHtml(lista, textoNinguno, iconoNinguno) {
+  return '<button type="button" class="ind-rte-pop-ninguno" data-valor=""><i class="fas '+iconoNinguno+'"></i> '+textoNinguno+'</button>'
+    + '<div class="ind-rte-swatches">'
+    + lista.map(([c, n]) => '<button type="button" class="ind-rte-swatch" data-valor="'+c+'" title="'+n+'" style="background:'+c+'"></button>').join('')
+    + '</div>';
+}
+
+function _rteVincular(wrap, ed) {
+  const toolbar = wrap.querySelector('.ind-rte-toolbar');
+  toolbar.addEventListener('mousedown', e => e.preventDefault());
+  toolbar.addEventListener('click', e => {
+    const btn = e.target.closest('.ind-rte-btn');
+    if (!btn || ed.dataset.bloqueado) return;
+    const cmd = btn.dataset.cmd;
+    if (cmd === 'color' || cmd === 'resaltado') {
+      const esColor = cmd === 'color';
+      _rteAbrirPop(btn,
+        _rtePaletaHtml(esColor ? _RTE_COLORES : _RTE_RESALTADOS, esColor ? 'Automático' : 'Sin resaltado', esColor ? 'fa-rotate-left' : 'fa-ban'),
+        p => p.addEventListener('click', ev => {
+          const s = ev.target.closest('[data-valor]'); if (!s) return;
+          const v = s.dataset.valor;
+          if (esColor) _rteExec(ed, 'foreColor', v || getComputedStyle(ed).color);
+          else _rteExec(ed, 'hiliteColor', v || 'transparent');
+          if (v) wrap.querySelector('[data-barra="'+cmd+'"]').style.background = v;
+          _rteCerrarPop();
+        }));
+      return;
+    }
+    if (cmd === 'mayus') {
+      _rteAbrirPop(btn,
+        '<button type="button" class="ind-rte-pop-item" data-modo="upper">MAYÚSCULAS</button>'
+        + '<button type="button" class="ind-rte-pop-item" data-modo="lower">minúsculas</button>'
+        + '<button type="button" class="ind-rte-pop-item" data-modo="sentence">Tipo oración</button>',
+        p => p.addEventListener('click', ev => {
+          const it = ev.target.closest('[data-modo]'); if (!it) return;
+          _rteCerrarPop(); _rteTransformarCaso(ed, it.dataset.modo);
+        }));
+      return;
+    }
+    if (cmd === 'enlace') {
+      const rango = _rteSeleccionDentro(ed);
+      const guardado = rango ? rango.cloneRange() : null;
+      const nodoIni = rango ? (rango.startContainer.nodeType === 1 ? rango.startContainer : rango.startContainer.parentNode) : null;
+      const linkActual = nodoIni ? nodoIni.closest('a') : null;
+      _rteAbrirPop(btn,
+        '<div class="ind-rte-pop-link">'
+        + '<i class="fas fa-link"></i>'
+        + '<input type="url" placeholder="Pega o escribe el enlace (https://...)" value="'+(linkActual ? _indEsc(linkActual.getAttribute('href')).replace(/"/g,'&quot;') : '')+'">'
+        + '<button type="button" class="ind-rte-pop-ok">Aplicar</button>'
+        + (linkActual ? '<button type="button" class="ind-rte-pop-quitar" title="Quitar enlace"><i class="fas fa-link-slash"></i></button>' : '')
+        + '</div>',
+        p => {
+          const inp = p.querySelector('input');
+          setTimeout(() => { inp.focus(); inp.select(); }, 0);
+          const aplicar = () => {
+            let url = inp.value.trim();
+            if (!url) { _rteCerrarPop(); return; }
+            if (!/^(https?:|mailto:)/i.test(url)) url = (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(url) ? 'mailto:' : 'https://') + url;
+            ed.focus(); _rteRestaurar(guardado);
+            if (linkActual) { linkActual.setAttribute('href', url); _rteDisparar(ed); }
+            else if (!guardado || guardado.collapsed) _rteExec(ed, 'insertHTML', '<a href="'+url.replace(/"/g,'%22')+'">'+_indEsc(url)+'</a>&nbsp;');
+            else _rteExec(ed, 'createLink', url);
+            _rteCerrarPop();
+          };
+          p.querySelector('.ind-rte-pop-ok').addEventListener('click', aplicar);
+          inp.addEventListener('keydown', ev => {
+            if (ev.key === 'Enter') { ev.preventDefault(); aplicar(); }
+            if (ev.key === 'Escape') { _rteCerrarPop(); ed.focus(); _rteRestaurar(guardado); }
+          });
+          const q = p.querySelector('.ind-rte-pop-quitar');
+          if (q) q.addEventListener('click', () => {
+            linkActual.replaceWith(...linkActual.childNodes);
+            _rteCerrarPop(); ed.focus(); _rteDisparar(ed);
+          });
+        });
+      return;
+    }
+    _rteCerrarPop();
+    _rteExec(ed, cmd);
+  });
+
+  // Pegar siempre como texto (evita traer fuentes y tamaños de otros programas)
+  ed.addEventListener('paste', e => {
+    if (ed.dataset.bloqueado) { e.preventDefault(); return; }
+    const txt = (e.clipboardData || window.clipboardData).getData('text/plain');
+    e.preventDefault();
+    if (txt) document.execCommand('insertText', false, txt);
+  });
+  ed.addEventListener('beforeinput', e => {
+    if (ed.dataset.bloqueado) { e.preventDefault(); return; }
+    // Oculta el texto de ejemplo desde la primera tecla (antes de que se pinte la letra)
+    if (e.inputType && e.inputType.startsWith('insert')) ed.classList.remove('vacio');
+  });
+  ed.addEventListener('compositionstart', () => ed.classList.remove('vacio')); // teclados móviles / dictado
+  ed.addEventListener('compositionend', () => _rteActualizarVacio(ed));
+  ed.addEventListener('blur', () => _rteActualizarVacio(ed));
+  ed.addEventListener('keydown', e => { if (ed.dataset.bloqueado && !e.ctrlKey && !e.metaKey) e.preventDefault(); });
+  ed.addEventListener('input', () => _rteActualizarVacio(ed));
+  ed.addEventListener('keyup', () => _rteEstado(ed));
+  ed.addEventListener('mouseup', () => _rteEstado(ed));
+  ed.addEventListener('focus', () => _rteEstado(ed));
+  // Ctrl/Cmd + clic abre el enlace
+  ed.addEventListener('click', e => {
+    const a = e.target.closest('a');
+    if (a && (e.ctrlKey || e.metaKey)) { e.preventDefault(); window.open(a.href, '_blank', 'noopener'); }
+  });
+}
+
+function _indObsEscanear(raiz) {
+  (raiz || document).querySelectorAll('textarea.ind-obs-textarea').forEach(_indObsEnriquecer);
+}
+
+(function _indObsIniciarEditor() {
+  const arrancar = () => {
+    _indObsEscanear(document);
+    new MutationObserver(muts => {
+      for (const m of muts) for (const n of m.addedNodes) {
+        if (n.nodeType !== 1) continue;
+        if (n.matches('textarea.ind-obs-textarea')) _indObsEnriquecer(n);
+        else if (n.querySelector) _indObsEscanear(n);
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+    document.addEventListener('mousedown', e => {
+      if (_rtePop && !e.target.closest('.ind-rte-pop') && !e.target.closest('.ind-rte-btn.abierto')) _rteCerrarPop();
+      if (e.target.closest('.btn-mejorar-ia')) e.preventDefault(); // conserva la selección del editor
+    }, true);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && _rtePop) _rteCerrarPop(); });
+    window.addEventListener('resize', _rteCerrarPop);
+    document.addEventListener('scroll', e => { if (_rtePop && !_rtePop.contains(e.target)) _rteCerrarPop(); }, true);
+    document.addEventListener('selectionchange', () => {
+      const s = window.getSelection();
+      if (!s.rangeCount) return;
+      const n = s.anchorNode;
+      const ed = n && (n.nodeType === 1 ? n : n.parentNode).closest && (n.nodeType === 1 ? n : n.parentNode).closest('.ind-rte-editor');
+      if (ed) _rteEstado(ed);
+    });
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arrancar);
+  else arrancar();
+})();
+
 let _indMejorarTextareaId = null;   // id del textarea que se está mejorando
 let _indMejorarSeleccion = null;    // {start, end} si había texto seleccionado, o null si es todo el campo
 let _indMejorarTextoOriginal = '';
@@ -9118,10 +9561,17 @@ async function mejorarRedaccionIA(textareaId) {
     return;
   }
 
-  const inicioSel = textarea.selectionStart;
-  const finSel = textarea.selectionEnd;
-  const haySeleccion = finSel > inicioSel;
-  const textoAMejorar = haySeleccion ? textarea.value.slice(inicioSel, finSel) : textarea.value;
+  let inicioSel = 0, finSel = 0, haySeleccion = false, textoAMejorar = '', rangoSel = null;
+  if (textarea.isContentEditable) {
+    const r = _rteSeleccionDentro(textarea);
+    if (r && !r.collapsed && r.toString().trim()) { rangoSel = r.cloneRange(); haySeleccion = true; }
+    textoAMejorar = haySeleccion ? rangoSel.toString() : _indObsTexto(textarea.value);
+  } else {
+    inicioSel = textarea.selectionStart;
+    finSel = textarea.selectionEnd;
+    haySeleccion = finSel > inicioSel;
+    textoAMejorar = haySeleccion ? textarea.value.slice(inicioSel, finSel) : textarea.value;
+  }
 
   if (!textoAMejorar || !textoAMejorar.trim()) {
     showToast('No hay texto para mejorar', 'error');
@@ -9129,7 +9579,7 @@ async function mejorarRedaccionIA(textareaId) {
   }
 
   _indMejorarTextareaId = textareaId;
-  _indMejorarSeleccion = haySeleccion ? { start: inicioSel, end: finSel } : null;
+  _indMejorarSeleccion = haySeleccion ? (rangoSel ? { rango: rangoSel } : { start: inicioSel, end: finSel }) : null;
   _indMejorarTextoOriginal = textoAMejorar;
 
   abrirModalMejorarRedaccion(textoAMejorar, haySeleccion);
@@ -9244,19 +9694,43 @@ function aplicarTextoMejorado() {
   const textoMejorado = document.getElementById('mejorar-ia-resultado').textContent;
   if (!textarea || !textoMejorado) return;
 
-  let antes = '', despues = '';
-  if (_indMejorarSeleccion) {
+  const esRte = textarea.isContentEditable;
+  const _indSelParcial = !!(_indMejorarSeleccion && _indMejorarSeleccion.rango);
+  const marco = esRte ? (textarea.closest('.ind-rte') || textarea) : textarea;
+  let antes = '', despues = '', nodoTexto = null;
+  if (esRte) {
+    // El texto mejorado se escribe dentro de un nodo de texto: si había una
+    // selección, reemplaza solo esa parte y conserva el formato del resto.
+    nodoTexto = document.createTextNode('');
+    const sel = _indMejorarSeleccion && _indMejorarSeleccion.rango;
+    if (sel) { sel.deleteContents(); sel.insertNode(nodoTexto); }
+    else { textarea.innerHTML = ''; textarea.appendChild(nodoTexto); }
+  } else if (_indMejorarSeleccion) {
     antes = textarea.value.slice(0, _indMejorarSeleccion.start);
     despues = textarea.value.slice(_indMejorarSeleccion.end);
   }
+  const pintar = (texto) => {
+    if (esRte) {
+      nodoTexto.nodeValue = texto;
+      _rteActualizarVacio(textarea, true);
+      const r = document.createRange();
+      r.setStart(nodoTexto, texto.length); r.collapse(true);
+      _rteRestaurar(r);
+    } else {
+      textarea.value = antes + texto + despues;
+      const pos = antes.length + texto.length;
+      textarea.setSelectionRange(pos, pos);
+      _indAutoAjustarTextarea(textarea);
+    }
+  };
 
   cerrarModalMejorarRedaccion();
 
   // Animación inteligente: se escribe palabra por palabra con un tiempo total
   // proporcional al largo (0,6 s – 3 s), sin importar cuántos párrafos sean.
   // Hace una pausa breve entre párrafos y mantiene visible el final del texto.
-  textarea.readOnly = true;
-  textarea.classList.add('ind-obs-escribiendo');
+  if (esRte) textarea.dataset.bloqueado = '1'; else textarea.readOnly = true;
+  marco.classList.add('ind-obs-escribiendo');
   textarea.focus();
 
   const tokens = textoMejorado.match(/\S+\s*|\s+/g) || [textoMejorado];
@@ -9275,19 +9749,16 @@ function aplicarTextoMejorado() {
   const frame = (ahora) => {
     const trans = ahora - inicio;
     while (mostrado < tokens.length && agenda[mostrado] <= trans) texto += tokens[mostrado++];
-    textarea.value = antes + texto + despues;
-    const pos = antes.length + texto.length;
-    textarea.setSelectionRange(pos, pos);
-    if (typeof _indAutoAjustarTextarea === 'function') _indAutoAjustarTextarea(textarea);
-    textarea.scrollTop = textarea.scrollHeight;
-    const r = textarea.getBoundingClientRect();
-    if (r.bottom > window.innerHeight) textarea.scrollIntoView({ block: 'end' });
+    pintar(texto);
+    if (!(esRte && _indSelParcial)) textarea.scrollTop = textarea.scrollHeight;
+    const rb = marco.getBoundingClientRect();
+    if (rb.bottom > window.innerHeight) marco.scrollIntoView({ block: 'end' });
 
     if (mostrado < tokens.length) {
       requestAnimationFrame(frame);
     } else {
-      textarea.readOnly = false;
-      textarea.classList.remove('ind-obs-escribiendo');
+      if (esRte) delete textarea.dataset.bloqueado; else textarea.readOnly = false;
+      marco.classList.remove('ind-obs-escribiendo');
       textarea.dispatchEvent(new Event('input', { bubbles: true }));
       showToast('Redacción mejorada ✓', 'success');
     }
@@ -9988,6 +10459,8 @@ async function guardarAlimentarPendiente() {
     updatedAt: Date.now(),
     updatedBy: currentUser ? currentUser.uid : null,
   };
+  // Copia en texto limpio (sin formato) para herramientas externas que lean Firebase, p. ej. el agente de WhatsApp
+  data.observacionesTexto = _indObsTexto(data.observaciones);
   if (ind.soloPresentar) {
     const chk = document.getElementById('alim-f-presentado');
     data.presentado = chk ? chk.checked : false;
@@ -10162,7 +10635,7 @@ function _indHistorialFilaHtml(ind, mesKey, seg, puedeEditar) {
     + '<div class="ind-detalle-tabla-mes">'+_indMesLabelFromKey(mesKey)+'</div>'
     + numDenTxt
     + '<div><span class="ind-detalle-tabla-mlabel">%</span><span class="ind-detalle-tabla-pct" style="color:'+color+'">'+(pct!=null?pct+'%':(seg.presentado?'100%':'—'))+'</span></div>'
-    + '<div class="ind-detalle-tabla-obs"><span class="ind-detalle-tabla-mlabel">Observaciones</span>'+(seg.observaciones?_indEsc(seg.observaciones):'<span class="ind-detalle-tabla-sin">Sin observaciones</span>')+'</div>'
+    + '<div class="ind-detalle-tabla-obs"><span class="ind-detalle-tabla-mlabel">Observaciones</span>'+(seg.observaciones?_indEsc(_indObsTexto(seg.observaciones)):'<span class="ind-detalle-tabla-sin">Sin observaciones</span>')+'</div>'
     + '<div class="ind-detalle-tabla-ev"><span class="ind-detalle-tabla-mlabel">Evidencias</span>'+evHtml+'</div>'
     + '<div class="ind-detalle-tabla-acciones">'+editarBtn+'</div>'
     + '</div>';
@@ -10211,6 +10684,8 @@ async function guardarEdicionHistorial(mesKey) {
     updatedAt: Date.now(),
     updatedBy: currentUser ? currentUser.uid : null,
   };
+  // Copia en texto limpio (sin formato) para herramientas externas que lean Firebase, p. ej. el agente de WhatsApp
+  data.observacionesTexto = _indObsTexto(data.observaciones);
   if (ind.soloPresentar) {
     const chk = document.getElementById('edit-f-presentado');
     data.presentado = chk ? chk.checked : false;
@@ -10600,7 +11075,7 @@ async function exportFichaIndicadorPDF(desde, hasta) {
       yPos += 12;
 
       categoryLabel('Observaciones', M+2, yPos, CB); yPos += 4.3;
-      const obsTxt = seg.observaciones || 'Sin observaciones registradas para este periodo.';
+      const obsTxt = _indObsTexto(seg.observaciones) || 'Sin observaciones registradas para este periodo.';
       setTextStyle(FS.texto, seg.observaciones?'normal':'italic', [70,82,100]);
       const obsLines = doc.splitTextToSize(obsTxt, CW-4);
       obsLines.forEach((l, idx) => {
@@ -10960,8 +11435,8 @@ async function exportIndicadoresPDF(uidObjetivo, yearObjetivo, bimIdObjetivo, mo
       }
 
       const bodyRows = ind.soloPresentar
-        ? res.mesesData.map(m => [m.label, m.seg && m.seg.presentado ? 'Presentado' : 'Sin presentar', (m.seg&&m.seg.observaciones)||'Sin observaciones registradas'])
-        : res.mesesData.map(m => [m.label, m.seg ? (m.seg.numerador+' / '+m.seg.denominador) : '—', m.pct!=null?m.pct+'%':'—', (m.seg&&m.seg.observaciones)||'Sin observaciones registradas']);
+        ? res.mesesData.map(m => [m.label, m.seg && m.seg.presentado ? 'Presentado' : 'Sin presentar', (m.seg&&_indObsTexto(m.seg.observaciones))||'Sin observaciones registradas'])
+        : res.mesesData.map(m => [m.label, m.seg ? (m.seg.numerador+' / '+m.seg.denominador) : '—', m.pct!=null?m.pct+'%':'—', (m.seg&&_indObsTexto(m.seg.observaciones))||'Sin observaciones registradas']);
       const headRow = ind.soloPresentar ? ['Mes','Estado','Observaciones de gestión'] : ['Mes','Numerador / Denominador','Resultado','Observaciones de gestión'];
       const colStyles = ind.soloPresentar
         ? {0:{cellWidth:28},1:{cellWidth:30,halign:'center'},2:{cellWidth:'auto'}}
