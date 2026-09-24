@@ -140,7 +140,7 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;margin:0;color:var(
 
     <div class="progress-wrap">
       <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar"></div></div>
-      <div class="progress-label" id="progressLabel">0 de 31 respondidas</div>
+      <div class="progress-label" id="progressLabel">0 de 32 respondidas</div>
     </div>
 
     <form id="piForm">
@@ -198,25 +198,26 @@ const PI_DATA = [
     {n:14, texto:"La comodidad de la sala de espera fue:", atributo:"Comodidad"},
     {n:15, texto:"La limpieza de la sala de espera fue:", atributo:"Ambiente físico"},
     {n:16, texto:"El orden y las condiciones generales de la sala de espera fueron:", atributo:"Ambiente físico"},
-    {n:17, texto:"La información sobre sus derechos y deberes como paciente estuvo disponible y fue fácil de identificar.", atributo:"Derechos y deberes"},
-    {n:18, texto:"La información disponible sobre sus derechos y deberes como paciente fue clara y fácil de comprender.", atributo:"Derechos y deberes"}
+    {n:17, texto:"La orientación sobre cómo actuar ante una emergencia fue:", atributo:"Seguridad del paciente"},
+    {n:18, texto:"La información sobre sus derechos y deberes como paciente estuvo disponible y fue fácil de identificar.", atributo:"Derechos y deberes"},
+    {n:19, texto:"La información disponible sobre sus derechos y deberes como paciente fue clara y fácil de comprender.", atributo:"Derechos y deberes"}
   ]},
   { momento:"MOMENTO 5", nombre:"DURANTE LA ATENCIÓN", items:[
-    {n:19, texto:"El trato recibido por el profesional que lo atendió fue:", atributo:"Humanización"},
-    {n:20, texto:"El interés del profesional por escuchar sus necesidades e inquietudes fue:", atributo:"Escucha activa"},
-    {n:21, texto:"Las explicaciones brindadas por el profesional sobre su estado de salud, diagnóstico o motivo de la atención fueron:", atributo:"Comunicación"},
-    {n:22, texto:"Las explicaciones brindadas por el profesional fueron claras y fáciles de comprender.", atributo:"Comprensión de la información"},
-    {n:23, texto:"Durante la atención, el respeto por su privacidad fue:", atributo:"Privacidad y confidencialidad"},
-    {n:24, texto:"La confianza que le generó el profesional durante la atención fue:", atributo:"Confianza"},
-    {n:25, texto:"La oportunidad para expresar sus dudas e inquietudes durante la atención fue:", atributo:"Participación del paciente"},
-    {n:26, texto:"Durante la atención, el profesional tuvo en cuenta sus opiniones y necesidades al brindarle la atención.", atributo:"Participación del paciente"}
+    {n:20, texto:"El trato recibido por el profesional que lo atendió fue:", atributo:"Humanización"},
+    {n:21, texto:"El interés del profesional por escuchar sus necesidades e inquietudes fue:", atributo:"Escucha activa"},
+    {n:22, texto:"Las explicaciones brindadas por el profesional sobre su estado de salud, diagnóstico o motivo de la atención fueron:", atributo:"Comunicación"},
+    {n:23, texto:"Las explicaciones brindadas por el profesional fueron claras y fáciles de comprender.", atributo:"Comprensión de la información"},
+    {n:24, texto:"Durante la atención, el respeto por su privacidad fue:", atributo:"Privacidad y confidencialidad"},
+    {n:25, texto:"La confianza que le generó el profesional durante la atención fue:", atributo:"Confianza"},
+    {n:26, texto:"La oportunidad para expresar sus dudas e inquietudes durante la atención fue:", atributo:"Participación del paciente"},
+    {n:27, texto:"Durante la atención, el profesional tuvo en cuenta sus opiniones y necesidades al brindarle la atención.", atributo:"Participación del paciente"}
   ]},
   { momento:"MOMENTO 6", nombre:"AL FINALIZAR LA ATENCIÓN", items:[
-    {n:27, texto:"Las recomendaciones e indicaciones recibidas para continuar con su atención (órdenes, controles, medicamentos, autorizaciones o citas, según aplique) fueron:", atributo:"Continuidad de la atención"},
-    {n:28, texto:"La claridad de las indicaciones entregadas al finalizar la atención fue:", atributo:"Comprensión de indicaciones"}
+    {n:28, texto:"Las recomendaciones e indicaciones recibidas para continuar con su atención (órdenes, controles, medicamentos, autorizaciones o citas, según aplique) fueron:", atributo:"Continuidad de la atención"},
+    {n:29, texto:"La claridad de las indicaciones entregadas al finalizar la atención fue:", atributo:"Comprensión de indicaciones"}
   ]},
   { momento:"MOMENTO 7", nombre:"EXPERIENCIA GENERAL", items:[
-    {n:29, texto:"En términos generales, su experiencia durante la atención recibida fue:", atributo:"Experiencia general"}
+    {n:30, texto:"En términos generales, su experiencia durante la atención recibida fue:", atributo:"Experiencia general"}
   ]}
 ];
 
@@ -227,7 +228,7 @@ const SCALE = [
   {v:'D', label:'Deficiente'},
   {v:'NA', label:'No aplica'}
 ];
-const TOTAL_REQUIRED = 29; // 29 preguntas cerradas obligatorias (30 y 31 son abiertas, opcionales)
+const TOTAL_REQUIRED = 30; // 30 preguntas cerradas obligatorias (31 y 32 son abiertas, opcionales)
 
 function renderSurvey(){
   const section = document.getElementById('surveySection');
@@ -243,17 +244,17 @@ function renderSurvey(){
       </div>`;
     });
   });
-  // Preguntas abiertas (30 y 31) — opcionales, comentario libre del paciente
+  // Preguntas abiertas (31 y 32) — opcionales, comentario libre del paciente
   html += `<div class="section-title">COMENTARIOS<small>Opcional</small></div>
     <div class="question">
       <div class="textarea-field">
-        <label><span class="qnum">30.</span> ¿Qué considera que podríamos mejorar para brindarle una mejor atención?</label>
+        <label><span class="qnum">31.</span> ¿Qué considera que podríamos mejorar para brindarle una mejor atención?</label>
         <textarea id="comentario30" name="comentario30" placeholder="Escriba aquí su respuesta (opcional)..."></textarea>
       </div>
     </div>
     <div class="question">
       <div class="textarea-field">
-        <label><span class="qnum">31.</span> ¿Desea resaltar o reconocer la atención de algún colaborador o compartir algún comentario adicional?</label>
+        <label><span class="qnum">32.</span> ¿Desea resaltar o reconocer la atención de algún colaborador o compartir algún comentario adicional?</label>
         <textarea id="comentario31" name="comentario31" placeholder="Escriba aquí su respuesta (opcional)..."></textarea>
       </div>
     </div>`;
@@ -503,7 +504,7 @@ async function finalizarEncuesta(){
     return;
   }
 
-  // Validar que las 29 preguntas cerradas estén respondidas
+  // Validar que las 30 preguntas cerradas estén respondidas
   let firstInvalid = null;
   let allValid = true;
   PI_DATA.forEach(mom=>mom.items.forEach(it=>{
