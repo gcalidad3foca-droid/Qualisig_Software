@@ -3967,16 +3967,19 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   const modal=$('obsModal'),box=$('obsBox'),bd=$('obsBackdrop'),ta=$('obsTa'),ai=$('obsAi');
   const EASE='cubic-bezier(.22,1,.36,1)';
   const reduce=()=>false; /* la animación se reproduce siempre */
-  console.info('Observaciones modal: animación v7');
+  console.info('Observaciones modal: animación v8');
   let inp=null,anims=[],saveT=null,aiTok=0,aiCtrl=null,aiSel=null,aiSrc='',preAI=null,improved='';
 
   const CHIPS={C:'Cumple',CP:'Cumple parcial',NC:'No cumple',NA:'N/A'};
 
+  let pending=false,origVal='';
+  function fire(){pending=false;if(inp)inp.dispatchEvent(new Event('input',{bubbles:true}));}
   function push(now){
     if(!inp)return;
-    inp.value=ta.value;
+    /* solo se avisa al sistema si el texto realmente cambió: abrir y cerrar sin editar no toca la auditoría */
+    if(ta.value!==inp.value){inp.value=ta.value;pending=true;}
+    if(!pending)return;
     clearTimeout(saveT);
-    const fire=()=>inp&&inp.dispatchEvent(new Event('input',{bubbles:true}));
     if(now)fire();else saveT=setTimeout(fire,250);
   }
   function refresh(){
@@ -4027,7 +4030,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 
   function open(input){
     if(inp||!input)return;
-    inp=input;state='opening';
+    inp=input;state='opening';origVal=input.value;pending=false;
     const row=input.closest('tr');
     $('obsTitle').textContent=(row&&row.cells[0]?row.cells[0].textContent:'').trim();
     const r=row&&row.querySelector('input[type=radio]:checked');
@@ -4052,7 +4055,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   function close(){
     if(!inp||state==='closing')return;
     push(true);
-    const input=inp,to=box.getBoundingClientRect(),hasText=!!ta.value,st=ta.scrollTop;
+    const input=inp,orig=origVal,to=box.getBoundingClientRect(),hasText=!!ta.value,st=ta.scrollTop;
     let cs=IDENT,ko=['1','1','1'],bo='1',gStart=null;
     if(state==='opening'){ /* interrumpida a mitad: parte desde el fotograma actual, sin saltos */
       cs=getComputedStyle(surface).transform;ko=kids.map(k=>getComputedStyle(k).opacity);bo=getComputedStyle(bd).opacity;
@@ -4078,7 +4081,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
       stop();ghostOff();
       modal.classList.remove('open');modal.setAttribute('aria-hidden','true');
       lock(false);aiReset();
-      input.dispatchEvent(new Event('change',{bubbles:true}));
+      if(input.value!==orig)input.dispatchEvent(new Event('change',{bubbles:true}));
       const req=$('obsReq').classList.contains('show');
       input.style.borderColor=(req&&!input.value.trim())?'#e53935':'';
       inp=null;state='closed';
