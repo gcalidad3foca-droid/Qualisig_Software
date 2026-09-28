@@ -436,6 +436,98 @@
 .obs-btn-soft{background:#f3e8ff;color:#7c3aed}.obs-btn-soft:hover{background:#e9d5ff}
 .obs-btn-use{flex:1;justify-content:center;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;box-shadow:0 4px 12px rgba(124,58,237,.3)}
 .obs-btn-use:hover{box-shadow:0 6px 18px rgba(124,58,237,.45);transform:translateY(-1px)}
+/* ===== IA reutilizable (hallazgo adicional y OM) — mismo diseño violeta de Qualisig ===== */
+.ia-wrap{margin-top:8px;font-family:inherit}
+.ia-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ia-pill{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:20px;padding:7px 14px 7px 11px;font:inherit;font-size:12px;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,#8b5cf6,#7c3aed,#6d28d9);background-size:200% 200%;box-shadow:0 2px 8px rgba(124,58,237,.3);animation:obsBrillo 4s ease infinite;transition:transform .15s,box-shadow .25s}
+.ia-pill:hover{transform:translateY(-1px) scale(1.03);box-shadow:0 4px 14px rgba(124,58,237,.45)}
+.ia-pill:active{transform:scale(.96)}
+.ia-pill.busy i{animation:obsSpin 1s linear infinite}
+.ia-hint{flex:1;min-width:150px;font-size:11px;color:#94a3b8;line-height:1.3;transition:color .2s}
+.ia-hint.warn{color:#c62828;font-weight:600;animation:iaShake .4s}
+@keyframes iaShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.ia-undo{display:none;border:none;background:#eef0ff;color:#4f46e5;font:inherit;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:14px;cursor:pointer}
+.ia-undo.show{display:inline-flex;align-items:center;gap:5px;animation:obsPop .3s ease}
+.ia-undo:hover{background:#e0e4ff}
+.ia-panel{display:grid;grid-template-rows:0fr;margin-top:0;transition:grid-template-rows .4s cubic-bezier(.22,1,.36,1),margin-top .4s cubic-bezier(.22,1,.36,1)}
+.ia-panel.show{grid-template-rows:1fr;margin-top:12px}
+.ia-inner{overflow:hidden;min-height:0}
+.ia-panel [data-st]{display:none}
+.ia-panel[data-state=loading] [data-st=loading],.ia-panel[data-state=result] [data-st=result],.ia-panel[data-state=error] [data-st=error]{display:block}
+.om-inline-content{max-height:92vh;display:flex;flex-direction:column}
+.om-inline-body{overflow-y:auto;overscroll-behavior:contain}
+/* ===== MODAL OPORTUNIDAD DE MEJORA — rediseño ===== */
+#omInlineModal{background:rgba(15,23,42,.58);overflow-y:auto;overscroll-behavior:contain;animation:omFade .25s ease}
+#omInlineModal .om-inline-content{width:92%;max-width:520px;margin:7vh auto 4vh;border-radius:20px;background:#fff;box-shadow:0 30px 80px rgba(15,23,42,.4);max-height:88vh;display:flex;flex-direction:column;overflow:hidden;animation:omPop .42s cubic-bezier(.22,1,.36,1)}
+@keyframes omFade{from{opacity:0}to{opacity:1}}
+@keyframes omPop{from{opacity:0;transform:translateY(22px) scale(.96)}to{opacity:1;transform:none}}
+.om-hd{display:flex;align-items:center;gap:13px;padding:18px 20px;background:linear-gradient(135deg,#1e3c72,#2a5298 62%,#5b6fd6);color:#fff;flex-shrink:0}
+.om-hd-ico{width:42px;height:42px;border-radius:13px;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:19px;color:#ffe08a;flex-shrink:0}
+.om-hd-txt{flex:1;min-width:0}
+.om-hd-txt h3{margin:0;font-size:16px;font-weight:700;letter-spacing:.2px}
+.om-hd-txt p{margin:3px 0 0;font-size:12px;opacity:.86;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.om-hd-close{width:34px;height:34px;border:none;border-radius:10px;background:rgba(255,255,255,.16);color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,transform .25s}
+.om-hd-close:hover{background:rgba(255,255,255,.3);transform:rotate(90deg)}
+#omInlineModal .om-inline-body{padding:18px 20px 16px;overflow-y:auto;flex:1;min-height:0}
+.om-sec-lbl{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#64748b}
+.om-sec-lbl i{color:#7c8ff0}
+.om-sec-lbl span{margin-left:auto;padding:2px 9px;border-radius:20px;background:#eef1ff;color:#5b6fd6;font-size:11px}
+#om-inline-lista{max-height:190px;overflow-y:auto;margin-bottom:16px;padding-right:2px}
+.om-item{display:flex;align-items:flex-start;gap:11px;margin-bottom:8px;padding:11px 10px 11px 12px;background:#f6f8ff;border:1px solid #e4e9ff;border-radius:13px;transition:border-color .2s,box-shadow .2s}
+.om-item:hover{border-color:#c9d2ff;box-shadow:0 4px 14px rgba(102,126,234,.12)}
+.om-item.om-new{animation:omPop .42s cubic-bezier(.22,1,.36,1)}
+.om-num{min-width:24px;height:24px;margin-top:1px;border-radius:50%;background:linear-gradient(135deg,#7c8ff0,#9c6fd6);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.om-txt{flex:1;font-size:13px;line-height:1.5;color:#2c3e50;word-break:break-word}
+.om-del{width:26px;height:26px;border:none;border-radius:8px;background:transparent;color:#a0a9bd;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,color .2s}
+.om-del:hover{background:#fee2e2;color:#dc2626}
+.om-empty{margin-bottom:16px;padding:18px 10px 20px;text-align:center;background:#f8faff;border:1.5px dashed #d9e0ff;border-radius:14px}
+.om-empty-ico{width:44px;height:44px;margin:0 auto 8px;border-radius:50%;background:#eef1ff;color:#8b9cf0;font-size:18px;display:flex;align-items:center;justify-content:center}
+.om-empty p{margin:0 0 2px;font-size:13px;font-weight:600;color:#475569}
+.om-empty span{font-size:12px;color:#94a3b8}
+#om-inline-draft-warn{align-items:center;gap:8px;margin-bottom:14px;padding:9px 12px;background:#fff8e6;border:1px solid #fde3a7;border-radius:11px;font-size:12px;color:#92660a}
+#om-inline-draft-warn i{color:#f59e0b;flex-shrink:0}
+.om-field{position:relative}
+#om-inline-input{display:block;width:100%;min-height:96px;padding:12px 14px 28px;border:2px solid #e2e6f0;border-radius:13px;background:#fbfcff;font:inherit;font-size:14px;line-height:1.5;color:#2c3e50;resize:none;transition:border-color .25s,box-shadow .25s,background .25s}
+#om-inline-input:focus{outline:none;border-color:#667eea;background:#fff;box-shadow:0 0 0 4px rgba(102,126,234,.14)}
+#om-inline-count{position:absolute;right:14px;bottom:9px;font-size:11px;color:#94a3b8;pointer-events:none;transition:color .2s}
+#om-inline-count.warn{color:#e65100;font-weight:700}
+.om-ft{display:flex;gap:10px;padding:14px 20px 18px;border-top:1px solid #eef1f8;background:#fafbff;flex-shrink:0}
+.om-btn-add{flex:1;justify-content:center;background:linear-gradient(135deg,#2a5298,#667eea);color:#fff;box-shadow:0 4px 14px rgba(42,82,152,.28)}
+.om-btn-add:hover{box-shadow:0 6px 20px rgba(42,82,152,.4);transform:translateY(-1px)}
+.om-field+.ia-wrap{margin-top:12px}
+@media(max-width:520px){#omInlineModal .om-inline-content{margin:3vh auto;max-height:94vh;border-radius:18px}.om-ft{padding:12px 16px 16px}#om-inline-input{font-size:16px}}
+/* ===== OM compacto ===== */
+#omInlineModal .om-inline-content{max-width:440px;margin:9vh auto 4vh;border-radius:16px;max-height:86vh;box-shadow:0 24px 60px rgba(15,23,42,.38)}
+.om-hd{gap:11px;padding:12px 14px;background:linear-gradient(135deg,#1e3c72,#2a5298 65%,#4f66d0)}
+.om-hd-ico{width:32px;height:32px;border-radius:10px;font-size:15px}
+.om-hd-txt h3{font-size:14px;letter-spacing:.1px}
+.om-hd-txt p{margin-top:1px;font-size:11px;-webkit-line-clamp:1}
+.om-hd-close{width:28px;height:28px;border-radius:8px;font-size:13px}
+#omInlineModal .om-inline-body{padding:12px 14px 12px}
+.om-sec-lbl{margin-bottom:7px;font-size:10px;letter-spacing:.07em}
+.om-sec-lbl span{padding:1px 8px;font-size:10px}
+#om-inline-lista{max-height:132px;margin-bottom:10px}
+.om-item{gap:9px;margin-bottom:6px;padding:8px 6px 8px 9px;border-radius:10px}
+.om-num{min-width:20px;height:20px;margin-top:1px;font-size:10px}
+.om-txt{font-size:12.5px;line-height:1.45}
+.om-del{width:22px;height:22px;border-radius:7px;font-size:11px}
+.om-empty{display:flex;align-items:center;gap:9px;margin-bottom:10px;padding:9px 12px;text-align:left;background:#f8faff;border:1.5px dashed #d9e0ff;border-radius:10px;color:#94a3b8;font-size:12px}
+.om-empty i{color:#8b9cf0;font-size:13px}
+#om-inline-draft-warn{margin-bottom:10px;padding:7px 10px;border-radius:9px;font-size:11.5px}
+#om-inline-input{min-height:68px;padding:9px 12px 22px;border-radius:11px;font-size:13.5px;line-height:1.45}
+#om-inline-count{right:11px;bottom:6px;font-size:10px}
+.om-field+.ia-wrap{margin-top:8px}
+#omInlineModal .ia-hint:not(.warn){display:none}
+#omInlineModal .ia-pill{padding:6px 12px 6px 10px;font-size:11.5px}
+#omInlineModal .ia-panel.show{margin-top:9px}
+#omInlineModal .obs-ai-top{margin-bottom:5px}
+#omInlineModal .obs-ai-new{padding:9px 11px;font-size:13px;max-height:20vh}
+#omInlineModal .obs-ai-actions{gap:6px;margin-top:9px}
+#omInlineModal .obs-ai-actions .obs-btn{padding:7px 11px;font-size:12px;border-radius:9px}
+.om-ft{gap:8px;padding:10px 14px 13px}
+.om-ft .obs-btn{padding:8px 14px;font-size:12.5px;border-radius:10px}
+.om-btn-add{box-shadow:0 3px 10px rgba(42,82,152,.25)}
+@media(max-width:520px){#omInlineModal .om-inline-content{max-width:none;width:92%;margin:4vh auto}#om-inline-input{font-size:16px}}
 </style>
 </head>
 <body>
@@ -754,29 +846,30 @@
 
 <!-- ===== OPORTUNIDADES DE MEJORA INLINE MODAL ===== -->
 <div id="omInlineModal" class="om-inline-modal">
-  <div class="om-inline-content">
-    <div class="om-inline-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
-      <div>
-        <h3><i class="fas fa-lightbulb" style="margin-right:6px;"></i>Oportunidad de Mejora</h3>
+  <div class="om-inline-content" role="dialog" aria-modal="true" aria-labelledby="om-inline-title">
+    <div class="om-hd">
+      <div class="om-hd-ico"><i class="fas fa-lightbulb"></i></div>
+      <div class="om-hd-txt">
+        <h3 id="om-inline-title">Oportunidad de mejora</h3>
         <p id="om-inline-subtitle">Ítem seleccionado</p>
       </div>
-      <button onclick="omInlineCerrar()" title="Cerrar" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">&times;</button>
+      <button type="button" class="om-hd-close" onclick="omInlineCerrar()" title="Cerrar" aria-label="Cerrar"><i class="fas fa-times"></i></button>
     </div>
     <div class="om-inline-body">
-      <div id="om-inline-lista" style="margin-bottom:10px;max-height:160px;overflow-y:auto;"></div>
-      <div id="om-inline-draft-warn" style="display:none;background:#fff3cd;border:1.5px solid #ffc107;border-radius:7px;padding:8px 12px;margin-bottom:8px;font-size:12px;color:#856404;display:flex;align-items:center;gap:7px;">
-        <i class="fas fa-exclamation-triangle" style="color:#ffc107;flex-shrink:0;"></i>
-        <span>Hay una oportunidad sin agregar. Presiona <strong>+ Agregar</strong> para guardarla.</span>
+      <div class="om-sec-lbl"><i class="fas fa-list-ul"></i> Registradas <span id="om-inline-num">0</span></div>
+      <div id="om-inline-lista"></div>
+      <div id="om-inline-draft-warn" style="display:none;">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>Hay una oportunidad sin agregar. Presiona <strong>Agregar</strong> para guardarla.</span>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <textarea id="om-inline-input" placeholder="Escriba la oportunidad de mejora o recomendación..." rows="2" maxlength="400"
-          style="flex:1;padding:10px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;"></textarea>
+      <div class="om-field">
+        <textarea id="om-inline-input" placeholder="Escriba la oportunidad de mejora..." rows="2" maxlength="400"></textarea>
+        <span id="om-inline-count">0/400</span>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:4px;">
-        <button onclick="omInlineAgregar()" style="flex:1;padding:10px;background:#e65100;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;">
-          <i class="fas fa-plus"></i> Agregar
-        </button>
-      </div>
+    </div>
+    <div class="om-ft">
+      <button type="button" class="obs-btn obs-btn-cancel" onclick="omInlineCerrar()">Cerrar</button>
+      <button type="button" class="obs-btn om-btn-add" onclick="omInlineAgregar()"><i class="fas fa-plus"></i> Agregar</button>
     </div>
   </div>
 </div>
@@ -1326,9 +1419,19 @@ function openOmInlineModal(sectionName, itemIdx, itemText) {
   setTimeout(()=>inp.focus(), 100);
 }
 
+function _omInlineUpdateCount() {
+  var inp = document.getElementById('om-inline-input');
+  var c = document.getElementById('om-inline-count');
+  if (!inp || !c) return;
+  var max = inp.maxLength > 0 ? inp.maxLength : 400;
+  c.textContent = inp.value.length + '/' + max;
+  c.classList.toggle('warn', inp.value.length >= max * 0.9);
+}
+
 function _omInlineUpdateDraftWarn() {
   var inp = document.getElementById('om-inline-input');
   var warn = document.getElementById('om-inline-draft-warn');
+  _omInlineUpdateCount();
   if (!inp || !warn) return;
   var hasDraft = inp.value.trim().length > 0;
   warn.style.display = hasDraft ? 'flex' : 'none';
@@ -1339,16 +1442,22 @@ function _omInlineUpdateDraftWarn() {
 function omInlineRenderLista() {
   const cont = document.getElementById('om-inline-lista');
   const items = omStore[_currentOmItem] || [];
+  const num = document.getElementById('om-inline-num'); if (num) num.textContent = items.length;
+  // Solo se anima lo recién agregado (no toda la lista en cada render)
+  const prevN = (cont.dataset.item === String(_currentOmItem)) ? parseInt(cont.dataset.n || '0', 10) : items.length;
+  cont.dataset.item = String(_currentOmItem); cont.dataset.n = items.length;
   if (items.length === 0) {
-    cont.innerHTML = '<p style="color:#aaa;font-size:12px;text-align:center;margin:4px 0;">Sin oportunidades de mejora aún.</p>';
+    cont.innerHTML = '<div class="om-empty"><i class="fas fa-lightbulb"></i><span>Sin oportunidades registradas todavía</span></div>';
     return;
   }
+  const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   cont.innerHTML = items.map((txt, i) => `
-    <div style="display:flex;align-items:flex-start;gap:8px;background:#fff8f0;border-left:3px solid #e65100;border-radius:6px;padding:7px 10px;margin-bottom:5px;">
-      <span style="background:#e65100;color:#fff;border-radius:50%;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">${i+1}</span>
-      <span style="flex:1;font-size:12px;color:#2c3e50;">${txt}</span>
-      <button onclick="omInlineEliminar(${i})" style="background:none;border:none;cursor:pointer;color:#e53935;font-size:13px;padding:0;" title="Eliminar">✕</button>
+    <div class="om-item${i >= prevN ? ' om-new' : ''}">
+      <span class="om-num">${i+1}</span>
+      <span class="om-txt">${esc(txt)}</span>
+      <button type="button" class="om-del" onclick="omInlineEliminar(${i})" title="Eliminar" aria-label="Eliminar"><i class="fas fa-times"></i></button>
     </div>`).join('');
+  if (prevN < items.length) cont.scrollTop = cont.scrollHeight;
 }
 
 function omInlineAgregar() {
@@ -3949,15 +4058,174 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 });
 </script>
 <script>
-/* ===== OBSERVACIONES · MODAL FLOTANTE + IA (misma API Groq de Qualisig) ===== */
-(function(){
+/* ===== MOTOR DE IA COMPARTIDO (Groq, misma API, modelos y prompt de Qualisig) + componente reutilizable ===== */
+window.IAEngine=(function(){
+  /* ÚNICO lugar donde vive la clave de Groq para toda la lista */
   const GROQ_API_KEY='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';
   const MODELOS=['llama-3.3-70b-versatile','llama-3.1-8b-instant','openai/gpt-oss-20b'];
+  const CTX={
+    obs:'una observación de calidad',
+    hallazgo:'un hallazgo adicional identificado en una auditoría de calidad de servicios de salud',
+    om:'una oportunidad de mejora (recomendación) derivada de una auditoría de calidad de servicios de salud'
+  };
+  async function call(model,prompt,tok){
+    const ctrl=new AbortController();tok.ctrl=ctrl;let timedOut=false;
+    const t=setTimeout(()=>{timedOut=true;ctrl.abort();},12000);
+    try{
+      const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_API_KEY},
+        body:JSON.stringify({model,messages:[{role:'user',content:prompt}],temperature:.4,max_tokens:400}),
+        signal:ctrl.signal
+      });
+      return {ok:resp.ok,status:resp.status,data:await resp.json()};
+    }catch(e){
+      if(e.name==='AbortError'&&timedOut)return {ok:false,status:408,data:{error:{message:'Tiempo de espera agotado (12s)'}}};
+      if(e.name==='AbortError')return {cancelled:true};
+      return {ok:false,status:0,data:{error:{message:e.message||'Error de red'}}};
+    }finally{clearTimeout(t);}
+  }
+  /* o: {ctx:'obs'|'hallazgo'|'om', max:number, token:{cancelled,ctrl}, onRetry:fn} */
+  async function improve(texto,o){
+    o=o||{};const tok=o.token||{};
+    const prompt='Mejora la redacción del siguiente texto de '+(CTX[o.ctx]||CTX.obs)+' en una empresa colombiana. '
+      +'Corrige gramática y ortografía, hazlo más claro y profesional, pero conserva TODOS los datos, cifras, nombres y hechos exactamente igual — no inventes ni agregues información nueva. '
+      +(o.max?'El resultado no debe superar '+o.max+' caracteres. ':'')
+      +'Responde ÚNICAMENTE con el texto mejorado, sin comillas, sin explicaciones, sin encabezados.\n\nTexto original:\n'+texto;
+    let last='Error de la API de Groq';
+    for(let n=1;n<=3;n++){
+      if(tok.cancelled)return {cancelled:true};
+      const res=await call(MODELOS[(n-1)%MODELOS.length],prompt,tok);
+      if(tok.cancelled||res.cancelled)return {cancelled:true};
+      if(res.ok){
+        const c=res.data.choices&&res.data.choices[0]&&res.data.choices[0].message&&res.data.choices[0].message.content;
+        if(c&&c.trim()){return {ok:true,text:c.trim().replace(/^["“«]([\s\S]*)["”»]$/,'$1').trim()};}
+        last='Groq no devolvió ningún texto';
+      }else{
+        last=(res.data.error&&res.data.error.message)||last;
+        if(![404,503,429,408,0].includes(res.status))break;
+      }
+      if(n<3){if(o.onRetry)o.onRetry();await new Promise(r=>setTimeout(r,300));}
+    }
+    return {ok:false,error:last};
+  }
+  return {improve:improve};
+})();
+
+/* Componente: agrega botón "Mejorar con IA" + panel de propuesta debajo de un campo de texto */
+window.IAField={attach:function(cfg){
+  const f=cfg.field;if(!f)return null;
+  const wrap=document.createElement('div');wrap.className='ia-wrap';
+  wrap.innerHTML=
+   '<div class="ia-bar">'
+  +  '<button type="button" class="ia-pill" title="Mejorar redacción con IA"><i class="fas fa-wand-magic-sparkles"></i><span>Mejorar con IA</span></button>'
+  +  '<span class="ia-hint">Selecciona parte del texto para mejorar solo esa parte</span>'
+  +  '<button type="button" class="ia-undo"><i class="fas fa-rotate-left"></i> Deshacer IA</button>'
+  +'</div>'
+  +'<div class="ia-panel" data-state="idle"><div class="ia-inner"><div class="obs-ai-card">'
+  +  '<div data-st="loading" class="obs-ai-load"><i class="fas fa-wand-magic-sparkles obs-varita"></i><p class="ia-load-txt">Mejorando redacción...</p></div>'
+  +  '<div data-st="result"><div class="obs-ai-top"><i class="fas fa-wand-magic-sparkles"></i> Mejorado con IA <span class="obs-ai-scope ia-scope"></span></div>'
+  +    '<div class="obs-ai-new ia-new"></div>'
+  +    '<div class="obs-ai-actions">'
+  +      '<button type="button" class="obs-btn obs-btn-cancel ia-discard">Descartar</button>'
+  +      '<button type="button" class="obs-btn obs-btn-soft ia-retry"><i class="fas fa-rotate"></i> Reintentar</button>'
+  +      '<button type="button" class="obs-btn obs-btn-use ia-apply"><i class="fas fa-check"></i> Usar este texto</button>'
+  +    '</div></div>'
+  +  '<div data-st="error"><div class="obs-ai-err ia-err"></div>'
+  +    '<div class="obs-ai-actions"><button type="button" class="obs-btn obs-btn-cancel ia-discard">Cerrar</button>'
+  +    '<button type="button" class="obs-btn obs-btn-soft ia-retry"><i class="fas fa-rotate"></i> Reintentar</button></div></div>'
+  +'</div></div></div>';
+  (cfg.after||f).insertAdjacentElement('afterend',wrap);
+  const q=s=>wrap.querySelector(s),qa=s=>wrap.querySelectorAll(s);
+  const pill=q('.ia-pill'),hint=q('.ia-hint'),undo=q('.ia-undo'),panel=q('.ia-panel');
+  const HINT=hint.textContent;
+  let tok=null,sel=null,improved='',prev=null,my=0,own=false,hintT=null;
+
+  function setState(st){panel.dataset.state=st;panel.classList.add('show');pill.classList.toggle('busy',st==='loading');}
+  function reset(){
+    my++;if(tok){tok.cancelled=true;if(tok.ctrl)tok.ctrl.abort();}tok=null;
+    panel.classList.remove('show');panel.dataset.state='idle';pill.classList.remove('busy');
+    undo.classList.remove('show');prev=null;hint.textContent=HINT;hint.classList.remove('warn');
+  }
+  function warn(msg){
+    clearTimeout(hintT);hint.textContent=msg;hint.classList.remove('warn');void hint.offsetWidth;hint.classList.add('warn');
+    hintT=setTimeout(()=>{hint.textContent=HINT;hint.classList.remove('warn');},2600);
+  }
+  async function run(){
+    const hasSel=f.selectionEnd>f.selectionStart;
+    const src=hasSel?f.value.slice(f.selectionStart,f.selectionEnd):f.value;
+    if(!src.trim()){warn('Escribe primero el texto que quieres mejorar');return;}
+    sel=hasSel?{s:f.selectionStart,e:f.selectionEnd}:null;
+    const id=++my;if(tok){tok.cancelled=true;if(tok.ctrl)tok.ctrl.abort();}
+    tok={cancelled:false,ctrl:null};const t=tok;
+    setState('loading');q('.ia-load-txt').textContent='Mejorando redacción...';
+    const res=await IAEngine.improve(src,{ctx:cfg.ctx,max:cfg.max,token:t,onRetry:()=>{q('.ia-load-txt').textContent='Reintentando...';}});
+    if(id!==my||res.cancelled)return;
+    if(res.ok){
+      improved=res.text;q('.ia-new').textContent=improved;
+      q('.ia-scope').textContent=hasSel?'Texto seleccionado':'Todo el campo';
+      setState('result');
+    }else{
+      q('.ia-err').textContent='No se pudo mejorar el texto tras varios intentos: '+res.error+' — intenta de nuevo en un momento.';
+      setState('error');
+    }
+    setTimeout(()=>{try{panel.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){}},120);
+  }
+  function emit(){own=true;f.dispatchEvent(new Event('input',{bubbles:true}));own=false;}
+  function apply(){
+    if(!improved)return;
+    prev=f.value;
+    f.value=sel?f.value.slice(0,sel.s)+improved+f.value.slice(sel.e):improved;
+    emit();
+    try{f.focus({preventScroll:true});f.setSelectionRange(f.value.length,f.value.length);}catch(e){}
+    panel.classList.remove('show');setTimeout(()=>{if(!panel.classList.contains('show'))panel.dataset.state='idle';},420);
+    undo.classList.add('show');
+    if(cfg.onApply)cfg.onApply(f);
+  }
+  pill.addEventListener('click',run);
+  qa('.ia-retry').forEach(b=>b.addEventListener('click',run));
+  qa('.ia-discard').forEach(b=>b.addEventListener('click',()=>{my++;if(tok){tok.cancelled=true;}panel.classList.remove('show');panel.dataset.state='idle';pill.classList.remove('busy');try{f.focus({preventScroll:true});}catch(e){}}));
+  q('.ia-apply').addEventListener('click',apply);
+  undo.addEventListener('click',()=>{if(prev===null)return;f.value=prev;prev=null;emit();undo.classList.remove('show');try{f.focus({preventScroll:true});}catch(e){}});
+  f.addEventListener('input',()=>{if(!own){undo.classList.remove('show');prev=null;}});
+  /* al cerrarse el modal contenedor, se cancela cualquier petición y se limpia el panel */
+  if(cfg.modal&&cfg.isOpen){
+    new MutationObserver(()=>{if(!cfg.isOpen())reset();}).observe(cfg.modal,{attributes:true,attributeFilter:['class','style']});
+  }
+  return {reset:reset};
+}};
+
+/* Modal OM: contador en vivo, Ctrl+Enter para agregar y Esc para cerrar */
+(function(){
+  var ta=document.getElementById('om-inline-input'),om=document.getElementById('omInlineModal');
+  if(!ta||!om)return;
+  ta.addEventListener('input',function(){_omInlineUpdateCount();});
+  ta.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();omInlineAgregar();}});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&om.style.display==='block'){e.preventDefault();e.stopPropagation();omInlineCerrar();}
+  },true);
+})();
+
+/* Hallazgo adicional */
+IAField.attach({
+  field:document.getElementById('haModalTa'),ctx:'hallazgo',
+  modal:document.getElementById('haModal'),isOpen:function(){return document.getElementById('haModal').classList.contains('open');}
+});
+/* Oportunidad de mejora (OM): máx. 400 caracteres como el campo original */
+IAField.attach({
+  field:document.getElementById('om-inline-input'),ctx:'om',max:400,
+  after:document.getElementById('om-inline-input').parentElement,
+  modal:document.getElementById('omInlineModal'),isOpen:function(){return document.getElementById('omInlineModal').style.display!=='none';}
+});
+</script>
+<script>
+/* ===== OBSERVACIONES · MODAL FLOTANTE + IA (misma API Groq de Qualisig) ===== */
+(function(){
   const $=id=>document.getElementById(id);
   const modal=$('obsModal'),box=$('obsBox'),bd=$('obsBackdrop'),ta=$('obsTa'),ai=$('obsAi');
   const EASE='cubic-bezier(.22,1,.36,1)';
   const reduce=()=>false; /* la animación se reproduce siempre */
-  console.info('Observaciones modal: animación v8');
+  console.info('Observaciones modal: animación v12');
   let inp=null,anims=[],saveT=null,aiTok=0,aiCtrl=null,aiSel=null,aiSrc='',preAI=null,improved='';
 
   const CHIPS={C:'Cumple',CP:'Cumple parcial',NC:'No cumple',NA:'N/A'};
@@ -3983,7 +4251,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     else{b.style.overflow=b.dataset.obsOv||'';b.style.paddingRight='';}
   }
   function aiReset(){
-    aiTok++;if(aiCtrl){aiCtrl.abort();aiCtrl=null;}
+    aiTok++;if(aiCtrl){aiCtrl.cancelled=true;if(aiCtrl.ctrl)aiCtrl.ctrl.abort();aiCtrl=null;}
     ai.classList.remove('show');ai.dataset.state='idle';
     $('obsAiBtn').classList.remove('busy');
   }
@@ -4080,21 +4348,6 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   }
 
   /* ---------- IA (Groq, mismo flujo y rotación de modelos que Qualisig) ---------- */
-  async function callGroq(model,prompt,signal){
-    const t=setTimeout(()=>aiCtrl&&aiCtrl.abort('timeout'),12000);
-    try{
-      const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_API_KEY},
-        body:JSON.stringify({model,messages:[{role:'user',content:prompt}],temperature:.4,max_tokens:400}),
-        signal
-      });
-      return {ok:resp.ok,status:resp.status,data:await resp.json()};
-    }catch(e){
-      if(e.name==='AbortError')return {ok:false,status:408,data:{error:{message:'Tiempo de espera agotado (12s)'}},aborted:true};
-      return {ok:false,status:0,data:{error:{message:e.message||'Error de red'}}};
-    }finally{clearTimeout(t);}
-  }
   function setAi(state){
     ai.dataset.state=state;ai.classList.add('show');
     $('obsAiBtn').classList.toggle('busy',state==='loading');
@@ -4106,34 +4359,20 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     aiSrc=hasSel?ta.value.slice(ta.selectionStart,ta.selectionEnd):ta.value;
     if(!aiSrc.trim())return;
     const my=++aiTok;
-    setAi('loading');$('obsAiLoadTxt').textContent='Mejorando redacción…';
-    const prompt='Mejora la redacción del siguiente texto de una observación de calidad en una empresa colombiana. '
-      +'Corrige gramática y ortografía, hazlo más claro y profesional, pero conserva TODOS los datos, cifras, nombres y hechos exactamente igual — no inventes ni agregues información nueva. '
-      +'Responde ÚNICAMENTE con el texto mejorado, sin comillas, sin explicaciones, sin encabezados.\n\nTexto original:\n'+aiSrc;
-    let lastErr='Error de la API de Groq';
-    for(let intento=1;intento<=3;intento++){
-      if(my!==aiTok)return;
-      aiCtrl=new AbortController();
-      const res=await callGroq(MODELOS[(intento-1)%MODELOS.length],prompt,aiCtrl.signal);
-      if(my!==aiTok)return;
-      if(res.ok){
-        const c=res.data.choices&&res.data.choices[0]&&res.data.choices[0].message&&res.data.choices[0].message.content;
-        if(c&&c.trim()){
-          improved=c.trim();
-          $('obsAiNew').textContent=improved;
-          $('obsAiScope').textContent=hasSel?'Texto seleccionado':'Todo el campo';
-          setAi('result');return;
-        }
-        lastErr='Groq no devolvió ningún texto';
-      }else{
-        lastErr=(res.data.error&&res.data.error.message)||lastErr;
-        if(![404,503,429,408,0].includes(res.status))break;
-      }
-      if(intento<3){$('obsAiLoadTxt').textContent='Reintentando…';await new Promise(r=>setTimeout(r,300));}
+    if(aiCtrl){aiCtrl.cancelled=true;if(aiCtrl.ctrl)aiCtrl.ctrl.abort();}
+    aiCtrl={cancelled:false,ctrl:null};
+    setAi('loading');$('obsAiLoadTxt').textContent='Mejorando redacción...';
+    const res=await IAEngine.improve(aiSrc,{ctx:'obs',token:aiCtrl,onRetry:()=>{$('obsAiLoadTxt').textContent='Reintentando...';}});
+    if(my!==aiTok||res.cancelled)return;
+    if(res.ok){
+      improved=res.text;
+      $('obsAiNew').textContent=improved;
+      $('obsAiScope').textContent=hasSel?'Texto seleccionado':'Todo el campo';
+      setAi('result');
+    }else{
+      $('obsAiErr').textContent='No se pudo mejorar el texto tras varios intentos: '+res.error+' — intenta de nuevo en un momento.';
+      setAi('error');
     }
-    if(my!==aiTok)return;
-    $('obsAiErr').textContent='No se pudo mejorar el texto tras varios intentos: '+lastErr+' — intenta de nuevo en un momento.';
-    setAi('error');
   }
   function applyAI(){
     if(!improved)return;
