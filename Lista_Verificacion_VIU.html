@@ -418,6 +418,24 @@
 @keyframes obsSk{to{background-position:-200% 0}}
 @keyframes obsSpin{to{transform:rotate(360deg)}}
 @media(max-width:600px){#obsModal{align-items:flex-start;padding:max(env(safe-area-inset-top),10px) 8px 8px}#obsBox{max-height:calc(100vh - 20px)}#obsTa{font-size:16px;height:150px}.obs-btn{padding:10px 13px}#obsFoot .obs-btn-ai span{display:none}}
+/* ===== Diseño IA al estilo Qualisig ===== */
+.obs-btn-ai{background:linear-gradient(135deg,#8b5cf6,#7c3aed,#6d28d9);background-size:200% 200%;border-radius:20px;padding:9px 16px 9px 13px;font-size:12.5px;box-shadow:0 2px 8px rgba(124,58,237,.3);animation:obsBrillo 4s ease infinite}
+.obs-btn-ai:hover:not(:disabled){box-shadow:0 4px 14px rgba(124,58,237,.45);transform:translateY(-1px) scale(1.03)}
+.obs-btn-ai:disabled{animation:none}
+@keyframes obsBrillo{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.obs-ai-card{border:none;background:none;padding:0}
+.obs-ai-top{color:#7c3aed;font-size:11px;font-weight:800;letter-spacing:.03em;margin-bottom:6px}
+.obs-ai-scope{color:#a78bfa}
+.obs-ai-new{background:#faf5ff;border:1px solid #e9d5ff;color:#3b0764;border-radius:10px;padding:12px 14px;font-size:14px;line-height:1.55;text-align:justify;animation:obsFadeIn .45s ease}
+@keyframes obsFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.obs-ai-load{text-align:center;padding:14px 0 6px}
+.obs-varita{font-size:26px;color:#7c3aed;display:block;margin:0 auto 8px;animation:obsVarita 1.2s ease-in-out infinite}
+@keyframes obsVarita{0%,100%{transform:scale(1) rotate(0deg);opacity:.75}50%{transform:scale(1.15) rotate(-8deg);opacity:1}}
+.obs-ai-load p{margin:0;font-size:13px;font-weight:400;color:#94a3b8;display:block}
+.obs-btn-cancel{background:#f1f5f9;color:#475569}.obs-btn-cancel:hover{background:#e2e8f0}
+.obs-btn-soft{background:#f3e8ff;color:#7c3aed}.obs-btn-soft:hover{background:#e9d5ff}
+.obs-btn-use{flex:1;justify-content:center;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;box-shadow:0 4px 12px rgba(124,58,237,.3)}
+.obs-btn-use:hover{box-shadow:0 6px 18px rgba(124,58,237,.45);transform:translateY(-1px)}
 </style>
 </head>
 <body>
@@ -608,24 +626,23 @@
         <div id="obsAiInner">
           <div class="obs-ai-card">
             <div data-st="loading" class="obs-ai-load">
-              <p><i class="fas fa-wand-magic-sparkles"></i> <span id="obsAiLoadTxt">Mejorando redacción…</span></p>
-              <div class="obs-sk" style="width:96%"></div><div class="obs-sk" style="width:88%"></div><div class="obs-sk" style="width:60%"></div>
+              <i class="fas fa-wand-magic-sparkles obs-varita"></i>
+              <p id="obsAiLoadTxt">Mejorando redacción...</p>
             </div>
             <div data-st="result">
-              <div class="obs-ai-top"><i class="fas fa-wand-magic-sparkles"></i> Propuesta de la IA <span class="obs-ai-scope" id="obsAiScope"></span></div>
-              <div class="obs-ai-orig" id="obsAiOrig"></div>
+              <div class="obs-ai-top"><i class="fas fa-wand-magic-sparkles"></i> Mejorado con IA <span class="obs-ai-scope" id="obsAiScope"></span></div>
               <div class="obs-ai-new" id="obsAiNew"></div>
               <div class="obs-ai-actions">
-                <button type="button" class="obs-btn obs-btn-ai" id="obsAiApply"><i class="fas fa-check"></i> Aplicar</button>
+                <button type="button" class="obs-btn obs-btn-cancel" id="obsAiDiscard">Descartar</button>
                 <button type="button" class="obs-btn obs-btn-soft" id="obsAiRetry"><i class="fas fa-rotate"></i> Reintentar</button>
-                <button type="button" class="obs-btn obs-btn-ghost" id="obsAiDiscard">Descartar</button>
+                <button type="button" class="obs-btn obs-btn-use" id="obsAiApply"><i class="fas fa-check"></i> Usar este texto</button>
               </div>
             </div>
             <div data-st="error">
               <div class="obs-ai-err" id="obsAiErr"></div>
               <div class="obs-ai-actions">
+                <button type="button" class="obs-btn obs-btn-cancel" id="obsAiDiscard2">Cerrar</button>
                 <button type="button" class="obs-btn obs-btn-soft" id="obsAiRetry2"><i class="fas fa-rotate"></i> Reintentar</button>
-                <button type="button" class="obs-btn obs-btn-ghost" id="obsAiDiscard2">Cerrar</button>
               </div>
             </div>
           </div>
@@ -4100,7 +4117,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
         const c=res.data.choices&&res.data.choices[0]&&res.data.choices[0].message&&res.data.choices[0].message.content;
         if(c&&c.trim()){
           improved=c.trim();
-          $('obsAiOrig').textContent=aiSrc;$('obsAiNew').textContent=improved;
+          $('obsAiNew').textContent=improved;
           $('obsAiScope').textContent=hasSel?'Texto seleccionado':'Todo el campo';
           setAi('result');return;
         }
