@@ -2390,6 +2390,716 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
   .audit-item      { padding:12px 12px; }
   .login-card      { padding:40px 18px 28px; }
 }
+
+/* ═════════════ AUTOEVALUACIÓN ISO 9001:2015 (prefijo iso-) ═════════════ */
+.iso{--ok:#16a34a;--sub:#0d9488;--curso:#d97706;--pend:#dc2626;--sin:#cbd5e1;--na:#94a3b8;font-family:'Inter',sans-serif;color:var(--gray800)}
+.iso *{box-sizing:border-box}.iso button{font-family:inherit;cursor:pointer}.iso input,.iso select{font-family:inherit}
+.iso-subrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.iso-subrow .nav-tabs{margin:0;display:inline-flex;background:var(--gray100);border-radius:12px;padding:4px}
+.iso-saved{font-size:11px;font-weight:700;color:var(--ok);opacity:0;transition:opacity .3s;display:flex;gap:6px;align-items:center}.iso-saved.on{opacity:1}
+.iso-fade{animation:isoIn .28s ease both}@keyframes isoIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.iso .dbi-header{margin-bottom:14px}.iso .dbi-sub b{color:var(--gray800)}
+.iso-xl{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1.5px solid var(--gray200);background:#fff;border-radius:10px;font-size:12px;font-weight:700;color:var(--gray600);transition:.2s;text-decoration:none}
+.iso-xl:hover{border-color:var(--accent);color:var(--accent)}
+.iso .dbi-kpi-row{grid-template-columns:repeat(4,1fr)}
+.iso .dbi-kpi{transition:transform .2s,box-shadow .2s}.iso .dbi-kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow2)}
+.iso .dbi-panel{min-width:0}
+.iso-bar{height:5px;background:var(--gray100);border-radius:5px;overflow:hidden;margin-top:8px;display:flex}.iso-bar i{display:block;height:100%;transition:width .6s}
+/* ayuda inicial */
+.iso-help{display:flex;gap:18px;align-items:center;flex-wrap:wrap;background:#eef5ff;border:1px solid #cfe0fb;border-radius:12px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--gray600);animation:isoIn .3s both}
+.iso-help>b{color:var(--blue);font-size:12px}.iso-hs{display:flex;gap:8px;align-items:center;flex:1;min-width:190px}
+.iso-hs span{width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;font-size:11px;display:grid;place-items:center;flex:none}
+.iso-help button{border:0;background:#fff;border-radius:50%;width:26px;height:26px;color:var(--gray400)}.iso-help button:hover{color:var(--gray800)}
+/* siguiente paso */
+.iso-step{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid var(--gray200);border-left:4px solid var(--accent);border-radius:12px;box-shadow:var(--shadow);padding:16px 18px;margin-bottom:12px;animation:isoIn .3s both}
+.iso-step.done{border-left-color:var(--ok)}
+.iso-sic{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--blue));color:#fff;display:grid;place-items:center;font-size:18px;flex:none}.iso-step.done .iso-sic{background:linear-gradient(135deg,#22c55e,#15803d)}
+.iso-stx{flex:1;min-width:220px}.iso-stx small{font-size:10px;font-weight:800;letter-spacing:.6px;color:var(--gray400);text-transform:uppercase}
+.iso-stx b{display:block;font-size:15px;font-weight:800;color:var(--gray800);letter-spacing:-.2px;margin:1px 0}.iso-stx span{font-size:12px;color:var(--gray600)}
+.iso-flags{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.iso-flag{border:1.5px solid #fecaca;background:#fef2f2;color:#b91c1c;border-radius:20px;padding:3px 11px;font-size:11px;font-weight:700;transition:.15s}.iso-flag:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.iso-flag.w{border-color:#fde68a;background:#fffbeb;color:#b45309}
+.iso-two{display:grid;grid-template-columns:1.15fr 1fr;gap:10px;margin-bottom:10px}
+.iso-rowc{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:.5px solid var(--gray100);cursor:pointer;transition:background .15s;width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left}
+.iso-rowc:hover{background:var(--gray50)}
+.iso-rowc .iso-cn{width:24px;font-size:12px;font-weight:800;color:var(--blue2)}.iso-rowc .iso-cm{width:92px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--gray800);font-weight:600}
+.iso-rowc .iso-bar{flex:1;margin:0;height:7px}.iso-rowc .iso-cp{width:56px;text-align:right;font-size:11px;color:var(--gray400);font-weight:600}.iso-rowc .iso-cq{width:38px;text-align:right;font-size:12px;font-weight:800}
+.iso-legend{display:flex;gap:12px;flex-wrap:wrap;padding:10px 14px;font-size:10.5px;color:var(--gray400)}.iso-legend span{display:flex;gap:5px;align-items:center}.iso-legend i{width:9px;height:9px;border-radius:3px;display:block}
+.iso-hl{display:flex;gap:10px;align-items:flex-start;padding:9px 14px;border-bottom:.5px solid var(--gray100);cursor:pointer;transition:background .15s;width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left}.iso-hl:hover{background:var(--gray50)}
+.iso-hl b{font-size:11px;color:var(--blue2);min-width:34px;padding-top:1px}.iso-hl div{flex:1;min-width:0;font-size:12px;color:#334155;line-height:1.4}.iso-hl small{display:block;font-size:10.5px;color:var(--gray400)}
+.iso-hl.late small{color:var(--pend);font-weight:700}
+.iso-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px}
+.iso-tile{border:1px solid var(--gray200);border-bottom:3px solid var(--sin);border-radius:8px;padding:5px 4px;background:#fff;font-size:10.5px;font-weight:800;color:var(--gray800);text-align:center;transition:.15s}
+.iso-tile:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.iso-t-ok{border-bottom-color:var(--ok)}.iso-t-sub{border-bottom-color:var(--sub)}.iso-t-curso{border-bottom-color:var(--curso)}.iso-t-pend{border-bottom-color:var(--pend)}.iso-t-na{border-bottom-color:var(--na)}
+.iso-mcap{font-size:10px;font-weight:800;letter-spacing:.5px;color:var(--gray400);text-transform:uppercase;margin:10px 0 6px}.iso-mcap:first-child{margin-top:0}
+.iso-feed div{display:flex;gap:9px;font-size:11.5px;padding:6px 0;border-bottom:.5px solid var(--gray100)}.iso-feed i{color:var(--accent);margin-top:4px;font-size:6px}.iso-feed small{display:block;color:var(--gray400);font-size:10px}
+.iso-empty{text-align:center;color:var(--gray400);font-size:12px;padding:22px 14px}
+/* evaluación */
+.iso-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.iso-search{position:relative;min-width:240px}.iso-search i{position:absolute;left:11px;top:11px;color:var(--gray400);font-size:12px}
+.iso-search input,.iso-in{border:1.5px solid var(--gray200);background:#fff;border-radius:10px;padding:8px 12px 8px 31px;font-size:12px;outline:0;transition:.2s;width:100%;color:var(--gray800)}
+.iso-in{padding:7px 10px;width:auto}.iso-search input:focus,.iso-in:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,140,214,.15)}
+.iso-filters{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:14px}
+.iso-pills{display:flex;gap:6px;flex-wrap:wrap}
+.iso-pill{padding:6px 13px;border-radius:20px;font-size:11.5px;font-weight:700;border:1.5px solid var(--gray200);background:#fff;color:var(--gray600);transition:all .18s;white-space:nowrap}
+.iso-pill:hover{border-color:var(--accent);color:var(--blue)}.iso-pill.on{background:var(--blue);border-color:var(--blue);color:#fff}.iso-pill small{opacity:.7;font-weight:700;margin-left:3px}
+.iso-rq{background:#fff;border:1px solid var(--gray200);border-radius:12px;box-shadow:var(--shadow);margin-bottom:8px;transition:box-shadow .25s,border-color .25s;overflow:hidden;animation:isoIn .3s both}
+.iso-rq.open{border-color:#bfd3f2;box-shadow:var(--shadow2)}.iso-rq.pulse{animation:isoPulse .9s ease}@keyframes isoPulse{40%{box-shadow:0 0 0 4px rgba(34,197,94,.25)}}
+.iso-rqh{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:12px 16px;text-align:left;transition:background .15s;cursor:pointer}.iso-rqh:hover{background:var(--gray50)}
+.iso-num{background:linear-gradient(135deg,var(--blue2),var(--blue));color:#fff;font-size:12px;font-weight:800;border-radius:8px;padding:4px 9px;min-width:48px;text-align:center;flex:none}
+.iso-rqt{flex:1;min-width:0}.iso-rqt b{display:block;font-size:13px;font-weight:700;color:var(--gray800)}.iso-rqt span{display:block;font-size:11.5px;color:var(--gray400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iso-rq.open .iso-rqt span{white-space:normal}
+.iso-dots{display:flex;gap:3px}.iso-dots i{width:8px;height:8px;border-radius:50%;display:block;background:var(--sin);transition:background .3s}
+.iso-s-ok{background:var(--ok)!important}.iso-s-sub{background:var(--sub)!important}.iso-s-curso{background:var(--curso)!important}.iso-s-pend{background:var(--pend)!important}.iso-s-na{background:var(--na)!important}
+.iso-cnt{font-size:11px;font-weight:700;color:var(--gray400);min-width:28px;text-align:right}.iso-chev{font-size:11px;color:var(--gray400);transition:transform .25s}.iso-rq.open>.iso-rqh .iso-chev,.iso-tk.open>.iso-rqh .iso-chev{transform:rotate(90deg)}
+.iso-rqb{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}.iso-rq.open>.iso-rqb,.iso-tk.open>.iso-rqb{grid-template-rows:1fr}.iso-rqi{overflow:hidden;min-height:0}
+.iso-ev{padding:14px 16px;border-top:1px solid var(--gray100)}
+.iso-evt{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.iso-evn{width:22px;height:22px;border-radius:7px;background:var(--gray100);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--blue2);flex:none}
+.iso-evx{flex:1;min-width:180px;font-size:13px;font-weight:600}
+.iso-seg{display:inline-flex;background:var(--gray100);border-radius:9px;padding:3px;gap:2px}
+.iso-seg button{border:0;background:transparent;padding:5px 12px;border-radius:7px;font-weight:700;font-size:11.5px;color:var(--gray600);transition:all .18s;white-space:nowrap}
+.iso-seg button:hover{color:var(--gray800)}.iso-seg .iso-bok.on{background:var(--ok);color:#fff}.iso-seg .iso-bno.on{background:var(--pend);color:#fff}.iso-seg .iso-bna.on{background:var(--na);color:#fff}.iso-seg .iso-bp.on{background:var(--pend);color:#fff}.iso-seg .iso-be.on{background:var(--curso);color:#fff}.iso-seg .iso-br.on{background:var(--ok);color:#fff}.iso-seg .iso-bt.on{background:#fff;color:var(--blue);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.iso-evb{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--gray50);border:1px solid var(--gray100);display:grid;gap:12px;animation:isoIn .25s both}
+.iso-evb.no{background:#fffafa;border-color:#fee2e2}
+.iso-evb .ind-obs-label-row{margin-bottom:5px}.iso-evb .modal-label{font-size:11px;font-weight:700;color:var(--gray600);text-transform:uppercase;letter-spacing:.4px}
+.iso-evb .ind-rte-editor{min-height:54px;font-size:13px;padding:9px 12px}
+.iso-note{animation:isoIn .2s both}
+.iso-qrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.iso-tp{display:grid;gap:12px;padding-top:12px;border-top:1px dashed #fecaca}
+.iso-trow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.iso-trow>label{font-size:10.5px;font-weight:800;color:var(--gray400);text-transform:uppercase;letter-spacing:.5px;min-width:78px}
+.iso-trow .iso-in{padding:6px 10px;min-width:160px;flex:1;max-width:260px}.iso-trow .iso-in[type=date]{flex:0 0 auto;min-width:0}
+.iso-chips{display:flex;gap:5px;flex-wrap:wrap}
+.iso-qc{border:1.5px solid var(--gray200);background:#fff;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--gray600);transition:.15s}
+.iso-qc:hover{border-color:var(--accent);color:var(--blue)}.iso-qc.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.iso-att{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.iso-mini{border:1px dashed #93c5fd;background:#fff;color:var(--blue2);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;display:inline-flex;gap:6px;align-items:center;transition:.18s}
+.iso-mini:hover,.iso-att.over .iso-mini,.iso-mini.on{border-style:solid;background:#eef5ff}
+.iso-linkin{display:none}.iso-linkin.on{display:inline-flex;animation:isoIn .2s both}.iso-linkin input{border:1.5px solid var(--accent);border-radius:8px;padding:4px 9px;font-size:11.5px;width:230px;outline:0}
+.iso-ach{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--gray200);border-radius:8px;padding:3px 4px 3px 8px;font-size:11px;font-weight:600;max-width:200px;animation:isoIn .2s both}
+.iso-ach:hover{border-color:var(--accent)}.iso-ach span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;display:flex;gap:6px;align-items:center}.iso-ach i{color:var(--accent)}.iso-ach img{width:18px;height:18px;border-radius:4px;object-fit:cover}
+.iso-ach button{border:0;background:none;color:var(--gray400);padding:2px 5px;border-radius:5px;font-size:10px}.iso-ach button:hover{color:var(--pend);background:#fef2f2}.iso-ach.load{color:var(--gray400)}
+.iso-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--gray100);background:var(--gray50)}
+.iso-foot .iso-xl{padding:6px 12px}.iso-foot .iso-xl.p{background:var(--blue);border-color:var(--blue);color:#fff}.iso-foot .iso-xl.p:hover{background:var(--blue2)}
+/* vista previa */
+.iso-ov{position:fixed;inset:0;background:rgba(10,22,40,.65);backdrop-filter:blur(4px);z-index:950;display:none;align-items:center;justify-content:center;padding:18px}.iso-ov.on{display:flex;animation:isoIn .2s both}
+.iso-modal{background:#fff;border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.35);width:100%;max-width:960px;height:86vh;display:flex;flex-direction:column;overflow:hidden}
+.iso-mh{padding:12px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--gray200)}.iso-mh h3{font-size:14px;flex:1;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iso-mh button{border:0;background:var(--gray100);width:30px;height:30px;border-radius:50%;color:var(--gray600)}
+.iso-mb{flex:1;background:#f1f5f9;display:grid;place-items:center;overflow:hidden}.iso-mb img{max-width:100%;max-height:100%;object-fit:contain}.iso-mb iframe{width:100%;height:100%;border:0;background:#fff}
+@media(max-width:1000px){.iso-two{grid-template-columns:1fr}.iso .dbi-bottom-row{flex-direction:column}.iso .dbi-kpi-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.iso-rowc .iso-cm{width:70px}.iso-trow>label{min-width:100%}}
+
+/* ── plan de acción · tablero ── */
+.iso-av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--blue));color:#fff;display:grid;place-items:center;font-size:9.5px;font-weight:800;flex:none;box-shadow:0 0 0 2px #fff}.iso-av.none{background:var(--gray200);color:var(--gray400)}
+.iso-kbar{display:block;width:150px;height:5px;border-radius:5px;background:var(--gray100);overflow:hidden;margin-top:7px}.iso-kbar i{display:block;height:100%;background:linear-gradient(90deg,#22c55e,#0d9488);border-radius:5px;transition:width .7s cubic-bezier(.22,1,.36,1)}
+.iso-kan{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start;margin-top:4px}
+.iso-col{--kc:var(--pend);--kb:#fef2f2;background:linear-gradient(180deg,var(--kb),#f8fafc 140px);border:1px solid var(--gray200);border-radius:16px;padding:12px;min-height:260px;transition:border-color .2s,box-shadow .25s,background .25s;animation:isoIn .35s backwards}
+.iso-col.k-curso{--kc:var(--curso);--kb:#fffbeb;animation-delay:.05s}.iso-col.k-sub{--kc:var(--sub);--kb:#f0fdfa;animation-delay:.1s}
+.iso-colh{display:flex;align-items:center;gap:10px;padding:2px 4px 12px}
+.iso-colic{width:30px;height:30px;border-radius:10px;background:var(--kc);color:#fff;display:grid;place-items:center;font-size:12px;box-shadow:0 4px 10px -3px var(--kc);flex:none}
+.iso-colh b{display:block;font-size:13.5px;font-weight:800;color:var(--gray800);letter-spacing:-.2px}.iso-colh small{display:block;font-size:10.5px;color:var(--gray400);font-weight:600;margin-top:-1px}
+.iso-cc{margin-left:auto;min-width:26px;height:24px;padding:0 8px;border-radius:12px;background:#fff;border:1px solid var(--gray200);font-size:12px;font-weight:800;color:var(--gray600);display:grid;place-items:center}
+.iso-cc.bump{animation:isoBump .45s cubic-bezier(.3,1.6,.5,1)}@keyframes isoBump{40%{transform:scale(1.4)}}
+.iso-cb{display:grid;gap:10px;min-height:90px;border-radius:12px;transition:background .2s,outline-color .2s;outline:2px dashed transparent;outline-offset:2px}
+.iso-col.over{border-color:var(--kc);box-shadow:0 0 0 4px color-mix(in srgb,var(--kc) 14%,transparent),var(--shadow2)}.iso-col.over .iso-cb{background:color-mix(in srgb,var(--kc) 7%,transparent);outline-color:color-mix(in srgb,var(--kc) 55%,transparent)}
+.iso-kan.dragging .iso-col:not(.over){opacity:.85}
+.iso-cempty{display:none;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:26px 10px;color:var(--gray400);font-size:11.5px;font-weight:600;text-align:center;border:1.5px dashed var(--gray200);border-radius:12px}.iso-cempty i{font-size:18px;opacity:.6}
+.iso-cb.empty .iso-cempty{display:flex}
+.iso-moreb{display:block;margin:10px auto 0;border:0;background:none;color:var(--blue2);font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:8px}.iso-moreb:hover{background:#eef5ff}
+/* pulido general */
+.iso-subrow .nav-tab{border-radius:9px;transition:all .2s}
+.iso-rq{border-radius:14px}.iso-rq:hover{box-shadow:var(--shadow2)}
+.iso-seg{box-shadow:inset 0 1px 2px rgba(15,40,90,.06)}.iso-seg button.on{box-shadow:0 2px 6px -1px rgba(15,40,90,.3)}
+.iso-pill{box-shadow:0 1px 2px rgba(15,40,90,.04)}.iso-pill.on{box-shadow:0 4px 10px -3px rgba(30,60,114,.5)}
+.iso-num{box-shadow:0 2px 6px -2px rgba(30,60,114,.5)}
+.iso-tp{border-top-color:var(--gray200)}
+/* ── dashboard refinado ── */
+.iso .iso-step{border:1px solid #dbe6f8;border-left:1px solid #dbe6f8;border-radius:16px;background:linear-gradient(100deg,#f1f6ff 0%,#fff 62%);box-shadow:0 8px 24px -16px rgba(30,60,114,.35);padding:18px 22px;position:relative;overflow:hidden}
+.iso .iso-step::before{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(91,140,214,.14),transparent 70%);pointer-events:none}
+.iso .iso-step.done{background:linear-gradient(100deg,#effaf3,#fff 62%);border-color:#cdebd8}
+.iso .iso-sic{width:48px;height:48px;border-radius:14px;box-shadow:0 8px 18px -6px rgba(30,60,114,.55)}
+.iso-stx small{color:var(--accent);letter-spacing:.9px}.iso-stx b{font-size:16px}
+.iso .iso-help{border-radius:14px;background:#f5f8ff;border-color:#e0e9f8}
+.iso-rowc{padding:10px 18px;gap:12px;border-bottom:0;transition:background .18s}.iso-rowc:hover{background:#f6f9ff}
+.iso-rowc .iso-cn{width:26px;height:26px;border-radius:8px;background:#eef3fc;color:var(--blue2);display:grid;place-items:center;font-size:11.5px}
+.iso-rowc .iso-cm{width:100px;font-weight:600}
+.iso-bar{height:7px;border-radius:7px;background:#eef2f8;gap:2px}.iso-bar i{border-radius:7px}
+.iso-rowc .iso-bar{height:8px}
+.iso-legend{padding:12px 18px;border-top:1px solid var(--gray100);gap:14px}.iso-legend i{border-radius:50%}
+.iso-hl{padding:11px 18px;border-bottom:1px solid var(--gray100);gap:12px;align-items:center}.iso-hl:hover{background:#f6f9ff}
+.iso-hl b{background:#eef3fc;border-radius:7px;padding:3px 8px;min-width:0;text-align:center}
+.iso-hl.late b{background:#fef2f2;color:#b91c1c}
+.iso-map{gap:7px}
+.iso-tile{border:1px solid #e6ebf4;border-bottom-width:1px;border-radius:9px;padding:6px 4px;background:#f8fafc;position:relative;font-weight:700;color:var(--gray600);transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s,background .2s}
+.iso-tile::after{content:"";position:absolute;right:4px;top:4px;width:5px;height:5px;border-radius:50%;background:var(--sin)}
+.iso-t-ok{background:#f0fbf4;border-color:#cdebd8;color:#15803d}.iso-t-ok::after{background:var(--ok)}
+.iso-t-sub{background:#effaf8;border-color:#c5ebe5;color:#0f766e}.iso-t-sub::after{background:var(--sub)}
+.iso-t-curso{background:#fffaf0;border-color:#f6e1b5;color:#b45309}.iso-t-curso::after{background:var(--curso)}
+.iso-t-pend{background:#fff5f5;border-color:#fbd0d0;color:#b91c1c}.iso-t-pend::after{background:var(--pend)}
+.iso-t-na{background:#f8fafc}
+.iso-tile:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 8px 16px -8px rgba(15,40,90,.35)}
+.iso-mcap{margin:14px 0 8px;color:var(--gray400);font-weight:700}
+.iso-feed div{padding:9px 0;position:relative}.iso-feed i{color:var(--accent);font-size:7px;margin-top:5px}
+.iso-flag{border-radius:20px}
+.iso .dbi-report-btn{border-radius:10px;box-shadow:0 6px 14px -6px rgba(30,60,114,.55);transition:transform .2s,box-shadow .2s}.iso .dbi-report-btn:hover{transform:translateY(-1px)}
+/* ═ plan de acción · diseño plano ═ */
+.iso-kan{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:start;margin-top:4px;transition:grid-template-columns .6s cubic-bezier(.22,1,.36,1)}
+.iso-kan[data-o="0"]{grid-template-columns:2.5fr .75fr .75fr}.iso-kan[data-o="1"]{grid-template-columns:.75fr 2.5fr .75fr}.iso-kan[data-o="2"]{grid-template-columns:.75fr .75fr 2.5fr}
+.iso-col{--kc:var(--pend);min-width:0;container:col/inline-size;background:#f5f6f9;border:1px solid #eceff4;border-radius:14px;padding:12px;box-shadow:none;min-height:240px}
+.iso-col.k-curso{--kc:var(--curso)}.iso-col.k-sub{--kc:var(--sub)}
+.iso-colh{display:flex;align-items:center;gap:9px;padding:2px 4px 12px}
+.iso-colic{width:8px;height:8px;border-radius:50%;background:var(--kc);box-shadow:0 0 0 4px color-mix(in srgb,var(--kc) 16%,transparent);flex:none}.iso-colic i{display:none}
+.iso-colh b{font-size:12.5px;font-weight:700;color:var(--gray800);display:inline}.iso-colh small{display:inline;margin-left:7px;font-size:11px;color:var(--gray400);font-weight:500}
+.iso-colh>div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.iso-cc{margin-left:auto;min-width:0;height:auto;padding:1px 8px;border-radius:20px;background:#e9ecf2;border:0;font-size:11.5px;font-weight:700;color:var(--gray600)}
+.iso-col.over{border-color:var(--kc);background:color-mix(in srgb,var(--kc) 5%,#f5f6f9);box-shadow:none}
+.iso-cb{gap:8px;min-height:80px}
+.iso-cempty{background:none;border:1.5px dashed #dde2ea;border-radius:12px;padding:22px 10px;font-size:11.5px}
+.iso-card{position:relative;background:#fff;border:1px solid #e6e9ef;border-radius:12px;box-shadow:none;overflow:hidden;container:card/inline-size;transition:border-color .25s,transform .3s cubic-bezier(.22,1,.36,1),opacity .25s,box-shadow .3s;animation:isoIn .4s backwards;animation-delay:calc(var(--i,0)*30ms);outline:0}
+.iso-card::before{display:none}
+.iso-card.c-pend{--kc:var(--pend)}.iso-card.c-curso{--kc:var(--curso)}.iso-card.c-sub{--kc:var(--sub)}
+.iso-card:hover{transform:none;border-color:#c9d0dc;box-shadow:none}
+.iso-card.open{border-color:var(--kc);box-shadow:0 0 0 3px color-mix(in srgb,var(--kc) 10%,transparent)}
+.iso-card.drag{opacity:.35;transform:scale(.97)}.iso-card.fly{z-index:30;border-color:var(--kc);box-shadow:0 24px 40px -14px rgba(15,40,90,.35);pointer-events:none}
+.iso-card.land{animation:isoLand .8s ease-out}
+.iso-chead{padding:13px 14px 12px;cursor:grab}
+.iso-ct{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.iso-dot{width:7px;height:7px;border-radius:50%;background:var(--kc);flex:none}
+.iso-n{font-size:11.5px;font-weight:800;color:var(--gray800);letter-spacing:-.1px}
+.iso-ccap{font-size:11px;font-weight:500;color:var(--gray400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iso-lt{font-size:10.5px;font-weight:700;color:#dc2626;margin-left:2px}
+.iso-cchev{margin-left:auto;font-size:9px;color:#b4bcc9;transition:transform .45s cubic-bezier(.22,1,.36,1),color .2s;background:none!important;width:auto;height:auto}
+.iso-chead:hover .iso-cchev{color:var(--gray600)}.iso-card.open .iso-cchev{transform:rotate(180deg)}
+.iso-cti{font-size:13px;font-weight:600;line-height:1.4;color:var(--gray800);letter-spacing:-.1px}
+.iso-card.c-sub .iso-cti{color:var(--gray400);text-decoration:line-through;text-decoration-color:#cbd5e1}
+.iso-chz{margin:5px 0 0;padding:0;background:none;font-size:12px;line-height:1.5;color:var(--gray400)}
+.iso-chz span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.iso-card.open .iso-cti{-webkit-line-clamp:unset}.iso-card.open .iso-chz span{-webkit-line-clamp:unset;display:block}
+.iso-cf{display:flex;align-items:center;gap:7px;margin-top:11px;font-size:11.5px;color:var(--gray600);font-weight:500}
+.iso-av{width:20px;height:20px;font-size:8.5px;box-shadow:none}
+.iso-dp{margin-left:auto;background:none;padding:0;font-size:11.5px;font-weight:600;color:var(--gray400);display:inline-flex;gap:5px;align-items:center}
+.iso-dp.soon{color:#b45309}.iso-dp.late{color:#dc2626}.iso-dp.ok{color:var(--sub)}
+.iso-mv{border:0;background:none;gap:2px;margin-left:2px;opacity:0;transition:opacity .2s}
+.iso-card:hover .iso-mv,.iso-card:focus-within .iso-mv,.iso-card.open .iso-mv{opacity:1}
+.iso-mv button{width:24px;height:24px;border:1px solid #e3e7ee!important;border-radius:8px;background:#fff;color:var(--gray400)}
+.iso-mv button:hover{background:#f1f4f9;color:var(--blue);border-color:#cfd6e2!important}.iso-mv .go:hover{background:var(--kc);border-color:var(--kc)!important;color:#fff}
+.iso-tm{display:none}
+.iso-cbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s cubic-bezier(.22,1,.36,1);border-top:1px solid transparent}
+.iso-card.open>.iso-cbody{grid-template-rows:1fr;border-top-color:#eef0f4}
+.iso-cbi{min-height:0;overflow:hidden;padding:0 14px;display:grid;gap:14px;align-content:start;opacity:0;transition:opacity .35s .12s}
+.iso-card.open .iso-cbi{padding:14px 14px 14px;opacity:1}.iso-card.settled .iso-cbi{overflow:visible}
+.iso-tp{display:grid;gap:14px}.iso-cbi .iso-tp{border:0;padding:0}
+.iso-cols{display:grid;gap:14px;grid-template-columns:1fr;align-items:start}
+.iso-cl,.iso-cr{display:grid;gap:14px;align-content:start;min-width:0}
+@container card (min-width:620px){.iso-cols{grid-template-columns:1.15fr 1fr;gap:20px}}
+.iso-tp:not(.card) .iso-cols,.iso-tp:not(.card) .iso-cl,.iso-tp:not(.card) .iso-cr{display:contents}.iso-tp:not(.card) [data-a]{order:9}.iso-tp:not(.card) [data-c]{order:10}
+.iso-trow>label{font-size:10.5px;font-weight:700;color:var(--gray400);text-transform:uppercase;letter-spacing:.5px;min-width:78px}
+.iso-cbi .iso-trow{display:grid;gap:6px}.iso-cbi .iso-trow>label{min-width:0}.iso-cbi .t-est>label{display:none}
+.iso-cbi .iso-trow .iso-in{width:100%;max-width:none;min-width:0;flex:none}
+.iso-sel{appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 11px center;padding-right:30px!important;cursor:pointer}
+.iso-seg.est{position:relative;display:grid;grid-template-columns:repeat(3,1fr);background:#eef0f4;border-radius:10px;padding:3px;gap:0;width:100%;max-width:420px;box-shadow:none}
+.iso-seg.est button{position:relative;z-index:1;background:none!important;color:var(--gray600);padding:6px 4px;border-radius:8px;box-shadow:none!important;transition:color .3s}
+.iso-seg.est button.on{color:#fff}
+.iso-thumb{position:absolute;top:3px;bottom:3px;left:3px;width:calc((100% - 6px)/3);border-radius:8px;background:var(--pend);transform:translateX(calc(var(--i,0)*100%));transition:transform .5s cubic-bezier(.22,1,.36,1),background .35s;box-shadow:0 2px 6px -1px rgba(15,40,90,.35)}
+.iso-seg.est[data-k="1"] .iso-thumb{background:var(--curso)}.iso-seg.est[data-k="2"] .iso-thumb{background:var(--sub)}
+.iso-cbi .ind-obs-label-row{margin-bottom:5px}.iso-cbi .modal-label{font-size:10.5px;font-weight:700;color:var(--gray400);text-transform:uppercase;letter-spacing:.5px}
+.iso-cbi .ind-rte-editor{min-height:64px;max-height:150px;overflow:auto}
+.iso-cbf{display:flex;gap:8px;justify-content:space-between;padding-top:12px;border-top:1px solid #eef0f4}
+.iso-cbf .iso-xl{padding:6px 12px;box-shadow:none;border-color:#e3e7ee}
+@container col (max-width:270px){.iso-chz,.iso-ccap,.iso-dp,.iso-colh small{display:none}.iso-chead{padding:11px 12px}.iso-mv{opacity:1}}
+@media(max-width:900px){.iso-kan,.iso-kan[data-o]{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:88%;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px}.iso-col{scroll-snap-align:start}}
+.iso-xl{border-radius:10px;transition:all .2s}.iso-xl:hover{transform:translateY(-1px);box-shadow:0 6px 14px -6px rgba(30,60,114,.35)}
+.iso-qc{padding:4px 11px}.iso-qc.on{box-shadow:0 4px 10px -3px rgba(30,60,114,.5)}
+
+/* ═ avatares con foto · colores · evaluación compacta ═ */
+.iso-av{position:relative;overflow:hidden;background:var(--accent);color:#fff;box-shadow:0 0 0 2px #fff}.iso-av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}.iso-av b{font:inherit;position:relative}.iso-av.none{background:var(--gray200);color:var(--gray400);box-shadow:none}
+.iso-rsel{display:flex;gap:9px;align-items:center}.iso-rsel .iso-av{width:30px;height:30px;font-size:11px;flex:none}.iso-rsel .iso-sel{flex:1}
+.iso-col{background:var(--kb);border-color:var(--kbd)}
+.iso-col.k-pend,.iso-col{--kb:#fdf5f5;--kbd:#f6e1e1}.iso-col.k-curso{--kb:#fdf8ec;--kbd:#f3e6c6}.iso-col.k-sub{--kb:#effaf6;--kbd:#d3ede4}
+.iso-colh b{color:color-mix(in srgb,var(--kc) 62%,#1e293b)}
+.iso-cc{background:color-mix(in srgb,var(--kc) 14%,#fff);color:color-mix(in srgb,var(--kc) 75%,#1e293b)}
+.iso-col.over{background:color-mix(in srgb,var(--kc) 9%,#fff)}
+.iso-cempty{border-color:color-mix(in srgb,var(--kc) 28%,#fff);color:color-mix(in srgb,var(--kc) 50%,#94a3b8)}
+.iso-card{border-color:color-mix(in srgb,var(--kc) 14%,#e6e9ef)}
+.iso-n{color:var(--cc,var(--blue2));background:color-mix(in srgb,var(--cc,#4f7cdb) 12%,#fff);padding:2px 8px;border-radius:7px}
+.iso-dot{box-shadow:0 0 0 3px color-mix(in srgb,var(--kc) 18%,transparent)}
+.iso-dp{background:color-mix(in srgb,var(--kc) 9%,#fff);padding:3px 9px;border-radius:20px;color:color-mix(in srgb,var(--kc) 70%,#475569)}
+.iso-dp.soon{background:#fff4dc;color:#b45309}.iso-dp.late{background:#fee2e2;color:#b91c1c}.iso-dp.ok{background:#d9f3ea;color:#0f766e}
+.iso-lt{background:#fee2e2;padding:1px 7px;border-radius:10px;font-size:10px}
+.iso-thumb{box-shadow:0 3px 8px -2px color-mix(in srgb,var(--pend) 60%,transparent)}
+.iso-seg.est[data-k="1"] .iso-thumb{box-shadow:0 3px 8px -2px color-mix(in srgb,var(--curso) 60%,transparent)}.iso-seg.est[data-k="2"] .iso-thumb{box-shadow:0 3px 8px -2px color-mix(in srgb,var(--sub) 60%,transparent)}
+/* evaluación */
+.iso-rq{margin-bottom:6px;border-radius:12px}
+.iso-rqh{padding:9px 14px;gap:11px}
+.iso-rqh .iso-num{background:var(--cc,var(--blue2));min-width:44px;padding:3px 8px;border-radius:7px;box-shadow:none}
+.iso-rq.open>.iso-rqh{background:#f8fafd}
+.iso-ev{padding:7px 14px 7px;border-top:1px solid #f0f2f6;transition:background .2s}.iso-ev:hover{background:#fbfcfe}
+.iso-evt{flex-wrap:nowrap;gap:10px;min-height:34px}.iso-evx{min-width:0;font-size:12.5px;line-height:1.4;font-weight:600;color:var(--gray800)}
+.iso-evn{width:21px;height:21px;border-radius:6px;transition:background .25s,color .25s}
+.iso-ev.is-ok .iso-evn{background:#dcfce7;color:#15803d}.iso-ev.is-no .iso-evn{background:#fee2e2;color:#b91c1c}
+.iso-seg .iso-bok,.iso-seg .iso-bno{padding:5px 15px}
+.iso-subch{font-size:10.5px;font-weight:700;color:#0f766e;background:#d9f3ea;border-radius:20px;padding:2px 9px;display:inline-flex;gap:5px;align-items:center;white-space:nowrap}
+.iso-evb{margin:6px 0 3px 31px;padding:0;background:none;border:0;gap:9px;animation:isoIn .25s both}
+.iso-evb.no{padding:12px 14px;background:#fffafa;border:1px solid #fbe3e3;border-radius:12px;container:card/inline-size}
+.iso-conn{display:flex;align-items:center;gap:11px;border-radius:12px;padding:9px 12px;font-size:12px}.iso-conn>i{font-size:15px}.iso-conn>div{flex:1;min-width:0}.iso-conn b{display:block;font-size:12.5px}.iso-conn span{color:var(--gray600);font-size:11.5px}
+.iso-conn.ok{background:#effaf5;border:1px solid #cfeadc;color:#15803d}.iso-conn.warn{background:#ecfaf6;border:1px solid #bfe7da;color:#0f766e}
+.iso-conn button{border:1px solid #bfe7da;background:#fff;color:#0f766e;border-radius:9px;padding:5px 12px;font-size:11.5px;font-weight:700;white-space:nowrap;transition:.2s}.iso-conn button:hover{background:#d9f3ea}
+.iso-conn button.p{background:var(--sub);border-color:var(--sub);color:#fff;box-shadow:0 4px 10px -4px var(--sub)}.iso-conn button.p:hover{background:#0b7f75}
+.iso-tp>.iso-conn{margin-bottom:2px}
+.iso-evb.no .iso-tp{gap:12px}
+@media(max-width:700px){.iso-evt{flex-wrap:wrap}.iso-evb{margin-left:0}}
+.iso-tp,.iso-evb.no .iso-tp{border-top:0;padding-top:0}
+
+.iso-av{background:#e6eaf1;color:#9aa6b8;font-size:10px}.iso-av.ph{background:#fff}.iso-av i{font-size:.9em}.iso-av img{z-index:1}
+.iso-mv .go.ok{color:var(--sub);border-color:#bfe7da!important;background:#effaf6}.iso-mv .go.ok:hover{background:var(--sub);color:#fff}
+.iso-flag.ok{background:#ecfaf6;border-color:#bfe7da;color:#0f766e}
+#iso-conf:not(:empty){margin-bottom:12px}#iso-conf .iso-conn{animation:isoIn .3s both}
+
+/* ═ evaluación · chips bajo demanda (hallazgo / tarea / adjuntos) ═ */
+.iso .btn-mejorar-ia{display:none!important}
+.iso-ev{position:relative}.iso-ev::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:transparent;transition:background .25s}
+.iso-ev.is-ok::before{background:var(--ok)}.iso-ev.is-no::before{background:var(--pend)}
+.iso-ev.is-no{background:linear-gradient(90deg,rgba(220,38,38,.035),transparent 55%)}
+.iso-evb.no{padding:0;background:none;border:0;margin:6px 0 4px 31px;gap:9px;container:card/inline-size}
+.iso-obsl{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;width:100%;text-align:left;border:0;background:var(--gray50);box-shadow:inset 0 0 0 1px var(--gray100);border-radius:10px;padding:8px 12px;font-size:12.5px;line-height:1.5;color:var(--gray600);transition:background .2s}.iso-obsl:hover{background:#eef4ff}
+.iso-chrow{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.iso-chip{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 12px;border:1px solid var(--gray200);background:#fff;border-radius:99px;font-size:12px;font-weight:600;color:var(--gray600);transition:background-color .2s,border-color .2s,color .2s,box-shadow .2s,transform .2s}
+.iso-chip:hover{background:#f6f8fc;border-color:#d3dbea}.iso-chip:active{transform:scale(.97)}
+.iso-chip.open{border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,140,214,.18);color:var(--blue)}
+.iso-chip.has{background:#eef4ff;border-color:transparent;color:var(--blue)}
+.iso-chip.t-pend{background:#fef2f2;border-color:transparent;color:#b91c1c}.iso-chip.t-curso{background:#fff7e6;border-color:transparent;color:#b45309}.iso-chip.t-sub{background:#e8f8f2;border-color:transparent;color:#0f766e}
+.iso-chip.open.t-pend,.iso-chip.open.t-curso,.iso-chip.open.t-sub{box-shadow:0 0 0 3px rgba(15,40,90,.1)}
+.iso-chip .iso-av{width:20px;height:20px;font-size:9px;box-shadow:none;margin-left:-5px}
+.iso-need{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 12px;border:0;border-radius:99px;background:#fff1ee;color:#b5322a;font-size:12px;font-weight:600;animation:isoIn .3s both;transition:background .2s}.iso-need:hover{background:#ffe3de}
+.iso-pane{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.22,1,.36,1)}.iso-pane.open{grid-template-rows:1fr}
+.iso-panei{min-height:0;overflow:hidden;opacity:0;transform:translateY(-6px);transition:opacity .28s,transform .38s cubic-bezier(.22,1,.36,1)}
+.iso-pane.open .iso-panei.in{opacity:1;transform:none;overflow:visible;padding:2px 0 4px}
+.iso-pane.open .iso-panei:not(.in){overflow:hidden}
+.iso-panei .iso-tp{border:0;padding:12px 0 2px}
+.iso-ncc:empty{display:none}
+
+/* ═ fluidez: solo transform/opacity, sin trabajo de más ═ */
+.iso{--ease:cubic-bezier(.22,1,.36,1);-webkit-tap-highlight-color:transparent;text-rendering:optimizeLegibility}
+.iso button,.iso select,.iso input{touch-action:manipulation}
+.iso-card,.iso-col{backface-visibility:hidden;-webkit-font-smoothing:antialiased}
+.iso-card.fly,.iso-card.drag{will-change:transform}
+.iso button{transition-property:background-color,color,border-color,box-shadow,transform,opacity}
+.iso-fade{animation-duration:.32s;animation-timing-function:var(--ease)}
+.iso-rqb,.iso-chipody,.iso-pane{will-change:grid-template-rows}.iso-rq:not(.open) .iso-rqb,.iso-card:not(.open) .iso-chipody,.iso-pane:not(.open){will-change:auto}
+
+/* ═ smartphone ═ */
+@media(max-width:700px){
+  .iso-subrow{margin-bottom:12px}.iso-subrow .nav-tabs{display:flex;width:100%;overflow-x:auto;scrollbar-width:none}.iso-subrow .nav-tabs::-webkit-scrollbar{display:none}
+  .iso-subrow .nav-tab{flex:1 0 auto;justify-content:center;padding:9px 12px;font-size:12.5px;white-space:nowrap}
+  .iso-saved{position:fixed;right:14px;bottom:14px;background:#fff;border-radius:20px;padding:6px 12px;box-shadow:var(--shadow2);z-index:20}
+  .iso .dbi-header{flex-direction:column;align-items:stretch;gap:10px}.iso-tools,.iso .dbi-filters{display:flex;flex-wrap:wrap;gap:8px;width:100%}
+  .iso-search{min-width:0;flex:1 1 100%}.iso-tools .db-fsel,.iso .dbi-filters .db-fsel{flex:1 1 45%;min-width:0}
+  .iso .dbi-kpi-row{grid-template-columns:repeat(2,1fr);gap:8px}.iso .dbi-kpi{padding:10px 12px}.iso .dbi-kv{font-size:24px}
+  .iso-two,.iso .dbi-bottom-row{grid-template-columns:1fr;flex-direction:column;gap:10px}
+  .iso-help{gap:10px;padding:10px 12px}.iso-hs{min-width:100%}
+  .iso-rowc{padding:9px 12px;gap:8px}.iso-rowc .iso-cp{display:none}
+  .iso-pills{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}.iso-pills::-webkit-scrollbar{display:none}.iso-pill{flex:none}
+  .iso-filters{gap:8px}.iso-filters>.iso-seg{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}
+  .iso-rqh{padding:10px 12px;gap:9px}.iso-dots{display:none}.iso-rqt span{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .iso-ev{padding:10px 12px}.iso-evt{flex-wrap:wrap;gap:8px}.iso-evx{flex:1 1 calc(100% - 40px)}
+  .iso-evt>.iso-seg{width:100%;display:grid;grid-template-columns:1fr 1fr;margin-left:31px;width:calc(100% - 31px)}.iso-seg .iso-bok,.iso-seg .iso-bno{padding:9px 6px;font-size:13px}
+  .iso-evb,.iso-evb.no{margin-left:0}
+  .iso-chip,.iso-need{height:34px}
+  .iso-foot{padding:10px 12px;flex-direction:column}.iso-foot .iso-xl{width:100%;justify-content:center}
+  .iso-kan,.iso-kan[data-o]{grid-auto-columns:90%;gap:10px;margin-inline:-2px;padding-inline:2px}
+  .iso-mv{opacity:1}.iso-mv button{width:32px;height:32px}
+  .iso-chead{padding:12px}.iso-chipi{padding-inline:12px}.iso-card.open .iso-chipi{padding:12px}
+  .iso-trow .iso-in,.iso-search input,.iso .db-fsel,.iso select{font-size:16px}
+  .iso-chipf{flex-direction:column}.iso-chipf .iso-xl{width:100%;justify-content:center}
+  .iso-conn{flex-wrap:wrap}.iso-conn button{flex:1}
+  .iso-ov{padding:0}.iso-modal{height:100vh;border-radius:0;max-width:none}
+}
+@media(max-width:420px){.iso .dbi-kv{font-size:22px}.iso-evx{font-size:13px}}
+
+.iso-obsl{display:block;-webkit-line-clamp:unset}.iso-obsl span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.iso-rsel{min-width:0}.iso-rsel .iso-sel{min-width:0!important;max-width:none!important;width:100%}
+
+/* ═ secciones al estilo de la lista de verificación ═ */
+.iso-chh{display:flex;align-items:center;gap:14px;margin:30px 4px 14px}.iso-chh:first-child{margin-top:6px}
+.iso-chn{font-weight:800;font-size:13px;color:#fff;background:var(--cc,#1e293b);background:#1e2a44;padding:5px 13px;border-radius:99px;font-variant-numeric:tabular-nums}
+.iso-chh h2{margin:0;font-size:12.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--gray600)}
+.iso-chh::after{content:"";flex:1;height:1px;background:var(--gray200)}
+.iso-rq{background:#fff;border:0;border-radius:22px;margin-bottom:16px;overflow:clip;box-shadow:0 1px 2px rgba(14,26,51,.04),0 12px 32px -18px rgba(14,26,51,.18),0 0 0 1px #e4e9f2;transition:box-shadow .4s var(--ease)}
+.iso-rq.open{box-shadow:0 1px 2px rgba(14,26,51,.04),0 22px 44px -22px rgba(14,26,51,.28),0 0 0 1px #cbd8f8}
+.iso-rqh{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:4px 14px;align-items:center;padding:16px 20px 14px 10px;cursor:pointer;background:none;transition:background .2s;outline:0}
+.iso-rqh:hover,.iso-rq.open>.iso-rqh{background:#fafbfe}.iso-rqh:focus-visible{box-shadow:inset 0 0 0 2px var(--accent)}
+.iso-rq.open>.iso-rqh{border-bottom:1px solid #edf0f6}
+.iso-cv{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:var(--gray400);transition:background .2s,color .2s}
+.iso-rqh:hover .iso-cv{background:#ebf0fd;color:var(--blue)}.iso-cv i{font-size:12px;transition:transform .5s var(--ease);transform:rotate(-90deg)}.iso-rq.open .iso-cv i{transform:none}
+.iso-rqt b{display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:700;letter-spacing:-.2px;color:var(--gray800);white-space:normal}
+.iso-scode{font-size:11.5px;font-weight:800;color:var(--blue);background:#ebf0fd;padding:3px 10px;border-radius:99px;font-variant-numeric:tabular-nums;flex:none}
+.iso-rqt span:not(.iso-scode){display:block;margin-top:3px;font-size:12.5px;color:var(--gray400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.iso-rq.open .iso-rqt>span{white-space:normal}
+.iso-sp{font-weight:800;font-size:13px;font-variant-numeric:tabular-nums;color:var(--gray600);padding:5px 13px;border-radius:99px;background:#f3f5fa;white-space:nowrap;transition:background .3s,color .3s}
+.iso-sp.ok{background:#e5f5ec;color:#0c7346}.iso-sp.bad{background:#fdebe9;color:#b5322a}
+.iso-rqb{transition:grid-template-rows .55s var(--ease)}.iso-rqi{opacity:0;transition:opacity .35s}.iso-rq.open .iso-rqi{opacity:1;transition-delay:.08s}
+.iso-ev{padding:16px 22px 16px 22px;border-top:1px solid #edf0f6;display:block}
+.iso-ev:first-child{border-top:0}
+.iso-ev:hover{background:#fbfcfe}
+.iso-evt{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:6px 16px;align-items:start;min-height:0}
+.iso-evn{width:auto;height:auto;background:none!important;color:var(--blue)!important;font-size:15px;font-weight:800;border-radius:0;display:block;padding-top:1px;font-variant-numeric:tabular-nums}
+.iso-evx{font-size:14px;line-height:1.55;font-weight:500;color:var(--gray800);display:block}
+.iso-subch{margin-left:8px;vertical-align:middle}
+.iso-evt>.iso-seg{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:4px;height:46px;background:#edf0f6;border-radius:14px;width:196px;align-self:start}
+.iso-seg .iso-bok,.iso-seg .iso-bno{padding:0;font-size:13.5px;font-weight:700;border-radius:11px;color:var(--gray600);transition:background-color .25s,color .25s,box-shadow .25s,transform .25s var(--ease)}
+.iso-seg .iso-bok:hover:not(.on){background:rgba(255,255,255,.85);color:#0c7346}.iso-seg .iso-bno:hover:not(.on){background:rgba(255,255,255,.85);color:#b5322a}
+.iso-seg .iso-bok:active,.iso-seg .iso-bno:active{transform:scale(.95)}
+.iso-seg .iso-bok.on,.iso-seg .iso-bno.on{box-shadow:0 4px 12px -4px rgba(14,26,51,.45)}
+.iso-ev.is-no{background:linear-gradient(90deg,rgba(216,68,58,.045),transparent 50%)}
+.iso-ev::before{top:14px;bottom:14px;width:4px}
+.iso-evb,.iso-evb.no{margin:12px 0 0 50px}
+.iso-qrow{gap:8px}
+.iso-mini{height:34px;padding:0 14px;border-radius:99px;border:1px solid var(--gray200);background:#fff;color:var(--gray600);font-size:13px;font-weight:600}.iso-mini:hover{background:#f6f8fc;border-color:#d3dbea}.iso-mini.on{background:#eef4ff;border-color:transparent;color:var(--blue)}
+.iso-chip,.iso-need{height:34px;font-size:13px}
+.iso-foot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 22px;border-top:1px solid #edf0f6;background:#f7f9fc}
+.iso-foot .iso-fl{flex:1;display:flex}.iso-foot .iso-fr{display:flex}
+.iso-res{font-size:13.5px;color:var(--gray400);display:flex;align-items:center;gap:10px}.iso-res b{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+.iso-foot .iso-xl{height:40px;padding:0 18px;border-radius:99px;font-size:13px}
+@media(max-width:700px){
+  .iso-chh{margin:22px 2px 10px}.iso-rq{border-radius:18px;margin-bottom:12px}
+  .iso-rqh{grid-template-columns:auto minmax(0,1fr) auto;padding:13px 12px 12px 6px}.iso-rqh .iso-dots{display:none}.iso-rqt b{font-size:14.5px;flex-wrap:wrap;gap:6px}
+  .iso-ev{padding:14px 14px 14px 16px}
+  .iso-evt{grid-template-columns:26px minmax(0,1fr)}.iso-evt>.iso-seg{grid-column:1/-1;width:100%;height:50px;margin:2px 0 0}
+  .iso-evb,.iso-evb.no{margin-left:0}
+  .iso-foot{padding:12px 14px}.iso-foot .iso-fl,.iso-foot .iso-fr,.iso-foot .iso-xl{width:100%;justify-content:center}.iso-res{width:100%;justify-content:space-between}
+}
+/* ═ aperturas y cierres suaves (sin saltos de padding) ═ */
+.iso-cbi{padding:0!important}.iso-card.open .iso-cbi{padding:0!important}.iso-cbx{padding:14px;display:grid;gap:14px;align-content:start}
+.iso-cbody{transition:grid-template-rows .6s var(--ease)}.iso-cbi{opacity:0;transition:opacity .35s}.iso-card.open .iso-cbi{opacity:1;transition-delay:.1s}
+.iso-pane{transition:grid-template-rows .55s var(--ease)}.iso-pane.open .iso-panei.in{padding:0}
+.iso-card.land{animation:isoLand 1s ease-out}
+.iso-card.fly{z-index:40}
+
+/* ═══ Dashboard v2: donas, responsables, numerales, riel de capítulos ═══ */
+#iso-view{font-variant-numeric:tabular-nums}
+.iso button,.iso input,.iso select,.iso textarea{font-family:inherit}
+.iso-dn1{font-size:12px;font-weight:800;color:var(--blue2);min-width:34px}
+.iso-two2{display:grid;grid-template-columns:1.05fr 1fr;gap:10px;margin-bottom:10px;align-items:stretch}
+.iso-two2>.dbi-panel{min-width:0}
+.iso-dn{position:relative;display:inline-block;flex:none}
+.iso-dn svg{width:100%;height:100%;transform:rotate(0deg)}
+.iso-dseg{animation:isoDn .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes isoDn{from{stroke-dasharray:0 100}}
+.iso-dc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;font-size:13px;color:var(--gray800)}
+.iso-dc b{font-weight:800}.iso-dc .iso-big{font-size:26px;letter-spacing:-.02em}.iso-dc small{font-size:10.5px;color:var(--gray500);font-weight:600}
+.iso-tkp{padding-bottom:12px}
+.iso-tk1{display:flex;align-items:center;gap:20px;padding:14px 18px 6px}
+.iso-lgs{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
+.iso-lg{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;background:var(--gray50);border:0;font-size:12.5px;color:var(--gray700);text-align:left;transition:background .15s,transform .15s}
+.iso-lg:hover{background:var(--gray100);transform:translateX(2px)}
+.iso-lg i{width:10px;height:10px;border-radius:50%;flex:none}.iso-lg span{flex:1;font-weight:600}.iso-lg b{font-size:15px;font-weight:800;color:var(--gray800)}.iso-lg em{font-style:normal;width:38px;text-align:right;font-size:11.5px;color:var(--gray500);font-weight:600}
+.iso-sub{display:flex;justify-content:space-between;align-items:center;margin:10px 18px 8px;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--gray500)}.iso-sub span{text-transform:none;letter-spacing:0;font-weight:600;color:var(--gray400)}
+.iso-mcs{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:0 10px}
+.iso-mc{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px 6px;border-radius:12px;background:none;border:1.5px solid transparent;transition:background .15s,transform .15s,border-color .15s;min-width:0}
+.iso-mc:hover{background:var(--gray50);transform:translateY(-2px)}.iso-mc.on{border-color:var(--accent);background:var(--gray50)}
+.iso-mc .iso-dc{font-size:13px}.iso-mn{font-size:10.5px;font-weight:700;color:var(--gray600);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.iso-ms{font-size:10.5px;color:var(--gray400);font-weight:600}.iso-ms b{color:var(--gray800)}
+.iso-rl{display:flex;flex-direction:column;max-height:430px;overflow-y:auto;padding:2px 0}
+.iso-rs{padding:10px 16px 11px;border-bottom:.5px solid var(--gray100)}.iso-rs:last-child{border-bottom:0}
+.iso-rh{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;padding:0;text-align:left}
+.iso-rh .iso-av{width:30px;height:30px;flex:none}
+.iso-rn{flex:1;min-width:0;font-size:13px;font-weight:700;color:var(--gray800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iso-dlt{font-style:normal;margin-left:8px;font-size:10.5px;font-weight:700;color:var(--pend);background:#fee2e2;padding:1px 7px;border-radius:10px}
+.iso-rc{display:flex;gap:10px;flex:none}.iso-rc span{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:800;color:var(--gray800)}.iso-rc i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.iso-stk{display:flex;height:6px;border-radius:4px;overflow:hidden;background:var(--gray100);margin:8px 0 0 40px;gap:2px}.iso-stk i{display:block;transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.iso-doing{margin:7px 0 0 40px;display:flex;flex-direction:column;gap:3px}
+.iso-doing button{display:flex;gap:8px;align-items:baseline;background:none;border:0;padding:3px 6px;margin-left:-6px;border-radius:6px;font-size:12px;color:var(--gray600);text-align:left;transition:background .15s}.iso-doing button:hover{background:var(--gray50)}
+.iso-doing button b{font-size:11px;font-weight:800;color:var(--curso);flex:none}.iso-doing button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.iso-doing small{font-size:11px;color:var(--gray400);font-weight:600}.iso-doing.none{font-size:11.5px;color:var(--gray400);font-weight:600}
+.iso-np{margin-bottom:10px;padding-bottom:10px}
+.iso-ncols{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:4px 26px;padding:6px 16px 4px}
+.iso-nch{padding:6px 0 4px}
+.iso-nh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:8px 0 6px;border-bottom:1.5px solid var(--gray100)}
+.iso-nt{font-size:12.5px;font-weight:700;color:var(--gray800)}.iso-nt b{color:var(--blue2);font-weight:800;margin-right:4px}
+.iso-nx{font-size:12px;color:var(--gray500);font-weight:600;white-space:nowrap}.iso-nx b{font-size:14px;font-weight:800;color:var(--gray800)}
+.iso-nr{display:flex;align-items:center;gap:10px;width:100%;padding:7px 4px;background:none;border:0;border-bottom:.5px solid var(--gray100);text-align:left;border-radius:6px;transition:background .15s}.iso-nr:hover{background:var(--gray50)}
+.iso-nm{width:34%;min-width:0;font-size:12px;color:var(--gray700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iso-nr .iso-bar{flex:1;margin:0;height:6px}
+.iso-nv{width:58px;text-align:right;font-size:11.5px;font-weight:600;white-space:nowrap}.iso-nv b{font-size:13px;font-weight:800}
+.iso-nf{font-size:11px;color:var(--gray400);font-weight:600;padding:6px 4px 0;text-align:right}
+.iso-np .iso-legend{padding:6px 16px 0}
+/* riel de capítulos */
+.iso-evlay{display:grid;grid-template-columns:104px minmax(0,1fr);gap:14px;align-items:start}
+.iso-rail{position:sticky;top:12px;display:flex;flex-direction:column;gap:6px;align-self:start;max-height:calc(100vh - 24px);overflow-y:auto;scrollbar-width:none;padding:2px}
+.iso-rail::-webkit-scrollbar{display:none}
+.iso-cap{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:7px;row-gap:0;padding:7px 11px;border-radius:14px;border:1.5px solid var(--gray200);background:#fff;color:var(--gray600);text-align:left;box-shadow:0 1px 2px rgba(15,40,90,.04);transition:background .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s}
+.iso-cap b{font-size:14px;font-weight:800;color:var(--blue2)}.iso-cap span{font-size:11px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.iso-cap small{grid-column:1/-1;font-size:10px;font-weight:600;color:var(--gray400);margin-top:1px}
+.iso-cap:first-child{grid-template-columns:1fr}.iso-cap:first-child b{font-size:12px}
+.iso-cap:hover{border-color:var(--accent);transform:translateX(2px)}
+.iso-cap.on{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 4px 10px -3px rgba(30,60,114,.5)}.iso-cap.on b,.iso-cap.on small{color:#fff}.iso-cap.on small{opacity:.75}
+@media(max-width:1000px){.iso-two2{grid-template-columns:1fr}}
+@media(max-width:760px){
+ .iso-evlay{grid-template-columns:1fr;gap:8px}
+ .iso-rail{position:sticky;top:0;z-index:30;flex-direction:row;overflow-x:auto;max-height:none;padding:8px 2px;margin:0 -2px;background:var(--gray50);box-shadow:0 6px 8px -8px rgba(15,40,90,.25)}
+ .iso-cap{flex:none;grid-template-columns:auto auto;padding:6px 11px}.iso-cap small{display:none}.iso-cap:first-child{grid-template-columns:1fr}
+ .iso-tk1{flex-direction:column;align-items:stretch;gap:12px}.iso-tk1 .iso-dn{align-self:center}
+ .iso-mcs{grid-template-columns:repeat(4,1fr);row-gap:8px}
+ .iso-ncols{grid-template-columns:1fr}.iso-nm{width:30%}
+ .iso-rc{gap:7px}
+}
+.dash-body:has(.iso-evlay){overflow:visible}
+
+/* ═══ Dashboard v3: compacto, sin scroll de página ═══ */
+.iso-k4>*{min-width:0}.iso-k4{grid-template-columns:repeat(4,minmax(0,1fr))!important;margin-bottom:10px}
+.iso-k4 .dbi-ks{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iso-dg{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:10px;align-items:stretch}
+.iso-dl{display:flex;flex-direction:column;gap:10px;min-width:0}
+.iso-dcp{padding-bottom:6px}
+.iso-cr1,.iso-cth{display:grid;grid-template-columns:24px 86px minmax(40px,1fr) 34px 34px 34px 124px;align-items:center;gap:8px;width:100%;padding:0 16px}
+.iso-cr1{background:none;border:0;border-bottom:.5px solid var(--gray100);height:37px;text-align:left;transition:background .15s}.iso-cr1:last-child{border-bottom:0}.iso-cr1:hover{background:var(--gray50)}
+.iso-cnm{font-size:12px;font-weight:600;color:var(--gray700);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iso-cr1 .iso-bar{margin:0;height:8px;display:flex;border-radius:5px;overflow:hidden;background:var(--gray100)}.iso-cr1 .iso-bar i{display:block;transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.iso-dcv{font-size:13px;font-weight:800;text-align:right;color:var(--gray400)}.iso-dcv.ok{color:#15803d}.iso-dcv.no{color:#b91c1c}.iso-dcv.sn{color:var(--gray500);font-weight:700}
+.iso-cth{height:26px;font-size:10px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--gray400);border-bottom:1px solid var(--gray100)}
+.iso-cth span{text-align:right;white-space:nowrap}.iso-cth .ok{color:#15803d}.iso-cth .no{color:#b91c1c}
+.iso-cth span:last-child{text-align:center;letter-spacing:0;text-transform:none}
+.iso-cth span:nth-child(n+4):nth-child(-n+6){font-size:0}.iso-cth .ok::before{content:'✓';font-size:12px}.iso-cth .no::before{content:'✕';font-size:11px}.iso-cth .sn::before{content:'—';font-size:12px}
+.iso-dct{display:flex;justify-content:space-between;gap:4px}.iso-dct span{display:flex;align-items:center;gap:4px;font-size:12.5px;font-weight:800;color:var(--gray800);flex:1;justify-content:center}.iso-dct span i{width:7px;height:7px;border-radius:50%;background:var(--c)}.iso-dct span.z{opacity:.35;font-weight:600}
+.iso-pp .iso-tk1{padding:12px 18px 14px;gap:18px}.iso-pp .iso-lg{padding:6px 10px}
+.iso-rp{position:relative;min-height:340px}
+.iso-rp .iso-rl{position:absolute;left:0;right:0;bottom:0;top:45px;max-height:none;overflow-y:auto;padding:0}
+.iso-rs{padding:11px 16px 12px}
+.iso-rt{flex:none;min-width:26px;height:24px;padding:0 8px;border-radius:12px;background:var(--gray100);font-size:13px;font-weight:800;color:var(--gray800);display:flex;align-items:center;justify-content:center}
+.iso-stk{margin:8px 0 0 0}
+.iso-rcs{display:flex;gap:12px;flex-wrap:wrap;margin:7px 0 0}.iso-rcs span{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--gray700)}.iso-rcs i{width:7px;height:7px;border-radius:50%;background:var(--c)}.iso-rcs span.z{color:var(--gray400);font-weight:600}.iso-rcs span.z i{opacity:.4}
+.iso-doing{margin:6px 0 0}
+.iso-doing button{align-items:center}.iso-doing button i{width:6px;height:6px;border-radius:50%;flex:none;position:relative;top:0}.iso-doing button b{color:var(--blue2)!important}.iso-doing button.late span{color:var(--pend);font-weight:600}
+/* riel de capítulos acoplado al diseño de secciones */
+.iso-evlay{grid-template-columns:132px minmax(0,1fr)}
+.iso-rail{gap:6px}
+.iso-cap{grid-template-columns:24px 1fr;column-gap:8px;row-gap:1px;padding:8px 10px;border:1px solid var(--gray200);border-radius:14px;background:#fff;box-shadow:0 1px 2px rgba(15,40,90,.04);color:var(--gray700)}
+.iso-cap b{width:24px;height:24px;border-radius:50%;background:var(--gray100);color:var(--blue2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;grid-row:1/3;transition:background .2s,color .2s}
+.iso-cap b i{font-size:11px}
+.iso-cap span{font-size:11.5px;font-weight:700;align-self:end}.iso-cap small{grid-column:2;grid-row:2;margin:0;align-self:start;font-size:10px}
+.iso-cap:hover{border-color:#c9d6ee;transform:none;box-shadow:0 4px 12px -6px rgba(15,40,90,.25)}
+.iso-cap.on{background:#fff;border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,110,200,.12),0 6px 14px -8px rgba(15,40,90,.35);color:var(--gray800)}
+.iso-cap.on b{background:var(--blue);color:#fff}.iso-cap.on small{color:var(--gray500);opacity:1}
+.iso-cap:first-child{grid-template-columns:24px 1fr}.iso-cap:first-child b{font-size:11px}
+.iso-seg.est{touch-action:pan-y;cursor:grab;user-select:none}.iso-seg.est.drag{cursor:grabbing}.iso-seg.est.drag .iso-thumb{box-shadow:0 8px 18px -4px rgba(15,40,90,.45)}
+@media(max-width:1000px){.iso-dg{grid-template-columns:1fr}.iso-rp{min-height:0}.iso-rp .iso-rl{position:static;max-height:420px}.iso-k4{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){
+ .iso-evlay{grid-template-columns:1fr}
+ .iso-cap,.iso-cap:first-child{grid-template-columns:24px auto;padding:5px 11px 5px 6px;border-radius:20px}.iso-cap small{display:none}.iso-cap b{grid-row:auto}
+ .iso-cr1,.iso-cth{grid-template-columns:20px 1fr 30px 30px 30px;gap:6px;padding:0 12px}.iso-cr1 .iso-bar,.iso-cth span:nth-child(3),.iso-dct,.iso-cth span:last-child{display:none}
+}
+
+/* ═══ Riel de capítulos v3 ═══ */
+.iso-evlay{grid-template-columns:158px minmax(0,1fr);gap:16px}
+.iso-rail{gap:2px;padding:8px;background:#fff;border:1px solid var(--gray200);border-radius:20px;box-shadow:0 8px 24px -14px rgba(15,40,90,.28);top:14px;max-height:calc(100vh - 28px)}
+.iso-cap{position:relative;display:flex;align-items:center;gap:10px;width:100%;padding:7px 8px;border:0;border-radius:13px;background:transparent;box-shadow:none;color:var(--gray600);text-align:left;transition:background .25s,color .25s,transform .25s}
+.iso-cap:hover{background:var(--gray50);border:0;box-shadow:none;transform:translateX(2px)}
+.iso-cap.on{background:color-mix(in srgb,var(--cc) 11%,#fff);border:0;box-shadow:none;color:var(--gray800);transform:none}
+.iso-cap.on::before{content:'';position:absolute;left:-8px;top:10px;bottom:10px;width:3.5px;border-radius:0 4px 4px 0;background:var(--cc)}
+.iso-ring{position:relative;width:34px;height:34px;flex:none;display:block}
+.iso-ring svg{width:100%;height:100%;transform:rotate(-90deg)}.iso-ring circle{fill:none;stroke-width:3.4}
+.iso-ring .t{stroke:var(--gray100)}.iso-ring .p{stroke:var(--cc);stroke-linecap:round;transition:stroke-dasharray .7s cubic-bezier(.2,.7,.2,1)}
+.iso-cap.on .iso-ring .t{stroke:#fff}
+.iso-cap b{position:absolute;inset:0;width:auto;height:auto;background:none;border-radius:0;display:flex;align-items:center;justify-content:center;grid-row:auto;font-size:12.5px;font-weight:800;color:var(--gray700)}
+.iso-cap.on b{background:none;color:var(--cc)}.iso-cap b i{font-size:12px}
+.iso-ci{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+.iso-ci>span{font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;align-self:auto}
+.iso-ci small{font-size:11px;font-weight:700;color:var(--gray800);margin:0;grid-column:auto;grid-row:auto}.iso-ci small em{font-style:normal;font-weight:600;color:var(--gray400)}
+@media(max-width:760px){
+ .iso-evlay{grid-template-columns:1fr}
+ .iso-rail{flex-direction:row;padding:6px;border-radius:18px;gap:4px;overflow-x:auto;top:6px;max-height:none;margin:0}
+ .iso-cap,.iso-cap:first-child{width:auto;flex:none;padding:4px 12px 4px 5px;gap:7px;border-radius:16px}.iso-cap.on::before{display:none}
+ .iso-ring{width:26px;height:26px}.iso-cap b{font-size:11px}.iso-ci small{display:none}.iso-ci>span{font-size:12px}
+ .iso-cap.on{background:color-mix(in srgb,var(--cc) 14%,#fff)}
+}
+
+/* quitar / eliminar / restablecer */
+.iso-clr,.iso-clrc{color:var(--gray500)!important;border-color:var(--gray200)!important;border-style:solid!important;background:#fff!important}
+.iso-clr:hover,.iso-clrc:hover{color:#b91c1c!important;border-color:#fca5a5!important;background:#fef2f2!important}
+.iso-del{display:inline-flex;align-items:center;gap:7px;margin-top:6px;padding:7px 12px;border-radius:10px;border:1px solid #fecaca;background:#fff;color:#b91c1c;font-size:12px;font-weight:700;transition:background .18s,border-color .18s}
+.iso-del:hover{background:#fef2f2;border-color:#f87171}
+.iso-rst{color:#b91c1c!important}.iso-rst:hover{background:#fef2f2!important;border-color:#fca5a5!important}
+
+/* ═══ Dashboard v4: más entendible ═══ */
+.iso-heros{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.iso-hero{padding:14px 18px 12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.iso-hh{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.iso-ht{font-size:15px;font-weight:800;color:var(--gray800);letter-spacing:-.01em}.iso-hs2{font-size:12px;color:var(--gray500);margin-top:2px}.iso-hs2 b{color:var(--gray800)}
+.iso-hgo{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:99px;border:1px solid var(--gray200);background:#fff;font-size:12px;font-weight:700;color:var(--blue2);transition:background .18s,transform .18s}.iso-hgo:hover{background:var(--gray50);transform:translateX(2px)}
+.iso-hb{display:flex;align-items:center;gap:22px}
+.iso-hero .iso-lgs{gap:5px}.iso-hero .iso-lg{padding:7px 12px;font-size:13px;cursor:default}.iso-hero .iso-lg:hover{background:var(--gray50);transform:none}
+.iso-hero .iso-lg b{font-size:17px}
+.iso-hf{font-size:11.5px;color:var(--gray500);padding-top:9px;border-top:1px solid var(--gray100)}.iso-hf b{color:var(--gray800)}
+.iso-dg{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)!important}
+.iso-cr1,.iso-cth{grid-template-columns:24px 88px minmax(40px,1fr) repeat(6,50px);gap:6px;padding:0 14px}
+.iso-cr1{height:40px}
+.iso-cth{height:auto}
+.iso-g1{padding-top:10px;border-bottom:0!important}.iso-g2{padding-bottom:8px}
+.iso-cth .iso-gt{font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;text-align:left;color:var(--gray600);padding-bottom:5px;border-bottom:2px solid var(--gray200);white-space:nowrap}
+.iso-cth .iso-gt.a{grid-column:3/7;border-color:#bbf7d0}.iso-cth .iso-gt.b{grid-column:7/10;border-color:#fde68a;margin-left:0}
+.iso-cth .iso-gt.b{grid-column:7/10}
+.iso-g2 span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;line-height:1.1;text-align:center;text-transform:none;letter-spacing:0;color:var(--gray600)}
+.iso-g2 span i{width:9px;height:9px;border-radius:50%}
+.iso-g2 span::before{content:none!important}
+.iso-x{font-size:14px;font-weight:800;text-align:center;color:var(--gray800)}
+.iso-x.ok{color:#15803d}.iso-x.no{color:#b91c1c}.iso-x.sn{color:var(--gray500)}.iso-x.p{color:var(--c)}
+.iso-x.z{color:var(--gray300,#cbd5e1);font-weight:600}
+.iso-cr1 .iso-x.p:first-of-type{}
+.iso-cr1 .iso-x:nth-of-type(4){border-left:1px solid var(--gray100)}
+.iso-dn1{font-size:12px;font-weight:800;color:var(--blue2)}
+@media(max-width:1000px){.iso-heros{grid-template-columns:1fr}.iso-dg{grid-template-columns:1fr!important}}
+@media(max-width:760px){
+ .iso-hb{gap:14px}.iso-hb .iso-dn{width:104px!important;height:104px!important}.iso-hero{padding:12px 14px}
+ .iso-cr1,.iso-cth{grid-template-columns:22px minmax(0,1fr) repeat(6,34px);gap:3px;padding:0 10px}.iso-cr1 .iso-bar{display:none}
+ .iso-cth .iso-gt{font-size:9px;white-space:normal;line-height:1.1}.iso-cth .iso-gt.a{grid-column:3/6}.iso-cth .iso-gt.b{grid-column:6/9}
+ .iso-g2 span{font-size:8.5px}.iso-g1 span:nth-child(2),.iso-g2 span:nth-child(3){display:none}
+}
+.iso-cth .iso-gt{font-size:10.5px!important}
+.iso-g2 span{font-size:10px!important}
+.iso-cr1{height:34px}
+.iso-hero{padding:12px 18px 10px;gap:8px}.iso-hero .iso-lg{padding:5px 12px}.iso-hb{gap:20px}
+.iso-hb .iso-dn{width:112px!important;height:112px!important}
+.iso-g1{padding-top:8px}
+@media(max-width:760px){.iso-cth .iso-gt{font-size:9px!important}.iso-g2 span{font-size:8.5px!important}.iso-hb .iso-dn{width:100px!important;height:100px!important}}
+.iso-cr1,.iso-cth{grid-template-columns:24px 84px minmax(30px,1fr) repeat(6,60px);gap:4px}
+.iso-cth .iso-gt.b{text-transform:uppercase!important;letter-spacing:.04em!important;text-align:left!important;font-weight:800!important}
+.iso-g2 span{white-space:nowrap}
+@media(max-width:760px){.iso-cr1,.iso-cth{grid-template-columns:22px minmax(0,1fr) repeat(6,34px);gap:3px}.iso-g2 span{white-space:normal}}
+
+/* ═══ Dashboard v5: tablero tipo Auditorías ═══ */
+.iso-main{display:grid;grid-template-columns:1fr 1.15fr 1.2fr;gap:10px;margin-bottom:10px}
+.iso-main>*{min-width:0}
+.iso-main>.dbi-panel,.iso-mid>.dbi-panel{margin:0}
+.iso-main{height:330px}.iso-main>.dbi-panel{height:100%;min-height:0}
+.iso-mid{display:flex;flex-direction:column;gap:10px;min-height:0}
+.iso-mid>.iso-plan{flex:1;min-height:0}
+.iso-pscroll{overflow-y:auto;min-height:0;flex:1}
+.iso-main #dbi-left .iso-pscroll{max-height:none}
+.dbi-sede-row{width:100%;background:none;border:0;border-bottom:.5px solid var(--gray100);text-align:left;padding:8px 14px}
+.dbi-sede-name{font-size:12px;font-weight:600}
+.iso-rbar{display:flex;width:84px;height:5px;border-radius:4px;overflow:hidden;background:var(--gray100);flex:none}.iso-rbar i{display:block}
+.dbi-sede-pct{min-width:40px;font-size:13px}.dbi-sede-nc{min-width:38px;font-size:10.5px}
+.iso-plan .iso-tk1{padding:8px 16px;gap:16px}.iso-plan .iso-lg{padding:4px 10px;font-size:12px}.iso-plan .iso-lg b{font-size:14px}.iso-plan .iso-big{font-size:20px}
+.iso-dist{display:grid;grid-template-columns:78px 1fr 34px 38px;align-items:center;gap:8px;margin-bottom:7px;font-size:11px;color:var(--gray700);font-weight:600}.iso-dist:last-child{margin-bottom:0}
+.iso-dbar{height:8px;background:var(--gray100);border-radius:5px;overflow:hidden;display:block}.iso-dbar i{display:block;height:100%;border-radius:5px;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.iso-dist b{text-align:right;font-size:12.5px;font-weight:800;color:var(--gray800)}.iso-dist em{font-style:normal;text-align:right;font-size:10.5px;color:var(--gray400)}
+.dbi-res-tab{padding:5px 0;font-size:10.5px}
+.iso-dr{overflow:hidden}
+.iso-dcats{display:flex;gap:4px;flex-wrap:nowrap;overflow-x:auto;padding:8px 14px;border-bottom:.5px solid var(--gray200);scrollbar-width:none;flex:none}.iso-dcats::-webkit-scrollbar{display:none}
+.dbi-cat-pill{flex:none;font-family:inherit}
+.iso-hits{overflow-y:auto;flex:1;min-height:0;padding:2px 0}
+.iso-hit{display:flex;align-items:flex-start;gap:9px;width:100%;padding:8px 14px;background:none;border:0;border-bottom:.5px solid var(--gray100);text-align:left;transition:background .15s}.iso-hit:hover{background:var(--gray50)}
+.iso-hit .iso-dn1{min-width:32px;padding-top:1px}
+.iso-hit-t{flex:1;min-width:0;font-size:11.5px;line-height:1.35;color:var(--gray800)}.iso-hit-t small{display:block;font-size:10px;color:var(--gray400);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iso-hst{flex:none;font-style:normal;font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:10px;background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c);margin-top:1px}
+.iso-bot{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;height:250px}
+.iso-bot>.dbi-panel{height:100%;min-height:0}
+.iso-rp.iso-rp2{position:static;min-height:0;display:flex}
+.iso-rp2 .iso-rl{position:static;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));align-content:start;overflow-y:auto;flex:1;min-height:0;max-height:none}
+.iso-rp2 .iso-rs{border-right:.5px solid var(--gray100)}
+.iso-bot .iso-feed{overflow-y:auto;flex:1}
+@media(max-width:1180px){.iso-main{grid-template-columns:1fr 1fr;height:auto}.iso-main>.dbi-panel{height:320px}.iso-mid{height:auto}.iso-main .iso-dr{grid-column:1/-1;height:340px}}
+@media(max-width:760px){
+ .iso-main{grid-template-columns:1fr}.iso-main>.dbi-panel,.iso-main .iso-dr{height:300px}.iso-bot{grid-template-columns:1fr;height:auto}.iso-bot>.dbi-panel{height:300px}
+ .dbi-kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+.iso .dbi-kpi-row,.iso .iso-k4{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:8px;margin-bottom:8px}
+.iso .dbi-kpi{padding:9px 14px}.iso .dbi-kv{font-size:21px}
+.iso-main{height:292px;margin-bottom:8px}.iso-bot{height:196px}
+.iso-plan .iso-dc small{font-size:9px}.iso-plan .iso-dc .iso-big{font-size:18px}
+.iso-plan .iso-tk1{padding:6px 14px}
+@media(max-width:1180px){.iso .dbi-kpi-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:760px){.iso .dbi-kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+.iso-rp2 .iso-rs{padding:9px 14px 10px}.iso-rp2 .iso-rcs{margin-top:5px}.iso-rp2 .iso-stk{margin-top:6px}.iso-rp2 .iso-doing{margin-top:4px}
+
+/* ═══ Pulido v6: navegador de capítulos + tarjetas de responsable ═══ */
+.iso-evlay{grid-template-columns:196px minmax(0,1fr);gap:18px}
+.iso-rail{gap:3px;padding:10px;background:#fff;border:1px solid var(--gray200);border-radius:18px;box-shadow:0 10px 28px -16px rgba(15,40,90,.3);top:14px}
+.iso-rh0{display:flex;justify-content:space-between;align-items:baseline;padding:4px 8px 10px;font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--gray500)}
+.iso-rh0 small{font-size:11px;letter-spacing:0;color:var(--blue2);font-weight:800}
+.iso-nv{position:relative;display:flex;align-items:center;gap:10px;width:100%;padding:8px 8px;border:0;border-radius:13px;background:transparent;text-align:left;color:var(--gray700);transition:background .22s,transform .22s,box-shadow .22s}
+.iso-nv:hover{background:var(--gray50)}
+.iso-nv.on{background:color-mix(in srgb,var(--cc) 10%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--cc) 28%,#fff)}
+.iso-nb{flex:none;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:800;background:color-mix(in srgb,var(--cc) 13%,#fff);color:var(--cc);transition:background .22s,color .22s,transform .22s}
+.iso-nb i{font-size:12px}
+.iso-nv.on .iso-nb{background:var(--cc);color:#fff;transform:scale(1.04);box-shadow:0 5px 12px -4px color-mix(in srgb,var(--cc) 70%,transparent)}
+.iso-nm2{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.iso-nn{font-size:12.5px;font-weight:700;color:var(--gray800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.1}
+.iso-np2{display:block;height:4px;border-radius:3px;background:var(--gray100);overflow:hidden}.iso-np2 i{display:block;height:100%;border-radius:3px;background:var(--cc);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.iso-nv.done .iso-np2 i{background:#16a34a}
+.iso-nr2{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:none}
+.iso-nq{font-size:10.5px;font-weight:600;color:var(--gray400)}.iso-nq b{font-size:12px;font-weight:800;color:var(--gray800)}
+.iso-nr2 em{font-style:normal;font-size:9.5px;font-weight:800;color:#b91c1c;background:#fee2e2;border-radius:8px;padding:0 6px;line-height:15px}
+.iso-nv.done .iso-nq b{color:#15803d}
+/* tarjetas de responsable */
+.iso-rp2{padding:0}
+.iso-rp2 .iso-rl.iso-pcs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;padding:12px;align-content:start;overflow-y:auto;flex:1;min-height:0}
+.iso-pc{display:flex;flex-direction:column;gap:9px;padding:12px 12px 11px;border:1px solid var(--gray200);border-radius:14px;background:#fff;transition:box-shadow .2s,transform .2s,border-color .2s;min-width:0}
+.iso-pc:hover{box-shadow:0 10px 24px -14px rgba(15,40,90,.4);transform:translateY(-2px);border-color:#cbd5e1}
+.iso-pch{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;padding:0;text-align:left}
+.iso-pch .iso-av{width:38px;height:38px;flex:none;box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--gray200)}
+.iso-pcn{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.iso-pcn b{font-size:13px;font-weight:700;color:var(--gray800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iso-pcn small{font-size:10.5px;color:var(--gray400);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iso-dlt{font-style:normal;color:#b91c1c;background:#fee2e2;border-radius:8px;padding:1px 7px;font-weight:700}
+.iso-pct{display:flex;flex-direction:column;align-items:center;line-height:1;flex:none}.iso-pct b{font-size:22px;font-weight:800;color:var(--gray800);letter-spacing:-.02em}.iso-pct small{font-size:9.5px;color:var(--gray400);font-weight:600;margin-top:2px}
+.iso-pts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.iso-pts span{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px 5px;border-radius:10px;background:color-mix(in srgb,var(--c) 11%,#fff)}
+.iso-pts b{font-size:16px;font-weight:800;line-height:1;color:var(--c)}.iso-pts small{font-size:9px;font-weight:700;color:var(--gray600)}
+.iso-pts span.z{background:var(--gray50)}.iso-pts span.z b{color:var(--gray300,#cbd5e1)}.iso-pts span.z small{color:var(--gray400)}
+.iso-ppr{display:flex;align-items:center;gap:8px}.iso-pbar{flex:1;height:5px;border-radius:4px;background:var(--gray100);overflow:hidden}.iso-pbar i{display:block;height:100%;background:linear-gradient(90deg,#0d9488,#16a34a);border-radius:4px;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.iso-ppr small{font-size:10px;font-weight:700;color:var(--gray500);white-space:nowrap}
+.iso-pnow{display:flex;align-items:center;gap:7px;width:100%;padding:6px 8px;border-radius:9px;background:var(--gray50);border:0;font-size:11px;color:var(--gray700);text-align:left;transition:background .15s;min-width:0}
+button.iso-pnow:hover{background:var(--gray100)}
+.iso-pnow i{width:7px;height:7px;border-radius:50%;flex:none}.iso-pnow b{font-weight:800;color:var(--blue2);flex:none}.iso-pnow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.iso-pnow.late{background:#fef2f2}.iso-pnow.late span{color:#b91c1c}
+.iso-pnow.ok{color:#15803d;font-weight:700;background:#f0fdf4}.iso-pnow.ok i{background:none;width:auto;height:auto;font-size:11px}
+.iso-main{height:278px}.iso-bot{height:244px}
+.dbi-sede-row{padding:6px 14px}
+@media(max-width:760px){
+ .iso-evlay{grid-template-columns:1fr;gap:8px}
+ .iso-rail{flex-direction:row;gap:6px;padding:7px;border-radius:16px;overflow-x:auto;top:6px;scroll-snap-type:x proximity;scrollbar-width:none}.iso-rail::-webkit-scrollbar{display:none}
+ .iso-rh0{display:none}
+ .iso-nv{flex:none;width:auto;gap:8px;padding:5px 12px 5px 5px;border-radius:14px;scroll-snap-align:center;background:var(--gray50)}
+ .iso-nb{width:28px;height:28px;border-radius:9px;font-size:12.5px}
+ .iso-nm2{gap:3px;min-width:46px}.iso-nn{font-size:12px}.iso-np2{height:3px}
+ .iso-nr2{display:none}.iso-nv .iso-nr2 em{display:none}
+ .iso-nv.on{background:color-mix(in srgb,var(--cc) 12%,#fff)}
+ .iso-rp2 .iso-rl.iso-pcs{grid-template-columns:1fr}
+ .iso-bot{height:auto}.iso-bot>.dbi-panel{height:340px}
+}
+.iso-main{height:268px}.iso-bot{height:222px}@media(max-width:1180px){.iso-main{height:auto}.iso-bot{height:222px}}@media(max-width:760px){.iso-bot{height:auto}}
+@media(max-width:640px){
+ .dash-header>.nav-tabs{overflow-x:auto;scrollbar-width:none;justify-content:flex-start;min-width:0;max-width:100%}.dash-header>.nav-tabs::-webkit-scrollbar{display:none}
+ .dash-header>.nav-tabs .nav-tab{flex:1 0 auto;padding:5px 7px;font-size:10.5px;gap:4px}
+}
+@media(max-width:400px){.dash-header>.nav-tabs .nav-tab i{display:none}}
+/* ═══ Móvil impecable ═══ */
+@media(max-width:760px){
+ .iso-help{display:none!important}
+ .iso .dbi-header{gap:8px;margin-bottom:10px}
+ .iso .dbi-filters{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:100%}
+ .iso .dbi-filters .db-fsel{grid-column:1/-1;width:100%;height:40px}
+ .iso .dbi-filters .iso-xl,.iso .dbi-filters .dbi-report-btn{width:100%;height:38px;padding:0 6px;font-size:12px;justify-content:center;white-space:nowrap}
+ .iso .dbi-kpi-row .dbi-kpi:last-child:nth-child(odd){grid-column:1/-1}
+ .iso .dbi-kpi{padding:10px 12px}.iso .dbi-kv{font-size:22px}
+ .iso-main>.dbi-panel#dbi-left,.iso-main #dbi-left{height:auto}
+ .iso-main #dbi-left .iso-pscroll{overflow:visible}
+ .iso-main .iso-mid,.iso-main .iso-mid>.dbi-panel{height:auto}
+ .iso-main .iso-dr{height:380px}
+ .iso-bot>.dbi-panel:first-child{height:auto;max-height:520px}
+ .iso-bot>.dbi-panel:last-child{height:auto;max-height:240px}
+ .iso-rp2 .iso-rl.iso-pcs{padding:10px;gap:8px}
+ .iso-pc{padding:11px}
+ .iso-subrow .nav-tab{padding:7px 8px!important;font-size:12px!important}
+ .iso-hit{padding:9px 12px}.iso-hit-t{font-size:12px}
+ .dbi-panel-head{padding:10px 12px}.dbi-panel-title{font-size:11px}
+ .dbi-panel-badge{font-size:9.5px}
+ .iso-dist{grid-template-columns:70px 1fr 30px 36px}
+}
+@media(max-width:400px){.iso-subrow .nav-tab{padding:7px 6px!important;font-size:11.5px!important}}
+@media(max-width:760px){
+ .iso-conn{flex-wrap:wrap;gap:8px}.iso-conn>div{flex:1 1 100%;min-width:0}.iso-conn>div b,.iso-conn>div span{display:block}
+ .iso-conn>button,.iso-conn>.iso-xl{flex:1 1 0}
+ .iso-tools select.db-fsel,.iso .iso-tools .db-fsel{font-size:12px;padding:0 8px;min-width:0;text-overflow:ellipsis;height:40px}
+ .iso-tools{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}.iso-tools .iso-search{grid-column:1/-1}
+}
 </style>
 </head>
 <body>
@@ -2491,6 +3201,9 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
       </button>
       <button class="nav-tab" id="tab-indicadores" onclick="switchModule('indicadores')">
         <i class="fas fa-bullseye"></i> Indicadores
+      </button>
+      <button class="nav-tab" id="tab-autoeval" onclick="switchModule('autoeval')">
+        <i class="fas fa-shield-halved"></i> ISO 9001
       </button>
     </div>
   </header>
@@ -3160,6 +3873,9 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
     </div><!-- end module-indicadores -->
 
     <!-- ══ MODULE: CAPACITACIONES ══════════════ -->
+    <!-- ══ MODULE: AUTOEVALUACIÓN ISO 9001:2015 ══ -->
+    <div class="module iso" id="module-autoeval"><div id="iso-root"></div></div>
+
     <div class="module" id="module-capacitaciones">
 
       <div class="cap-toolbar">
@@ -3690,6 +4406,12 @@ html, body { height: 100%; font-family: 'Inter', sans-serif; }
 </div>
 
 <!-- Toast -->
+<!-- ══ AUTOEVALUACIÓN ISO: vista previa de evidencias ══ -->
+<datalist id="iso-resp"><option value="Luis Angel Bolaño Castro"><option value="Mary Pizarro"><option value="Maria Clara Pizarro"><option value="Daniel Rodriguez"><option value="Jennifer Melendez"><option value="Valentina Jimeno"></datalist>
+<div class="iso-ov iso" id="iso-pv" onclick="if(event.target===this)ISOA.closePv()"><div class="iso-modal">
+  <div class="iso-mh"><h3 id="iso-pvT">Vista previa</h3><a id="iso-pvOpen" target="_blank" rel="noopener" class="iso-xl" style="padding:5px 12px"><i class="fas fa-arrow-up-right-from-square"></i> Abrir</a><button onclick="ISOA.closePv()"><i class="fas fa-xmark"></i></button></div>
+  <div class="iso-mb" id="iso-pvB"></div></div></div>
+
 <div class="toast" id="toast">
   <i class="fas fa-check-circle" id="toast-icon"></i>
   <span id="toast-msg">Mensaje</span>
@@ -5728,6 +6450,7 @@ function switchModule(name) {
   if (name === 'capacitaciones') loadCapacitaciones();
   if (name === 'equipo')         renderEquipo();
   if (name === 'indicadores')    initIndicadoresModule();
+  if (name === 'autoeval')       ISOA.init();
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -12323,6 +13046,493 @@ function closeSeguimientoModalConfirm() {
   }
   closeSeguimientoModal();
 }
+</script>
+
+<script>
+/* ═════════════════════════════════════════════════════════════
+   MÓDULO · AUTOEVALUACIÓN ISO 9001:2015
+   Reutiliza de Qualisig: db, currentUser, showToast, editor enriquecido
+   (_rte*), «Mejorar con IA» (mejorarRedaccionIA) y subida a R2.
+═════════════════════════════════════════════════════════════ */
+window.ISOA=(function(){
+'use strict';
+const ISO=[{"n": "4.1", "t": "Contexto de la organización", "r": "Se determinan y revisan las cuestiones internas y externas pertinentes para el propósito y dirección estratégica de FOCA y que afectan al SGC", "c": "4", "e": ["Análisis de contexto (DOFA/PESTEL u otro)", "planeación estratégica", "revisión por la dirección"]}, {"n": "4.2", "t": "Partes interesadas", "r": "Se identifican las partes interesadas pertinentes al SGC, sus necesidades y requisitos, y se realiza seguimiento a esta información", "c": "4", "e": ["Matriz de partes interesadas", "Requisitos de partes interesadas", "Registro de seguimiento"]}, {"n": "4.3", "t": "Alcance del SGC", "r": "Disponibilidad y verificación de que está determinado, documentado y disponible el alcance del SGC considerando contexto, partes interesadas, productos y servicios", "c": "4", "e": ["Alcance del SGC", "Certificado ISO 9001 vigente", "Manual o documento institucional del SGC"]}, {"n": "4.4.1", "t": "SGC y sus procesos", "r": "Se determinan los procesos del SGC, entradas, salidas, secuencia, interacción, criterios, recursos, responsabilidades, riesgos, evaluación y mejora", "c": "4", "e": ["Mapa de procesos", "caracterizaciones", "indicadores", "matrices de riesgos"]}, {"n": "4.4.2", "t": "Información documentada de procesos", "r": "Se mantiene y conserva información documentada suficiente para apoyar la operación de los procesos y demostrar que se ejecutan según lo planificado", "c": "4", "e": ["Procedimientos", "Registros del proceso", "Formatos del proceso", "Repositorio documental institucional"]}, {"n": "5.1.1", "t": "Liderazgo y compromiso – general", "r": "La alta dirección demuestra liderazgo y compromiso con el SGC, su eficacia, integración en los procesos y mejora continua", "c": "5", "e": ["Actas de comité o gerencia", "revisión por la dirección", "Planeación institucional", "Evidencia de asignación de recursos", "Registro de seguimiento"]}, {"n": "5.1.2", "t": "Enfoque al cliente", "r": "La alta dirección asegura que se determinan, comprenden y cumplen los requisitos del cliente y legales, y se gestionan riesgos que afectan la conformidad y satisfacción", "c": "5", "e": ["PQRS", "Encuestas de satisfacción", "requisitos contractuales", "matriz legal", "Matriz de riesgos y oportunidades"]}, {"n": "5.2.1", "t": "Establecimiento de la política de calidad", "r": "Existencia de una política de calidad apropiada al propósito y contexto, que apoye la dirección estratégica e incluya compromisos de cumplimiento y mejora", "c": "5", "e": ["Política de calidad aprobada"]}, {"n": "5.2.2", "t": "Comunicación de la política", "r": "La política está disponible, comunicada, entendida, aplicada y disponible para partes interesadas cuando corresponda", "c": "5", "e": ["Registros de inducción", "Registros de reinducción", "Registros de comunicación", "evaluaciones de apropiación"]}, {"n": "5.3", "t": "Roles, responsabilidades y autoridades", "r": "Las responsabilidades y autoridades pertinentes al SGC están asignadas, comunicadas y entendidas", "c": "5", "e": ["Organigrama", "perfiles de cargo", "manual de funciones", "actos de designación"]}, {"n": "6.1.1", "t": "Riesgos y oportunidades", "r": "Se determinan los riesgos y oportunidades necesarios para asegurar resultados del SGC, prevenir efectos no deseados y lograr mejora", "c": "6", "e": ["Matrices de riesgos y oportunidades", "contexto", "planes"]}, {"n": "6.1.2", "t": "Acciones sobre riesgos y oportunidades", "r": "Se planifican, integran, implementan y evalúan acciones para abordar riesgos y oportunidades de manera proporcional a su impacto", "c": "6", "e": ["Planes de tratamiento", "controles", "seguimiento y evaluación de eficacia"]}, {"n": "6.2.1", "t": "Objetivos de calidad", "r": "Se establecen objetivos de calidad medibles, coherentes con la política, pertinentes y sujetos a seguimiento, comunicación y actualización", "c": "6", "e": ["Objetivos", "indicadores", "metas", "tablero de seguimiento"]}, {"n": "6.2.2", "t": "Planificación para lograr objetivos", "r": "Para cada objetivo se define qué se hará, recursos, responsables, plazo y cómo se evaluarán resultados", "c": "6", "e": ["Planes de acción", "fichas de indicadores", "responsables y cronogramas"]}, {"n": "6.3", "t": "Planificación de los cambios", "r": "Los cambios del SGC se realizan de manera planificada considerando propósito, consecuencias, integridad, recursos y responsabilidades", "c": "6", "e": ["Gestión del cambio", "actas", "planes de implementación"]}, {"n": "7.1.1", "t": "Recursos – general", "r": "Se determinan y proporcionan los recursos necesarios para establecer, implementar, mantener y mejorar el SGC", "c": "7", "e": ["Presupuesto", "planeación de recursos", "revisión por la dirección"]}, {"n": "7.1.2", "t": "Personas", "r": "Se cuenta con las personas necesarias para operar eficazmente los procesos y el SGC", "c": "7", "e": ["Planta de personal", "perfiles", "análisis de suficiencia"]}, {"n": "7.1.3", "t": "Infraestructura", "r": "Se determina, proporciona y mantiene la infraestructura necesaria para la operación y conformidad de los servicios", "c": "7", "e": ["Mantenimiento", "infraestructura física", "equipos", "TI"]}, {"n": "7.1.4", "t": "Ambiente para la operación", "r": "Se determina, proporciona y mantiene un ambiente adecuado para la operación de los procesos", "c": "7", "e": ["SST", "clima/ambiente laboral", "bioseguridad", "condiciones físicas"]}, {"n": "7.1.5.1", "t": "Recursos de seguimiento y medición – general", "r": "Los recursos utilizados para seguimiento o medición son apropiados y se mantienen para asegurar resultados válidos", "c": "7", "e": ["Inventario de equipos", "mantenimiento", "verificaciones"]}, {"n": "7.1.5.2", "t": "Trazabilidad de las mediciones", "r": "Cuando aplica trazabilidad, ¿los equipos se calibran/verifican, identifican y protegen, y se actúa ante resultados no válidos", "c": "7", "e": ["Certificados de calibración", "hojas de vida", "identificación metrológica"]}, {"n": "7.1.6", "t": "Conocimientos de la organización", "r": "Se determinan, mantienen y ponen a disposición los conocimientos necesarios y se consideran necesidades futuras de conocimiento", "c": "7", "e": ["Gestión del conocimiento", "protocolos", "formación", "lecciones aprendidas"]}, {"n": "7.2", "t": "Competencia", "r": "Se determina la competencia requerida, se asegura la competencia y se conserva evidencia de educación, formación o experiencia", "c": "7", "e": ["Perfiles", "hojas de vida", "certificados", "evaluación de competencias"]}, {"n": "7.3", "t": "Toma de conciencia", "r": "El personal conoce la política, objetivos pertinentes, su contribución al SGC y las implicaciones del incumplimiento", "c": "7", "e": ["Inducción/reinducción", "evaluaciones", "socializaciones"]}, {"n": "7.4", "t": "Comunicación", "r": "Se determinan las comunicaciones internas y externas pertinentes: qué, cuándo, a quién, cómo y quién comunica", "c": "7", "e": ["Matriz/plan de comunicaciones", "canales institucionales"]}, {"n": "7.5.1", "t": "Información documentada – general", "r": "El SGC incluye la información documentada requerida por la norma y la necesaria para su eficacia", "c": "7", "e": ["Listado maestro", "manuales", "procedimientos", "Registros del proceso"]}, {"n": "7.5.2", "t": "Creación y actualización", "r": "Los documentos se identifican adecuadamente, tienen formato apropiado y son revisados y aprobados antes de su uso", "c": "7", "e": ["Control documental", "versiones", "aprobaciones"]}, {"n": "7.5.3", "t": "Control de la información documentada", "r": "La información documentada está disponible, protegida y controlada en distribución, acceso, almacenamiento, cambios, conservación y disposición", "c": "7", "e": ["Repositorio documental institucional", "tablas de retención", "controles de acceso y versiones"]}, {"n": "8.1", "t": "Planificación y control operacional", "r": "Se planifican, implementan y controlan los procesos necesarios para cumplir requisitos de los servicios y ejecutar las acciones planificadas", "c": "8", "e": ["Caracterizaciones", "procedimientos asistenciales/administrativos", "controles operacionales"]}, {"n": "8.2.1", "t": "Comunicación con el cliente", "r": "Se gestionan comunicaciones sobre servicios, consultas, contratos, retroalimentación, quejas y contingencias pertinentes", "c": "8", "e": ["SIAU/PQRS", "canales de atención", "información al usuario"]}, {"n": "8.2.2", "t": "Determinación de requisitos", "r": "Se determinan requisitos del cliente, legales/reglamentarios y los necesarios para los servicios ofrecidos", "c": "8", "e": ["Contratos", "portafolio", "matriz legal", "autorizaciones"]}, {"n": "8.2.3", "t": "Revisión de requisitos", "r": "Antes de comprometerse a prestar el servicio se revisa la capacidad para cumplir requisitos y se resuelven diferencias", "c": "8", "e": ["Contratos revisados", "autorizaciones", "admisiones", "acuerdos"]}, {"n": "8.2.4", "t": "Cambios en requisitos", "r": "Los cambios en requisitos de servicios se reflejan en la información documentada y se comunican al personal pertinente", "c": "8", "e": ["Actualizaciones contractuales", "Registros de comunicación", "versiones"]}, {"n": "8.3.1", "t": "Diseño y desarrollo – general", "r": "Se determina si es aplicable un proceso de diseño y desarrollo para asegurar la posterior provisión de servicios", "c": "8", "e": ["Justificación de aplicabilidad o metodología de diseño y desarrollo"]}, {"n": "8.3.2", "t": "Planificación del diseño y desarrollo", "r": "Si aplica, ¿se planifican etapas, controles, responsabilidades, recursos e interacción del diseño y desarrollo", "c": "8", "e": ["Planes/proyectos de diseño", "cronogramas"]}, {"n": "8.3.3", "t": "Entradas del diseño y desarrollo", "r": "Si aplica, ¿se determinan entradas funcionales, legales, normativas y otras necesarias, completas y sin conflictos", "c": "8", "e": ["Requisitos de diseño", "normativa", "necesidades de usuarios"]}, {"n": "8.3.4", "t": "Controles del diseño y desarrollo", "r": "Si aplica, ¿se realizan revisiones, verificaciones y validaciones para asegurar que los resultados cumplen requisitos", "c": "8", "e": ["Actas de revisión", "pruebas", "validaciones"]}, {"n": "8.3.5", "t": "Salidas del diseño y desarrollo", "r": "Si aplica, ¿las salidas cumplen las entradas, son adecuadas para procesos posteriores e incluyen criterios de aceptación", "c": "8", "e": ["Entregables aprobados", "especificaciones"]}, {"n": "8.3.6", "t": "Cambios del diseño y desarrollo", "r": "Si aplica, ¿los cambios se identifican, revisan y controlan para evitar impactos adversos", "c": "8", "e": ["Control de cambios", "aprobaciones"]}, {"n": "8.4.1", "t": "Procesos, productos y servicios externos – general", "r": "Se asegura que los procesos, productos y servicios suministrados externamente cumplen los requisitos", "c": "8", "e": ["Evaluación de proveedores", "contratos", "tercerizaciones"]}, {"n": "8.4.2", "t": "Tipo y alcance del control externo", "r": "Se define el tipo y alcance de controles a proveedores según impacto y eficacia de sus controles", "c": "8", "e": ["Criterios de selección/evaluación", "auditorías", "indicadores"]}, {"n": "8.4.3", "t": "Información para proveedores externos", "r": "Se comunican claramente requisitos de productos/servicios, competencia, aprobación, interacción, control y verificación", "c": "8", "e": ["Órdenes", "contratos", "especificaciones", "acuerdos de nivel de servicio"]}, {"n": "8.5.1", "t": "Control de la producción y prestación del servicio", "r": "La prestación de servicios se realiza bajo condiciones controladas, con información, recursos, personal competente y actividades de seguimiento", "c": "8", "e": ["Protocolos", "guías", "HC", "listas de chequeo", "indicadores"]}, {"n": "8.5.2", "t": "Identificación y trazabilidad", "r": "Se identifican las salidas y su estado y se mantiene trazabilidad cuando es requisito", "c": "8", "e": ["Historia clínica", "identificación de pacientes/productos", "registros de trazabilidad"]}, {"n": "8.5.3", "t": "Propiedad de clientes o proveedores externos", "r": "Se identifica, verifica, protege y salvaguarda la propiedad de clientes/proveedores y se reportan pérdidas o daños", "c": "8", "e": ["Custodia documental", "pertenencias", "datos", "equipos o materiales de terceros"]}, {"n": "8.5.4", "t": "Preservación", "r": "Se preservan las salidas durante la prestación para asegurar conformidad", "c": "8", "e": ["Almacenamiento", "manipulación", "transporte", "conservación"]}, {"n": "8.5.5", "t": "Actividades posteriores a la entrega", "r": "Se determinan y cumplen actividades posteriores considerando requisitos legales, riesgos, naturaleza del servicio y retroalimentación", "c": "8", "e": ["Seguimiento postatención", "garantías", "continuidad", "controles posteriores"]}, {"n": "8.5.6", "t": "Control de cambios", "r": "Los cambios en la prestación del servicio se revisan y controlan, conservando evidencia de revisión, autorización y acciones", "c": "8", "e": ["Registros de cambios", "autorizaciones", "actas"]}, {"n": "8.6", "t": "Liberación de productos y servicios", "r": "Se verifican los requisitos antes de liberar/entregar el servicio y se conserva evidencia de aceptación y responsable", "c": "8", "e": ["Registros de verificación", "autorizaciones", "cierres", "resultados"]}, {"n": "8.7", "t": "Control de salidas no conformes", "r": "Se identifican y controlan las salidas no conformes para prevenir uso o entrega no intencionada y se documentan las acciones", "c": "8", "e": ["No conformidades", "reprocesos", "correcciones", "concesiones"]}, {"n": "9.1.1", "t": "Seguimiento, medición, análisis y evaluación – general", "r": "Se determina qué medir, métodos, frecuencia, análisis y evaluación, y se conserva evidencia de resultados", "c": "9", "e": ["Matriz/fichas de indicadores", "Daruma", "informes"]}, {"n": "9.1.2", "t": "Satisfacción del cliente", "r": "Evidencia de seguimiento a la percepción de los clientes sobre el cumplimiento de sus necesidades y expectativas", "c": "9", "e": ["Encuestas", "PQRS", "NPS u otros mecanismos"]}, {"n": "9.1.3", "t": "Análisis y evaluación", "r": "Los datos se analizan para evaluar conformidad, satisfacción, desempeño del SGC, planificación, riesgos, proveedores y necesidad de mejoras", "c": "9", "e": ["Informes de indicadores", "análisis de tendencias", "comités"]}, {"n": "9.2.1", "t": "Auditoría interna – requisitos", "r": "Evidencia de auditorías internas a intervalos planificados para determinar conformidad y eficacia del SGC", "c": "9", "e": ["Programa e informes de auditoría"]}, {"n": "9.2.2", "t": "Programa de auditoría interna", "r": "El programa considera importancia, cambios y resultados previos; define criterios, alcance, objetividad, resultados y correcciones", "c": "9", "e": ["Programa", "planes", "informes", "planes de mejora y seguimiento"]}, {"n": "9.3.1", "t": "Revisión por la dirección – general", "r": "La alta dirección revisa el SGC a intervalos planificados para asegurar conveniencia, adecuación, eficacia y alineación estratégica", "c": "9", "e": ["Actas/informes de revisión por la dirección"]}, {"n": "9.3.2", "t": "Entradas de la revisión por la dirección", "r": "La revisión incluye estado de acciones previas, contexto, desempeño, satisfacción, objetivos, procesos, NC, auditorías, proveedores, recursos, riesgos y oportunidades de mejora", "c": "9", "e": ["Informe de entradas y soportes de revisión por la dirección"]}, {"n": "9.3.3", "t": "Salidas de la revisión por la dirección", "r": "Se documentan decisiones y acciones relacionadas con mejora, cambios del SGC y necesidades de recursos", "c": "9", "e": ["Acta", "conclusiones", "plan de acción"]}, {"n": "10.1", "t": "Mejora – general", "r": "Se determinan y seleccionan oportunidades de mejora para cumplir requisitos y aumentar satisfacción del cliente", "c": "10", "e": ["PAMEC/planes de mejora", "proyectos", "análisis de datos"]}, {"n": "10.2.1", "t": "No conformidad y acción correctiva", "r": "Ante una NC se controla/corrige, atienden consecuencias, analizan causas, implementan acciones, revisan eficacia y actualizan riesgos/SGC cuando procede", "c": "10", "e": ["Reportes de NC", "análisis de causa", "acciones correctivas", "eficacia"]}, {"n": "10.2.2", "t": "Información documentada de acciones correctivas", "r": "Conservación de evidencia de la naturaleza de las NC, acciones tomadas y resultados de las acciones correctivas", "c": "10", "e": ["Registros de NC y acciones correctivas"]}, {"n": "10.3", "t": "Mejora continua", "r": "Se mejora continuamente la conveniencia, adecuación y eficacia del SGC utilizando resultados de análisis y revisión por la dirección", "c": "10", "e": ["Planes de mejora", "tendencias", "proyectos", "revisión por la dirección"]}];
+const CAPS={4:'Contexto de la organización',5:'Liderazgo',6:'Planificación',7:'Apoyo',8:'Operación',9:'Evaluación del desempeño',10:'Mejora'};
+const CAPS_S={4:'Contexto',5:'Liderazgo',6:'Planificación',7:'Apoyo',8:'Operación',9:'Desempeño',10:'Mejora'};
+const ITEMS=[],IT={};
+const up=x=>String(x).replace(/^(\s*[¿¡"“(]?)(\S)/,(m,a,b)=>a+b.toUpperCase());
+ISO.forEach(q=>q.e.forEach((ev0,k)=>{const ev=up(ev0),o={id:q.n.replace(/\./g,'_')+'_'+k,n:q.n,t:q.t,r:q.r,c:q.c,ev,k};ITEMS.push(o);IT[o.id]=o}));
+const REQS=ISO.map(q=>({n:q.n,t:q.t,r:q.r,c:q.c,items:ITEMS.filter(i=>i.n===q.n)}));
+const ST={ok:['Cumple','#16a34a'],sub:['Subsanado','#0d9488'],curso:['NC en curso','#d97706'],pend:['NC pendiente','#dc2626'],sin:['Sin evaluar','#cbd5e1'],na:['No aplica','#94a3b8']};
+const EST={Pendiente:'pend','En curso':'curso',Realizada:'sub'};
+const RESP=['Luis Angel Bolaño Castro','Maria Clara Pizarro','Daniel Rodriguez','Jennifer Melendez','Valentina Jimeno'];
+const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
+
+let PERF={},PHC={};
+let DB={},LOG=[],USER='',REF=null,LOADED=false,inited=false,EDN=0,NAVQ='',MODE=null,EXP=new Set();
+let VIEW=['dash','eval','tareas'].includes(ls('iso_view'))?ls('iso_view'):'dash';
+let CAP=CAPS[ls('iso_cap')]?ls('iso_cap'):'all';
+let TF={resp:'all',q:'',flag:''};
+const $=s=>document.querySelector(s),rid=n=>n.replace(/\./g,'_');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const T=v=>(typeof _indObsTexto==='function'?_indObsTexto(v):String(v||'')).trim();
+const pct=v=>Math.round(v*100);
+const isoD=d=>new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const today=()=>isoD(new Date());
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return isoD(d)};
+const fmtD=d=>d?new Date(d+'T00:00').toLocaleDateString('es-CO',{day:'2-digit',month:'short'}):'';
+const ago=ts=>{const m=(Date.now()-ts)/6e4;return m<1?'ahora':m<60?Math.floor(m)+' min':m<1440?Math.floor(m/60)+' h':Math.floor(m/1440)+' d'};
+const ini=n=>(n||'?').split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+const toast=(m,t)=>showToast(m,t==='err'?'error':t==='ok'?'success':'info');
+const debs={},deb=(k,fn,ms=600)=>{clearTimeout(debs[k]);debs[k]=setTimeout(fn,ms)};
+const colPct=(p,ev)=>!ev?'#94a3b8':p>=.92?'#15803d':p>=.85?'#b45309':'#b91c1c';
+
+/* ── perfiles (fotos) ── */
+const nrm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z\s]/g,' ').split(/\s+/).filter(w=>w.length>1);
+function profileOf(name){if(!name)return null;if(name in PHC)return PHC[name];const a=nrm(name);let best=null,bs=0;
+  Object.values(PERF).forEach(p=>{if(!p||!p.nombre)return;const b=nrm(p.nombre),sh=a.filter(w=>b.includes(w)).length,sc=sh>=2?sh+(a[0]===b[0]?1:0):(sh===1&&a[0]===b[0]&&b.length<=2?1:0);if(sc>bs){bs=sc;best=p}});
+  return PHC[name]=best}
+const AVC=['#4f7cdb','#8b6bd9','#2aa6b8','#d1639a','#e0884a','#4aa27a','#c9a227'];
+function avHtml(name,cls=''){if(!name)return'<span class="iso-av none" title="Sin responsable"><i class="fas fa-user"></i></span>';const p=profileOf(name),u=p&&/^(https?:|data:image)/.test(p.avatarUrl||'')?p.avatarUrl:'';
+  return`<span class="iso-av ${cls}${u?' ph':''}" title="${esc(name)}"><i class="fas fa-user"></i>${u?`<img src="${esc(u)}" alt="" onerror="this.parentNode.classList.remove('ph');this.remove()">`:''}</span>`}
+function setPerf(o){PERF=o||{};PHC={};if(VIEW==='tareas')document.querySelectorAll('#iso-view .iso-card').forEach(cardFill);document.querySelectorAll('.t-resp .iso-rsel').forEach(r=>{const a=r.querySelector('.iso-av'),sl=r.querySelector('select');if(a&&sl)a.outerHTML=avHtml(sl.value)})}
+const CAPCOL={4:'#4f7cdb',5:'#8b6bd9',6:'#2aa6b8',7:'#5b6ad0',8:'#c25aa5',9:'#5a9e4b',10:'#d4824a'};
+
+/* ── cálculo ── */
+function st(it){const d=DB[it.id]||{},r=d.resultado||'';if(!r)return'sin';if(r==='Cumple')return'ok';if(r==='No aplica')return'na';const t=d.tarea;if(t&&t.estado==='Realizada')return'sub';if(t&&t.estado==='En curso')return'curso';return'pend'}
+function calc(fn){const o={ok:0,sub:0,curso:0,pend:0,sin:0,na:0,total:0};ITEMS.forEach(i=>{if(fn&&!fn(i))return;o[st(i)]++;o.total++});o.ap=o.total-o.na;o.ev=o.ap-o.sin;o.cump=o.ev?o.ok/o.ev:0;o.proy=o.ev?(o.ok+o.sub)/o.ev:0;o.avance=o.ap?o.ev/o.ap:0;return o}
+const inCap=i=>CAP==='all'||i.c===CAP;
+const tasks=()=>ITEMS.filter(i=>DB[i.id]&&DB[i.id].tarea).map(i=>({it:i,d:DB[i.id],t:DB[i.id].tarea}));
+const late=t=>!!(t.fechaLimite&&t.fechaLimite<today()&&t.estado!=='Realizada');
+const sig=id=>{const d=DB[id]||{},t=d.tarea||{};return (d.resultado||'')+'|'+(t.estado||'')+'|'+(t.responsable||'')+'|'+(d.subsanado||'')};
+function nextReq(from){const L=REQS.filter(r=>CAP==='all'||r.c===CAP),s=from?L.findIndex(r=>r.n===from)+1:0,has=r=>r.items.some(i=>st(i)==='sin');return L.slice(s).find(has)||L.find(has)}
+
+/* ── Firebase ── */
+function attach(){
+  if(!currentUser){toast('Inicia sesión para usar la autoevaluación','err');return}
+  USER=(document.getElementById('dash-user-name')||{}).textContent||(currentUser.email||'').split('@')[0];
+  REF=db.ref('autoevaluacionISO/general');
+  try{db.ref('perfiles').on('value',s=>setPerf(s.val()),()=>{})}catch(e){}
+  REF.child('items').on('value',s=>{DB=s.val()||{};onData()},e=>toast('Sin permiso para leer la autoevaluación: '+e.message,'err'));
+  REF.child('log').limitToLast(30).on('value',s=>{LOG=Object.values(s.val()||{}).sort((a,b)=>b.ts-a.ts);if(VIEW==='dash'&&LOADED)renderDash()});
+}
+function onData(){
+  if(!LOADED){LOADED=true;setView(VIEW,true);return}
+  renderTabs();
+  if(VIEW==='dash')renderDash();
+  else if(VIEW==='eval'){document.querySelectorAll('#iso-list .iso-ev').forEach(e=>{const id=e.id.slice(7);if(e.dataset.sig!==sig(id)&&!e.contains(document.activeElement))refreshEv(id)});refreshHeads()}
+  else{const want=new Set(plan().map(x=>x.it.id)),have=[...document.querySelectorAll('#iso-view .iso-card')].map(c=>c.dataset.id);
+    if(want.size!==have.length||have.some(i=>!want.has(i))){if(!(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('#iso-view'))&&!document.querySelector('#iso-view .iso-kan.dragging'))renderTareas()}
+    else have.forEach(i=>syncCard(i));}
+}
+let savedT;function flashSaved(){const s=$('#iso-saved');if(!s)return;s.classList.add('on');clearTimeout(savedT);savedT=setTimeout(()=>s.classList.remove('on'),1400)}
+function save(id,patch){
+  const d=Object.assign({},DB[id]||{});Object.keys(patch).forEach(k=>{if(patch[k]===null||patch[k]===undefined)delete d[k];else d[k]=patch[k]});
+  d.updatedAt=Date.now();d.updatedBy=USER;DB[id]=d;
+  const u={};Object.keys(patch).forEach(k=>u[k]=patch[k]===undefined?null:patch[k]);u.updatedAt=d.updatedAt;u.updatedBy=USER;
+  return REF.child('items/'+id).update(JSON.parse(JSON.stringify(u,(k,v)=>v===undefined?null:v))).then(flashSaved).catch(e=>toast('No se pudo guardar: '+e.message,'err'));
+}
+const log=txt=>REF.child('log').push({ts:Date.now(),user:USER,txt}).catch(()=>{});
+
+/* ── acciones ── */
+function setRes(id,val){
+  const it=IT[id],d=DB[id]||{};if(d.resultado===val)val='';
+  const patch={resultado:val||null};
+  if(val==='No cumple'){
+    if(!d.tarea)patch.tarea={estado:'Pendiente',accion:'',responsable:'',fechaLimite:addDays(30),cierre:[],obsCierre:'',creada:Date.now()};
+    if(!T(d.hallazgo)){patch.hallazgo='No se encontró evidencia de «'+it.ev+'» que demuestre el cumplimiento del requisito '+it.n+' ('+it.t+').';patch.hallazgoAuto=true}
+  }else if(d.tarea){
+    const t=d.tarea,untouched=t.estado==='Pendiente'&&!T(t.accion)&&!t.responsable;
+    if(untouched){patch.tarea=null;if(d.hallazgoAuto){patch.hallazgo=null;patch.hallazgoAuto=null}}
+    else if(val==='Cumple'&&t.estado==='Realizada'){patch.subsanado=today();toast('Hallazgo subsanado: la evidencia ahora cumple ✓','ok')}
+    else toast('La tarea asociada se conserva en el Plan de acción');
+  }
+  if(val!=='Cumple')patch.subsanado=null;
+  save(id,patch);if(val)log(it.n+' · '+it.ev+': '+val+(patch.subsanado?' (subsanado)':''));
+  if(VIEW==='tareas'){document.querySelectorAll('[data-tp="'+id+'"]').forEach(e=>e.replaceWith(taskPanel(id,pm(e))));syncCard(id)}
+  refreshEv(id);renderTabs();if(val)maybeAdvance(it.n)
+}
+function markAll(n){const r=REQS.find(x=>x.n===n),L=r.items.filter(i=>st(i)==='sin');if(!L.length)return;
+  L.forEach(i=>save(i.id,{resultado:'Cumple'}));log(n+': '+L.length+' evidencia(s) marcadas como Cumple');
+  L.forEach(i=>refreshEv(i.id));renderTabs();maybeAdvance(n)}
+function maybeAdvance(n){const r=REQS.find(x=>x.n===n);refreshHead(n);refreshFoot(n);
+  if(r.items.some(i=>st(i)==='sin'))return;
+  const hasNC=r.items.some(i=>(DB[i.id]||{}).resultado==='No cumple');
+  if(hasNC){toast('Requisito '+n+' completo · completa el hallazgo y la tarea','ok');return}
+  const e=document.getElementById('iso-rq-'+rid(n));if(e){e.classList.add('pulse')}
+  setTimeout(()=>{const nx=nextReq(n);toast(nx?'Requisito '+n+' completo ✓':'¡Evaluación completa! 🎉','ok');if(VIEW!=='eval')return;
+    EXP.delete(n);if(e){e.classList.remove('open','pulse')}
+    if(nx&&nx.n!==n)openReq(nx.n)},650)}
+function setTarea(id,p,mode){
+  save(id,{tarea:Object.assign({},(DB[id]||{}).tarea||{},p)});
+  refreshHead(IT[id].n);renderTabs();ncRefresh(id);
+  if(mode==='panel')document.querySelectorAll('[data-tp="'+id+'"]').forEach(e=>e.replaceWith(taskPanel(id,pm(e))));
+  if(VIEW==='tareas')syncCard(id)}
+function setEstado(id,e){
+  const t0=(DB[id]||{}).tarea;if(!t0||t0.estado===e){estUI(id);return}
+  const d0=DB[id]||{},back=e!=='Realizada'&&d0.resultado==='Cumple'&&t0.estado==='Realizada';
+  if(back){save(id,{resultado:'No cumple',subsanado:null});log(IT[id].n+' · '+IT[id].ev+': vuelve a No cumple (tarea reabierta)');toast('La tarea se reabrió: la evidencia vuelve a No cumple','info')}
+  setTarea(id,{estado:e,fechaCierre:e==='Realizada'?today():null});log('Tarea '+IT[id].n+' → '+e);estUI(id);
+  if(e==='Realizada')toast(d0.resultado==='No cumple'?'Tarea realizada ✓ · confirma que ya cumple':'Tarea realizada ✓','ok');
+  if(back){renderTabs();refreshEv(id)}else{refreshFoot(IT[id].n)}}
+function estUI(id){const t=(DB[id]||{}).tarea||{},O=['Pendiente','En curso','Realizada'],cur=Math.max(0,O.indexOf(t.estado||'Pendiente'));SEGP[id]=cur;
+  document.querySelectorAll('[data-tp="'+id+'"]').forEach(p=>{const sg=p.querySelector('.iso-seg.est');if(!sg)return;sg.dataset.k=cur;sg.querySelector('.iso-thumb').style.setProperty('--i',cur);sg.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===cur));
+   const cr=p.querySelector('.iso-cr'),c=cr&&cr.querySelector(':scope>[data-c]'),fx=[{opacity:0,transform:'translateY(-6px)'},{opacity:1,transform:'none'}],op={duration:380,easing:'cubic-bezier(.22,1,.36,1)'};
+   if(cur===2&&!c&&cr){const n=document.createElement('div');n.dataset.c='';n.appendChild(editor({html:t.obsCierre,label:'Cierre de la tarea (opcional)',ph:'Describe lo que se hizo…',min:60,onChange:v=>deb(id+'o',()=>setTarea(id,{obsCierre:v||''}))}));const a=att(()=>((DB[id]||{}).tarea||{}).cierre||[],L=>setTarea(id,{cierre:L}));n.appendChild(a);dropZone(n,a);cr.appendChild(n);n.animate(fx,op)}
+   else if(cur!==2&&c){const an=c.animate(fx.slice().reverse(),{duration:220,easing:'ease'});an.onfinish=()=>c.remove()}
+   if(p.dataset.mode==='card'){const tmp=document.createElement('div');tmp.innerHTML=connEl(id,false);const nw=tmp.firstElementChild,old=p.querySelector(':scope>.iso-conn');if(old){nw?old.replaceWith(nw):old.remove()}else if(nw){p.prepend(nw);nw.animate(fx,op)}}})}
+/* arrastrar el selector de estado */
+let DRG=null,SUPK=false;
+document.addEventListener('pointerdown',e=>{const sg=e.target.closest&&e.target.closest('.iso-seg.est'),p=sg&&sg.closest('.iso-tp');if(!p||(e.pointerType==='mouse'&&e.button!==0))return;DRG={sg,id:p.dataset.tp,th:sg.querySelector('.iso-thumb'),w:(sg.getBoundingClientRect().width-6)/3,x0:e.clientX,i0:+sg.dataset.k,mv:false,pid:e.pointerId,idx:+sg.dataset.k}},true);
+document.addEventListener('pointermove',e=>{const d=DRG;if(!d||e.pointerId!==d.pid)return;const dx=e.clientX-d.x0;if(!d.mv){if(Math.abs(dx)<5)return;d.mv=true;d.th.style.transition='none';d.sg.classList.add('drag');try{d.sg.setPointerCapture(e.pointerId)}catch(_){}}
+  const pos=Math.max(0,Math.min(2,d.i0+dx/d.w));d.th.style.setProperty('--i',pos);const ix=Math.round(pos);if(ix!==d.idx){d.idx=ix;d.sg.dataset.k=ix;d.sg.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===ix))}});
+function dragEnd(e){const d=DRG;if(!d||(e&&e.pointerId!==d.pid))return;DRG=null;if(!d.mv)return;d.sg.classList.remove('drag');d.th.style.transition='';SUPK=true;setTimeout(()=>SUPK=false,60);
+  const O=['Pendiente','En curso','Realizada'];if(d.idx!==d.i0)setEstado(d.id,O[d.idx]);else{d.sg.dataset.k=d.i0;d.th.style.setProperty('--i',d.i0)}}
+document.addEventListener('pointerup',dragEnd,true);document.addEventListener('pointercancel',dragEnd,true);
+document.addEventListener('click',e=>{if(SUPK){e.stopPropagation();e.preventDefault()}},true);
+function adv(id,dir){const o=['Pendiente','En curso','Realizada'],e=((DB[id]||{}).tarea||{}).estado||'Pendiente',n=o[o.indexOf(e)+dir];if(n)setEstado(id,n)}
+function quickDone(id){const e=((DB[id]||{}).tarea||{}).estado;setEstado(id,e==='Realizada'?'Pendiente':'Realizada')}
+function pickResp(id,sel){setTarea(id,{responsable:sel.value});const a=sel.parentElement.querySelector('.iso-av');if(a)a.outerHTML=avHtml(sel.value)}
+function pickDate(id,n){setTarea(id,{fechaLimite:addDays(n)},'panel')}
+
+/* ═══════ EDITOR ENRIQUECIDO (el mismo de Indicadores) + «Mejorar con IA» ═══════ */
+function editor({html='',label='',ph='Escribe aquí…',onChange,min}){
+  const id='iso-ed-'+(++EDN),box=document.createElement('div');
+  box.innerHTML=`<div class="ind-obs-label-row"><label class="modal-label">${esc(label)}</label></div><div class="ind-rte">${_rteToolbarHtml()}</div>`;
+  const wrap=box.querySelector('.ind-rte'),ed=document.createElement('div');
+  ed.className='ind-rte-editor';ed.id=id;ed.contentEditable='true';ed.spellcheck=true;ed.setAttribute('role','textbox');ed.setAttribute('aria-multiline','true');ed.dataset.placeholder=ph;if(min)ed.style.minHeight=min+'px';
+  Object.defineProperty(ed,'value',{configurable:true,get(){return _rteSerializar(ed)},set(v){ed.innerHTML=v?(_indObsEsHtml(v)?_indObsSanitizar(v):_indEsc(v)):'';_rteActualizarVacio(ed)}});
+  ed.value=html;wrap.appendChild(ed);_rteVincular(wrap,ed);
+  ed.addEventListener('input',()=>{_rteActualizarVacio(ed);onChange&&onChange(ed.value)});
+  box._ed=ed;return box}
+
+/* ═══════ ADJUNTOS (opcionales · compactos) ═══════ */
+const EXT=u=>((u||'').split('?')[0].split('.').pop()||'').toLowerCase();
+function kind(a){if(a.tipo==='img')return'img';const e=EXT(a.nombre||a.url);if(['jpg','jpeg','png','gif','webp','bmp','svg'].includes(e))return'img';if(e==='pdf')return'pdf';if(['doc','docx','xls','xlsx','ppt','pptx'].includes(e))return'off';if(/drive\.google|docs\.google/.test(a.url))return'gdr';return'link'}
+const ICON={pdf:'fa-file-pdf',off:'fa-file-word',gdr:'fa-brands fa-google-drive',link:'fa-link',img:'fa-image'};
+function embed(a){const k=kind(a),u=a.url;if(k==='img')return{t:'img',u};if(k==='pdf')return{t:'if',u};if(k==='off')return{t:'if',u:'https://docs.google.com/gview?embedded=1&url='+encodeURIComponent(u)};
+  if(k==='gdr'){const m=u.match(/\/d\/([\w-]+)/);if(m&&/drive\.google/.test(u))return{t:'if',u:'https://drive.google.com/file/d/'+m[1]+'/preview'};if(/docs\.google/.test(u))return{t:'if',u:u.replace(/\/(edit|view).*$/,'/preview')}}
+  return{t:'card',u}}
+function openPv(a){const e=embed(a);$('#iso-pvT').textContent=a.nombre||'Vista previa';$('#iso-pvOpen').href=a.url;
+  $('#iso-pvB').innerHTML=e.t==='img'?`<img src="${esc(e.u)}" alt="">`:e.t==='if'?`<iframe src="${esc(e.u)}"></iframe>`:`<div style="text-align:center;padding:30px;color:var(--gray600)"><i class="fas fa-link" style="font-size:38px;color:var(--accent)"></i><h3 style="margin:12px 0 4px;font-size:15px">${esc(a.nombre||a.url)}</h3><p style="font-size:12.5px;margin-bottom:12px">Este sitio no permite vista previa integrada.</p><a class="iso-xl" href="${esc(a.url)}" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i> Abrir enlace</a></div>`;
+  $('#iso-pv').classList.add('on')}
+function closePv(){$('#iso-pv').classList.remove('on');$('#iso-pvB').innerHTML=''}
+async function shrink(f){try{const bm=await createImageBitmap(f,{imageOrientation:'from-image'}),s=Math.min(1,1600/Math.max(bm.width,bm.height)),c=document.createElement('canvas');c.width=bm.width*s;c.height=bm.height*s;c.getContext('2d').drawImage(bm,0,0,c.width,c.height);return await new Promise(r=>c.toBlob(r,'image/jpeg',.82))}catch(e){return f}}
+async function upload(f){
+  const isImg=f.type.startsWith('image/');let b=f,ct=f.type||'application/octet-stream';
+  if(isImg){b=await shrink(f);ct=b.type||'image/jpeg'}
+  if(b.size>15*1024*1024)throw new Error('supera 15 MB');
+  const url=await _r2SubirArchivo(b,'autoevaluacion-iso/'+Date.now()+'_'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_'),ct);
+  return{id:'a'+Date.now()+Math.floor(Math.random()*999),tipo:isImg?'img':'file',url,nombre:f.name,ts:Date.now()}}
+function att(getL,setL){
+  const el=document.createElement('div');el.className='iso-att';let busy=0;
+  el.innerHTML=`<button type="button" class="iso-mini" data-f><i class="fas fa-paperclip"></i> Adjuntar</button><button type="button" class="iso-mini" data-l><i class="fas fa-link"></i> Enlace</button><span class="iso-linkin"><input placeholder="Pega el enlace y presiona Enter"></span><span data-c style="display:contents"></span><input type="file" multiple hidden accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv">`;
+  const fi=el.querySelector('input[type=file]'),lk=el.querySelector('.iso-linkin'),li=lk.querySelector('input'),ch=el.querySelector('[data-c]');
+  const draw=()=>{ch.innerHTML=getL().map((a,i)=>{const k=kind(a);return`<span class="iso-ach"><span data-v="${i}" title="${esc(a.nombre||a.url)}">${k==='img'?`<img src="${esc(a.url)}" alt="">`:`<i class="fas ${ICON[k]}"></i>`}${esc(a.nombre||a.url.replace(/^https?:\/\//,''))}</span><button type="button" data-d="${i}" title="Quitar"><i class="fas fa-xmark"></i></button></span>`}).join('')+Array(busy).fill('<span class="iso-ach load"><i class="fas fa-spinner fa-spin"></i> Subiendo…</span>').join('');
+    ch.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>openPv(getL()[+b.dataset.v]));
+    ch.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const L=getL().slice();L.splice(+b.dataset.d,1);setL(L);draw()})};
+  const add=async files=>{files=[...files];if(!files.length)return;busy+=files.length;draw();
+    for(const f of files){try{setL([...getL(),await upload(f)])}catch(e){toast('No se pudo subir «'+f.name+'»: '+e.message,'err')}busy--;draw()}};
+  const addLink=()=>{let u=li.value.trim();if(!u)return;if(!/^https?:\/\//i.test(u))u='https://'+u;let n;try{n=new URL(u).hostname.replace(/^www\./,'')}catch(e){return toast('Enlace no válido','err')}setL([...getL(),{id:'a'+Date.now(),tipo:'link',url:u,nombre:n,ts:Date.now()}]);li.value='';lk.classList.remove('on');draw()};
+  el.querySelector('[data-f]').onclick=()=>fi.click();fi.onchange=()=>{add(fi.files);fi.value=''};
+  el.querySelector('[data-l]').onclick=()=>{lk.classList.toggle('on');if(lk.classList.contains('on'))li.focus()};
+  li.onkeydown=e=>{if(e.key==='Enter')addLink();if(e.key==='Escape')lk.classList.remove('on')};li.onblur=()=>{if(li.value.trim())addLink()};
+  el._add=add;draw();return el}
+function dropZone(zone,a){['dragover','dragenter'].forEach(e=>zone.addEventListener(e,x=>{x.preventDefault();a.classList.add('over')}));
+  zone.addEventListener('dragleave',()=>a.classList.remove('over'));zone.addEventListener('drop',x=>{x.preventDefault();a.classList.remove('over');a._add(x.dataTransfer.files)})}
+
+/* ═══════ ESTRUCTURA ═══════ */
+function init(){
+  if(!inited){inited=true;
+    $('#iso-root').innerHTML=`<div class="iso-subrow"><div class="nav-tabs" id="iso-tabs"></div><span class="iso-saved" id="iso-saved"><i class="fas fa-check-circle"></i> Guardado</span></div><section id="iso-view"></section>`;
+    renderTabs();$('#iso-view').innerHTML='<div class="iso-empty"><i class="fas fa-spinner fa-spin"></i> Cargando…</div>';attach()}
+  else if(!REF)attach()}
+function renderTabs(){const n=tasks().filter(x=>x.t.estado!=='Realizada').length,tb=$('#iso-tabs');if(!tb)return;
+  tb.innerHTML=[['dash','fa-chart-bar','Seguimiento'],['eval','fa-list-check','Evaluación'],['tareas','fa-diagram-project','Plan de acción',n]].map(t=>`<button class="nav-tab ${VIEW===t[0]?'active':''}" onclick="ISOA.setView('${t[0]}')"><i class="fas ${t[1]}"></i> ${t[2]}${t[3]?` <span class="papelera-badge">${t[3]}</span>`:''}</button>`).join('')}
+function setView(v,first){VIEW=v;ls('iso_view',v);renderTabs();const m=$('#iso-view');
+  v==='dash'?renderDash():v==='eval'?renderEval():renderTareas();
+  m.classList.remove('iso-fade');void m.offsetWidth;m.classList.add('iso-fade');
+  if(!first){window.scrollTo({top:0,behavior:'smooth'});if(v==='eval')setTimeout(()=>{const o=document.querySelector('#iso-list .iso-rq.open');if(o&&o.getBoundingClientRect().top>window.innerHeight*.6)o.scrollIntoView({behavior:'smooth',block:'start'})},350)}}
+function setCap(c){CAP=c;ls('iso_cap',c);VIEW==='dash'?renderDash():VIEW==='eval'?renderEval():renderTareas()}
+function evalCap(c){CAP=c;ls('iso_cap',c);MODE=calc(i=>i.c===c).sin?'pend':'all';EXP.clear();setView('eval')}
+function goReq(n){const r=REQS.find(x=>x.n===n);if(CAP!=='all'&&r.c!==CAP){CAP=r.c;ls('iso_cap',CAP)}NAVQ='';MODE=r.items.some(i=>st(i)==='sin')?'pend':'all';EXP.add(n);setView('eval',true);setTimeout(()=>{const e=document.getElementById('iso-rq-'+rid(n));if(e)e.scrollIntoView({behavior:'smooth',block:'start'})},80)}
+function goTask(id){TF={resp:'all',q:'',flag:''};if(CAP!=='all'&&IT[id].c!==CAP){CAP=IT[id].c;ls('iso_cap',CAP)}setView('tareas',true);setTimeout(()=>{const e=document.getElementById('iso-card-'+id);if(!e)return;if(e.classList.contains('iso-hid')){RALL=true;colUpdate()}e.scrollIntoView({behavior:'smooth',block:'center'});if(!OPENC.has(id))openTask(id)},150)}
+function goPlan(flag){TF={resp:'all',q:'',flag:flag||''};setView('tareas')}
+function hideHelp(){ls('iso_help','1');const h=$('.iso-help');if(h)h.remove()}
+const capSelect=()=>`<select class="db-fsel" onchange="ISOA.setCap(this.value)"><option value="all">Todos los capítulos</option>${Object.keys(CAPS).map(c=>`<option value="${c}" ${CAP===c?'selected':''}>${c} · ${CAPS[c]}</option>`).join('')}</select>`;
+
+
+/* ── Donas, responsables y numerales ── */
+const TE=['Pendiente','En curso','Realizada'],estOf=x=>x.t.estado||'Pendiente',cnt=a=>TE.map(e=>a.filter(x=>estOf(x)===e).length),TC=e=>ST[EST[e]][1];
+function donut(c,sz,center,th=5){const t=c[0]+c[1]+c[2];let off=25,g='';if(!t)g='<circle r="15.9155" cx="21" cy="21" fill="none" stroke="#e8edf3" stroke-width="'+th+'"/>';else c.forEach((v,i)=>{if(!v)return;const p=v/t*100;g+=`<circle class="iso-dseg" r="15.9155" cx="21" cy="21" fill="none" stroke="${TC(TE[i])}" stroke-width="${th}" stroke-dasharray="${p} ${100-p}" stroke-dashoffset="${off}"/>`;off-=p});return`<span class="iso-dn" style="width:${sz}px;height:${sz}px"><svg viewBox="0 0 42 42">${g}</svg><span class="iso-dc">${center}</span></span>`}
+function donutG(v,cols,sz,center,th=6){const t=v.reduce((x,y)=>x+y,0);let off=25,g='';if(!t)g='<circle r="15.9155" cx="21" cy="21" fill="none" stroke="#e8edf3" stroke-width="'+th+'"/>';else v.forEach((n,i)=>{if(!n)return;const p=n/t*100;g+=`<circle class="iso-dseg" r="15.9155" cx="21" cy="21" fill="none" stroke="${cols[i]}" stroke-width="${th}" stroke-dasharray="${p} ${100-p}" stroke-dashoffset="${off}"/>`;off-=p});return`<span class="iso-dn" style="width:${sz}px;height:${sz}px"><svg viewBox="0 0 42 42">${g}</svg><span class="iso-dc">${center}</span></span>`}
+let DRES='NC',DCAT='all';
+const RT={NC:['No cumple','#fef2f2','#b91c1c','#fca5a5'],C:['Cumple','#f0fdf4','#15803d','#86efac'],SE:['Sin evaluar','#f8fafc','#64748b','#cbd5e1']};
+const RF={NC:i=>(DB[i.id]||{}).resultado==='No cumple',C:i=>(DB[i.id]||{}).resultado==='Cumple',SE:i=>st(i)==='sin'};
+function dashRight(){const base=ITEMS.filter(inCap),N={};Object.keys(RF).forEach(k=>N[k]=base.filter(RF[k]).length);
+  const inT=base.filter(RF[DRES]),caps=Object.keys(CAPS).filter(c=>CAP==='all'||CAP===c),cc={};caps.forEach(c=>cc[c]=inT.filter(i=>i.c===c).length);
+  if(DCAT!=='all'&&!cc[DCAT])DCAT='all';
+  const L=inT.filter(i=>DCAT==='all'||i.c===DCAT),[,bg,fg,bd]=RT[DRES];
+  const row=i=>{const d=DB[i.id]||{},t=d.tarea,e=t&&(t.estado||'Pendiente');return`<button class="iso-hit" onclick="ISOA.dGo('${i.id}')"><b class="iso-dn1">${i.n}</b><span class="iso-hit-t">${esc(i.ev)}<small>${esc(i.t)}${DRES==='NC'&&t?' · '+esc(t.responsable||'Sin responsable'):''}</small></span>${DRES==='NC'&&t?`<em class="iso-hst" style="--c:${TC(e)}">${e}</em>`:''}</button>`};
+  return`<div class="dbi-panel iso-dr" id="iso-dr"><div class="dbi-panel-head" style="flex-direction:column;align-items:stretch;gap:8px"><div style="display:flex;align-items:center;justify-content:space-between"><span class="dbi-panel-title">Análisis de hallazgos</span><span class="dbi-panel-badge">${base.length} evidencias</span></div>
+   <div style="display:flex;gap:3px">${Object.keys(RT).map(k=>`<button class="dbi-res-tab ${DRES===k?'active':''}" onclick="ISOA.dRes('${k}')" style="background:${RT[k][1]};color:${RT[k][2]};border-color:${RT[k][3]}">${RT[k][0]} <span style="font-weight:800">${N[k]}</span></button>`).join('')}</div></div>
+   <div class="iso-dcats"><button class="dbi-cat-pill ${DCAT==='all'?'active':''}" style="${DCAT==='all'?`background:${bg};color:${fg};border-color:${bd}`:''}" onclick="ISOA.dCat('all')">Todos ${inT.length}</button>${caps.filter(c=>cc[c]).map(c=>`<button class="dbi-cat-pill ${DCAT===c?'active':''}" style="${DCAT===c?`background:${bg};color:${fg};border-color:${bd}`:''}" title="${CAPS[c]}" onclick="ISOA.dCat('${c}')">${c} · ${CAPS_S[c]} ${cc[c]}</button>`).join('')}</div>
+   <div class="iso-hits">${L.length?L.map(row).join(''):`<div class="iso-empty">${DRES==='NC'?'No hay evidencias que no cumplan':DRES==='C'?'Aún no hay evidencias que cumplan':'Todo está evaluado ✓'}</div>`}</div></div>`}
+function dRes(k){DRES=k;DCAT='all';const e=document.getElementById('iso-dr');if(e)e.outerHTML=dashRight()}
+function dCat(c){DCAT=c;const e=document.getElementById('iso-dr');if(e)e.outerHTML=dashRight()}
+function dGo(id){(DB[id]||{}).tarea?goTask(id):goReq(IT[id].n)}
+function dashBody(S,tk,open,venc){const c=cnt(tk),t=tk.length,all=tasks(),nc=S.curso+S.pend+S.sub,caps=Object.keys(CAPS).filter(k=>CAP==='all'||CAP===k),tot=S.ap||1;
+  const kp=(l,v,sub,col)=>`<div class="dbi-kpi"><div class="dbi-kl">${l}</div><div class="dbi-kv" ${col?`style="color:${col}"`:''}>${v}</div><div class="dbi-ks">${sub}</div></div>`;
+  const kpis=`<div class="dbi-kpi-row">${kp('Cumplimiento',S.ev?pct(S.cump)+'%':'—',S.ev?`${S.ok} de ${S.ev} evaluadas cumplen`:'Aún sin evaluar',colPct(S.cump,S.ev))}${kp('Avance',pct(S.avance)+'%',`${S.ev} de ${S.ap} evidencias evaluadas`)}${kp('No cumplen',nc,`${open.length} hallazgo${open.length===1?'':'s'} abierto${open.length===1?'':'s'}`,nc?'#b91c1c':'#15803d')}${kp('Tareas realizadas',t?Math.round(c[2]/t*100)+'%':'—',t?`${c[2]} de ${t} tareas`:'Sin tareas',t&&c[2]===t?'#15803d':'')}${kp('Vencidas',venc.length,venc.length?'Requieren atención':'Todo al día',venc.length?'#b91c1c':'#15803d')}</div>`;
+  const rank=caps.map(k=>{const o=calc(i=>i.c===k),nk=o.curso+o.pend+o.sub,tt=o.ap||1,col=colPct(o.cump,o.ev);
+   return`<button class="dbi-sede-row" onclick="ISOA.evalCap('${k}')" title="${CAPS[k]} · ${o.ok} cumplen · ${nk} no cumplen · ${o.sin} sin evaluar"><span class="iso-dn1">${k}</span><span class="dbi-sede-name">${CAPS_S[k]}</span><span class="iso-rbar"><i style="width:${o.ok/tt*100}%;background:#16a34a"></i><i style="width:${nk/tt*100}%;background:#dc2626"></i></span><span class="dbi-sede-pct" style="color:${col}">${o.ev?pct(o.cump)+'%':'—'}</span><span class="dbi-sede-nc" style="color:${nk?'#b91c1c':'#cbd5e1'}">${nk} NC</span></button>`}).join('');
+  const left=`<div class="dbi-panel" id="dbi-left"><div class="dbi-panel-head"><span class="dbi-panel-title">Ranking de capítulos</span><span class="dbi-panel-badge">% cumple · NC · clic para evaluar</span></div><div class="dbi-panel-body iso-pscroll">${rank}</div></div>`;
+  const leg=TE.map((e,i)=>`<button class="iso-lg" onclick="ISOA.goPlan()"><i style="background:${TC(e)}"></i><span>${e}</span><b>${c[i]}</b><em>${t?Math.round(c[i]/t*100):0}%</em></button>`).join('');
+  const dist=[['Cumplen',S.ok,'#16a34a'],['No cumplen',nc,'#dc2626'],['Sin evaluar',S.sin,'#cbd5e1']].map(([l,n,col])=>`<div class="iso-dist"><span>${l}</span><span class="iso-dbar"><i style="width:${n/tot*100}%;background:${col}"></i></span><b>${n}</b><em>${Math.round(n/tot*100)}%</em></div>`).join('');
+  const mid=`<div class="iso-mid"><div class="dbi-panel iso-plan"><div class="dbi-panel-head"><span class="dbi-panel-title">Plan de acción</span><a href="#" class="dbi-panel-badge" onclick="ISOA.goPlan();return false" style="color:var(--accent);font-weight:700;text-decoration:none">Abrir plan →</a></div>
+    <div class="iso-tk1">${donutG(c,TE.map(TC),96,t?`<b class="iso-big">${Math.round(c[2]/t*100)}%</b><small>realizadas</small>`:'<small>Sin tareas</small>',6)}<div class="iso-lgs">${leg}</div></div></div>
+   <div class="dbi-panel" style="padding:12px 16px"><div class="dbi-panel-title" style="margin-bottom:10px">Distribución de evidencias</div>${dist}</div></div>`;
+  const feed=`<div class="dbi-panel" style="padding:0;overflow:hidden"><div class="dbi-panel-head"><span class="dbi-panel-title">Actividad reciente</span></div><div class="iso-feed iso-pscroll" style="padding:4px 14px">${LOG.length?LOG.slice(0,20).map(l=>`<div><i class="fas fa-circle"></i><span>${esc(l.txt)}<small>${esc(l.user)} · hace ${ago(l.ts)}</small></span></div>`).join(''):'<div class="iso-empty">Aún no hay actividad</div>'}</div></div>`;
+  return`${kpis}<div class="iso-main">${left}${mid}${dashRight()}</div><div class="iso-bot">${respPanel(tk)}${feed}</div>`}
+function respPanel(tk){const g={};tk.forEach(x=>{const r=x.t.responsable||'Sin asignar';(g[r]=g[r]||[]).push(x)});
+  const L=Object.keys(g).map(r=>({r,a:g[r],c:cnt(g[r])})).sort((p,q)=>(q.c[0]+q.c[1])-(p.c[0]+p.c[1])||q.a.length-p.a.length);
+  const lab=['Pendientes','En curso','Realizadas'];
+  const card=o=>{const t=o.a.length,pr=profileOf(o.r==='Sin asignar'?'':o.r)||{},ord={'En curso':0,Pendiente:1,Realizada:2},sh=o.a.slice().sort((p,q)=>ord[estOf(p)]-ord[estOf(q)]||(p.t.fechaLimite||'9').localeCompare(q.t.fechaLimite||'9')),x=sh.find(z=>estOf(z)!=='Realizada'),lt=o.a.filter(z=>estOf(z)!=='Realizada'&&late(z.t)).length,pc=Math.round(o.c[2]/t*100),nm=esc(o.r);
+   return`<div class="iso-pc"><button class="iso-pch" onclick="ISOA.planResp('${nm.replace(/'/g,"\\'")}')" title="Ver sus tareas en el plan">${avHtml(o.r==='Sin asignar'?'':o.r)}<span class="iso-pcn"><b>${nm}</b><small>${lt?`<em class="iso-dlt">${lt} vencida${lt>1?'s':''}</em>`:esc(pr.cargo||(o.r==='Sin asignar'?'Pendientes de asignar':'Responsable'))}</small></span><span class="iso-pct"><b>${t}</b><small>tarea${t>1?'s':''}</small></span></button>
+    <div class="iso-pts">${TE.map((e,i)=>`<span class="${o.c[i]?'':'z'}" style="--c:${TC(e)}"><b>${o.c[i]}</b><small>${lab[i]}</small></span>`).join('')}</div>
+    <div class="iso-ppr"><span class="iso-pbar"><i style="width:${pc}%"></i></span><small>${pc}% realizado</small></div>
+    ${x?`<button class="iso-pnow ${late(x.t)?'late':''}" onclick="ISOA.goTask('${x.it.id}')"><i style="background:${TC(estOf(x))}"></i><b>${x.it.n}</b><span>${esc(x.it.ev)}</span></button>`:`<div class="iso-pnow ok"><i class="fas fa-circle-check"></i> Todo realizado</div>`}</div>`};
+  return`<div class="dbi-panel iso-rp iso-rp2"><div class="dbi-panel-head"><span class="dbi-panel-title">Tareas por responsable</span><span class="dbi-panel-badge">${L.length} persona${L.length===1?'':'s'} · clic para ver su plan</span></div><div class="iso-rl iso-pcs">${L.length?L.map(card).join(''):'<div class="iso-empty">Aquí verás quién trabaja en qué cuando existan tareas</div>'}</div></div>`}
+function planCap(c){TF={resp:'all',q:'',flag:''};CAP=c;ls('iso_cap',c);setView('tareas')}
+function planResp(r){TF={resp:r,q:'',flag:''};setView('tareas')}
+
+/* ═══════ QUITAR / ELIMINAR / RESTABLECER ═══════ */
+const WIPE={resultado:null,tarea:null,hallazgo:null,hallazgoAuto:null,evidTxt:null,evidencias:null,subsanado:null};
+const hasData=id=>{const d=DB[id]||{};return !!(d.resultado||d.tarea||T(d.hallazgo)||T(d.evidTxt)||(d.evidencias||[]).length)};
+function afterWipe(ids){const ns=new Set();ids.forEach(id=>{delete OPS[id];ns.add(IT[id].n)});
+  if(VIEW==='eval'){ids.forEach(id=>refreshEv(id));ns.forEach(n=>{refreshHead(n);refreshFoot(n)});renderTabs()}
+  else if(VIEW==='tareas'){ids.forEach(syncCard);renderTabs()}else{renderTabs();setView(VIEW)}}
+function clearEv(id){if(!hasData(id))return;const d=DB[id]||{};
+  if((d.tarea||T(d.hallazgo)||T(d.evidTxt)||(d.evidencias||[]).length)&&!confirm('¿Quitar la evaluación de esta evidencia?\nSe borrarán también su hallazgo, tarea y adjuntos.'))return;
+  save(id,WIPE);log(IT[id].n+' · '+IT[id].ev+': evaluación quitada');afterWipe([id]);toast('Evaluación quitada','info')}
+function clearReq(n){const L=REQS.find(r=>r.n===n).items.filter(i=>hasData(i.id));if(!L.length)return;
+  if(!confirm('¿Limpiar la sección '+n+'?\nSe quitarán '+L.length+' evaluación(es) con sus hallazgos, tareas y adjuntos.'))return;
+  L.forEach(i=>save(i.id,WIPE));log(n+': sección limpiada ('+L.length+' evidencias)');afterWipe(L.map(i=>i.id));toast('Sección '+n+' limpiada','info')}
+function delTask(id){const d=DB[id]||{};if(!d.tarea)return;
+  if(!confirm('¿Eliminar esta tarea?\nSe borrará también su hallazgo y la evidencia volverá a «Sin evaluar».'))return;
+  save(id,{tarea:null,hallazgo:null,hallazgoAuto:null,resultado:null,subsanado:null});log('Tarea '+IT[id].n+' eliminada · '+IT[id].ev);
+  OPENC.delete(id);afterWipe([id]);toast('Tarea eliminada','info')}
+function resetAll(){const n=ITEMS.filter(i=>hasData(i.id)).length;
+  if(!n){toast('No hay nada que restablecer','info');return}
+  if(!confirm('¿Restablecer toda la autoevaluación ISO 9001?\n\nSe borrarán '+n+' evaluaciones con sus hallazgos, tareas, adjuntos y la actividad. No se puede deshacer.'))return;
+  const w=prompt('Para confirmar escribe REINICIAR');if(!w||w.trim().toUpperCase()!=='REINICIAR'){toast('Restablecimiento cancelado','info');return}
+  Promise.all([REF.child('items').remove(),REF.child('log').remove()]).then(()=>{REF.child('log').push({ts:Date.now(),user:USER,txt:'Autoevaluación restablecida'}).catch(()=>{})}).catch(e=>toast('No se pudo restablecer: '+e.message,'err'));
+  Object.keys(DB).forEach(k=>delete DB[k]);LOG.length=0;EXP.clear();Object.keys(OPS).forEach(k=>delete OPS[k]);OPENC.clear();MODE=null;renderTabs();setView(VIEW);toast('Autoevaluación restablecida · empieza de nuevo','ok')}
+/* ═══════ SEGUIMIENTO ═══════ */
+function segBar(o,keys=['ok','sub','curso','pend','sin']){const t=keys.reduce((s,k)=>s+o[k],0)||1;return`<span class="iso-bar">${keys.map(k=>`<i style="width:${o[k]/t*100}%;background:${ST[k][1]}"></i>`).join('')}</span>`}
+function renderDash(){const m=$('#iso-view');if(!m)return;
+  const S=calc(inCap),tk=tasks().filter(x=>inCap(x.it)),open=tk.filter(x=>x.t.estado!=='Realizada'),venc=open.filter(x=>late(x.t)),sinResp=open.filter(x=>!x.t.responsable),sinFecha=open.filter(x=>!x.t.fechaLimite);
+  const nx=nextReq(),caps=Object.keys(CAPS);let step;
+  if(S.ev===0&&nx)step={ic:'fa-rocket',t:'Empieza tu autoevaluación',s:`Son ${S.ap} evidencias en ${REQS.filter(r=>CAP==='all'||r.c===CAP).length} requisitos. Te llevo al primero.`,b:'Comenzar',fn:`ISOA.goReq('${nx.n}')`};
+  else if(nx)step={ic:'fa-forward',t:`Continúa con ${nx.n} · ${esc(nx.t)}`,s:`Te faltan ${S.sin} evidencias por evaluar (${pct(S.avance)}% de avance).`,b:'Continuar',fn:`ISOA.goReq('${nx.n}')`};
+  else if(open.length)step={ic:'fa-list-check',t:'Evaluación completa: ahora cierra tus hallazgos',s:`${open.length} tarea${open.length>1?'s':''} abierta${open.length>1?'s':''}${venc.length?' · '+venc.length+' vencida'+(venc.length>1?'s':''):''}.`,b:'Ir al plan de acción',fn:`ISOA.goPlan()`};
+  else step={ic:'fa-circle-check',t:'¡Autoevaluación completa!',s:`Cumplimiento ${pct(S.cump)}% · no quedan tareas abiertas.`,b:'Generar informe',fn:`ISOA.expPdf()`,done:1};
+  const hl=open.slice().sort(rank).slice(0,6);
+  m.innerHTML=`
+  ${ls('iso_help')||S.ev>10?'':`<div class="iso-help"><b>Cómo funciona</b><div class="iso-hs"><span>1</span>Evalúa cada evidencia: Cumple o No cumple</div><div class="iso-hs"><span>2</span>Un «No cumple» crea solo su hallazgo y su tarea</div><div class="iso-hs"><span>3</span>Cierra las tareas y sigue tu avance aquí</div><button onclick="ISOA.hideHelp()" title="Entendido"><i class="fas fa-xmark"></i></button></div>`}
+  <div class="dbi-header"><div class="dbi-title-wrap"><span class="dbi-title">Seguimiento · ISO 9001:2015</span><span class="dbi-sub"><b>${S.ev}</b> de ${S.ap} evidencias evaluadas${CAP==='all'?'':' · Capítulo '+CAP}</span></div>
+   <div class="dbi-filters">${capSelect()}<button class="iso-xl iso-rst" onclick="ISOA.resetAll()" title="Borrar todo y empezar de nuevo"><i class="fas fa-rotate-left"></i> Restablecer</button><button class="iso-xl" onclick="ISOA.expXlsx()"><i class="fas fa-file-excel" style="color:#16a34a"></i> Excel</button><button class="dbi-report-btn" onclick="ISOA.expPdf()"><i class="fas fa-file-pdf"></i> Generar Informe</button></div></div>
+  ${(venc.length||sinResp.length||sinFecha.length||porConf().length)?`<div class="iso-flags">${porConf().length?`<button class="iso-flag ok" onclick="ISOA.goPlan('conf')"><i class="fas fa-link"></i> ${porConf().length} cerrada${porConf().length>1?'s':''} por confirmar</button>`:''}${venc.length?`<button class="iso-flag" onclick="ISOA.goPlan('late')"><i class="fas fa-clock"></i> ${venc.length} vencida${venc.length>1?'s':''}</button>`:''}${sinResp.length?`<button class="iso-flag w" onclick="ISOA.goPlan('noresp')"><i class="fas fa-user-slash"></i> ${sinResp.length} sin responsable</button>`:''}${sinFecha.length?`<button class="iso-flag w" onclick="ISOA.goPlan('nodate')"><i class="far fa-calendar"></i> ${sinFecha.length} sin fecha</button>`:''}</div>`:''}
+  ${dashBody(S,tk,open,venc)}</div>`}
+
+/* ═══════ EVALUACIÓN ═══════ */
+function capBtn(k,badge,name,ev,ap,col,nc){const p=ap?ev/ap*100:0,t=CAPS[k]||'Todos los capítulos',full=ap&&ev===ap&&!nc;return`<button class="iso-nv ${CAP===String(k)?'on':''} ${full?'done':''}" style="--cc:${col}" onclick="ISOA.setCap('${k}')" title="${esc(t)}"><span class="iso-nb">${badge}</span><span class="iso-nm2"><span class="iso-nn">${name}</span><span class="iso-np2"><i style="width:${p}%"></i></span></span><span class="iso-nr2">${nc?`<em title="${nc} no cumple">${nc}</em>`:''}<span class="iso-nq"><b>${ev}</b>/${ap}</span></span></button>`}
+function renderEval(){const m=$('#iso-view'),S=calc(inCap);
+  if(MODE===null)MODE=ITEMS.some(i=>st(i)==='sin')?'pend':'all';
+  if(!EXP.size&&!NAVQ){const nx=nextReq();if(nx)EXP.add(nx.n)}
+  const nc=ITEMS.filter(i=>inCap(i)&&(DB[i.id]||{}).resultado==='No cumple').length;
+  m.innerHTML=`<div class="dbi-header"><div class="dbi-title-wrap"><span class="dbi-title">Evaluación por requisito</span><span class="dbi-sub">Marca el resultado de cada evidencia · <b>${S.ev}</b> de ${S.ap} evaluadas</span></div><div class="iso-tools"><div class="iso-search"><i class="fas fa-magnifying-glass"></i><input id="iso-q" placeholder="Buscar numeral, tema o evidencia…" value="${esc(NAVQ)}"></div></div></div>
+  <div class="iso-filters"><div class="iso-seg">${[['pend','Por evaluar',S.sin],['nc','No cumple',nc],['all','Todos','']].map(([k,l,n])=>`<button class="iso-bt ${MODE===k?'on':''}" onclick="ISOA.setMode('${k}')">${l}${n!==''?` <small style="opacity:.6">${n}</small>`:''}</button>`).join('')}</div></div>
+  <div class="iso-evlay"><nav class="iso-rail"><div class="iso-rh0"><span>Capítulos</span><small>${pct(S.avance)}%</small></div>${capBtn('all','<i class="fas fa-layer-group"></i>','Todos',S.ev,S.ap,'var(--blue)',ITEMS.filter(i=>(DB[i.id]||{}).resultado==='No cumple').length)}${Object.keys(CAPS).map(c=>{const o=calc(i=>i.c===c);return capBtn(c,c,CAPS_S[c],o.ev,o.ap,CAPCOL[c],o.curso+o.pend+o.sub)}).join('')}</nav><div id="iso-list"></div></div>`;
+  const q=$('#iso-q');q.oninput=()=>{NAVQ=q.value;renderList()};renderList()}
+function setMode(k){MODE=k;renderEval()}
+function renderList(){const q=NAVQ.toLowerCase(),L=$('#iso-list');
+  let rs=REQS.filter(r=>(CAP==='all'||r.c===CAP)&&(!q||(r.n+' '+r.t+' '+r.r+' '+r.items.map(i=>i.ev).join(' ')).toLowerCase().includes(q)));
+  if(!q&&MODE==='pend')rs=rs.filter(r=>r.items.some(i=>st(i)==='sin')||EXP.has(r.n));
+  if(!q&&MODE==='nc')rs=rs.filter(r=>r.items.some(i=>(DB[i.id]||{}).resultado==='No cumple'));
+  let lastC=null;L.innerHTML=rs.length?rs.map(r=>{const h=r.c!==lastC?`<div class="iso-chh"><span class="iso-chn">${r.c}</span><h2>${esc(CAPS[r.c])}</h2></div>`:'';lastC=r.c;return h+`<div class="iso-rq ${EXP.has(r.n)?'open':''}" id="iso-rq-${rid(r.n)}" style="--cc:${CAPCOL[r.c]}">${rqHead(r)}<div class="iso-rqb"><div class="iso-rqi" data-n="${r.n}"></div></div></div>`}).join(''):`<div class="dbi-panel iso-empty" style="padding:34px"><i class="fas ${MODE==='pend'&&!q?'fa-circle-check':'fa-magnifying-glass'}" style="font-size:28px;color:${MODE==='pend'&&!q?'var(--ok)':'var(--accent)'};display:block;margin-bottom:8px"></i>${MODE==='pend'&&!q?'¡Todo evaluado en esta selección!':'Sin resultados'}</div>`;
+  rs.filter(r=>EXP.has(r.n)).forEach(r=>fill(r.n))}
+function rqHead(r){const o=calc(i=>i.n===r.n),full=o.ap>0&&o.ev===o.ap,nc=o.pend+o.curso,pc=o.ev?pct(o.cump)+'%':o.ev+'/'+o.ap;
+  return`<div class="iso-rqh" role="button" tabindex="0" aria-expanded="${EXP.has(r.n)}" onclick="ISOA.togRq('${r.n}')" onkeydown="if(event.key==='Enter')ISOA.togRq('${r.n}')"><span class="iso-cv"><i class="fas fa-chevron-down"></i></span><div class="iso-rqt"><b><span class="iso-scode">${r.n}</span>${esc(r.t)}</b><span>${esc(r.r)}</span></div><div class="iso-dots">${r.items.map(i=>`<i class="${st(i)!=='sin'?'iso-s-'+st(i):''}"></i>`).join('')}</div><span class="iso-sp ${full?(nc?'bad':'ok'):nc?'bad':''}">${full&&!nc?'<i class="fas fa-circle-check"></i> '+pc:o.ev?o.ev+'/'+o.ap:'0/'+o.ap}</span></div>`}
+function refreshHead(n){const h=document.querySelector('#iso-rq-'+rid(n)+'>.iso-rqh');if(h)h.outerHTML=rqHead(REQS.find(r=>r.n===n))}
+function refreshHeads(){document.querySelectorAll('#iso-list .iso-rq').forEach(e=>refreshHead(e.id.replace('iso-rq-','').replace(/_/g,'.')))}
+function footEl(n){const r=REQS.find(x=>x.n===n),sin=r.items.filter(i=>st(i)==='sin').length,nx=nextReq(n),o=calc(i=>i.n===n),f=document.createElement('div');f.className='iso-foot';
+  f.innerHTML=`<span class="iso-fl">${o.ev?`<button class="iso-xl iso-clr" onclick="ISOA.clearReq('${n}')" title="Quitar todas las evaluaciones de este requisito"><i class="fas fa-eraser"></i> Limpiar sección</button>`:''}${sin>1?`<button class="iso-xl" onclick="ISOA.markAll('${n}')"><i class="fas fa-check-double" style="color:var(--ok)"></i> Marcar las ${sin} pendientes como Cumple</button>`:''}</span><span class="iso-res">Resultado de la sección <b style="color:${colPct(o.cump,o.ev)}">${o.ev?pct(o.cump)+'%':'—'}</b></span><span class="iso-fr">${nx&&nx.n!==n?`<button class="iso-xl ${sin?'':'p'}" onclick="ISOA.openReq('${nx.n}')">Siguiente: ${nx.n} <i class="fas fa-arrow-right"></i></button>`:(!sin?`<button class="iso-xl p" onclick="ISOA.setView('dash')"><i class="fas fa-chart-bar"></i> Ver seguimiento</button>`:'')}</span>`;return f}
+function refreshFoot(n){const b=document.querySelector('#iso-rq-'+rid(n)+' .iso-rqi');if(!b||!b.dataset.built)return;const o=b.querySelector('.iso-foot');if(o)o.replaceWith(footEl(n))}
+function fill(n){const b=document.querySelector('#iso-rq-'+rid(n)+' .iso-rqi');if(b&&!b.dataset.built){b.dataset.built=1;REQS.find(r=>r.n===n).items.forEach(i=>b.appendChild(evEl(i)));b.appendChild(footEl(n))}}
+function togRq(n){const e=document.getElementById('iso-rq-'+rid(n));if(!e)return;if(EXP.has(n)){EXP.delete(n);e.classList.remove('open')}else{EXP.add(n);fill(n);requestAnimationFrame(()=>e.classList.add('open'))}}
+function openReq(n){let e=document.getElementById('iso-rq-'+rid(n));
+  if(!e){const r=REQS.find(x=>x.n===n);if(CAP!=='all'&&r.c!==CAP){CAP=r.c;ls('iso_cap',CAP)}NAVQ='';EXP.add(n);renderEval();e=document.getElementById('iso-rq-'+rid(n));if(!e)return}
+  EXP.add(n);fill(n);requestAnimationFrame(()=>{e.classList.add('open');setTimeout(()=>e.scrollIntoView({behavior:'smooth',block:'start'}),120)})}
+function refreshEv(id){const o=document.getElementById('iso-ev-'+id);if(o){o.replaceWith(evEl(IT[id]));refreshHead(IT[id].n);refreshFoot(IT[id].n)}}
+const OPS={};
+function ncSum(id){const d=DB[id]||{},t=d.tarea||{},e=t.estado||'Pendiente',k=EST[e],hz=T(d.hallazgo),n=(d.evidencias||[]).length,op=OPS[id],need=e!=='Realizada'&&(!t.responsable||!t.fechaLimite);
+  return`${hz?`<button type="button" class="iso-obsl" onclick="ISOA.ncTog('${id}','h')"><span>${esc(hz)}</span></button>`:''}
+  <div class="iso-chrow"><button type="button" class="iso-chip ${op==='h'?'open':''}" onclick="ISOA.ncTog('${id}','h')"><i class="fas fa-flag"></i> Hallazgo</button><button type="button" class="iso-chip t-${k} ${op==='t'?'open':''}" onclick="ISOA.ncTog('${id}','t')">${avHtml(t.responsable)}<span>${e}${t.fechaLimite&&e!=='Realizada'?' · '+fmtD(t.fechaLimite):''}</span></button><button type="button" class="iso-chip ${n?'has':''} ${op==='a'?'open':''}" onclick="ISOA.ncTog('${id}','a')"><i class="fas fa-paperclip"></i> Adjuntos${n?' · '+n:''}</button><button type="button" class="iso-chip iso-clrc" title="Quitar la evaluación y su tarea" onclick="ISOA.clearEv('${id}')"><i class="fas fa-eraser"></i> Quitar</button>${need?`<button type="button" class="iso-need" onclick="ISOA.ncTog('${id}','t')"><i class="fas fa-circle-exclamation"></i> ${!t.responsable?'Asignar responsable':'Definir fecha'}</button>`:''}</div>`}
+function ncRefresh(id,root){const ev=root||document.getElementById('iso-ev-'+id);if(!ev)return;const s=ev.querySelector('.iso-ncs'),c=ev.querySelector('.iso-ncc');if(s)s.innerHTML=ncSum(id);if(c)c.innerHTML=connEl(id,false)}
+function ncPane(id,pane,sec){const i=pane.querySelector('.iso-panei'),d=DB[id]||{};i.innerHTML='';i.classList.remove('in');
+  if(sec==='h')i.appendChild(editor({html:d.hallazgo,label:'Hallazgo',ph:'Describe el hallazgo…',min:70,onChange:v=>deb(id+'h',()=>{save(id,{hallazgo:v||null,hallazgoAuto:null});ncRefresh(id)})}));
+  else if(sec==='t')i.appendChild(taskPanel(id,'t'));
+  else{const a=att(()=>(DB[id]||{}).evidencias||[],L=>{save(id,{evidencias:L.length?L:null});ncRefresh(id)});i.appendChild(a);dropZone(i,a)}
+  void i.offsetWidth;i.classList.add('in')}
+function ncTog(id,sec){const ev=document.getElementById('iso-ev-'+id);if(!ev)return;const pane=ev.querySelector('.iso-pane');if(!pane)return;
+  if(OPS[id]===sec){OPS[id]=null;pane.classList.remove('open');ncRefresh(id);setTimeout(()=>{if(!OPS[id])pane.querySelector('.iso-panei').innerHTML=''},520);return}
+  const was=OPS[id];OPS[id]=sec;ncRefresh(id);
+  if(was&&pane.classList.contains('open')){const pi=pane.querySelector('.iso-panei');pi.classList.remove('in');setTimeout(()=>ncPane(id,pane,sec),130)}
+  else{ncPane(id,pane,sec);requestAnimationFrame(()=>requestAnimationFrame(()=>pane.classList.add('open')))}}
+function evEl(i){const d=DB[i.id]||{},res=d.resultado||'',id=i.id,t=d.tarea,el=document.createElement('div');el.className='iso-ev'+(res==='Cumple'?' is-ok':res==='No cumple'?' is-no':'');el.id='iso-ev-'+id;el.dataset.sig=sig(id);
+  const sub=res==='Cumple'&&d.subsanado;
+  el.innerHTML=`<div class="iso-evt"><span class="iso-evn">${i.k+1}</span><span class="iso-evx">${esc(i.ev)}</span>${sub?`<span class="iso-subch" title="Subsanado el ${fmtD(d.subsanado)}"><i class="fas fa-link"></i> Subsanado</span>`:''}<div class="iso-seg"><button class="iso-bok ${res==='Cumple'?'on':''}" onclick="ISOA.setRes('${id}','Cumple')">Cumple</button><button class="iso-bno ${res==='No cumple'?'on':''}" onclick="ISOA.setRes('${id}','No cumple')">No cumple</button></div></div>`;
+  if(res==='Cumple'){const b=document.createElement('div');b.className='iso-evb';
+    if(t&&(d.subsanado||t.estado==='Realizada')){const c=document.createElement('div');c.innerHTML=connEl(id,true);b.appendChild(c.firstChild)}
+    const q=document.createElement('div');q.className='iso-qrow';const hasNote=!!T(d.evidTxt);
+    const nb=document.createElement('button');nb.type='button';nb.className='iso-mini'+(hasNote?' on':'');nb.innerHTML='<i class="far fa-pen-to-square"></i> Nota';
+    const a=att(()=>(DB[id]||{}).evidencias||[],L=>save(id,{evidencias:L.length?L:null}));q.appendChild(nb);q.appendChild(a);{const cl=document.createElement('button');cl.type='button';cl.className='iso-mini iso-clr';cl.innerHTML='<i class="fas fa-eraser"></i> Quitar';cl.title='Quitar la evaluación de esta evidencia';cl.onclick=()=>clearEv(id);q.appendChild(cl)}b.appendChild(q);
+    const note=editor({html:d.evidTxt,label:'Evidencia encontrada',ph:'Describe qué evidencia encontraste y dónde está…',onChange:v=>deb(id+'e',()=>save(id,{evidTxt:v||null}))});note.className='iso-note';note.style.display=hasNote?'':'none';b.appendChild(note);
+    nb.onclick=()=>{const show=note.style.display==='none';note.style.display=show?'':'none';nb.classList.toggle('on',show||hasNote);if(show)note._ed.focus()};
+    dropZone(b,a);el.appendChild(b)}
+  else if(res==='No cumple'){const b=document.createElement('div');b.className='iso-evb no';
+    b.innerHTML=`<div class="iso-ncc"></div><div class="iso-ncs"></div><div class="iso-pane"><div class="iso-panei"></div></div>`;
+    el.appendChild(b);ncRefresh(id,el);if(OPS[id]){const pn=b.querySelector('.iso-pane');ncPane(id,pn,OPS[id]);requestAnimationFrame(()=>pn.classList.add('open'))}}
+  return el}
+const SEGP={};
+function connEl(id,full){const d=DB[id]||{},t=d.tarea||{},r=d.resultado;
+  if(r==='Cumple'&&(d.subsanado||t.estado==='Realizada'))return`<div class="iso-conn ok"><i class="fas fa-circle-check"></i><div><b>Ahora cumple</b><span>Hallazgo subsanado${d.subsanado?' el '+fmtD(d.subsanado):''}${t.responsable?' · '+esc(t.responsable.split(' ')[0]):''}</span></div>${full?`<button onclick="ISOA.goTask('${id}')">Ver tarea</button>`:''}</div>`;
+  if(r==='No cumple'&&t.estado==='Realizada')return`<div class="iso-conn warn"><i class="fas fa-link"></i><div><b>Tarea cerrada: ¿ya cumple?</b><span>Confírmalo para que la evidencia pase a Cumple y suba tu cumplimiento.</span></div><button class="p" onclick="ISOA.setRes('${id}','Cumple')">Sí, ya cumple</button></div>`;
+  return''}
+const pm=e=>e.dataset.mode==='card'?true:(e.dataset.mode==='t'?'t':false);
+function taskPanel(id,card){const d=DB[id]||{},t=d.tarea||{},el=document.createElement('div');el.className='iso-tp'+(card?' card':'');el.dataset.tp=id;if(card)el.dataset.mode=card===true?'card':'t';
+  const O=['Pendiente','En curso','Realizada'],cur=Math.max(0,O.indexOf(t.estado)),prev=SEGP[id]===undefined?cur:SEGP[id];SEGP[id]=cur;
+  const names=RESP.slice();if(t.responsable&&!names.includes(t.responsable))names.push(t.responsable);
+  const dd=n=>{const x=new Date();x.setDate(x.getDate()+n);return isoD(x)};
+  el.innerHTML=`${t.estado==='Realizada'&&card===true?connEl(id,false):''}<div class="iso-trow t-est"><label>Estado</label><div class="iso-seg est" data-k="${cur}"><i class="iso-thumb" style="--i:${prev}"></i>${O.map(e=>`<button class="${t.estado===e?'on':''}" onclick="ISOA.setEstado('${id}','${e}')">${e}</button>`).join('')}</div></div>
+   <div class="iso-cols"><div class="iso-cl">${card===true?'<div data-h></div>':''}<div data-a></div></div><div class="iso-cr">
+    <div class="iso-trow t-resp"><label>Responsable</label><div class="iso-rsel">${avHtml(t.responsable)}<select class="iso-in iso-sel" onchange="ISOA.pickResp('${id}',this)"><option value="">Sin asignar</option>${names.map(n=>`<option ${t.responsable===n?'selected':''}>${esc(n)}</option>`).join('')}</select></div></div>
+    <div class="iso-trow t-date"><label>Fecha límite</label><input class="iso-in" type="date" value="${t.fechaLimite||''}" onchange="ISOA.setTarea('${id}',{fechaLimite:this.value})"></div>
+    ${t.estado==='Realizada'?'<div data-c></div>':''}<div class="iso-trow"><button type="button" class="iso-del" onclick="ISOA.delTask('${id}')"><i class="fas fa-trash-can"></i> Eliminar tarea</button></div></div></div>`;
+  if(prev!==cur){const th=el.querySelector('.iso-thumb');requestAnimationFrame(()=>requestAnimationFrame(()=>th.style.setProperty('--i',cur)))}
+  const h=el.querySelector('[data-h]');if(h)h.appendChild(editor({html:d.hallazgo,label:'Hallazgo',ph:'Describe el hallazgo…',min:70,onChange:v=>deb(id+'h',()=>save(id,{hallazgo:v||null,hallazgoAuto:null}))}));
+  el.querySelector('[data-a]').appendChild(editor({html:t.accion,label:'Acción a realizar',ph:'¿Qué se va a hacer para cerrar este hallazgo?',min:70,onChange:v=>deb(id+'a',()=>setTarea(id,{accion:v||''}))}));
+  const c=el.querySelector('[data-c]');if(c){c.appendChild(editor({html:t.obsCierre,label:'Cierre de la tarea (opcional)',ph:'Describe lo que se hizo…',min:60,onChange:v=>deb(id+'o',()=>setTarea(id,{obsCierre:v||''}))}));
+    const a=att(()=>((DB[id]||{}).tarea||{}).cierre||[],L=>setTarea(id,{cierre:L}));c.appendChild(a);dropZone(c,a)}
+  return el}
+
+/* ═══════ PLAN DE ACCIÓN ═══════ */
+/* ═══════ PLAN DE ACCIÓN · TABLERO DE 3 COLUMNAS ═══════ */
+const ORD=['Pendiente','En curso','Realizada'],COLM={Pendiente:['pend','fa-inbox','Por empezar'],'En curso':['curso','fa-play','En marcha'],Realizada:['sub','fa-check','Cerradas']},CAPR=8;
+let DROPAT=null,RALL=false;
+const porConf=()=>tasks().filter(x=>x.t.estado==='Realizada'&&x.d.resultado==='No cumple'&&inCap(x.it));
+function confirmAll(){const L=porConf();if(!L.length)return;if(!confirm('¿Pasar a Cumple las '+L.length+' evidencias cuya tarea ya está realizada?'))return;L.forEach(x=>setRes(x.it.id,'Cumple'));toast(L.length+' evidencias ahora cumplen ✓','ok')}
+const FLAGS={conf:x=>x.t.estado==='Realizada'&&x.d.resultado==='No cumple',late:x=>late(x.t),noresp:x=>!x.t.responsable&&x.t.estado!=='Realizada',nodate:x=>!x.t.fechaLimite&&x.t.estado!=='Realizada'};
+const est=t=>ORD.includes(t.estado)?t.estado:'Pendiente';
+function rank(a,b){const la=late(a.t)?0:1,lb=late(b.t)?0:1;if(la!==lb)return la-lb;const fa=a.t.fechaLimite||'9999',fb=b.t.fechaLimite||'9999';return fa<fb?-1:fa>fb?1:0}
+const cmpCol=e=>e==='Realizada'?(a,b)=>((DB[b].tarea.fechaCierre||'')>(DB[a].tarea.fechaCierre||'')?1:(DB[b].tarea.fechaCierre||'')<(DB[a].tarea.fechaCierre||'')?-1:0):(a,b)=>rank({t:DB[a].tarea},{t:DB[b].tarea})||(a<b?-1:1);
+const csig=id=>{const d=DB[id]||{},t=d.tarea||{};return[d.resultado,t.estado,t.responsable,t.fechaLimite,t.fechaCierre,T(d.hallazgo).slice(0,140),late(t)].join('|')};
+function plan(){const q=TF.q.toLowerCase();return tasks().filter(x=>inCap(x.it)&&(!TF.flag||FLAGS[TF.flag](x))&&(TF.resp==='all'||(x.t.responsable||'Sin asignar')===TF.resp)&&(!q||(x.it.n+' '+x.it.ev+' '+T(x.d.hallazgo)+' '+T(x.t.accion)).toLowerCase().includes(q)))}
+const OPENC=new Set();
+const dDiff=f=>Math.round((new Date(f+'T00:00')-new Date(today()+'T00:00'))/864e5);
+function dueTxt(t){if(!t.fechaLimite)return['Sin fecha',''];const n=dDiff(t.fechaLimite);return[n===0?'Hoy':n===1?'Mañana':n>1?'en '+n+' d':'hace '+(-n)+' d',n<0?'late':n<=3?'soon':'']}
+function cardFill(el){const id=el.dataset.id,it=IT[id],d=DB[id]||{},t=d.tarea||{},e=est(t),k=COLM[e][0],lt=late(t),open=OPENC.has(id),r=t.responsable,i=ORD.indexOf(e),done=e==='Realizada';
+  el.style.setProperty('--cc',CAPCOL[it.c]);el.className='iso-card c-'+k+(lt?' is-late':'')+(open?' open settled':'');el.draggable=!open;el.dataset.sig=csig(id);
+  const[dt,dc]=dueTxt(t);
+  el.querySelector('.iso-chead').innerHTML=`<div class="iso-ct"><i class="iso-dot"></i><span class="iso-n">${it.n}</span><span class="iso-ccap">${CAPS_S[it.c]}</span>${lt?'<span class="iso-lt">Vencida</span>':''}<i class="fas fa-chevron-down iso-cchev"></i></div>
+   <b class="iso-cti">${esc(it.ev)}</b>${T(d.hallazgo)?`<p class="iso-chz"><span>${esc(T(d.hallazgo)).slice(0,130)}</span></p>`:''}
+   <div class="iso-cf">${avHtml(r)}<span class="iso-cn">${esc(r?r.split(' ')[0]:'Sin responsable')}</span>
+   ${done?`<span class="iso-dp ok"><i class="fas fa-check"></i> ${t.fechaCierre?fmtD(t.fechaCierre):'Cerrada'}${d.resultado==='Cumple'?' · Cumple':d.resultado==='No cumple'?' · Por confirmar':''}</span>`:`<span class="iso-dp ${dc}" title="${t.fechaLimite?fmtD(t.fechaLimite):''}">${dt}</span>`}
+   <span class="iso-mv">${i>0?`<button type="button" title="Mover a ${ORD[i-1]}" onclick="event.stopPropagation();ISOA.adv('${id}',-1)"><i class="fas fa-arrow-left"></i></button>`:''} ${done&&d.resultado==='No cumple'?`<button type="button" class="go ok" title="Ya cumple: pasar la evidencia a Cumple" onclick="event.stopPropagation();ISOA.setRes('${id}','Cumple')"><i class="fas fa-circle-check"></i></button>`:''}${i<2?`<button type="button" class="go" title="Mover a ${ORD[i+1]}" onclick="event.stopPropagation();ISOA.adv('${id}',1)"><i class="fas ${i===1?'fa-check':'fa-arrow-right'}"></i></button>`:''}</span></div>`}
+function cardEl(id){const el=document.createElement('div');el.id='iso-card-'+id;el.dataset.id=id;
+  el.innerHTML=`<div class="iso-chead" tabindex="0" onclick="ISOA.openTask('${id}')" onkeydown="if(event.key==='Enter')ISOA.openTask('${id}')"></div><div class="iso-cbody"><div class="iso-cbi"><div class="iso-cbx"></div></div></div>`;
+  cardFill(el);if(OPENC.has(id))buildBody(el);return el}
+function buildBody(el){const id=el.dataset.id,bo=el.querySelector('.iso-cbi'),bi=el.querySelector('.iso-cbx');if(bo.dataset.built)return;bo.dataset.built=1;
+  bi.appendChild(taskPanel(id,true));
+  const f=document.createElement('div');f.className='iso-cbf';f.innerHTML=`<button class="iso-xl" onclick="ISOA.goReq('${IT[id].n}')"><i class="fas fa-arrow-up-right-from-square"></i> Ver en la evaluación</button><button class="iso-xl" onclick="ISOA.openTask('${id}')"><i class="fas fa-chevron-up"></i> Contraer</button>`;bi.appendChild(f)}
+function setBoardOpen(){const b=document.querySelector('#iso-view .iso-kan');if(!b)return;const el=b.querySelector('.iso-card.open');
+  if(el&&(DB[el.dataset.id]||{}).tarea)b.dataset.o=ORD.indexOf(est(DB[el.dataset.id].tarea));else b.removeAttribute('data-o')}
+function openTask(id){const el=document.getElementById('iso-card-'+id);if(!el||!(DB[id]||{}).tarea)return;
+  if(OPENC.has(id)){OPENC.delete(id);el.classList.remove('open','settled');el.draggable=true;setBoardOpen();return}
+  OPENC.forEach(o=>{if(o!==id){OPENC.delete(o);const x=document.getElementById('iso-card-'+o);if(x){x.classList.remove('open','settled');x.draggable=true}}});
+  OPENC.add(id);buildBody(el);el.draggable=false;requestAnimationFrame(()=>{el.classList.add('open');setBoardOpen()});
+  setTimeout(()=>{if(OPENC.has(id)){el.classList.add('settled');el.scrollIntoView({behavior:'smooth',block:'nearest'})}},560)}
+const colBody=e=>document.querySelector('#iso-view .iso-col[data-e="'+e+'"] .iso-cb');
+function colUpdate(){const m=$('#iso-view');if(!m)return;
+  m.querySelectorAll('.iso-col').forEach(c=>{const cb=c.querySelector('.iso-cb'),cs=[...cb.querySelectorAll('.iso-card')],cc=c.querySelector('.iso-cc');
+    if(cc.textContent!=String(cs.length)){cc.textContent=cs.length;cc.classList.remove('bump');void cc.offsetWidth;cc.classList.add('bump')}
+    cb.classList.toggle('empty',!cs.length);
+    if(c.dataset.e==='Realizada'){cs.forEach((x,i)=>x.classList.toggle('iso-hid',!RALL&&i>=CAPR));const mb=c.querySelector('.iso-moreb');if(mb){mb.style.display=cs.length>CAPR?'':'none';mb.textContent=RALL?'Ver menos':'Ver '+(cs.length-CAPR)+' más'}}});
+  const cb=$('#iso-conf');if(cb){const n=porConf().length;cb.innerHTML=n?`<div class="iso-conn warn"><i class="fas fa-link"></i><div><b>${n} tarea${n>1?'s':''} cerrada${n>1?'s':''} esperando confirmación</b><span>Ya se realizaron: pasa la evidencia a Cumple para que cuente en tu cumplimiento.</span></div><button onclick="ISOA.setTF('flag','${TF.flag==='conf'?'':'conf'}')">${TF.flag==='conf'?'Ver todas':'Revisar'}</button><button class="p" onclick="ISOA.confirmAll()">Pasar ${n>1?'todas ':''}a Cumple</button></div>`:''}
+  const all=tasks().filter(x=>inCap(x.it)),op=all.filter(x=>x.t.estado!=='Realizada').length,s=$('#iso-ksub');
+  if(s)s.innerHTML=`<b>${op}</b> abiertas · ${all.length-op} realizadas`;
+  const f=$('#iso-kfill');if(f)f.style.width=(all.length?(all.length-op)/all.length*100:0)+'%'}
+function insertSorted(card,e){const cb=colBody(e),cmp=cmpCol(e),id=card.dataset.id;let ref=null;
+  for(const c of cb.querySelectorAll('.iso-card')){if(c!==card&&cmp(id,c.dataset.id)<0){ref=c;break}}
+  cb.insertBefore(card,ref||cb.querySelector('.iso-cempty'))}
+function snapRects(){const m=new Map();document.querySelectorAll('#iso-view .iso-card').forEach(c=>m.set(c.dataset.id,c.getBoundingClientRect()));return m}
+function syncCard(id){const el=document.getElementById('iso-card-'+id);if(!el)return;
+  const t=(DB[id]||{}).tarea;
+  if(!t){OPENC.delete(id);el.classList.add('gone');setTimeout(()=>{el.remove();colUpdate()},260);return}
+  if(el.dataset.sig===csig(id))return;
+  const e=est(t),moved=el.closest('.iso-col').dataset.e!==e,first=snapRects();
+  if(DROPAT&&DROPAT.id===id){const r=first.get(id);if(r)first.set(id,{left:DROPAT.x-r.width/2,top:DROPAT.y-r.height/2})}
+  DROPAT=null;
+  cardFill(el);insertSorted(el,e);setBoardOpen();colUpdate();
+  document.querySelectorAll('#iso-view .iso-card').forEach(c=>{const f=first.get(c.dataset.id);if(!f||c.classList.contains('iso-hid'))return;
+    const l=c.getBoundingClientRect(),dx=f.left-l.left,dy=f.top-l.top;
+    if(c===el&&moved){const sg=dx>0?-1:1,h=Math.min(Math.abs(dy)*.25+28,70);c.classList.add('fly');
+      const a=c.animate([
+        {transform:`translate(${dx}px,${dy}px) scale(1) rotate(0deg)`,boxShadow:'0 1px 2px rgba(15,40,90,.05)',offset:0},
+        {transform:`translate(${dx}px,${dy-14}px) scale(1.07) rotate(${-sg*2}deg)`,boxShadow:'0 28px 44px -12px rgba(15,40,90,.45)',offset:.16},
+        {transform:`translate(${dx*.45}px,${dy*.45-h}px) scale(1.07) rotate(${sg*4}deg)`,boxShadow:'0 34px 50px -14px rgba(15,40,90,.4)',offset:.55},
+        {transform:`translate(${dx*.05}px,${dy*.05-6}px) scale(1.03) rotate(${sg*-1}deg)`,boxShadow:'0 14px 24px -10px rgba(15,40,90,.3)',offset:.85},
+        {transform:'translate(0,0) scale(1) rotate(0deg)',boxShadow:'0 1px 2px rgba(15,40,90,.05)',offset:1}
+      ],{duration:1000,easing:'cubic-bezier(.33,.9,.3,1)'});
+      a.onfinish=a.oncancel=()=>{c.classList.remove('fly');c.classList.add('land');setTimeout(()=>c.classList.remove('land'),900)}}
+    else if(Math.abs(dx)+Math.abs(dy)>1)c.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'none'}],{duration:620,easing:'cubic-bezier(.22,1,.36,1)'})})}
+function renderTareas(){const m=$('#iso-view');if(!m)return;
+  const all=tasks().filter(x=>inCap(x.it)),rs=[...new Set(tasks().map(x=>x.t.responsable||'Sin asignar'))],op=all.filter(x=>x.t.estado!=='Realizada');
+  const tk=plan(),nl=op.filter(FLAGS.late).length,nr=op.filter(FLAGS.noresp).length,nd=op.filter(FLAGS.nodate).length;let n=0;
+  const col=e=>{const L=tk.filter(x=>est(x.t)===e).map(x=>x.it.id).sort(cmpCol(e)),[k,ic,h]=COLM[e];
+    return`<section class="iso-col k-${k}" data-e="${e}"><header class="iso-colh"><span class="iso-colic"><i class="fas ${ic}"></i></span><div><b>${e}</b><small>${h}</small></div><span class="iso-cc">${L.length}</span></header><div class="iso-cb ${L.length?'':'empty'}">${L.map(id=>`<template data-c="${id}"></template>`).join('')}<div class="iso-cempty"><i class="fas ${e==='Realizada'?'fa-flag-checkered':'fa-hand-pointer'}"></i><span>${e==='Realizada'?'Aquí llegan las tareas cerradas':'Suelta una tarjeta aquí'}</span></div></div>${e==='Realizada'?'<button class="iso-moreb" onclick="ISOA.togAll()" style="display:none"></button>':''}</section>`};
+  m.innerHTML=`<div class="dbi-header"><div class="dbi-title-wrap"><span class="dbi-title">Plan de acción</span><span class="dbi-sub" id="iso-ksub"></span><span class="iso-kbar"><i id="iso-kfill"></i></span></div>
+   <div class="iso-tools">${capSelect()}<select class="db-fsel" onchange="ISOA.setTF('resp',this.value)"><option value="all">Todos los responsables</option>${rs.map(r=>`<option ${TF.resp===r?'selected':''}>${esc(r)}</option>`).join('')}</select><div class="iso-search"><i class="fas fa-magnifying-glass"></i><input id="iso-tq" placeholder="Buscar tarea…" value="${esc(TF.q)}"></div></div></div>
+  <div id="iso-conf"></div>
+  ${[['late','Vencidas',nl],['noresp','Sin responsable',nr],['nodate','Sin fecha',nd]].some(f=>f[2]||TF.flag===f[0])?`<div class="iso-filters"><div class="iso-pills">${[['late','Vencidas',nl],['noresp','Sin responsable',nr],['nodate','Sin fecha',nd]].filter(f=>f[2]||TF.flag===f[0]).map(([k,l,c])=>`<button class="iso-pill ${TF.flag===k?'on':''}" onclick="ISOA.setTF('flag','${TF.flag===k?'':k}')"><i class="fas fa-filter" style="font-size:9px"></i> ${l}<small>${c}</small></button>`).join('')}</div></div>`:''}
+  ${all.length||tasks().length?`<div class="iso-kan">${ORD.map(col).join('')}</div>`:`<div class="dbi-panel iso-empty" style="padding:34px"><i class="fas fa-clipboard-check" style="font-size:28px;color:var(--accent);display:block;margin-bottom:8px"></i>Aún no hay tareas. Se crean solas cuando marcas una evidencia como <b>No cumple</b>.</div>`}`;
+  m.querySelectorAll('template[data-c]').forEach(t=>{const c=cardEl(t.dataset.c);c.style.setProperty('--i',n++);t.replaceWith(c)});
+  setBoardOpen();colUpdate();
+  const q=$('#iso-tq');q.oninput=()=>{TF.q=q.value;const p=q.selectionStart;renderTareas();const j=$('#iso-tq');j.focus();j.setSelectionRange(p,p)};
+  const b=m.querySelector('.iso-kan');if(b)bindBoard(b)}
+function bindBoard(b){
+  const colOf=e=>e.target.closest&&e.target.closest('.iso-col'),clear=()=>b.querySelectorAll('.iso-col.over').forEach(c=>c.classList.remove('over'));
+  b.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('.iso-card');if(!c)return;e.dataTransfer.setData('text/plain',c.dataset.id);e.dataTransfer.effectAllowed='move';b.classList.add('dragging');setTimeout(()=>c.classList.add('drag'),0)});
+  b.addEventListener('dragend',()=>{b.classList.remove('dragging');b.querySelectorAll('.drag').forEach(c=>c.classList.remove('drag'));clear()});
+  b.addEventListener('dragover',e=>{const c=colOf(e);if(!c)return;e.preventDefault();e.dataTransfer.dropEffect='move';if(!c.classList.contains('over')){clear();c.classList.add('over')}});
+  b.addEventListener('dragleave',e=>{if(!b.contains(e.relatedTarget))clear()});
+  b.addEventListener('drop',e=>{const c=colOf(e);if(!c)return;e.preventDefault();clear();const id=e.dataTransfer.getData('text/plain');if(!id||!IT[id])return;
+    DROPAT={id,x:e.clientX,y:e.clientY};setEstado(id,c.dataset.e);DROPAT=null})}
+function setTF(k,v){TF[k]=v;renderTareas()}
+function togAll(){RALL=!RALL;colUpdate()}
+/* ═══════ EXPORTAR ═══════ */
+function rows(){return ITEMS.map(i=>{const d=DB[i.id]||{},t=d.tarea||{};return{Numeral:i.n,Tema:i.t,'Requisito a verificar':i.r,'Evidencia a verificar':i.ev,Resultado:d.resultado||'Sin evaluar','Evidencia encontrada':T(d.evidTxt),'Enlaces / archivos':(d.evidencias||[]).map(a=>a.url).join('\n'),'Hallazgo / observación':T(d.hallazgo),'Responsable':t.responsable||'','Estado tarea':t.estado||'','Fecha límite':t.fechaLimite||'','Acción':T(t.accion),'Cierre':T(t.obsCierre),'Capítulo':i.c}})}
+function expXlsx(){const wb=XLSX.utils.book_new(),ws=XLSX.utils.json_to_sheet(rows());ws['!cols']=[8,26,40,34,12,40,30,40,22,12,12,40,30,9].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,'Autoevaluación ISO');XLSX.writeFile(wb,'Autoevaluacion_ISO9001_'+today()+'.xlsx')}
+function expPdf(){const{jsPDF}=window.jspdf,doc=new jsPDF({orientation:'landscape'}),A=calc(),W=doc.internal.pageSize.getWidth();
+  doc.setFillColor(30,60,114);doc.rect(0,0,W,26,'F');doc.setTextColor(255);doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text('Autoevaluación ISO 9001:2015',12,12);doc.setFontSize(9.5);doc.setFont('helvetica','normal');doc.text('Generado el '+new Date().toLocaleDateString('es-CO')+' · Cumplimiento '+pct(A.cump)+'% · Proyectado '+pct(A.proy)+'% · Avance '+pct(A.avance)+'%',12,20);
+  doc.autoTable({startY:32,head:[['Capítulo','Evaluadas','Cumple','Subsanado','NC abiertas','% Cumplimiento']],body:Object.keys(CAPS).map(c=>{const o=calc(i=>i.c===c);return[c+' · '+CAPS[c],o.ev+'/'+o.ap,o.ok,o.sub,o.pend+o.curso,o.ev?pct(o.cump)+'%':'—']}),headStyles:{fillColor:[30,60,114]},styles:{fontSize:9}});
+  const nc=rows().filter(r=>r.Resultado==='No cumple');
+  if(nc.length)doc.autoTable({startY:doc.lastAutoTable.finalY+10,head:[['Num.','Evidencia','Hallazgo','Estado','Responsable','Límite']],body:nc.map(r=>[r.Numeral,r['Evidencia a verificar'],r['Hallazgo / observación'],r['Estado tarea'],r.Responsable,r['Fecha límite']]),headStyles:{fillColor:[185,28,28]},styles:{fontSize:8,cellPadding:2},columnStyles:{1:{cellWidth:60},2:{cellWidth:90}}});
+  doc.save('Autoevaluacion_ISO9001_'+today()+'.pdf')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&inited)closePv()});
+return{init,dRes,dCat,dGo,clearEv,clearReq,delTask,resetAll,planCap,planResp,setView,setCap,evalCap,setMode,goReq,goTask,goPlan,hideHelp,setRes,ncTog,setPerf,confirmAll,markAll,openReq,setEstado,setTarea,quickDone,adv,openTask,togAll,pickResp,pickDate,togRq,setTF,closePv,expXlsx,expPdf};
+})();
 </script>
 </body>
 </html>
