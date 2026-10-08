@@ -3100,6 +3100,104 @@ button.iso-pnow:hover{background:var(--gray100)}
  .iso-tools select.db-fsel,.iso .iso-tools .db-fsel{font-size:12px;padding:0 8px;min-width:0;text-overflow:ellipsis;height:40px}
  .iso-tools{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}.iso-tools .iso-search{grid-column:1/-1}
 }
+
+/* ═══ v7 · Capítulos neutros, tipografía unificada, plan móvil ═══ */
+.iso-mtabs,.iso-mst{display:none}
+/* navegador de capítulos: sin colores por capítulo, sin movimientos */
+.iso-evlay{grid-template-columns:204px minmax(0,1fr);gap:18px}
+.iso-rail{gap:2px;padding:10px 8px;background:#fff;border:1px solid var(--gray200);border-radius:16px;box-shadow:0 1px 3px rgba(15,40,90,.05);overflow-x:hidden;scrollbar-width:thin}
+.iso-rh0{padding:2px 8px 10px;font-size:10.5px}
+.iso-nv{position:relative;display:grid;grid-template-columns:30px minmax(0,1fr) 46px;align-items:center;gap:10px;width:100%;padding:8px;border:0;border-radius:11px;background:transparent;color:var(--gray700);text-align:left;transition:background .2s;transform:none}
+.iso-nv:hover{background:var(--gray50);transform:none}
+.iso-nv.on{background:#eef2fb;box-shadow:none}
+.iso-nv::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--blue);opacity:0;transition:opacity .2s}
+.iso-nv.on::before{opacity:1}
+.iso-nb{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:var(--gray100);color:var(--gray600);transform:none!important;box-shadow:none!important;transition:background .2s,color .2s}
+.iso-nv.on .iso-nb{background:var(--blue);color:#fff}
+.iso-nm2{min-width:0;display:flex;flex-direction:column;gap:6px}
+.iso-nn{font-size:12.5px;font-weight:600;color:var(--gray800);line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iso-np2{display:block;height:3px;border-radius:3px;background:var(--gray200);overflow:hidden}.iso-np2 i{display:block;height:100%;border-radius:3px;background:var(--blue);opacity:.75;transition:width .5s ease}
+.iso-nv.done .iso-np2 i{background:#16a34a;opacity:1}
+.iso-nr2{display:grid;justify-items:end;gap:3px;width:46px}
+.iso-nq{font-size:11px;font-weight:500;color:var(--gray400);font-variant-numeric:tabular-nums;white-space:nowrap}.iso-nq b{font-size:12px;font-weight:700;color:var(--gray800)}
+.iso-nr2 em{font-style:normal;font-size:9.5px;font-weight:700;color:#b91c1c;background:#fee2e2;border-radius:8px;padding:0 6px;line-height:15px;min-width:20px;text-align:center}.iso-nr2 em.z{visibility:hidden}
+.iso-nv.done .iso-nq b{color:#15803d}
+/* escala tipográfica única · Evaluación */
+#iso-view .iso-chh h2{font-size:12px;font-weight:800;letter-spacing:.06em}
+#iso-view .iso-chn{font-size:13px;font-weight:800}
+#iso-view .iso-rqt b{font-size:15px;font-weight:700;line-height:1.3}
+#iso-view .iso-rqt>span{font-size:12.5px;font-weight:400;line-height:1.45}
+#iso-view .iso-scode{font-size:11.5px;font-weight:800}
+#iso-view .iso-sp{font-size:12.5px;font-weight:800}
+#iso-view .iso-evn{font-size:13px;font-weight:800}
+#iso-view .iso-evx{font-size:14px;font-weight:500;line-height:1.45}
+#iso-view .iso-bok,#iso-view .iso-bno{font-size:13px;font-weight:700}
+#iso-view .iso-chip,#iso-view .iso-need,#iso-view .iso-mini,#iso-view .iso-xl{font-size:12.5px;font-weight:600}
+#iso-view .iso-xl{font-weight:700}
+#iso-view .iso-res{font-size:12.5px}#iso-view .iso-res b{font-size:15px;font-weight:800}
+#iso-view .iso-obsl{font-size:12.5px}
+#iso-view .iso-trow>label,#iso-view .modal-label{font-size:11px;font-weight:700}
+#iso-view .ind-rte-editor{font-size:13px}
+#iso-view .iso-in,#iso-view .iso-sel{font-size:13px}
+#iso-view .iso-subch{font-size:11.5px}
+#iso-view .dbi-title{font-size:16px}#iso-view .dbi-sub{font-size:12px}
+#iso-view .iso-bt{font-size:12px}
+@keyframes isoPulse{0%{transform:scale(1)}35%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes isoBumpC{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
+.iso-mtc.bump{animation:isoBumpC .5s ease}
+@media(max-width:760px){
+ .iso-evlay{grid-template-columns:1fr;gap:10px}
+ .iso-rail{position:sticky;top:0;z-index:30;flex-direction:row;gap:6px;padding:7px;border-radius:16px;overflow-x:auto;overflow-y:hidden;max-height:none;scroll-snap-type:x proximity;scrollbar-width:none;box-shadow:0 8px 16px -12px rgba(15,40,90,.3)}
+ .iso-rail::-webkit-scrollbar{display:none}
+ .iso-rh0{display:none}
+ .iso-nv{flex:none;width:auto;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px 0 5px;border-radius:12px;background:var(--gray50);scroll-snap-align:center}
+ .iso-nv::before{display:none}
+ .iso-nb{width:30px;height:30px;border-radius:9px;background:#fff;font-size:13px}
+ .iso-nm2{gap:0;min-width:0}.iso-np2,.iso-nr2{display:none}
+ .iso-nn{font-size:12.5px}
+ .iso-nv.on{background:var(--blue);color:#fff}.iso-nv.on .iso-nn{color:#fff}.iso-nv.on .iso-nb{background:rgba(255,255,255,.18);color:#fff}
+ .iso-nv.done:not(.on) .iso-nb{background:#dcfce7;color:#15803d}
+ /* ── Plan de acción móvil ── */
+ .iso-mtabs{position:sticky;top:0;z-index:30;display:grid;grid-template-columns:repeat(3,1fr);position:sticky;margin:2px 0 12px;padding:3px;background:#e9ecf2;border-radius:14px;box-shadow:0 8px 18px -12px rgba(15,40,90,.35)}
+ .iso-mtabs .iso-thumb{position:absolute;top:3px;bottom:3px;left:3px;width:calc((100% - 6px)/3);border-radius:11px;transform:translateX(calc(var(--i,0)*100%));background:var(--pend)}
+ .iso-mtabs[data-k="1"] .iso-thumb{background:var(--curso)}.iso-mtabs[data-k="2"] .iso-thumb{background:var(--sub)}
+ .iso-mtabs button{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:6px;height:42px;border:0;background:none;color:var(--gray600);font-size:12.5px;font-weight:700;border-radius:11px;transition:color .3s;padding:0 4px;min-width:0}
+ .iso-mtabs button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .iso-mtabs button b{min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#fff;color:var(--gray700);font-size:11.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;transition:background .3s,color .3s}
+ .iso-mtabs button.on{color:#fff}.iso-mtabs button.on b{background:rgba(255,255,255,.25);color:#fff}
+ .iso-mtabs button.pulse b{animation:isoPulse .6s ease}
+ .iso-kan,.iso-kan[data-o]{display:block;overflow:visible;padding:0;margin:0;min-height:46vh;scroll-snap-type:none}
+ .iso-kan .iso-col{display:none;background:none!important;border:0!important;padding:0;min-height:0;box-shadow:none;animation:none}
+ .iso-kan[data-m="Pendiente"] .iso-col[data-e="Pendiente"],.iso-kan[data-m="En curso"] .iso-col[data-e="En curso"],.iso-kan[data-m="Realizada"] .iso-col[data-e="Realizada"]{display:block}
+ .iso-kan .iso-colh{display:none}
+ .iso-kan .iso-cb{display:flex;flex-direction:column;gap:10px;padding:0;min-height:0;background:none;outline:0}
+ .iso-card{border-radius:14px;border-color:#e3e7ee;box-shadow:0 1px 2px rgba(15,40,90,.04)}
+ .iso-chead{padding:14px 14px 12px;cursor:pointer}
+ .iso-ct{margin-bottom:7px}.iso-n{font-size:12px}.iso-ccap{font-size:11.5px}
+ .iso-cti{font-size:14px;line-height:1.4}
+ .iso-chz{font-size:12.5px}
+ .iso-cf{margin-top:12px;font-size:12.5px;gap:8px}.iso-cf .iso-av{width:26px;height:26px}
+ .iso-dp{font-size:12px}
+ .iso-mv{opacity:1;margin-left:0}.iso-mv button:not(.ok){display:none}.iso-mv button.ok{width:34px;height:34px}
+ .iso-mst{display:grid;margin-top:12px;height:42px;max-width:none;border-radius:12px;padding:3px;touch-action:pan-y}
+ .iso-mst button{font-size:12px;font-weight:700;border-radius:9px;padding:0 2px}
+ .iso-card.open .iso-mst{display:none}
+ .iso-cempty{padding:36px 14px;font-size:12.5px;border-radius:14px}
+ .iso-moreb{width:100%;height:42px}
+ .iso-cbx{padding:14px}
+ .iso-cbf{display:grid;grid-template-columns:1fr 1fr;gap:8px}.iso-cbf .iso-xl{justify-content:center;padding:0 8px;height:40px}
+ #iso-view .iso-seg.est button{font-size:12.5px;padding:10px 4px}
+ .iso-tp .iso-seg.est{max-width:none;height:44px}
+}
+@media(max-width:760px){
+ .iso-rsel{display:flex;align-items:center;gap:10px;width:100%;min-width:0}.iso-rsel .iso-sel,.iso-rsel select{flex:1;min-width:0;width:100%;max-width:100%}
+ .iso-trow{min-width:0}.iso-trow .iso-in{width:100%;max-width:100%;min-width:0}
+}
+.iso-evlay{grid-template-columns:218px minmax(0,1fr)}.iso-nv{grid-template-columns:30px minmax(0,1fr) 42px;gap:9px}.iso-nr2{width:42px}
+@media(max-width:760px){.iso-evlay{grid-template-columns:1fr}.iso-nv{grid-template-columns:none}}
+.iso-seg.est.iso-mst{display:none}
+@media(max-width:760px){.iso-seg.est.iso-mst{display:grid}.iso-card.open .iso-seg.est.iso-mst{display:none}}
+.iso-rsel .iso-sel,.iso-rsel select{flex:1 1 0!important;width:auto!important;min-width:0!important;max-width:none!important}
 </style>
 </head>
 <body>
@@ -13183,11 +13281,11 @@ function estUI(id){const t=(DB[id]||{}).tarea||{},O=['Pendiente','En curso','Rea
    if(p.dataset.mode==='card'){const tmp=document.createElement('div');tmp.innerHTML=connEl(id,false);const nw=tmp.firstElementChild,old=p.querySelector(':scope>.iso-conn');if(old){nw?old.replaceWith(nw):old.remove()}else if(nw){p.prepend(nw);nw.animate(fx,op)}}})}
 /* arrastrar el selector de estado */
 let DRG=null,SUPK=false;
-document.addEventListener('pointerdown',e=>{const sg=e.target.closest&&e.target.closest('.iso-seg.est'),p=sg&&sg.closest('.iso-tp');if(!p||(e.pointerType==='mouse'&&e.button!==0))return;DRG={sg,id:p.dataset.tp,th:sg.querySelector('.iso-thumb'),w:(sg.getBoundingClientRect().width-6)/3,x0:e.clientX,i0:+sg.dataset.k,mv:false,pid:e.pointerId,idx:+sg.dataset.k}},true);
+document.addEventListener('pointerdown',e=>{const sg=e.target.closest&&e.target.closest('.iso-seg.est'),p=sg&&(sg.closest('.iso-tp')||sg.closest('.iso-card'));if(!p||(e.pointerType==='mouse'&&e.button!==0))return;DRG={sg,id:p.dataset.tp||p.dataset.id,th:sg.querySelector('.iso-thumb'),w:(sg.getBoundingClientRect().width-6)/3,x0:e.clientX,i0:+sg.dataset.k,mv:false,pid:e.pointerId,idx:+sg.dataset.k}},true);
 document.addEventListener('pointermove',e=>{const d=DRG;if(!d||e.pointerId!==d.pid)return;const dx=e.clientX-d.x0;if(!d.mv){if(Math.abs(dx)<5)return;d.mv=true;d.th.style.transition='none';d.sg.classList.add('drag');try{d.sg.setPointerCapture(e.pointerId)}catch(_){}}
   const pos=Math.max(0,Math.min(2,d.i0+dx/d.w));d.th.style.setProperty('--i',pos);const ix=Math.round(pos);if(ix!==d.idx){d.idx=ix;d.sg.dataset.k=ix;d.sg.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===ix))}});
 function dragEnd(e){const d=DRG;if(!d||(e&&e.pointerId!==d.pid))return;DRG=null;if(!d.mv)return;d.sg.classList.remove('drag');d.th.style.transition='';SUPK=true;setTimeout(()=>SUPK=false,60);
-  const O=['Pendiente','En curso','Realizada'];if(d.idx!==d.i0)setEstado(d.id,O[d.idx]);else{d.sg.dataset.k=d.i0;d.th.style.setProperty('--i',d.i0)}}
+  const O=['Pendiente','En curso','Realizada'];if(d.idx!==d.i0){d.th.style.setProperty('--i',d.idx);const cc=d.sg.closest('.iso-card');if(cc&&d.sg.classList.contains('iso-mst'))cc.dataset.pk=d.idx;setEstado(d.id,O[d.idx])}else{d.sg.dataset.k=d.i0;d.th.style.setProperty('--i',d.i0)}}
 document.addEventListener('pointerup',dragEnd,true);document.addEventListener('pointercancel',dragEnd,true);
 document.addEventListener('click',e=>{if(SUPK){e.stopPropagation();e.preventDefault()}},true);
 function adv(id,dir){const o=['Pendiente','En curso','Realizada'],e=((DB[id]||{}).tarea||{}).estado||'Pendiente',n=o[o.indexOf(e)+dir];if(n)setEstado(id,n)}
@@ -13256,7 +13354,7 @@ function setView(v,first){VIEW=v;ls('iso_view',v);renderTabs();const m=$('#iso-v
 function setCap(c){CAP=c;ls('iso_cap',c);VIEW==='dash'?renderDash():VIEW==='eval'?renderEval():renderTareas()}
 function evalCap(c){CAP=c;ls('iso_cap',c);MODE=calc(i=>i.c===c).sin?'pend':'all';EXP.clear();setView('eval')}
 function goReq(n){const r=REQS.find(x=>x.n===n);if(CAP!=='all'&&r.c!==CAP){CAP=r.c;ls('iso_cap',CAP)}NAVQ='';MODE=r.items.some(i=>st(i)==='sin')?'pend':'all';EXP.add(n);setView('eval',true);setTimeout(()=>{const e=document.getElementById('iso-rq-'+rid(n));if(e)e.scrollIntoView({behavior:'smooth',block:'start'})},80)}
-function goTask(id){TF={resp:'all',q:'',flag:''};if(CAP!=='all'&&IT[id].c!==CAP){CAP=IT[id].c;ls('iso_cap',CAP)}setView('tareas',true);setTimeout(()=>{const e=document.getElementById('iso-card-'+id);if(!e)return;if(e.classList.contains('iso-hid')){RALL=true;colUpdate()}e.scrollIntoView({behavior:'smooth',block:'center'});if(!OPENC.has(id))openTask(id)},150)}
+function goTask(id){TF={resp:'all',q:'',flag:''};if(CAP!=='all'&&IT[id].c!==CAP){CAP=IT[id].c;ls('iso_cap',CAP)}setView('tareas',true);setTimeout(()=>{if(MOB()&&(DB[id]||{}).tarea)mTab(est(DB[id].tarea),true);const e=document.getElementById('iso-card-'+id);if(!e)return;if(e.classList.contains('iso-hid')){RALL=true;colUpdate()}e.scrollIntoView({behavior:'smooth',block:'center'});if(!OPENC.has(id))openTask(id)},150)}
 function goPlan(flag){TF={resp:'all',q:'',flag:flag||''};setView('tareas')}
 function hideHelp(){ls('iso_help','1');const h=$('.iso-help');if(h)h.remove()}
 const capSelect=()=>`<select class="db-fsel" onchange="ISOA.setCap(this.value)"><option value="all">Todos los capítulos</option>${Object.keys(CAPS).map(c=>`<option value="${c}" ${CAP===c?'selected':''}>${c} · ${CAPS[c]}</option>`).join('')}</select>`;
@@ -13346,15 +13444,16 @@ function renderDash(){const m=$('#iso-view');if(!m)return;
   ${dashBody(S,tk,open,venc)}</div>`}
 
 /* ═══════ EVALUACIÓN ═══════ */
-function capBtn(k,badge,name,ev,ap,col,nc){const p=ap?ev/ap*100:0,t=CAPS[k]||'Todos los capítulos',full=ap&&ev===ap&&!nc;return`<button class="iso-nv ${CAP===String(k)?'on':''} ${full?'done':''}" style="--cc:${col}" onclick="ISOA.setCap('${k}')" title="${esc(t)}"><span class="iso-nb">${badge}</span><span class="iso-nm2"><span class="iso-nn">${name}</span><span class="iso-np2"><i style="width:${p}%"></i></span></span><span class="iso-nr2">${nc?`<em title="${nc} no cumple">${nc}</em>`:''}<span class="iso-nq"><b>${ev}</b>/${ap}</span></span></button>`}
-function renderEval(){const m=$('#iso-view'),S=calc(inCap);
+function capBtn(k,badge,name,ev,ap,nc){const p=ap?ev/ap*100:0,t=CAPS[k]||'Todos los capítulos',full=ap&&ev===ap&&!nc;return`<button class="iso-nv ${CAP===String(k)?'on':''} ${full?'done':''}" onclick="ISOA.setCap('${k}')" title="${esc(t)}"><span class="iso-nb">${badge}</span><span class="iso-nm2"><span class="iso-nn">${name}</span><span class="iso-np2"><i style="width:${p}%"></i></span></span><span class="iso-nr2"><span class="iso-nq"><b>${ev}</b>/${ap}</span><em class="${nc?'':'z'}">${nc||0}</em></span></button>`}
+function renderEval(){const m=$('#iso-view'),S=calc(inCap),oR=document.querySelector('.iso-rail'),rs0=oR?[oR.scrollLeft,oR.scrollTop]:[0,0];
   if(MODE===null)MODE=ITEMS.some(i=>st(i)==='sin')?'pend':'all';
   if(!EXP.size&&!NAVQ){const nx=nextReq();if(nx)EXP.add(nx.n)}
   const nc=ITEMS.filter(i=>inCap(i)&&(DB[i.id]||{}).resultado==='No cumple').length;
   m.innerHTML=`<div class="dbi-header"><div class="dbi-title-wrap"><span class="dbi-title">Evaluación por requisito</span><span class="dbi-sub">Marca el resultado de cada evidencia · <b>${S.ev}</b> de ${S.ap} evaluadas</span></div><div class="iso-tools"><div class="iso-search"><i class="fas fa-magnifying-glass"></i><input id="iso-q" placeholder="Buscar numeral, tema o evidencia…" value="${esc(NAVQ)}"></div></div></div>
   <div class="iso-filters"><div class="iso-seg">${[['pend','Por evaluar',S.sin],['nc','No cumple',nc],['all','Todos','']].map(([k,l,n])=>`<button class="iso-bt ${MODE===k?'on':''}" onclick="ISOA.setMode('${k}')">${l}${n!==''?` <small style="opacity:.6">${n}</small>`:''}</button>`).join('')}</div></div>
-  <div class="iso-evlay"><nav class="iso-rail"><div class="iso-rh0"><span>Capítulos</span><small>${pct(S.avance)}%</small></div>${capBtn('all','<i class="fas fa-layer-group"></i>','Todos',S.ev,S.ap,'var(--blue)',ITEMS.filter(i=>(DB[i.id]||{}).resultado==='No cumple').length)}${Object.keys(CAPS).map(c=>{const o=calc(i=>i.c===c);return capBtn(c,c,CAPS_S[c],o.ev,o.ap,CAPCOL[c],o.curso+o.pend+o.sub)}).join('')}</nav><div id="iso-list"></div></div>`;
-  const q=$('#iso-q');q.oninput=()=>{NAVQ=q.value;renderList()};renderList()}
+  <div class="iso-evlay"><nav class="iso-rail"><div class="iso-rh0"><span>Capítulos</span><small>${pct(S.avance)}%</small></div>${capBtn('all','<i class="fas fa-layer-group"></i>','Todos',S.ev,S.ap,ITEMS.filter(i=>(DB[i.id]||{}).resultado==='No cumple').length)}${Object.keys(CAPS).map(c=>{const o=calc(i=>i.c===c);return capBtn(c,c,CAPS_S[c],o.ev,o.ap,o.curso+o.pend+o.sub)}).join('')}</nav><div id="iso-list"></div></div>`;
+  const q=$('#iso-q');q.oninput=()=>{NAVQ=q.value;renderList()};renderList();
+  const nR=document.querySelector('.iso-rail');if(nR){nR.scrollLeft=rs0[0];nR.scrollTop=rs0[1];const on=nR.querySelector('.iso-nv.on');if(on&&MOB()&&(on.offsetLeft<nR.scrollLeft+10||on.offsetLeft+on.offsetWidth>nR.scrollLeft+nR.clientWidth-10))nR.scrollTo({left:on.offsetLeft-(nR.clientWidth-on.offsetWidth)/2,behavior:'smooth'})}}
 function setMode(k){MODE=k;renderEval()}
 function renderList(){const q=NAVQ.toLowerCase(),L=$('#iso-list');
   let rs=REQS.filter(r=>(CAP==='all'||r.c===CAP)&&(!q||(r.n+' '+r.t+' '+r.r+' '+r.items.map(i=>i.ev).join(' ')).toLowerCase().includes(q)));
@@ -13440,16 +13539,20 @@ const cmpCol=e=>e==='Realizada'?(a,b)=>((DB[b].tarea.fechaCierre||'')>(DB[a].tar
 const csig=id=>{const d=DB[id]||{},t=d.tarea||{};return[d.resultado,t.estado,t.responsable,t.fechaLimite,t.fechaCierre,T(d.hallazgo).slice(0,140),late(t)].join('|')};
 function plan(){const q=TF.q.toLowerCase();return tasks().filter(x=>inCap(x.it)&&(!TF.flag||FLAGS[TF.flag](x))&&(TF.resp==='all'||(x.t.responsable||'Sin asignar')===TF.resp)&&(!q||(x.it.n+' '+x.it.ev+' '+T(x.d.hallazgo)+' '+T(x.t.accion)).toLowerCase().includes(q)))}
 const OPENC=new Set();
+let MTAB=ls('iso_mtab');if(!['Pendiente','En curso','Realizada'].includes(MTAB))MTAB='Pendiente';
+const MOB=()=>window.matchMedia('(max-width:760px)').matches;
 const dDiff=f=>Math.round((new Date(f+'T00:00')-new Date(today()+'T00:00'))/864e5);
 function dueTxt(t){if(!t.fechaLimite)return['Sin fecha',''];const n=dDiff(t.fechaLimite);return[n===0?'Hoy':n===1?'Mañana':n>1?'en '+n+' d':'hace '+(-n)+' d',n<0?'late':n<=3?'soon':'']}
 function cardFill(el){const id=el.dataset.id,it=IT[id],d=DB[id]||{},t=d.tarea||{},e=est(t),k=COLM[e][0],lt=late(t),open=OPENC.has(id),r=t.responsable,i=ORD.indexOf(e),done=e==='Realizada';
-  el.style.setProperty('--cc',CAPCOL[it.c]);el.className='iso-card c-'+k+(lt?' is-late':'')+(open?' open settled':'');el.draggable=!open;el.dataset.sig=csig(id);
+  const pk=el.dataset.pk===undefined?i:+el.dataset.pk;el.dataset.pk=i;el.className='iso-card c-'+k+(lt?' is-late':'')+(open?' open settled':'');el.draggable=!open&&!MOB();el.dataset.sig=csig(id);
   const[dt,dc]=dueTxt(t);
   el.querySelector('.iso-chead').innerHTML=`<div class="iso-ct"><i class="iso-dot"></i><span class="iso-n">${it.n}</span><span class="iso-ccap">${CAPS_S[it.c]}</span>${lt?'<span class="iso-lt">Vencida</span>':''}<i class="fas fa-chevron-down iso-cchev"></i></div>
    <b class="iso-cti">${esc(it.ev)}</b>${T(d.hallazgo)?`<p class="iso-chz"><span>${esc(T(d.hallazgo)).slice(0,130)}</span></p>`:''}
    <div class="iso-cf">${avHtml(r)}<span class="iso-cn">${esc(r?r.split(' ')[0]:'Sin responsable')}</span>
    ${done?`<span class="iso-dp ok"><i class="fas fa-check"></i> ${t.fechaCierre?fmtD(t.fechaCierre):'Cerrada'}${d.resultado==='Cumple'?' · Cumple':d.resultado==='No cumple'?' · Por confirmar':''}</span>`:`<span class="iso-dp ${dc}" title="${t.fechaLimite?fmtD(t.fechaLimite):''}">${dt}</span>`}
-   <span class="iso-mv">${i>0?`<button type="button" title="Mover a ${ORD[i-1]}" onclick="event.stopPropagation();ISOA.adv('${id}',-1)"><i class="fas fa-arrow-left"></i></button>`:''} ${done&&d.resultado==='No cumple'?`<button type="button" class="go ok" title="Ya cumple: pasar la evidencia a Cumple" onclick="event.stopPropagation();ISOA.setRes('${id}','Cumple')"><i class="fas fa-circle-check"></i></button>`:''}${i<2?`<button type="button" class="go" title="Mover a ${ORD[i+1]}" onclick="event.stopPropagation();ISOA.adv('${id}',1)"><i class="fas ${i===1?'fa-check':'fa-arrow-right'}"></i></button>`:''}</span></div>`}
+   <span class="iso-mv">${i>0?`<button type="button" title="Mover a ${ORD[i-1]}" onclick="event.stopPropagation();ISOA.adv('${id}',-1)"><i class="fas fa-arrow-left"></i></button>`:''} ${done&&d.resultado==='No cumple'?`<button type="button" class="go ok" title="Ya cumple: pasar la evidencia a Cumple" onclick="event.stopPropagation();ISOA.setRes('${id}','Cumple')"><i class="fas fa-circle-check"></i></button>`:''}${i<2?`<button type="button" class="go" title="Mover a ${ORD[i+1]}" onclick="event.stopPropagation();ISOA.adv('${id}',1)"><i class="fas ${i===1?'fa-check':'fa-arrow-right'}"></i></button>`:''}</span></div>
+   <div class="iso-seg est iso-mst" data-k="${i}"><i class="iso-thumb" style="--i:${pk}"></i>${ORD.map(o=>`<button type="button" class="${o===e?'on':''}" onclick="event.stopPropagation();ISOA.setEstado('${id}','${o}')">${o}</button>`).join('')}</div>`;
+  if(pk!==i){const th=el.querySelector('.iso-mst .iso-thumb');requestAnimationFrame(()=>requestAnimationFrame(()=>th&&th.style.setProperty('--i',i)))}}
 function cardEl(id){const el=document.createElement('div');el.id='iso-card-'+id;el.dataset.id=id;
   el.innerHTML=`<div class="iso-chead" tabindex="0" onclick="ISOA.openTask('${id}')" onkeydown="if(event.key==='Enter')ISOA.openTask('${id}')"></div><div class="iso-cbody"><div class="iso-cbi"><div class="iso-cbx"></div></div></div>`;
   cardFill(el);if(OPENC.has(id))buildBody(el);return el}
@@ -13459,15 +13562,15 @@ function buildBody(el){const id=el.dataset.id,bo=el.querySelector('.iso-cbi'),bi
 function setBoardOpen(){const b=document.querySelector('#iso-view .iso-kan');if(!b)return;const el=b.querySelector('.iso-card.open');
   if(el&&(DB[el.dataset.id]||{}).tarea)b.dataset.o=ORD.indexOf(est(DB[el.dataset.id].tarea));else b.removeAttribute('data-o')}
 function openTask(id){const el=document.getElementById('iso-card-'+id);if(!el||!(DB[id]||{}).tarea)return;
-  if(OPENC.has(id)){OPENC.delete(id);el.classList.remove('open','settled');el.draggable=true;setBoardOpen();return}
-  OPENC.forEach(o=>{if(o!==id){OPENC.delete(o);const x=document.getElementById('iso-card-'+o);if(x){x.classList.remove('open','settled');x.draggable=true}}});
+  if(OPENC.has(id)){OPENC.delete(id);el.classList.remove('open','settled');el.draggable=!MOB();setBoardOpen();return}
+  OPENC.forEach(o=>{if(o!==id){OPENC.delete(o);const x=document.getElementById('iso-card-'+o);if(x){x.classList.remove('open','settled');x.draggable=!MOB()}}});
   OPENC.add(id);buildBody(el);el.draggable=false;requestAnimationFrame(()=>{el.classList.add('open');setBoardOpen()});
   setTimeout(()=>{if(OPENC.has(id)){el.classList.add('settled');el.scrollIntoView({behavior:'smooth',block:'nearest'})}},560)}
 const colBody=e=>document.querySelector('#iso-view .iso-col[data-e="'+e+'"] .iso-cb');
 function colUpdate(){const m=$('#iso-view');if(!m)return;
   m.querySelectorAll('.iso-col').forEach(c=>{const cb=c.querySelector('.iso-cb'),cs=[...cb.querySelectorAll('.iso-card')],cc=c.querySelector('.iso-cc');
     if(cc.textContent!=String(cs.length)){cc.textContent=cs.length;cc.classList.remove('bump');void cc.offsetWidth;cc.classList.add('bump')}
-    cb.classList.toggle('empty',!cs.length);
+    cb.classList.toggle('empty',!cs.length);const mc=m.querySelector('.iso-mtc[data-e="'+c.dataset.e+'"]');if(mc&&mc.textContent!=String(cs.length)){mc.textContent=cs.length;mc.classList.remove('bump');void mc.offsetWidth;mc.classList.add('bump')}
     if(c.dataset.e==='Realizada'){cs.forEach((x,i)=>x.classList.toggle('iso-hid',!RALL&&i>=CAPR));const mb=c.querySelector('.iso-moreb');if(mb){mb.style.display=cs.length>CAPR?'':'none';mb.textContent=RALL?'Ver menos':'Ver '+(cs.length-CAPR)+' más'}}});
   const cb=$('#iso-conf');if(cb){const n=porConf().length;cb.innerHTML=n?`<div class="iso-conn warn"><i class="fas fa-link"></i><div><b>${n} tarea${n>1?'s':''} cerrada${n>1?'s':''} esperando confirmación</b><span>Ya se realizaron: pasa la evidencia a Cumple para que cuente en tu cumplimiento.</span></div><button onclick="ISOA.setTF('flag','${TF.flag==='conf'?'':'conf'}')">${TF.flag==='conf'?'Ver todas':'Revisar'}</button><button class="p" onclick="ISOA.confirmAll()">Pasar ${n>1?'todas ':''}a Cumple</button></div>`:''}
   const all=tasks().filter(x=>inCap(x.it)),op=all.filter(x=>x.t.estado!=='Realizada').length,s=$('#iso-ksub');
@@ -13482,6 +13585,12 @@ function syncCard(id){const el=document.getElementById('iso-card-'+id);if(!el)re
   if(!t){OPENC.delete(id);el.classList.add('gone');setTimeout(()=>{el.remove();colUpdate()},260);return}
   if(el.dataset.sig===csig(id))return;
   const e=est(t),moved=el.closest('.iso-col').dataset.e!==e,first=snapRects();
+  if(moved&&MOB()&&el.offsetParent!==null){const oldE=el.closest('.iso-col').dataset.e,dir=ORD.indexOf(e)>ORD.indexOf(oldE)?1:-1;cardFill(el);
+    setTimeout(()=>{const f2=snapRects(),a=el.animate([{opacity:1,transform:'none'},{opacity:0,transform:`translateX(${dir*64}px) scale(.94)`}],{duration:280,easing:'cubic-bezier(.4,0,.9,.5)',fill:'forwards'});
+      a.onfinish=()=>{a.cancel();insertSorted(el,e);setBoardOpen();colUpdate();
+        document.querySelectorAll('#iso-view .iso-col:not([style*="none"]) .iso-card').forEach(c=>{const f=f2.get(c.dataset.id);if(!f||c===el||c.offsetParent===null)return;const l=c.getBoundingClientRect(),dy=f.top-l.top;if(Math.abs(dy)>1)c.animate([{transform:`translateY(${dy}px)`},{transform:'none'}],{duration:420,easing:'cubic-bezier(.22,1,.36,1)'})});
+        const tb=document.querySelector('.iso-mtabs button[data-e="'+e+'"]');if(tb){tb.classList.remove('pulse');void tb.offsetWidth;tb.classList.add('pulse')}
+        toast('Movida a '+e,'ok')}},420);return}
   if(DROPAT&&DROPAT.id===id){const r=first.get(id);if(r)first.set(id,{left:DROPAT.x-r.width/2,top:DROPAT.y-r.height/2})}
   DROPAT=null;
   cardFill(el);insertSorted(el,e);setBoardOpen();colUpdate();
@@ -13506,11 +13615,11 @@ function renderTareas(){const m=$('#iso-view');if(!m)return;
    <div class="iso-tools">${capSelect()}<select class="db-fsel" onchange="ISOA.setTF('resp',this.value)"><option value="all">Todos los responsables</option>${rs.map(r=>`<option ${TF.resp===r?'selected':''}>${esc(r)}</option>`).join('')}</select><div class="iso-search"><i class="fas fa-magnifying-glass"></i><input id="iso-tq" placeholder="Buscar tarea…" value="${esc(TF.q)}"></div></div></div>
   <div id="iso-conf"></div>
   ${[['late','Vencidas',nl],['noresp','Sin responsable',nr],['nodate','Sin fecha',nd]].some(f=>f[2]||TF.flag===f[0])?`<div class="iso-filters"><div class="iso-pills">${[['late','Vencidas',nl],['noresp','Sin responsable',nr],['nodate','Sin fecha',nd]].filter(f=>f[2]||TF.flag===f[0]).map(([k,l,c])=>`<button class="iso-pill ${TF.flag===k?'on':''}" onclick="ISOA.setTF('flag','${TF.flag===k?'':k}')"><i class="fas fa-filter" style="font-size:9px"></i> ${l}<small>${c}</small></button>`).join('')}</div></div>`:''}
-  ${all.length||tasks().length?`<div class="iso-kan">${ORD.map(col).join('')}</div>`:`<div class="dbi-panel iso-empty" style="padding:34px"><i class="fas fa-clipboard-check" style="font-size:28px;color:var(--accent);display:block;margin-bottom:8px"></i>Aún no hay tareas. Se crean solas cuando marcas una evidencia como <b>No cumple</b>.</div>`}`;
+  ${all.length||tasks().length?`<div class="iso-mtabs" data-k="${ORD.indexOf(MTAB)}"><i class="iso-thumb" style="--i:${ORD.indexOf(MTAB)}"></i>${ORD.map(e=>`<button type="button" class="${MTAB===e?'on':''}" data-e="${e}" onclick="ISOA.mTab('${e}')"><span>${e}</span><b class="iso-mtc" data-e="${e}">${tk.filter(x=>est(x.t)===e).length}</b></button>`).join('')}</div><div class="iso-kan" data-m="${MTAB}">${ORD.map(col).join('')}</div>`:`<div class="dbi-panel iso-empty" style="padding:34px"><i class="fas fa-clipboard-check" style="font-size:28px;color:var(--accent);display:block;margin-bottom:8px"></i>Aún no hay tareas. Se crean solas cuando marcas una evidencia como <b>No cumple</b>.</div>`}`;
   m.querySelectorAll('template[data-c]').forEach(t=>{const c=cardEl(t.dataset.c);c.style.setProperty('--i',n++);t.replaceWith(c)});
   setBoardOpen();colUpdate();
   const q=$('#iso-tq');q.oninput=()=>{TF.q=q.value;const p=q.selectionStart;renderTareas();const j=$('#iso-tq');j.focus();j.setSelectionRange(p,p)};
-  const b=m.querySelector('.iso-kan');if(b)bindBoard(b)}
+  const b=m.querySelector('.iso-kan');if(b){bindBoard(b);bindSwipe(b)}}
 function bindBoard(b){
   const colOf=e=>e.target.closest&&e.target.closest('.iso-col'),clear=()=>b.querySelectorAll('.iso-col.over').forEach(c=>c.classList.remove('over'));
   b.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('.iso-card');if(!c)return;e.dataTransfer.setData('text/plain',c.dataset.id);e.dataTransfer.effectAllowed='move';b.classList.add('dragging');setTimeout(()=>c.classList.add('drag'),0)});
@@ -13519,6 +13628,12 @@ function bindBoard(b){
   b.addEventListener('dragleave',e=>{if(!b.contains(e.relatedTarget))clear()});
   b.addEventListener('drop',e=>{const c=colOf(e);if(!c)return;e.preventDefault();clear();const id=e.dataTransfer.getData('text/plain');if(!id||!IT[id])return;
     DROPAT={id,x:e.clientX,y:e.clientY};setEstado(id,c.dataset.e);DROPAT=null})}
+function mTab(e,quiet){if(!ORD.includes(e))return;const old=MTAB;MTAB=e;ls('iso_mtab',e);const m=$('#iso-view'),kan=m&&m.querySelector('.iso-kan'),tb=m&&m.querySelector('.iso-mtabs');if(!kan||!tb)return;
+  const i=ORD.indexOf(e);tb.dataset.k=i;tb.querySelector('.iso-thumb').style.setProperty('--i',i);tb.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.e===e));
+  kan.dataset.m=e;if(old!==e&&!quiet){const c=kan.querySelector('.iso-col[data-e="'+e+'"]'),d=ORD.indexOf(e)>ORD.indexOf(old)?1:-1;if(c)c.animate([{opacity:0,transform:`translateX(${d*28}px)`},{opacity:1,transform:'none'}],{duration:340,easing:'cubic-bezier(.22,1,.36,1)'})}}
+function bindSwipe(b){let x0=0,y0=0,t0=0,ok=false;
+  b.addEventListener('touchstart',ev=>{ok=MOB()&&ev.touches.length===1&&!ev.target.closest('.iso-seg,input,textarea,select,.ind-rte,[contenteditable],.iso-in,.iso-att');if(!ok)return;x0=ev.touches[0].clientX;y0=ev.touches[0].clientY;t0=Date.now()},{passive:true});
+  b.addEventListener('touchend',ev=>{if(!ok)return;ok=false;const t=ev.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;if(Math.abs(dx)>70&&Math.abs(dy)<50&&Date.now()-t0<650){const n=ORD[ORD.indexOf(MTAB)+(dx<0?1:-1)];if(n)mTab(n)}},{passive:true})}
 function setTF(k,v){TF[k]=v;renderTareas()}
 function togAll(){RALL=!RALL;colUpdate()}
 /* ═══════ EXPORTAR ═══════ */
@@ -13531,7 +13646,7 @@ function expPdf(){const{jsPDF}=window.jspdf,doc=new jsPDF({orientation:'landscap
   if(nc.length)doc.autoTable({startY:doc.lastAutoTable.finalY+10,head:[['Num.','Evidencia','Hallazgo','Estado','Responsable','Límite']],body:nc.map(r=>[r.Numeral,r['Evidencia a verificar'],r['Hallazgo / observación'],r['Estado tarea'],r.Responsable,r['Fecha límite']]),headStyles:{fillColor:[185,28,28]},styles:{fontSize:8,cellPadding:2},columnStyles:{1:{cellWidth:60},2:{cellWidth:90}}});
   doc.save('Autoevaluacion_ISO9001_'+today()+'.pdf')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&inited)closePv()});
-return{init,dRes,dCat,dGo,clearEv,clearReq,delTask,resetAll,planCap,planResp,setView,setCap,evalCap,setMode,goReq,goTask,goPlan,hideHelp,setRes,ncTog,setPerf,confirmAll,markAll,openReq,setEstado,setTarea,quickDone,adv,openTask,togAll,pickResp,pickDate,togRq,setTF,closePv,expXlsx,expPdf};
+return{init,mTab,dRes,dCat,dGo,clearEv,clearReq,delTask,resetAll,planCap,planResp,setView,setCap,evalCap,setMode,goReq,goTask,goPlan,hideHelp,setRes,ncTog,setPerf,confirmAll,markAll,openReq,setEstado,setTarea,quickDone,adv,openTask,togAll,pickResp,pickDate,togRq,setTF,closePv,expXlsx,expPdf};
 })();
 </script>
 </body>
