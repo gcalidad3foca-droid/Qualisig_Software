@@ -3580,6 +3580,23 @@ button.iso-pnow:hover{background:var(--gray100)}
 .iso-rst2 svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .5s cubic-bezier(.22,1,.36,1)}
 .iso-rst2:hover{background:#fef2f2;border-color:#fca5a5;box-shadow:0 4px 12px -6px rgba(185,28,28,.4)}.iso-rst2:hover svg{transform:rotate(-200deg)}.iso-rst2:active{transform:scale(.96)}
 @media(max-width:760px){#iso-view>.dbi-header{flex-direction:row;align-items:center}.iso-rst2{padding:8px 11px}.iso-rst2 span{display:none}.iso-rst2{width:36px;height:36px;justify-content:center;padding:0}}
+/* Logo ISO 9001 */
+.nav-tab .iso-ntab{width:20px;height:20px;object-fit:contain;border-radius:5px;vertical-align:-5px;margin-right:2px;background:#fff}
+@media(max-width:400px){.nav-tab .iso-ntab{display:none}}
+.iso-hd{display:flex;align-items:center;gap:14px;min-width:0}
+.iso-logo{flex:none;width:58px;height:58px;border-radius:16px;background:#fff;border:1px solid var(--gray200,#e5e9f0);box-shadow:0 6px 16px -10px rgba(15,40,90,.35),0 1px 2px rgba(15,40,90,.06);display:grid;place-items:center;padding:6px;overflow:hidden;animation:isoLogo .6s cubic-bezier(.22,1,.36,1) both}
+.iso-logo img{width:100%;height:100%;object-fit:contain;display:block}
+.iso-logo.nf{background:linear-gradient(135deg,#1e3c72,#3b6cf6)}.iso-logo.nf::after{content:"ISO";color:#fff;font:800 14px/1 inherit;font-family:inherit;letter-spacing:.5px}
+@keyframes isoLogo{from{opacity:0;transform:scale(.85) rotate(-4deg)}}
+.iso-hd .dbi-title-wrap{min-width:0}
+@media(max-width:760px){.iso-logo{width:46px;height:46px;border-radius:13px;padding:5px}.iso-hd{gap:11px}}
+@media(max-width:760px){#iso-view .dbi-filters{display:grid;grid-template-columns:1fr 1fr;gap:8px}#iso-view .dbi-filters>select,#iso-view .dbi-filters>.iso-capsel{grid-column:1/-1}#iso-view .dbi-filters .iso-xl,#iso-view .dbi-filters .dbi-report-btn{justify-content:center;width:100%}}
+/* Logo sin burbuja */
+.iso-logo{width:72px;height:72px;border:0;background:transparent;box-shadow:none;border-radius:0;padding:0;overflow:visible}
+.iso-logo img{filter:drop-shadow(0 4px 8px rgba(15,40,90,.18))}
+.iso-logo.nf{background:none}.iso-logo.nf::after{color:var(--navy,#1e3c72);font-size:22px}
+.nav-tab .iso-ntab{width:28px;height:28px;border-radius:0;background:transparent;vertical-align:-9px;margin:-4px 3px -4px 0}
+@media(max-width:760px){.iso-logo{width:56px;height:56px}}
 </style>
 </head>
 <body>
@@ -3683,7 +3700,7 @@ button.iso-pnow:hover{background:var(--gray100)}
         <i class="fas fa-bullseye"></i> Indicadores
       </button>
       <button class="nav-tab" id="tab-autoeval" onclick="switchModule('autoeval')">
-        <i class="fas fa-shield-halved"></i> ISO 9001
+        <img class="iso-ntab" src="https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/autoevaluacion-iso/istockphoto-1138661921-612x612.png" alt="" width="20" height="20" onerror="this.outerHTML='<i class=&quot;fas fa-shield-halved&quot;></i>'"> ISO 9001
       </button>
     </div>
   </header>
@@ -13864,7 +13881,7 @@ function renderDash(){const m=$('#iso-view');if(!m)return;
   const hl=open.slice().sort(rank).slice(0,6);
   m.innerHTML=`
   ${ls('iso_help')||S.ev>10?'':`<div class="iso-help"><b>Cómo funciona</b><div class="iso-hs"><span>1</span>Evalúa cada evidencia: Cumple o No cumple</div><div class="iso-hs"><span>2</span>Un «No cumple» crea solo su hallazgo y su tarea</div><div class="iso-hs"><span>3</span>Cierra las tareas y sigue tu avance aquí</div><button onclick="ISOA.hideHelp()" title="Entendido"><i class="fas fa-xmark"></i></button></div>`}
-  <div class="dbi-header"><div class="dbi-title-wrap"><span class="dbi-title">Seguimiento · ISO 9001:2015</span><span class="dbi-sub"><b>${S.ev}</b> de ${S.ap} evidencias evaluadas${CAP==='all'?'':' · Capítulo '+CAP}</span></div>
+  <div class="dbi-header"><div class="iso-hd"><span class="iso-logo"><img src="https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/autoevaluacion-iso/istockphoto-1138661921-612x612.png" alt="ISO 9001" onerror="this.parentNode.classList.add('nf');this.remove()"></span><div class="dbi-title-wrap"><span class="dbi-title">Seguimiento · ISO 9001:2015</span><span class="dbi-sub"><b>${S.ev}</b> de ${S.ap} evidencias evaluadas${CAP==='all'?'':' · Capítulo '+CAP}</span></div></div>
    <div class="dbi-filters">${capSelect()}<button class="iso-xl" onclick="ISOA.expXlsx()"><i class="fas fa-file-excel" style="color:#16a34a"></i> Excel</button><button class="dbi-report-btn" onclick="ISOA.expPdf()"><i class="fas fa-file-pdf"></i> Generar Informe</button></div></div>
   ${(venc.length||sinResp.length||sinFecha.length||porConf().length)?`<div class="iso-flags">${porConf().length?`<button class="iso-flag ok" onclick="ISOA.goPlan('conf')"><i class="fas fa-link"></i> ${porConf().length} cerrada${porConf().length>1?'s':''} por confirmar</button>`:''}${venc.length?`<button class="iso-flag" onclick="ISOA.goPlan('late')"><i class="fas fa-clock"></i> ${venc.length} vencida${venc.length>1?'s':''}</button>`:''}${sinResp.length?`<button class="iso-flag w" onclick="ISOA.goPlan('noresp')"><i class="fas fa-user-slash"></i> ${sinResp.length} sin responsable</button>`:''}${sinFecha.length?`<button class="iso-flag w" onclick="ISOA.goPlan('nodate')"><i class="far fa-calendar"></i> ${sinFecha.length} sin fecha</button>`:''}</div>`:''}
   ${dashBody(S,tk,open,venc)}</div>`}
