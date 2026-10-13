@@ -1626,9 +1626,9 @@ async function exportToPDF() {
 
     doc.setFillColor(30,60,114); doc.rect(0,0,PW,65,'F');
     try{ const li=document.querySelector('.logo img'); if(li&&li.complete) doc.addImage(li.src,'PNG',M,8,41.32,17,'logoHdr','FAST'); }catch(e){}
-    doc.setTextColor(255,255,255); doc.setFontSize(11); doc.setFont('helvetica','bold');
+    doc.setTextColor(255,255,255); doc.setFontSize(14); doc.setFont('helvetica','bold');
     doc.text('FUNDACIÓN OFTALMOLÓGICA DEL CARIBE',PW/2,22,{align:'center'});
-    doc.setFontSize(14); doc.text('LISTA DE VERIFICACIÓN DE AUDITORÍA DE SERVICIO',PW/2,38,{align:'center'});
+    doc.setFontSize(11); doc.text('LISTA DE VERIFICACIÓN DE AUDITORÍA DE SERVICIO',PW/2,38,{align:'center'});
     doc.setFontSize(9); doc.setFont('helvetica','normal');
     doc.text('Sistema de Evaluación y Control de Calidad',PW/2,45,{align:'center'});
     doc.setFontSize(8); doc.setFont('helvetica','bold');
