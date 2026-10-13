@@ -3597,6 +3597,13 @@ button.iso-pnow:hover{background:var(--gray100)}
 .iso-logo.nf{background:none}.iso-logo.nf::after{color:var(--navy,#1e3c72);font-size:22px}
 .nav-tab .iso-ntab{width:28px;height:28px;border-radius:0;background:transparent;vertical-align:-9px;margin:-4px 3px -4px 0}
 @media(max-width:760px){.iso-logo{width:56px;height:56px}}
+
+/* Logo fijo y tarjetas sin parpadeo */
+.iso-logo{animation:none!important}
+.iso-logo img{width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none}
+.nav-tab .iso-ntab{display:inline-block!important}
+#iso-view.iso-still .iso-card,#iso-view.iso-still .iso-col{animation:none!important}
+.iso-card.land{animation:none!important}
 </style>
 </head>
 <body>
@@ -13871,7 +13878,10 @@ function resetAll(){const n=ITEMS.filter(i=>hasData(i.id)).length;
   Object.keys(DB).forEach(k=>delete DB[k]);LOG.length=0;EXP.clear();Object.keys(OPS).forEach(k=>delete OPS[k]);OPENC.clear();MODE=null;renderTabs();setView(VIEW);toast('Autoevaluación restablecida · empieza de nuevo','ok')}
 /* ═══════ SEGUIMIENTO ═══════ */
 function segBar(o,keys=['ok','sub','curso','pend','sin']){const t=keys.reduce((s,k)=>s+o[k],0)||1;return`<span class="iso-bar">${keys.map(k=>`<i style="width:${o[k]/t*100}%;background:${ST[k][1]}"></i>`).join('')}</span>`}
-function renderDash(){const m=$('#iso-view');if(!m)return;
+let LOGOEL=null;
+function slotLogo(){const sl=document.querySelector('#iso-view .iso-logo');if(!sl)return;if(!LOGOEL){LOGOEL=document.createElement('img');LOGOEL.alt='ISO 9001';LOGOEL.decoding='sync';LOGOEL.draggable=false;LOGOEL.src='https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/autoevaluacion-iso/istockphoto-1138661921-612x612.png';LOGOEL.onerror=()=>{sl.classList.add('nf');LOGOEL.remove();LOGOEL=null}}sl.appendChild(LOGOEL)}
+function renderDash(){renderDash0();slotLogo()}
+function renderDash0(){const m=$('#iso-view');if(!m)return;
   const S=calc(inCap),tk=tasks().filter(x=>inCap(x.it)),open=tk.filter(x=>x.t.estado!=='Realizada'),venc=open.filter(x=>late(x.t)),sinResp=open.filter(x=>!x.t.responsable),sinFecha=open.filter(x=>!x.t.fechaLimite);
   const nx=nextReq(),caps=Object.keys(CAPS);let step;
   if(S.ev===0&&nx)step={ic:'fa-rocket',t:'Empieza tu autoevaluación',s:`Son ${S.ap} evidencias en ${REQS.filter(r=>CAP==='all'||r.c===CAP).length} requisitos. Te llevo al primero.`,b:'Comenzar',fn:`ISOA.goReq('${nx.n}')`};
@@ -13881,7 +13891,7 @@ function renderDash(){const m=$('#iso-view');if(!m)return;
   const hl=open.slice().sort(rank).slice(0,6);
   m.innerHTML=`
   ${ls('iso_help')||S.ev>10?'':`<div class="iso-help"><b>Cómo funciona</b><div class="iso-hs"><span>1</span>Evalúa cada evidencia: Cumple o No cumple</div><div class="iso-hs"><span>2</span>Un «No cumple» crea solo su hallazgo y su tarea</div><div class="iso-hs"><span>3</span>Cierra las tareas y sigue tu avance aquí</div><button onclick="ISOA.hideHelp()" title="Entendido"><i class="fas fa-xmark"></i></button></div>`}
-  <div class="dbi-header"><div class="iso-hd"><span class="iso-logo"><img src="https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/autoevaluacion-iso/istockphoto-1138661921-612x612.png" alt="ISO 9001" onerror="this.parentNode.classList.add('nf');this.remove()"></span><div class="dbi-title-wrap"><span class="dbi-title">Seguimiento · ISO 9001:2015</span><span class="dbi-sub"><b>${S.ev}</b> de ${S.ap} evidencias evaluadas${CAP==='all'?'':' · Capítulo '+CAP}</span></div></div>
+  <div class="dbi-header"><div class="iso-hd"><span class="iso-logo"></span><div class="dbi-title-wrap"><span class="dbi-title">Seguimiento · ISO 9001:2015</span><span class="dbi-sub"><b>${S.ev}</b> de ${S.ap} evidencias evaluadas${CAP==='all'?'':' · Capítulo '+CAP}</span></div></div>
    <div class="dbi-filters">${capSelect()}<button class="iso-xl" onclick="ISOA.expXlsx()"><i class="fas fa-file-excel" style="color:#16a34a"></i> Excel</button><button class="dbi-report-btn" onclick="ISOA.expPdf()"><i class="fas fa-file-pdf"></i> Generar Informe</button></div></div>
   ${(venc.length||sinResp.length||sinFecha.length||porConf().length)?`<div class="iso-flags">${porConf().length?`<button class="iso-flag ok" onclick="ISOA.goPlan('conf')"><i class="fas fa-link"></i> ${porConf().length} cerrada${porConf().length>1?'s':''} por confirmar</button>`:''}${venc.length?`<button class="iso-flag" onclick="ISOA.goPlan('late')"><i class="fas fa-clock"></i> ${venc.length} vencida${venc.length>1?'s':''}</button>`:''}${sinResp.length?`<button class="iso-flag w" onclick="ISOA.goPlan('noresp')"><i class="fas fa-user-slash"></i> ${sinResp.length} sin responsable</button>`:''}${sinFecha.length?`<button class="iso-flag w" onclick="ISOA.goPlan('nodate')"><i class="far fa-calendar"></i> ${sinFecha.length} sin fecha</button>`:''}</div>`:''}
   ${dashBody(S,tk,open,venc)}</div>`}
@@ -14080,7 +14090,9 @@ function syncCard(id){const el=document.getElementById('iso-card-'+id);if(!el)re
       ],{duration:1000,easing:'cubic-bezier(.33,.9,.3,1)'});
       a.onfinish=a.oncancel=()=>{c.classList.remove('fly');c.classList.add('land');setTimeout(()=>c.classList.remove('land'),900)}}
     else if(Math.abs(dx)+Math.abs(dy)>1)c.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'none'}],{duration:620,easing:'cubic-bezier(.22,1,.36,1)'})})}
-function renderTareas(){const m=$('#iso-view');if(!m)return;
+function renderTareas(){renderTareas0();const m=$('#iso-view');if(m){m.classList.remove('iso-still');clearTimeout(STILLT);STILLT=setTimeout(()=>m.classList.add('iso-still'),1200)}}
+let STILLT;
+function renderTareas0(){const m=$('#iso-view');if(!m)return;
   const all=tasks().filter(x=>inCap(x.it)),rs=[...new Set(tasks().map(x=>x.t.responsable||'Sin asignar'))],op=all.filter(x=>x.t.estado!=='Realizada');
   const tk=plan(),nl=op.filter(FLAGS.late).length,nr=op.filter(FLAGS.noresp).length,nd=op.filter(FLAGS.nodate).length;let n=0;
   const col=e=>{const L=tk.filter(x=>est(x.t)===e).map(x=>x.it.id).sort(cmpCol(e)),[k,ic,h]=COLM[e];
