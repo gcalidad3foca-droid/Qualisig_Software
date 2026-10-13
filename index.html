@@ -3574,6 +3574,12 @@ button.iso-pnow:hover{background:var(--gray100)}
 .iso-rq:not(.open)>.iso-rqb{transition:grid-template-rows .5s cubic-bezier(.4,0,.2,1)}
 .iso-rq:not(.open) .iso-rqi{transition:opacity .16s ease}
 .iso-rq.open>.iso-rqb{transition:grid-template-rows .5s cubic-bezier(.22,1,.36,1)}
+/* Restablecer en Evaluación */
+#iso-view>.dbi-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.iso-rst2{display:inline-flex;align-items:center;gap:7px;border:1px solid #f3d0d0;background:#fff;color:#b91c1c;font:600 12px/1 inherit;font-family:inherit;padding:9px 13px;border-radius:99px;cursor:pointer;transition:background .18s,border-color .18s,transform .15s,box-shadow .18s;flex:none}
+.iso-rst2 svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.iso-rst2:hover{background:#fef2f2;border-color:#fca5a5;box-shadow:0 4px 12px -6px rgba(185,28,28,.4)}.iso-rst2:hover svg{transform:rotate(-200deg)}.iso-rst2:active{transform:scale(.96)}
+@media(max-width:760px){#iso-view>.dbi-header{flex-direction:row;align-items:center}.iso-rst2{padding:8px 11px}.iso-rst2 span{display:none}.iso-rst2{width:36px;height:36px;justify-content:center;padding:0}}
 </style>
 </head>
 <body>
@@ -13706,7 +13712,7 @@ async function upload(f){
   const url=await _r2SubirArchivo(b,'autoevaluacion-iso/'+Date.now()+'_'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_'),ct);
   return{id:'a'+Date.now()+Math.floor(Math.random()*999),tipo:isImg?'img':'file',url,nombre:f.name,size:b.size,ts:Date.now()}}
 const ic=d=>`<svg class="iso-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
-const IC={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',clip:'<path d="M21 11.5l-8.6 8.6a5.5 5.5 0 01-7.8-7.8l8.6-8.6a3.7 3.7 0 015.2 5.2l-8.6 8.6a1.8 1.8 0 01-2.6-2.6l7.9-7.9"/>',link:'<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',pen:'<path d="M4 20h4L19 9a2.8 2.8 0 00-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/>',flag:'<path d="M5 21V4m0 0h11l-2 4 2 4H5"/>',task:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h9"/>',caret:'<path d="M6 9l6 6 6-6"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12M9 7V4h6v3"/>',check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',kbd:'<rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6.5 10h.01M10 10h.01M14 10h.01M17.5 10h.01M7.5 14h9"/>',shut:'<path d="M7 9l5-5 5 5M7 15l5 5 5-5"/>',open:'<path d="M7 5l5 5 5-5M7 19l5-5 5 5"/>',plus:'<path d="M12 5v14M5 12h14"/>'};
+const IC={search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',clip:'<path d="M21 11.5l-8.6 8.6a5.5 5.5 0 01-7.8-7.8l8.6-8.6a3.7 3.7 0 015.2 5.2l-8.6 8.6a1.8 1.8 0 01-2.6-2.6l7.9-7.9"/>',link:'<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',pen:'<path d="M4 20h4L19 9a2.8 2.8 0 00-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/>',flag:'<path d="M5 21V4m0 0h11l-2 4 2 4H5"/>',task:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h9"/>',caret:'<path d="M6 9l6 6 6-6"/>',trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12M9 7V4h6v3"/>',check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',kbd:'<rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6.5 10h.01M10 10h.01M14 10h.01M17.5 10h.01M7.5 14h9"/>',shut:'<path d="M7 9l5-5 5 5M7 15l5 5 5-5"/>',open:'<path d="M7 5l5 5 5-5M7 19l5-5 5 5"/>',plus:'<path d="M12 5v14M5 12h14"/>',rst:'<path d="M4 12a8 8 0 108-8 8 8 0 00-5.7 2.4L4 9"/><path d="M4 4v5h5"/>'};
 const fsz=b=>!b?'':b<1048576?Math.max(1,Math.round(b/1024))+' KB':(b/1048576).toFixed(1).replace('.0','')+' MB';
 function tileInfo(a){const k=kind(a),e=EXT(a.nombre||a.url);
   if(k==='img')return{l:(e&&e.length<5?e:'img').toUpperCase(),m:'Imagen'};
@@ -13751,6 +13757,7 @@ function intake(id,files){files=[...files];if(!files.length)return;const r=(DB[i
 
 /* ═══════ ESTRUCTURA ═══════ */
 function init(){
+  window.scrollTo(0,0);
   if(!inited){inited=true;
     $('#iso-root').innerHTML=`<div class="iso-subrow"><div class="nav-tabs" id="iso-tabs"></div><span class="iso-saved" id="iso-saved"><i class="fas fa-check-circle"></i> Guardado</span></div><section id="iso-view"></section>`;
     renderTabs();$('#iso-view').innerHTML='<div class="iso-empty"><i class="fas fa-spinner fa-spin"></i> Cargando…</div>';attach()}
@@ -13760,7 +13767,7 @@ function renderTabs(){const n=tasks().filter(x=>x.t.estado!=='Realizada').length
 function setView(v,first){VIEW=v;kOff();ls('iso_view',v);renderTabs();const m=$('#iso-view');
   v==='dash'?renderDash():v==='eval'?renderEval():renderTareas();
   m.classList.remove('iso-fade');void m.offsetWidth;m.classList.add('iso-fade');
-  if(!first){window.scrollTo({top:0,behavior:'smooth'});if(v==='eval')setTimeout(()=>{const o=document.querySelector('#iso-list .iso-rq.open');if(o&&o.getBoundingClientRect().top>window.innerHeight*.6)o.scrollIntoView({behavior:'smooth',block:'start'})},350)}}
+  if(!first){window.scrollTo({top:0,behavior:'smooth'});}}
 let SW=0;
 function setCap(c){c=String(c);if(c===String(CAP))return;CAP=c;ls('iso_cap',c);
   const L=VIEW==='eval'&&document.getElementById('iso-list');if(!L){VIEW==='dash'?renderDash():renderTareas();return}
@@ -13858,7 +13865,7 @@ function renderDash(){const m=$('#iso-view');if(!m)return;
   m.innerHTML=`
   ${ls('iso_help')||S.ev>10?'':`<div class="iso-help"><b>Cómo funciona</b><div class="iso-hs"><span>1</span>Evalúa cada evidencia: Cumple o No cumple</div><div class="iso-hs"><span>2</span>Un «No cumple» crea solo su hallazgo y su tarea</div><div class="iso-hs"><span>3</span>Cierra las tareas y sigue tu avance aquí</div><button onclick="ISOA.hideHelp()" title="Entendido"><i class="fas fa-xmark"></i></button></div>`}
   <div class="dbi-header"><div class="dbi-title-wrap"><span class="dbi-title">Seguimiento · ISO 9001:2015</span><span class="dbi-sub"><b>${S.ev}</b> de ${S.ap} evidencias evaluadas${CAP==='all'?'':' · Capítulo '+CAP}</span></div>
-   <div class="dbi-filters">${capSelect()}<button class="iso-xl iso-rst" onclick="ISOA.resetAll()" title="Borrar todo y empezar de nuevo"><i class="fas fa-rotate-left"></i> Restablecer</button><button class="iso-xl" onclick="ISOA.expXlsx()"><i class="fas fa-file-excel" style="color:#16a34a"></i> Excel</button><button class="dbi-report-btn" onclick="ISOA.expPdf()"><i class="fas fa-file-pdf"></i> Generar Informe</button></div></div>
+   <div class="dbi-filters">${capSelect()}<button class="iso-xl" onclick="ISOA.expXlsx()"><i class="fas fa-file-excel" style="color:#16a34a"></i> Excel</button><button class="dbi-report-btn" onclick="ISOA.expPdf()"><i class="fas fa-file-pdf"></i> Generar Informe</button></div></div>
   ${(venc.length||sinResp.length||sinFecha.length||porConf().length)?`<div class="iso-flags">${porConf().length?`<button class="iso-flag ok" onclick="ISOA.goPlan('conf')"><i class="fas fa-link"></i> ${porConf().length} cerrada${porConf().length>1?'s':''} por confirmar</button>`:''}${venc.length?`<button class="iso-flag" onclick="ISOA.goPlan('late')"><i class="fas fa-clock"></i> ${venc.length} vencida${venc.length>1?'s':''}</button>`:''}${sinResp.length?`<button class="iso-flag w" onclick="ISOA.goPlan('noresp')"><i class="fas fa-user-slash"></i> ${sinResp.length} sin responsable</button>`:''}${sinFecha.length?`<button class="iso-flag w" onclick="ISOA.goPlan('nodate')"><i class="far fa-calendar"></i> ${sinFecha.length} sin fecha</button>`:''}</div>`:''}
   ${dashBody(S,tk,open,venc)}</div>`}
 
@@ -13874,7 +13881,7 @@ function renderEval(){const m=$('#iso-view'),S=calc(inCap),oR=document.querySele
   if(MODE===null)MODE='all';
   if(!EXP.size&&!NAVQ){const nx=nextReq();if(nx)EXP.add(nx.n)}
   const nc=ITEMS.filter(i=>inCap(i)&&(DB[i.id]||{}).resultado==='No cumple').length,okN=ITEMS.filter(i=>inCap(i)&&(DB[i.id]||{}).resultado==='Cumple').length;
-  m.innerHTML=`<div class="dbi-header"><div class="dbi-title-wrap"><span class="dbi-title">Evaluación por requisito</span><span class="dbi-sub">Marca el resultado de cada evidencia · <b id="iso-sev">${S.ev}</b> de <span id="iso-sap">${S.ap}</span> evaluadas</span></div></div>
+  m.innerHTML=`<div class="dbi-header"><div class="dbi-title-wrap"><span class="dbi-title">Evaluación por requisito</span><span class="dbi-sub">Marca el resultado de cada evidencia · <b id="iso-sev">${S.ev}</b> de <span id="iso-sap">${S.ap}</span> evaluadas</span></div><button type="button" class="iso-rst2" onclick="ISOA.resetAll()" title="Borrar toda la autoevaluación y empezar de nuevo">${ic(IC.rst)}<span>Restablecer</span></button></div>
   <div class="iso-frow"><label class="iso-search">${ic(IC.search)}<input id="iso-q" type="search" placeholder="Buscar numeral, tema o evidencia" autocomplete="off" value="${esc(NAVQ)}" aria-label="Buscar"></label><div class="iso-fseg" id="iso-fseg" role="group" aria-label="Filtrar por resultado">${[['all','Todos',S.ap],['pend','Pendientes',S.sin],['ok','Cumple',okN],['nc','No cumple',nc]].map(([k,l,n])=>`<button type="button" class="iso-fchip" data-f="${k}" aria-pressed="${MODE===k}" onclick="ISOA.setMode('${k}')">${l}<b>${n}</b></button>`).join('')}</div><div class="iso-fx"><button type="button" onclick="ISOA.expAll(true)">Expandir todo</button><button type="button" onclick="ISOA.expAll(false)">Contraer todo</button><button type="button" class="iso-kb" onclick="ISOA.keys()" title="Atajos de teclado (?)">${ic(IC.kbd)}<span>Atajos</span></button></div></div>
   <div class="iso-evlay"><nav class="iso-rail"><i class="iso-nvi"></i><div class="iso-rh0"><span>Capítulos</span><small>${pct(S.avance)}%</small><i class="iso-rtot"><i style="width:${pct(S.avance)}%"></i></i></div>${railBtns()}</nav><div id="iso-list"></div></div>`;
   const q=$('#iso-q');q.oninput=()=>{NAVQ=q.value;renderList()};renderList();requestAnimationFrame(()=>{setStickVars();moveInd(false)});const fr=document.querySelector('.iso-frow');if(fr&&window.IntersectionObserver){const sn=document.createElement('i');sn.style.cssText='position:absolute;top:0;height:1px;width:1px;pointer-events:none';m.style.position='relative';m.prepend(sn);new IntersectionObserver(([e])=>fr.classList.toggle('stuck',!e.isIntersecting)).observe(sn)}
@@ -13886,7 +13893,7 @@ function setMode(k){if(k===MODE)return;const was=MODE;MODE=k;
   if(k==='all'){if(EXPSAVE){EXP.clear();EXPSAVE.forEach(n=>EXP.add(n));EXPSAVE=null}}
   else{if(was==='all')EXPSAVE=new Set(EXP);EXP.clear();REQS.filter(r=>(CAP==='all'||r.c===CAP)&&r.items.some(vis)).forEach(r=>EXP.add(r.n))}
   document.querySelectorAll('#iso-fseg .iso-fchip').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===k)));
-  CCH.clear();renderList();refreshModes();window.scrollTo({top:Math.max(0,($('#iso-view').getBoundingClientRect().top+scrollY)-80),behavior:'smooth'})}
+  CCH.clear();renderList();refreshModes()}
 function expAll(open){const L=openRqs();
   if(!open){L.forEach(e=>{const n=e.id.replace('iso-rq-','').replace(/_/g,'.');EXP.delete(n);e.classList.remove('open')})}
   else{document.querySelectorAll('.iso-cg.shut').forEach(g=>{CCH.delete(g.dataset.c);g.classList.remove('shut');g.querySelector('.iso-cgi').removeAttribute('inert')});openRqs().forEach(e=>{const n=e.id.replace('iso-rq-','').replace(/_/g,'.');EXP.add(n);fill(n);requestAnimationFrame(()=>e.classList.add('open'))})}}
@@ -14089,12 +14096,82 @@ function togAll(){RALL=!RALL;colUpdate()}
 /* ═══════ EXPORTAR ═══════ */
 function rows(){return ITEMS.map(i=>{const d=DB[i.id]||{},t=d.tarea||{};return{Numeral:i.n,Tema:i.t,'Requisito a verificar':i.r,'Evidencia a verificar':i.ev,Resultado:d.resultado||'Sin evaluar','Evidencia encontrada':T(d.evidTxt),'Enlaces / archivos':(d.evidencias||[]).map(a=>a.url).join('\n'),'Hallazgo / observación':T(d.hallazgo),'Responsable':t.responsable||'','Estado tarea':t.estado||'','Fecha límite':t.fechaLimite||'','Acción':T(t.accion),'Cierre':T(t.obsCierre),'Capítulo':i.c}})}
 function expXlsx(){const wb=XLSX.utils.book_new(),ws=XLSX.utils.json_to_sheet(rows());ws['!cols']=[8,26,40,34,12,40,30,40,22,12,12,40,30,9].map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,'Autoevaluación ISO');XLSX.writeFile(wb,'Autoevaluacion_ISO9001_'+today()+'.xlsx')}
-function expPdf(){const{jsPDF}=window.jspdf,doc=new jsPDF({orientation:'landscape'}),A=calc(),W=doc.internal.pageSize.getWidth();
-  doc.setFillColor(30,60,114);doc.rect(0,0,W,26,'F');doc.setTextColor(255);doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text('Autoevaluación ISO 9001:2015',12,12);doc.setFontSize(9.5);doc.setFont('helvetica','normal');doc.text('Generado el '+new Date().toLocaleDateString('es-CO')+' · Cumplimiento '+pct(A.cump)+'% · Proyectado '+pct(A.proy)+'% · Avance '+pct(A.avance)+'%',12,20);
-  doc.autoTable({startY:32,head:[['Capítulo','Evaluadas','Cumple','Subsanado','NC abiertas','% Cumplimiento']],body:Object.keys(CAPS).map(c=>{const o=calc(i=>i.c===c);return[c+' · '+CAPS[c],o.ev+'/'+o.ap,o.ok,o.sub,o.pend+o.curso,o.ev?pct(o.cump)+'%':'—']}),headStyles:{fillColor:[30,60,114]},styles:{fontSize:9}});
-  const nc=rows().filter(r=>r.Resultado==='No cumple');
-  if(nc.length)doc.autoTable({startY:doc.lastAutoTable.finalY+10,head:[['Num.','Evidencia','Hallazgo','Estado','Responsable','Límite']],body:nc.map(r=>[r.Numeral,r['Evidencia a verificar'],r['Hallazgo / observación'],r['Estado tarea'],r.Responsable,r['Fecha límite']]),headStyles:{fillColor:[185,28,28]},styles:{fontSize:8,cellPadding:2},columnStyles:{1:{cellWidth:60},2:{cellWidth:90}}});
-  doc.save('Autoevaluacion_ISO9001_'+today()+'.pdf')}
+function expPdf(){
+ if(!window.jspdf){toast('No se pudo cargar el generador de PDF','err');return}
+ try{buildReport()}catch(e){console.error(e);toast('No se pudo generar el informe: '+e.message,'err')}}
+function buildReport(){
+ const{jsPDF}=window.jspdf,doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'}),W=210,H=297,M=16,CW=W-2*M,BOT=H-22;
+ const hex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),fc=h=>doc.setFillColor(...hex(h)),tc=h=>doc.setTextColor(...hex(h)),dc=h=>doc.setDrawColor(...hex(h));
+ const INK='#14213d',MUT='#5f6b7d',LN='#dfe4ec',HD='#eef2f8',NAVY='#1e3c72',C=ST;
+ const font=(sz,b)=>{doc.setFont('helvetica',b?'bold':'normal');doc.setFontSize(sz)},txt=(s,x,y,o)=>doc.text(String(s),x,y,o);
+ const hl=(x1,y,x2,col,w)=>{dc(col||LN);doc.setLineWidth(w||.25);doc.line(x1,y,x2,y)};
+ const A=calc(),NCo=A.pend+A.curso,TK=tasks(),LT=TK.filter(x=>late(x.t)),dateS=new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'});
+ const keys=['ok','sub','curso','pend','sin'],lvl=p=>p>=90?['Sólido',C.ok[1]]:p>=70?['En desarrollo',C.curso[1]]:['Crítico',C.pend[1]];
+ const stack=(x,y,w,h,segs,bg)=>{const tot=segs.reduce((s,g)=>s+g.v,0);fc(bg||LN);doc.roundedRect(x,y,w,h,h/2,h/2,'F');if(!tot)return;let cx=x;const vis=segs.filter(g=>g.v>0);vis.forEach((g,i)=>{const sw=g.v/tot*w;fc(g.c);if(vis.length===1)doc.roundedRect(x,y,w,h,h/2,h/2,'F');else{const r=h/2;if(i===0){doc.roundedRect(cx,y,Math.min(sw,r*2+.5),h,r,r,'F');doc.rect(cx+r,y,Math.max(0,sw-r),h,'F')}else if(i===vis.length-1){doc.roundedRect(cx+sw-Math.min(sw,r*2+.5),y,Math.min(sw,r*2+.5),h,r,r,'F');doc.rect(cx,y,Math.max(0,sw-r),h,'F')}else doc.rect(cx,y,sw,h,'F')}cx+=sw})};
+ let y=0;
+ const sh=(n,t)=>{if(y+30>BOT){doc.addPage();y=26}font(11);doc.setFont('helvetica','bold');tc(NAVY);txt(n+'.  '+t,M,y);hl(M,y+2.2,W-M,NAVY,.5);y+=9};
+ const need=h=>{if(y+h>BOT){doc.addPage();y=26}};
+ /* ── Encabezado ── */
+ fc(NAVY);doc.rect(0,0,W,4,'F');
+ font(19,1);tc(INK);txt('Informe de Autoevaluación ISO 9001:2015',M,20);
+ font(9);tc(MUT);txt('Sistema de Gestión de la Calidad  ·  Requisitos 4 al 10  ·  '+REQS.length+' requisitos y '+A.ap+' evidencias',M,26.5);
+ font(8);txt('Emitido: '+dateS,W-M,19,{align:'right'});txt('Elaborado por: '+(USER||'—'),W-M,24,{align:'right'});
+ hl(M,31,W-M,INK,.6);y=41;
+ /* ── 1. Resultado general ── */
+ sh('1','Resultado general');
+ const lv=lvl(pct(A.cump)),kc=CW/4;
+ [['Cumplimiento',A.ev?pct(A.cump)+'%':'—',A.ok+' de '+A.ev+' evaluadas · '+(A.ev?lv[0]:'sin datos'),A.ev?lv[1]:MUT],['Proyectado',A.ev?pct(A.proy)+'%':'—','Al cerrar acciones en curso',C.sub[1]],['Avance',pct(A.avance)+'%',A.ev+' de '+A.ap+' evidencias','#3b82f6'],['NC abiertas',String(NCo),LT.length?LT.length+' tarea(s) vencida(s)':'Sin tareas vencidas',NCo?C.pend[1]:C.ok[1]]].forEach((k,i)=>{const x=M+i*kc+(i?4:0);if(i){dc(LN);doc.setLineWidth(.25);doc.line(M+i*kc,y-1,M+i*kc,y+19)}fc(k[3]);doc.rect(x,y-1,1.2,5.5,'F');font(7.3,1);tc(MUT);txt(k[0].toUpperCase(),x+3.2,y+3);font(21,1);tc(INK);txt(k[1],x,y+13.5);font(7.6);tc(MUT);txt(k[2],x,y+18.5)});
+  y+=27;stack(M,y,CW,5,keys.map(k=>({v:A[k],c:C[k][1]})));y+=11;
+ keys.forEach((k,i)=>{const x=M+i*(CW/5);fc(C[k][1]);doc.circle(x+1,y-1,1,'F');font(7.8);tc(MUT);txt(C[k][0],x+3.5,y);font(10,1);tc(INK);txt(A[k]+' ',x+3.5,y+5.2);font(7.8);tc(MUT);txt('('+(A.ap?pct(A[k]/A.ap):0)+'%)',x+3.5+doc.getTextWidth(A[k]+'  ')*1.35,y+5.2)});
+ y+=15;
+ /* ── 2. Resultados por capítulo ── */
+ sh('2','Resultados por capítulo');
+ const TB=extra=>Object.assign({theme:'plain',margin:{left:M,right:M,top:26,bottom:24},headStyles:{fillColor:hex(HD),textColor:hex(INK),fontSize:7.2,fontStyle:'bold',cellPadding:{top:2.2,bottom:2.2,left:1.8,right:1.8}},styles:{fontSize:8,cellPadding:{top:2.2,bottom:2.2,left:1.8,right:1.8},textColor:hex(INK),lineColor:hex(LN),lineWidth:{bottom:.25},overflow:'linebreak'}},extra);
+ const chRows=Object.keys(CAPS).map(c=>{const o=calc(x=>x.c===c);return{c,o}}),cb=[];
+ chRows.forEach(({c,o})=>cb.push([c+'. '+CAPS[c],o.ev+'/'+o.ap,o.ok,o.sub,o.pend+o.curso,o.sin,'',o.ev?pct(o.cump)+'%':'—']));
+ cb.push([{content:'Total',styles:{fontStyle:'bold'}},A.ev+'/'+A.ap,A.ok,A.sub,NCo,A.sin,'',A.ev?pct(A.cump)+'%':'—']);
+ doc.autoTable(TB({startY:y,head:[['CAPÍTULO','EVAL.','CUMPLE','SUBSAN.','NC ABIERTAS','SIN EVAL.','COMPOSICIÓN','% CUMPL.']],body:cb,columnStyles:{0:{cellWidth:54},1:{halign:'center',cellWidth:16},2:{halign:'center',cellWidth:15},3:{halign:'center',cellWidth:15},4:{halign:'center',cellWidth:22},5:{halign:'center',cellWidth:16},6:{cellWidth:24},7:{halign:'right',fontStyle:'bold',cellWidth:16}},
+  didParseCell:d=>{if(d.section==='head'&&d.column.index>0&&d.column.index!==6)d.cell.styles.halign=d.column.index===7?'right':'center';if(d.section==='body'){if(d.row.index===cb.length-1){d.cell.styles.fillColor=hex('#f6f8fb');d.cell.styles.fontStyle='bold'}if(d.column.index===7&&/%$/.test(String(d.cell.raw)))d.cell.styles.textColor=hex(lvl(parseInt(d.cell.raw))[1])}},
+  didDrawCell:d=>{if(d.section==='body'&&d.column.index===6){const o=d.row.index<chRows.length?chRows[d.row.index].o:A;stack(d.cell.x+1.8,d.cell.y+d.cell.height/2-1.2,d.cell.width-3.6,2.4,keys.map(k=>({v:o[k],c:C[k][1]})),'#eceff4')}}}));
+ y=doc.lastAutoTable.finalY+11;
+ /* ── 3. Conclusiones ── */
+ const ev=chRows.filter(x=>x.o.ev>0),ins=[];
+ if(!A.ev)ins.push(['Sin datos','Aún no hay evidencias evaluadas.']);
+ else{const best=ev.slice().sort((a,b)=>b.o.cump-a.o.cump)[0],wor=ev.slice().sort((a,b)=>a.o.cump-b.o.cump)[0];
+  ins.push(['Nivel global',lv[0].toLowerCase()+': '+pct(A.cump)+'% de cumplimiento sobre lo evaluado y '+pct(A.proy)+'% proyectado al cerrar las acciones.']);
+  ins.push(['Fortaleza','capítulo '+best.c+' · '+CAPS[best.c]+' ('+pct(best.o.cump)+'%).']);
+  if(wor.c!==best.c)ins.push(['Oportunidad','capítulo '+wor.c+' · '+CAPS[wor.c]+' ('+pct(wor.o.cump)+'%).']);
+  ins.push(['No conformidades',NCo?NCo+' abierta(s)'+(LT.length?', '+LT.length+' con plazo vencido.':'.'):'ninguna abierta.']);
+  if(A.sin)ins.push(['Pendiente de evaluar',A.sin+' evidencias ('+pct(A.sin/A.ap)+'% del total).'])}
+ need(14+ins.length*5.6);sh('3','Conclusiones');
+ ins.forEach(([a,b])=>{fc(NAVY);doc.circle(M+1,y-1.1,.9,'F');font(8.6,1);tc(INK);txt(a+':',M+4.5,y);const w=doc.getTextWidth(a+': ');font(8.6);tc(INK);const L=doc.splitTextToSize(b,CW-6-w);doc.text(L[0],M+4.5+w,y);if(L.length>1){const R=doc.splitTextToSize(L.slice(1).join(' '),CW-5);doc.text(R,M+4.5,y+4.4);y+=R.length*4.4}y+=5.6});
+ y+=6;
+ /* ── 4. Plan de acción ── */
+ const TE=['Pendiente','En curso','Realizada'],TC={Pendiente:C.pend[1],'En curso':C.curso[1],Realizada:C.ok[1]},tn=e=>TK.filter(x=>(x.t.estado||'Pendiente')===e).length;
+ need(78);sh('4','Plan de acción');
+ const tw=CW/5;[['Tareas',TK.length,'#3b82f6'],['Pendientes',tn('Pendiente'),TC.Pendiente],['En curso',tn('En curso'),TC['En curso']],['Realizadas',tn('Realizada'),TC.Realizada],['Vencidas',LT.length,LT.length?'#b91c1c':'#94a3b8']].forEach((k,i)=>{const x=M+i*tw+(i?4:0);if(i){dc(LN);doc.setLineWidth(.25);doc.line(M+i*tw,y-1,M+i*tw,y+11)}fc(k[2]);doc.rect(x,y-1,1.2,4.8,'F');font(7.3,1);tc(MUT);txt(k[0].toUpperCase(),x+3.2,y+2.8);font(17,1);tc(INK);txt(String(k[1]),x,y+10.5)});
+ y+=18;
+ const by={};TK.forEach(x=>{const r=x.t.responsable||'Sin asignar';(by[r]=by[r]||{Pendiente:0,'En curso':0,Realizada:0})[x.t.estado||'Pendiente']++});
+ const rl=Object.keys(by).sort((a,b)=>Object.values(by[b]).reduce((s,v)=>s+v,0)-Object.values(by[a]).reduce((s,v)=>s+v,0)),tot=r=>Object.values(by[r]).reduce((s,v)=>s+v,0);
+ if(rl.length){doc.autoTable(TB({startY:y,head:[['RESPONSABLE','PENDIENTE','EN CURSO','REALIZADA','TOTAL','DISTRIBUCIÓN']],body:rl.map(r=>[r,by[r].Pendiente,by[r]['En curso'],by[r].Realizada,tot(r),'']),columnStyles:{0:{cellWidth:62},1:{halign:'center',cellWidth:20},2:{halign:'center',cellWidth:20},3:{halign:'center',cellWidth:20},4:{halign:'center',cellWidth:16,fontStyle:'bold'},5:{cellWidth:40}},didParseCell:d=>{if(d.section==='head'&&d.column.index>0&&d.column.index<5)d.cell.styles.halign='center'},didDrawCell:d=>{if(d.section==='body'&&d.column.index===5){const r=rl[d.row.index];stack(d.cell.x+1.8,d.cell.y+d.cell.height/2-1.2,d.cell.width-3.6,2.4,TE.map(e=>({v:by[r][e],c:TC[e]})),'#eceff4')}}}));y=doc.lastAutoTable.finalY+11}
+ else{font(9);tc(MUT);txt('Aún no hay tareas registradas.',M,y);y+=12}
+ /* ── 5. Hallazgos ── */
+ const ncr=rows().filter(r=>r.Resultado==='No cumple');
+ sh('5','Hallazgos y acciones ('+ncr.length+')');
+ if(!ncr.length){font(9);tc(MUT);txt('No hay hallazgos registrados.',M,y);y+=12}
+ else{const hb=[];Object.keys(CAPS).forEach(c=>{const g=ncr.filter(r=>String(r['Capítulo'])===String(c));if(!g.length)return;hb.push([{content:'Capítulo '+c+' · '+CAPS[c]+'  ('+g.length+')',colSpan:5,styles:{fontStyle:'bold',textColor:hex(NAVY),fillColor:hex('#f6f8fb'),fontSize:8}}]);g.forEach(r=>hb.push([r.Numeral,r['Evidencia a verificar'],(r['Hallazgo / observación']||'Sin hallazgo registrado')+(r['Acción']?'\nAcción: '+r['Acción']:''),(r.Responsable||'Sin asignar')+(r['Fecha límite']?'\n'+r['Fecha límite']:''),r['Estado tarea']||'Pendiente']))});
+  doc.autoTable(TB({startY:y,head:[['NUM.','EVIDENCIA','HALLAZGO Y ACCIÓN','RESPONSABLE','ESTADO']],body:hb,styles:{fontSize:7.5,cellPadding:{top:2.4,bottom:2.4,left:1.8,right:1.8},textColor:hex(INK),lineColor:hex(LN),lineWidth:{bottom:.25},valign:'top'},columnStyles:{0:{cellWidth:13,fontStyle:'bold'},1:{cellWidth:42},2:{cellWidth:74},3:{cellWidth:31},4:{cellWidth:18}},didParseCell:d=>{if(d.section==='body'&&d.column.index===4&&TC[d.cell.raw]){d.cell.styles.textColor=hex(TC[d.cell.raw]);d.cell.styles.fontStyle='bold'}}}));y=doc.lastAutoTable.finalY+11}
+ /* ── 6. Detalle ── */
+ doc.addPage();y=26;sh('6','Detalle por requisito');{let cx=M;font(7.2);keys.forEach(k=>{fc(C[k][1]);doc.circle(cx+1,y-1,1,'F');tc(MUT);txt(C[k][0],cx+3.2,y);cx+=doc.getTextWidth(C[k][0])+9});y+=5}
+ const body=[],meta=[];Object.keys(CAPS).forEach(c=>{body.push([{content:'Capítulo '+c+' · '+CAPS[c],colSpan:5,styles:{fontStyle:'bold',textColor:hex(NAVY),fillColor:hex('#f6f8fb'),fontSize:8}}]);meta.push(null);REQS.filter(r=>String(r.c)===String(c)).forEach(r=>{const o=calc(i=>i.n===r.n);body.push([r.n,r.t,o.ev+'/'+o.ap,'',o.ev?pct(o.cump)+'%':'—']);meta.push(o)})});
+ doc.autoTable(TB({startY:y,head:[['NUM.','REQUISITO','EVAL.','COMPOSICIÓN','% CUMPL.']],body,styles:{fontSize:7.8,cellPadding:{top:1.45,bottom:1.45,left:1.8,right:1.8},textColor:hex(INK),lineColor:hex(LN),lineWidth:{bottom:.2}},columnStyles:{0:{cellWidth:18,fontStyle:'bold'},2:{cellWidth:16,halign:'center'},3:{cellWidth:50},4:{cellWidth:20,halign:'right',fontStyle:'bold'}},didParseCell:d=>{if(d.section==='head'){if(d.column.index===2)d.cell.styles.halign='center';if(d.column.index===4)d.cell.styles.halign='right'}if(d.section==='body'&&d.column.index===4&&/%$/.test(String(d.cell.raw)))d.cell.styles.textColor=hex(lvl(parseInt(d.cell.raw))[1])},didDrawCell:d=>{if(d.section==='body'&&d.column.index===3&&meta[d.row.index]){const o=meta[d.row.index];stack(d.cell.x+1.8,d.cell.y+d.cell.height/2-1.1,d.cell.width-3.6,2.2,keys.map(k=>({v:o[k],c:C[k][1]})),'#eceff4')}}}));
+
+ /* cabeceras y pies */
+ const N=doc.getNumberOfPages();
+ for(let p=1;p<=N;p++){doc.setPage(p);
+  if(p>1){font(7.5);tc(MUT);txt('Informe de Autoevaluación ISO 9001:2015',M,13);txt(dateS,W-M,13,{align:'right'});hl(M,16,W-M,LN)}
+  hl(M,H-15,W-M,LN);font(7.5);tc(MUT);txt('Generado con Qualisig',M,H-10);txt('Página '+p+' de '+N,W-M,H-10,{align:'right'})}
+ doc.save('Informe_ISO9001_'+today()+'.pdf');toast('Informe generado','ok')}
 /* ═══════ RESPONSABLE RÁPIDO · FOCO · ATAJOS ═══════ */
 let RP=null;
 function closeRP(){if(!RP)return;const r=RP;RP=null;r.pop.classList.remove('on');r.bk.classList.remove('on');setTimeout(()=>{r.pop.remove();r.bk.remove()},180);if(r.btn&&document.body.contains(r.btn))r.btn.setAttribute('aria-expanded','false')}
