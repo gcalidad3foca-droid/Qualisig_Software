@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Qualisig Software</title>
+<title>Qualisig — Módulo de Auditorías</title>
 <link rel="icon" type="image/png" sizes="32x32" href="https://i.imgur.com/ht6IpCi.png">
 <link rel="icon" type="image/png" sizes="64x64" href="https://i.imgur.com/ht6IpCi.png">
 <link rel="icon" type="image/png" sizes="128x128" href="https://i.imgur.com/ht6IpCi.png">
@@ -11123,7 +11123,8 @@ async function _indUrlToDataUrl(url, intento) {
 // más rápido (100-300ms) y con un tier gratuito más estable que Gemini para
 // este uso — la razón del cambio fue que Gemini 3.x, por ser muy reciente,
 // daba "modelo ocupado" con frecuencia.
-const GROQ_API_KEY = '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';
+// La API key vive como secreto en la Cloudflare Worker (no va en el HTML).
+const GROQ_PROXY_URL = 'https://qualisig-api.luisangelbc13.workers.dev';
 
 // ═══════════════════════════════════════════════════════════════════════
 // EDITOR ENRIQUECIDO DE OBSERVACIONES
@@ -11532,8 +11533,8 @@ async function mejorarRedaccionIA(textareaId) {
   const textarea = document.getElementById(textareaId);
   if (!textarea) return;
 
-  if (!GROQ_API_KEY || GROQ_API_KEY.includes('PEGA_AQUI')) {
-    showToast('Falta configurar la API key de Groq en el código', 'error');
+  if (!GROQ_PROXY_URL) {
+    showToast('Falta configurar la URL de la Worker de IA', 'error');
     return;
   }
 
@@ -11575,18 +11576,20 @@ function abrirModalMejorarRedaccion(textoOriginal, haySeleccion) {
 // Parafrasea de verdad (no solo corrige), escala tokens y tiempo al largo
 // del texto, divide textos largos en bloques por párrafos (2 en paralelo),
 // detecta respuestas cortadas o copiadas y rota de modelo si algo falla.
-const _GROQ_MODELOS = ['llama-3.3-70b-versatile', 'openai/gpt-oss-20b', 'llama-3.1-8b-instant'];
-const _GROQ_BLOQUE_MAX = 2200;   // caracteres por bloque
+const _GROQ_MODELOS = ['llama-3.3-70b-versatile', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.1-8b-instant'];
+const _GROQ_BLOQUE_MAX = 1800;   // caracteres por bloque
 let _indMejorarPeticion = 0;     // invalida respuestas de solicitudes anteriores
 
-const _GROQ_SISTEMA = 'Eres un corrector de estilo profesional especializado en informes de gestión de calidad del sector salud en Colombia. '
-  + 'Tu tarea es PARAFRASEAR y mejorar la redacción del texto que recibas:\n'
-  + '- Reescribe cada oración con otras palabras: cambia la estructura, los conectores y el vocabulario para que quede claro, formal y profesional. No copies oraciones tal cual.\n'
-  + '- Corrige ortografía, tildes, puntuación, concordancia y redundancias.\n'
-  + '- Conserva exactamente todos los datos: cifras, porcentajes, fechas, nombres de personas, áreas, cargos, siglas y hechos. No inventes, no agregues, no elimines información y no resumas.\n'
-  + '- Mantén la misma cantidad de párrafos y el mismo orden de ideas. Si hay viñetas (•) o numeración (1., 2.), consérvalas con el mismo formato, un elemento por línea.\n'
-  + '- Usa español de Colombia con un tono institucional e impersonal.\n'
-  + '- Responde únicamente con el texto final, sin títulos, comillas, notas ni explicaciones.';
+const _GROQ_SISTEMA = 'Eres un redactor y editor profesional en español de Colombia, con amplia experiencia en documentos institucionales: informes de gestión, actas, planes de acción, hallazgos, análisis, objetivos, correos y comunicados, especialmente del sector salud y de calidad (ISO 9001, habilitación, acreditación). '
+  + 'Recibirás un texto de cualquier tipo y largo. Tu trabajo es PARAFRASEARLO y REDACTARLO MEJOR, entregando una versión claramente superior a la original:\n'
+  + '1. REESCRIBE todo con otras palabras: cambia la estructura de las oraciones, el orden de las ideas dentro de cada párrafo cuando mejore la claridad, los conectores y el vocabulario. Nunca copies una oración tal cual.\n'
+  + '2. MEJORA la calidad: elimina muletillas, repeticiones y rodeos; usa voz activa y verbos precisos; une oraciones cortas entrecortadas y divide las excesivamente largas; da fluidez y cohesión entre oraciones y entre párrafos con conectores variados (no repitas el mismo).\n'
+  + '3. ADAPTA el tono al tipo de texto: formal, claro y técnico para informes y actas; directo y accionable para acciones y planes; cordial y profesional para correos. Si el texto es informal o mal escrito, llévalo a un registro profesional.\n'
+  + '4. CORRIGE ortografía, tildes, puntuación, concordancia, mayúsculas y errores de digitación o de dictado.\n'
+  + '5. CONSERVA EXACTAMENTE los hechos: cifras, porcentajes, fechas, horas, nombres de personas, cargos, áreas, entidades, normas, códigos, siglas y términos técnicos. No inventes, no agregues datos, no elimines ideas, no resumas ni acortes de forma notable; la extensión final debe ser similar a la original.\n'
+  + '6. RESPETA LA ESTRUCTURA: misma cantidad de párrafos y mismo orden. Si hay títulos, viñetas (•, -, *) o numeración (1., 2., a), b)), consérvalos con el mismo formato, un elemento por línea. Conserva los saltos de línea.\n'
+  + '7. Si el texto está en primera persona, déjalo en primera persona; si es impersonal, déjalo impersonal. No cambies el sentido ni el punto de vista.\n'
+  + '8. SALIDA: responde únicamente con el texto final, sin títulos, comillas, markdown, notas ni explicaciones.';
 
 async function _indLlamarGroqConModelo(modelo, mensajes, maxTokens, timeoutMs, temperatura) {
   const controller = new AbortController();
@@ -11594,9 +11597,9 @@ async function _indLlamarGroqConModelo(modelo, mensajes, maxTokens, timeoutMs, t
   const cuerpo = { model: modelo, messages: mensajes, temperature: temperatura, max_tokens: maxTokens };
   if (modelo.startsWith('openai/gpt-oss')) { cuerpo.reasoning_effort = 'low'; cuerpo.max_tokens = maxTokens + 1500; }
   try {
-    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const resp = await fetch(GROQ_PROXY_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_API_KEY },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(cuerpo),
       signal: controller.signal,
     });
@@ -11643,38 +11646,73 @@ function _indDividirEnBloques(texto, max) {
 
 const _indNormalizarComparar = t => (t || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
 
-async function _indGroqParafrasearBloque(texto, esFragmento) {
-  const maxTokens = Math.min(8000, Math.ceil(texto.length / 2.6) + 300);
-  const timeoutMs = Math.min(60000, 15000 + texto.length * 10);
+// Cifras del original que no aparecen en la salida. Tolerante: las fechas pueden
+// reescribirse con el mes en letras (solo se exige el año) y 63,5 = 63.5.
+function _indNumerosFaltantes(orig, salida) {
+  const norm = x => x.replace(/[.,](?=\d{1,2}\b)/g, '.').replace(/(?<=\d)[.,](?=\d{3}\b)/g, '');
+  const out = norm(salida);
+  const faltan = [];
+  (orig.match(/\d[\d.,:/\-]*\d|\d/g) || []).forEach(tok => {
+    const t = tok.replace(/[.,:/\-]+$/, '');
+    if (/[\/\-]/.test(t)) { (t.match(/\d{3,}/g) || []).forEach(y => { if (!out.includes(y)) faltan.push(y); }); }
+    else if (!out.includes(norm(t))) faltan.push(t);
+  });
+  return faltan;
+}
+
+const _indEsperar = ms => new Promise(res => setTimeout(res, ms));
+
+async function _indGroqParafrasearBloque(texto, esFragmento, contexto, alReintentar) {
+  const maxTokens = Math.min(8000, Math.ceil(texto.length / 2.4) + 400);
+  const timeoutMs = Math.min(75000, 20000 + texto.length * 12);
+  let instr = '';
+  if (esFragmento) instr += 'Este es un fragmento de un documento más largo; reescribe solo este fragmento, sin introducciones ni cierres, manteniendo su continuidad.\n';
+  if (contexto) instr += 'CONTEXTO PREVIO (solo para dar continuidad de estilo y términos; NO lo reescribas ni lo incluyas): «' + contexto + '»\n';
   const mensajes = [
     { role: 'system', content: _GROQ_SISTEMA },
-    { role: 'user', content: (esFragmento ? 'Este es un fragmento de un texto más largo; parafrasea solo este fragmento, sin introducciones ni cierres.\n\n' : '') + 'TEXTO:\n' + texto }
+    { role: 'user', content: instr + '\nTEXTO A REESCRIBIR:\n' + texto }
   ];
   let ultimoError = 'Error de la API de Groq';
-  for (let i = 0; i < _GROQ_MODELOS.length; i++) {
-    const modelo = _GROQ_MODELOS[i];
-    let r = await _indLlamarGroqConModelo(modelo, mensajes, maxTokens, timeoutMs, i === 0 ? 0.5 : 0.6);
-    if (r.status === 429 && r.retryAfter && r.retryAfter <= 6) {
-      await new Promise(res => setTimeout(res, r.retryAfter * 1000));
-      r = await _indLlamarGroqConModelo(modelo, mensajes, maxTokens, timeoutMs, 0.5);
+  let respaldo = null;   // salida válida salvo por cifras dudosas
+  const esperas = [0, 2500, 6000, 12000];   // 4 rondas con espera creciente
+  for (let ronda = 0; ronda < esperas.length; ronda++) {
+    if (ronda > 0) { if (alReintentar) alReintentar(ronda); await _indEsperar(esperas[ronda]); }
+    let hayReintentable = false;
+    for (let i = 0; i < _GROQ_MODELOS.length; i++) {
+      const modelo = _GROQ_MODELOS[i];
+      const temp = (i === 0 ? 0.6 : 0.7) + (ronda ? 0.05 : 0);
+      let r = await _indLlamarGroqConModelo(modelo, mensajes, maxTokens, timeoutMs, temp);
+      if (r.status === 401 || r.status === 403) { const e = new Error('La clave de la IA no es válida o la Worker la rechazó'); e.fatal = true; throw e; }
+      if (r.status === 429) { await _indEsperar(Math.min(8000, (r.retryAfter || 3) * 1000)); r = await _indLlamarGroqConModelo(modelo, mensajes, maxTokens, timeoutMs, temp); }
+      if (!r.ok) {
+        const msg = (r.data && r.data.error && (r.data.error.message || r.data.error)) || '';
+        ultimoError = r.status === 0 ? 'No hay conexión con el servicio de IA' : (typeof msg === 'string' && msg ? msg : 'Error ' + r.status);
+        if (r.status === 0 || r.status === 408 || r.status === 429 || r.status >= 500) hayReintentable = true;
+        console.warn('Groq ' + modelo + ' falló (' + r.status + '): ' + ultimoError);
+        continue;
+      }
+      const choice = r.data.choices && r.data.choices[0];
+      const salida = _indLimpiarSalidaIA(choice && choice.message && choice.message.content);
+      const cortada = choice && choice.finish_reason === 'length';
+      const muyCorta = salida.length < texto.length * 0.6;
+      const muyLarga = salida.length > texto.length * 1.8 + 80;
+      const copiada = texto.length > 80 && _indNormalizarComparar(salida) === _indNormalizarComparar(texto);
+      if (!salida || cortada || muyCorta || muyLarga || copiada) {
+        ultimoError = copiada ? 'El modelo devolvió el mismo texto' : 'La respuesta llegó incompleta';
+        hayReintentable = true;
+        console.warn('Groq ' + modelo + ': ' + ultimoError + ' — probando otro modelo');
+        continue;
+      }
+      const falt = _indNumerosFaltantes(texto, salida);
+      if (falt.length) {
+        console.warn('Groq ' + modelo + ': cifras alteradas (' + falt.slice(0, 4).join(', ') + ') — probando otro modelo');
+        if (!respaldo) respaldo = salida;
+        continue;
+      }
+      return salida;
     }
-    if (!r.ok) {
-      ultimoError = (r.data.error && r.data.error.message) || ('Error ' + r.status);
-      if (r.status === 401 || r.status === 403) throw new Error('La API key de Groq no es válida');
-      console.warn('Groq ' + modelo + ' falló (' + r.status + '): ' + ultimoError);
-      continue;
-    }
-    const choice = r.data.choices && r.data.choices[0];
-    const salida = _indLimpiarSalidaIA(choice && choice.message && choice.message.content);
-    const cortada = choice && choice.finish_reason === 'length';
-    const muyCorta = salida.length < texto.length * 0.45;
-    const copiada = texto.length > 80 && _indNormalizarComparar(salida) === _indNormalizarComparar(texto);
-    if (!salida || cortada || muyCorta || copiada) {
-      ultimoError = copiada ? 'El modelo devolvió el mismo texto' : 'La respuesta llegó incompleta';
-      console.warn('Groq ' + modelo + ': ' + ultimoError + ' — probando otro modelo');
-      continue;
-    }
-    return salida;
+    if (respaldo) return respaldo;   // hubo una versión buena salvo cifras: mejor que nada
+    if (!hayReintentable) break;
   }
   throw new Error(ultimoError);
 }
@@ -11698,16 +11736,41 @@ async function _indLlamarGroqMejorarTexto(texto) {
     avisar();
 
     let siguiente = 0;
+    const fallidos = [];
+    let fatal = null;
+    const alReint = () => { if (loadingTexto && id === _indMejorarPeticion) loadingTexto.textContent = 'La IA está ocupada, reintentando…'; };
+    const procesar = async (i) => {
+      const b = bloques[i];
+      if (!b.texto.trim()) { resultados[i] = b.texto; return true; }
+      const ctx = i > 0 ? bloques[i - 1].texto.trim().slice(-350) : '';
+      try { resultados[i] = await _indGroqParafrasearBloque(b.texto, total > 1, ctx, alReint); return true; }
+      catch (e) { if (e.fatal) fatal = e; return false; }
+    };
     const trabajador = async () => {
-      while (siguiente < total) {
+      while (siguiente < total && !fatal) {
         const i = siguiente++;
-        const b = bloques[i];
-        resultados[i] = b.texto.trim() ? await _indGroqParafrasearBloque(b.texto, total > 1) : b.texto;
+        const ok = await procesar(i);
         if (id !== _indMejorarPeticion) return;
-        hechos++; avisar();
+        if (ok) { hechos++; avisar(); } else fallidos.push(i);
       }
     };
     await Promise.all([trabajador(), trabajador()]);
+    if (id !== _indMejorarPeticion) return;
+    if (fatal) throw fatal;
+    // Segunda pasada, de a una y con pausa, para las partes que fallaron
+    for (let pasada = 0; pasada < 2 && fallidos.length; pasada++) {
+      await _indEsperar(3000 * (pasada + 1));
+      for (const i of fallidos.slice()) {
+        if (id !== _indMejorarPeticion) return;
+        if (await procesar(i)) { fallidos.splice(fallidos.indexOf(i), 1); hechos++; avisar(); }
+        if (fatal) throw fatal;
+      }
+    }
+    if (id !== _indMejorarPeticion) return;
+    if (fallidos.length === total) throw new Error('el servicio de IA no respondió, intenta de nuevo en un momento');
+    fallidos.forEach(i => { resultados[i] = bloques[i].texto; });   // parte sin mejorar: se conserva original
+    if (fallidos.length) showToast(fallidos.length === 1 ? 'Una parte no se pudo mejorar y se dejó como estaba' : fallidos.length + ' partes no se pudieron mejorar y se dejaron como estaban', 'error');
+
     if (id !== _indMejorarPeticion) return;   // el modal se cerró o se pidió otra mejora
 
     const textoMejorado = bloques.map((b, i) => resultados[i] + b.sep).join('').trim();
@@ -11718,7 +11781,7 @@ async function _indLlamarGroqMejorarTexto(texto) {
     if (id !== _indMejorarPeticion) return;
     console.warn('Error al mejorar redacción con Groq:', e);
     loadingEl.style.display = 'none';
-    errorEl.textContent = 'No se pudo mejorar el texto: ' + e.message + ' — intenta de nuevo en un momento.';
+    errorEl.textContent = 'No se pudo mejorar el texto: ' + e.message + '. Puedes intentar de nuevo.';
     errorEl.style.display = 'block';
   } finally {
     if (loadingTexto && id === _indMejorarPeticion) loadingTexto.textContent = 'Mejorando redacción...';
