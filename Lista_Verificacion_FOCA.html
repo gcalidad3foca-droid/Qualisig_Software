@@ -427,7 +427,7 @@
 @keyframes ovRing{0%{box-shadow:0 0 0 0 rgba(239,68,68,.45)}70%{box-shadow:0 0 0 11px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
 #obsVoice{display:none;margin-top:14px;position:relative;overflow:hidden;background:#fff;border:1px solid #e7e9f3;border-radius:18px;padding:18px 20px 14px;color:#1e293b;box-shadow:0 1px 2px rgba(15,23,42,.03),0 14px 32px -20px rgba(30,60,114,.3);animation:obsPop .3s ease}
 #obsVoice[data-state=listening],#obsVoice[data-state=processing],#obsVoice[data-state=paused]{display:block}
-#obsVoice::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,#818cf8,#c084fc,#f472b6);opacity:.9}
+#obsVoice::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#1e3c72}
 .ov-top{display:flex;align-items:center;gap:9px}
 .ov-chip{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600;letter-spacing:.2px;color:#475569}
 .ov-chip b{font-weight:600}
@@ -435,16 +435,16 @@
 #ovTime{margin-left:auto;font-variant-numeric:tabular-nums;font-size:12.5px;font-weight:500;color:#a0a8bd;letter-spacing:.5px}
 .ov-stage{margin:16px 0 6px}
 .ov-bars{display:flex;align-items:center;justify-content:space-between;gap:3px;height:36px;-webkit-mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
-.ov-bars i{flex:1;max-width:3px;height:100%;border-radius:3px;background:linear-gradient(#818cf8,#c084fc 60%,#f472b6);transform:scaleY(.07);opacity:.45;transition:opacity .3s}
-#obsVoice.talk .ov-bars i{opacity:1;animation:ovBar 1s ease-in-out infinite}
+.ov-bars i{flex:1;max-width:3px;height:100%;border-radius:3px;background:#1e3c72;transform:scaleY(.1);opacity:.28;transition:opacity .35s;animation:ovIdle 2.6s ease-in-out infinite;animation-delay:var(--l)}
+#obsVoice.talk .ov-bars i{opacity:.9;animation:ovBar var(--d) ease-in-out infinite;animation-delay:var(--l)}
 .ov-live{font-size:17px;line-height:1.6;color:#1e293b;max-height:120px;overflow:auto;min-height:56px;word-break:break-word;text-align:left;margin-top:8px;padding:0;scrollbar-width:thin;scrollbar-color:#d5d9ee transparent}
 .ov-live:empty::before{content:attr(data-ph);color:#a8afc4}
-.ov-live .ov-int{color:#9aa3bd}
+.ov-live .ov-int{color:#98a2b8}
 .ov-live.editing{outline:none;cursor:text;padding:10px 12px;margin:6px -12px 0;border-radius:12px;background:#f8f9fe;box-shadow:inset 0 0 0 1.5px #c7cdf3}
 .ov-hint{margin-top:8px;font-size:12.5px;color:#b45309}
 .ov-hint:empty{display:none}
 .ov-tip{margin-top:12px;font-size:11.5px;color:#a8afc4;display:flex;gap:6px;align-items:center}
-.ov-tip i{display:inline-block;font-size:11px;color:#b9c0f0}
+.ov-tip i{display:inline-block;font-size:11px;color:#b3bccf}
 .ov-actions{display:flex;gap:6px;justify-content:flex-end;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid #f0f2f8}
 #ovCancel{margin-right:auto}
 #obsVoice .obs-btn{border-radius:11px;padding:9px 14px;font-size:13px;font-weight:600;box-shadow:none}
@@ -458,12 +458,14 @@
 .obs-btn-mic.rec{display:none}
 #obsVoice[data-state=paused]::before{background:#e2e8f0}
 #obsVoice[data-state=paused] .ov-dot{background:#cbd5e1;animation:none}
-#obsVoice[data-state=paused] .ov-bars i{animation:none;transform:scaleY(.07);opacity:.2}
-#obsVoice[data-state=processing] .ov-dot{background:#8b5cf6;animation:ovPing 1s ease-out infinite}
-#obsVoice[data-state=processing] .ov-bars i{opacity:.8;animation:ovBar 1.5s ease-in-out infinite}
+#obsVoice[data-state=paused] .ov-bars i{animation:none;transform:scaleY(.08);opacity:.18}
+#obsVoice[data-state=processing] .ov-dot{background:#1e3c72;animation:ovPing 1s ease-out infinite}
+#obsVoice[data-state=processing] .ov-bars i{opacity:.55;animation:ovWave 1.6s ease-in-out infinite;animation-delay:calc(var(--l)*-1)}
 #obsVoice[data-state=processing] .ov-actions,#obsVoice[data-state=processing] .ov-hint,#obsVoice[data-state=processing] .ov-tip{display:none}
 @keyframes ovPing{0%{box-shadow:0 0 0 0 rgba(244,63,94,.45)}70%,100%{box-shadow:0 0 0 7px rgba(244,63,94,0)}}
-@keyframes ovBar{0%,100%{transform:scaleY(.1)}50%{transform:scaleY(1)}}
+@keyframes ovBar{0%,100%{transform:scaleY(.1)}50%{transform:scaleY(var(--h))}}
+@keyframes ovIdle{0%,100%{transform:scaleY(.08)}50%{transform:scaleY(.2)}}
+@keyframes ovWave{0%,100%{transform:scaleY(.12)}50%{transform:scaleY(.6)}}
 @media(max-width:600px){#obsVoice{padding:16px 16px 12px}.ov-actions{flex-wrap:wrap}#ovStop{flex:1 0 100%;order:-1;justify-content:center}.ov-actions{padding-top:12px}#ovCancel{margin-right:0}.ov-actions .obs-btn-ghost,.ov-actions .obs-btn-soft{flex:1;justify-content:center}}
 @media(prefers-reduced-motion:reduce){#obsVoice *{animation-duration:.01s!important;animation-iteration-count:1!important}}
 
@@ -773,7 +775,7 @@
       </div>
       <div id="obsVoice" data-state="idle" aria-live="polite">
         <div class="ov-top"><span class="ov-chip"><span class="ov-dot"></span><b id="ovTitle">Escuchando…</b></span><span id="ovTime">0:00</span></div>
-        <div class="ov-stage"><div class="ov-bars"><i style="animation-delay:0ms"></i><i style="animation-delay:83ms"></i><i style="animation-delay:166ms"></i><i style="animation-delay:249ms"></i><i style="animation-delay:332ms"></i><i style="animation-delay:415ms"></i><i style="animation-delay:498ms"></i><i style="animation-delay:81ms"></i><i style="animation-delay:164ms"></i><i style="animation-delay:247ms"></i><i style="animation-delay:330ms"></i><i style="animation-delay:413ms"></i><i style="animation-delay:496ms"></i><i style="animation-delay:79ms"></i><i style="animation-delay:162ms"></i><i style="animation-delay:245ms"></i><i style="animation-delay:328ms"></i><i style="animation-delay:411ms"></i><i style="animation-delay:494ms"></i><i style="animation-delay:77ms"></i><i style="animation-delay:160ms"></i><i style="animation-delay:243ms"></i><i style="animation-delay:326ms"></i><i style="animation-delay:409ms"></i><i style="animation-delay:492ms"></i><i style="animation-delay:75ms"></i><i style="animation-delay:158ms"></i><i style="animation-delay:241ms"></i><i style="animation-delay:324ms"></i><i style="animation-delay:407ms"></i><i style="animation-delay:490ms"></i><i style="animation-delay:73ms"></i><i style="animation-delay:156ms"></i><i style="animation-delay:239ms"></i><i style="animation-delay:322ms"></i><i style="animation-delay:405ms"></i><i style="animation-delay:488ms"></i><i style="animation-delay:71ms"></i><i style="animation-delay:154ms"></i><i style="animation-delay:237ms"></i><i style="animation-delay:320ms"></i><i style="animation-delay:403ms"></i><i style="animation-delay:486ms"></i><i style="animation-delay:69ms"></i><i style="animation-delay:152ms"></i><i style="animation-delay:235ms"></i><i style="animation-delay:318ms"></i><i style="animation-delay:401ms"></i></div></div>
+        <div class="ov-stage"><div class="ov-bars"><i style="--h:0.1;--d:900ms;--l:0ms"></i><i style="--h:0.19;--d:1031ms;--l:173ms"></i><i style="--h:0.21;--d:1162ms;--l:346ms"></i><i style="--h:0.35;--d:1293ms;--l:519ms"></i><i style="--h:0.35;--d:924ms;--l:92ms"></i><i style="--h:0.31;--d:1055ms;--l:265ms"></i><i style="--h:0.52;--d:1186ms;--l:438ms"></i><i style="--h:0.47;--d:1317ms;--l:11ms"></i><i style="--h:0.39;--d:948ms;--l:184ms"></i><i style="--h:0.65;--d:1079ms;--l:357ms"></i><i style="--h:0.55;--d:1210ms;--l:530ms"></i><i style="--h:0.43;--d:1341ms;--l:103ms"></i><i style="--h:0.73;--d:972ms;--l:276ms"></i><i style="--h:0.6;--d:1103ms;--l:449ms"></i><i style="--h:0.93;--d:1234ms;--l:22ms"></i><i style="--h:0.78;--d:1365ms;--l:195ms"></i><i style="--h:0.62;--d:996ms;--l:368ms"></i><i style="--h:0.96;--d:1127ms;--l:541ms"></i><i style="--h:0.79;--d:1258ms;--l:114ms"></i><i style="--h:0.6;--d:1389ms;--l:287ms"></i><i style="--h:0.96;--d:1020ms;--l:460ms"></i><i style="--h:0.76;--d:1151ms;--l:33ms"></i><i style="--h:0.56;--d:1282ms;--l:206ms"></i><i style="--h:0.91;--d:913ms;--l:379ms"></i><i style="--h:0.71;--d:1044ms;--l:552ms"></i><i style="--h:1;--d:1175ms;--l:125ms"></i><i style="--h:0.83;--d:1306ms;--l:298ms"></i><i style="--h:0.63;--d:937ms;--l:471ms"></i><i style="--h:0.93;--d:1068ms;--l:44ms"></i><i style="--h:0.73;--d:1199ms;--l:217ms"></i><i style="--h:0.54;--d:1330ms;--l:390ms"></i><i style="--h:0.8;--d:961ms;--l:563ms"></i><i style="--h:0.61;--d:1092ms;--l:136ms"></i><i style="--h:0.43;--d:1223ms;--l:309ms"></i><i style="--h:0.64;--d:1354ms;--l:482ms"></i><i style="--h:0.47;--d:985ms;--l:55ms"></i><i style="--h:0.33;--d:1116ms;--l:228ms"></i><i style="--h:0.47;--d:1247ms;--l:401ms"></i><i style="--h:0.34;--d:1378ms;--l:574ms"></i><i style="--h:0.42;--d:1009ms;--l:147ms"></i><i style="--h:0.3;--d:1140ms;--l:320ms"></i><i style="--h:0.2;--d:1271ms;--l:493ms"></i><i style="--h:0.2;--d:902ms;--l:66ms"></i><i style="--h:0.12;--d:1033ms;--l:239ms"></i></div></div>
         <div class="ov-live" id="ovLive" data-ph="Habla con naturalidad; yo me encargo de la redacción…" spellcheck="true"></div>
         <div class="ov-hint" id="ovHint"></div>
         <div class="ov-tip"><i class="fas fa-circle-info"></i><span>Di «punto y aparte» o «nueva línea» para separar párrafos.</span></div>
