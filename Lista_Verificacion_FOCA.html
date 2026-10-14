@@ -419,6 +419,34 @@
 @keyframes obsPop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes obsSk{to{background-position:-200% 0}}
 @keyframes obsSpin{to{transform:rotate(360deg)}}
+/* ===== DICTADO POR VOZ (Observaciones) ===== */
+.obs-btn-mic{background:#fff;color:#7c3aed;border:1.5px solid #ddd6fe;box-shadow:0 1px 3px rgba(124,58,237,.10)}
+.obs-btn-mic:hover:not(:disabled){background:#f5f3ff;border-color:#c4b5fd;transform:translateY(-1px)}
+.obs-btn-mic.rec{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border-color:transparent;animation:ovRing 1.6s ease-out infinite}
+.obs-btn-mic.rec:hover:not(:disabled){background:linear-gradient(135deg,#f05252,#e11d1d)}
+@keyframes ovRing{0%{box-shadow:0 0 0 0 rgba(239,68,68,.45)}70%{box-shadow:0 0 0 11px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+#obsVoice{display:none;margin-top:12px;border:1.5px solid #fecaca;background:linear-gradient(180deg,#fff7f7,#fff);border-radius:14px;padding:12px 14px 13px;animation:obsPop .3s ease}
+#obsVoice[data-state=listening],#obsVoice[data-state=processing]{display:block}
+.ov-top{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:800;color:#dc2626;text-transform:uppercase;letter-spacing:.6px}
+.ov-dot{width:9px;height:9px;border-radius:50%;background:#ef4444;animation:ovPulse 1.2s ease-in-out infinite}
+@keyframes ovPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.55}}
+#ovTime{margin-left:auto;font-variant-numeric:tabular-nums;color:#94a3b8;text-transform:none;font-weight:600;letter-spacing:0;font-size:12px}
+.ov-bars{display:flex;align-items:center;justify-content:center;gap:3px;height:34px;margin:9px 0 7px}
+.ov-bars i{width:3px;height:5px;border-radius:3px;background:linear-gradient(#f87171,#dc2626);opacity:.55;transition:opacity .25s}
+#obsVoice.talk .ov-bars i{opacity:1;animation:ovBar .9s ease-in-out infinite}
+@keyframes ovBar{0%,100%{height:5px}50%{height:30px}}
+#obsVoice[data-state=processing] .ov-bars i{animation:ovBar 1.4s ease-in-out infinite;opacity:.8}
+#obsVoice[data-state=processing] .ov-dot{background:#7c3aed;animation:obsSpin 1s linear infinite;border-radius:3px}
+#obsVoice[data-state=processing] .ov-top{color:#7c3aed}
+.ov-live{font-size:14px;line-height:1.55;color:#334155;max-height:104px;overflow:auto;min-height:22px;word-break:break-word;text-align:left}
+.ov-live .ov-ph{color:#94a3b8}
+.ov-live .ov-int{color:#94a3b8;font-style:italic}
+.ov-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:11px}
+#obsVoice[data-state=processing] .ov-actions{display:none}
+.ov-btn-stop{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;box-shadow:0 4px 12px rgba(239,68,68,.35)}
+#obsAiRaw{display:none}
+@media(max-width:600px){#obsFoot{flex-wrap:wrap}.obs-btn-mic span{display:inline}}
+
 @media(max-width:600px){#obsModal{align-items:flex-start;padding:max(env(safe-area-inset-top),10px) 8px 8px}#obsBox{max-height:calc(100vh - 20px)}#obsTa{font-size:16px;height:150px}.obs-btn{padding:10px 13px}#obsFoot .obs-btn-ai span{display:none}}
 /* ===== Diseño IA al estilo Qualisig ===== */
 .obs-btn-ai{background:linear-gradient(135deg,#8b5cf6,#7c3aed,#6d28d9);background-size:200% 200%;border-radius:20px;padding:9px 16px 9px 13px;font-size:12.5px;box-shadow:0 2px 8px rgba(124,58,237,.3);animation:obsBrillo 4s ease infinite}
@@ -721,6 +749,15 @@
         <span id="obsSaved"><i class="fas fa-check-circle"></i> Guardado automáticamente</span>
         <button type="button" id="obsUndo"><i class="fas fa-rotate-left"></i> Deshacer IA</button>
       </div>
+      <div id="obsVoice" data-state="idle" aria-live="polite">
+        <div class="ov-top"><span class="ov-dot"></span><b id="ovTitle">Escuchando…</b><span id="ovTime">0:00</span></div>
+        <div class="ov-bars"><i style="animation-delay:0ms"></i><i style="animation-delay:120ms"></i><i style="animation-delay:240ms"></i><i style="animation-delay:60ms"></i><i style="animation-delay:300ms"></i><i style="animation-delay:180ms"></i><i style="animation-delay:360ms"></i><i style="animation-delay:90ms"></i><i style="animation-delay:420ms"></i><i style="animation-delay:150ms"></i><i style="animation-delay:330ms"></i><i style="animation-delay:30ms"></i><i style="animation-delay:270ms"></i><i style="animation-delay:210ms"></i><i style="animation-delay:390ms"></i><i style="animation-delay:120ms"></i><i style="animation-delay:300ms"></i><i style="animation-delay:60ms"></i></div>
+        <div class="ov-live" id="ovLive"><span class="ov-ph">Habla con naturalidad; yo me encargo de la redacción…</span></div>
+        <div class="ov-actions">
+          <button type="button" class="obs-btn obs-btn-ghost" id="ovCancel">Cancelar</button>
+          <button type="button" class="obs-btn ov-btn-stop" id="ovStop"><i class="fas fa-stop"></i> Terminar y redactar</button>
+        </div>
+      </div>
       <div id="obsAi" data-state="idle">
         <div id="obsAiInner">
           <div class="obs-ai-card">
@@ -742,6 +779,7 @@
               <div class="obs-ai-actions">
                 <button type="button" class="obs-btn obs-btn-cancel" id="obsAiDiscard2">Cerrar</button>
                 <button type="button" class="obs-btn obs-btn-soft" id="obsAiRetry2"><i class="fas fa-rotate"></i> Reintentar</button>
+                <button type="button" class="obs-btn obs-btn-soft" id="obsAiRaw"><i class="fas fa-pen"></i> Insertar tal cual</button>
               </div>
             </div>
           </div>
@@ -749,6 +787,7 @@
       </div>
     </div>
     <div id="obsFoot">
+      <button type="button" class="obs-btn obs-btn-mic" id="obsMicBtn" title="Dictar por voz: habla y la IA lo redacta"><i class="fas fa-microphone"></i><span>Dictar</span></button>
       <button type="button" class="obs-btn obs-btn-ai" id="obsAiBtn" title="Mejorar redacción con IA"><i class="fas fa-wand-magic-sparkles"></i><span>Mejorar con IA</span></button>
       <button type="button" class="obs-btn obs-btn-ok" id="obsDone"><i class="fas fa-check"></i> Listo</button>
     </div>
@@ -4128,7 +4167,7 @@ window.IAEngine=(function(){
     });
     return bl.filter(b=>b.t.trim()||b.s);
   }
-  function sistema(ctx,max){
+  function sistema(ctx,max,voz){
     return 'Eres un corrector y editor de textos institucionales en español de Colombia. Recibirás '+(CTX[ctx]||CTX.obs)+' escrito en una organización de salud. '
       +'Tu tarea es MEJORAR LA REDACCIÓN sin cambiar el sentido ni el estilo propio del autor:\n'
       +'- Conserva el significado, el orden de las ideas y la estructura de cada oración. Si una frase ya está bien escrita, déjala igual o casi igual; cambia solo lo necesario.\n'
@@ -4137,6 +4176,7 @@ window.IAEngine=(function(){
       +'- Conserva EXACTAMENTE cifras, porcentajes, fechas, nombres, cargos, áreas, siglas y hechos. No inventes, no agregues ni elimines información, no resumas ni alargues.\n'
       +'- Mantén los mismos párrafos, viñetas y numeración, y el mismo punto de vista (primera persona o impersonal).\n'
       +(max?'- El resultado no debe superar '+max+' caracteres.\n':'')
+      +(voz?'- IMPORTANTE: el texto fue DICTADO POR VOZ y transcrito automáticamente. Puede no tener puntuación ni mayúsculas, traer palabras mal reconocidas, muletillas ("eh", "este", "o sea", "pues"), repeticiones y falsos comienzos. Entiende la intención, puntúa, separa en oraciones, corrige términos mal transcritos según el contexto (siglas, términos de salud y de calidad), elimina muletillas y redáctalo como una observación escrita, clara y profesional. Conserva todo lo dicho y su sentido; convierte cifras dichas con palabras a números cuando sea natural (ej. "cincuenta por ciento" → "50 %").\n':'')
       +'- Responde ÚNICAMENTE con el texto mejorado, sin comillas, títulos, notas ni explicaciones.';
   }
 
@@ -4146,7 +4186,7 @@ window.IAEngine=(function(){
     let instr='';
     if(fragmento)instr+='Este es un fragmento de un texto más largo; mejora solo este fragmento, sin introducciones ni cierres.\n';
     if(ctxPrev)instr+='CONTEXTO PREVIO (solo referencia, NO lo reescribas ni lo incluyas): «'+ctxPrev+'»\n';
-    const msgs=[{role:'system',content:sistema(o.ctx,fragmento?0:o.max)},{role:'user',content:instr+'\nTEXTO:\n'+texto}];
+    const msgs=[{role:'system',content:sistema(o.ctx,fragmento?0:o.max,o.voz)},{role:'user',content:instr+'\nTEXTO:\n'+texto}];
     let last='Error del servicio de IA',respaldo=null;
     const pausas=[0,2500,6000,12000];
     for(let ronda=0;ronda<pausas.length;ronda++){
@@ -4168,7 +4208,7 @@ window.IAEngine=(function(){
         const ch=r.data.choices&&r.data.choices[0];
         const sal=limpiar(ch&&ch.message&&ch.message.content);
         const corta=ch&&ch.finish_reason==='length';
-        if(!sal||corta||sal.length<texto.length*0.6||sal.length>texto.length*1.6+60){last='La respuesta llegó incompleta';reint=true;continue;}
+        if(!sal||corta||sal.length<texto.length*(o.voz?0.35:0.6)||sal.length>texto.length*1.6+60){last='La respuesta llegó incompleta';reint=true;continue;}
         if(faltantes(texto,sal).length){if(!respaldo)respaldo=sal;continue;}
         return {ok:true,text:sal};
       }
@@ -4197,7 +4237,7 @@ window.IAEngine=(function(){
     await Promise.all([trab(),trab()]);
     if(tok.cancelled)return {cancelled:true};
     if(fatal)return {ok:false,error:fatal.error};
-    for(let p=0;p<2&&fallos.length&&!tok.cancelled;p++){
+    for(let p=0;p<2&&bl.length>1&&fallos.length&&!tok.cancelled;p++){
       await esperar(3000*(p+1));
       for(const i of fallos.slice()){if(await hacer(i))fallos.splice(fallos.indexOf(i),1);if(fatal)return {ok:false,error:fatal.error};}
     }
@@ -4353,6 +4393,7 @@ IAField.attach({
     else{b.style.overflow=b.dataset.obsOv||'';b.style.paddingRight='';}
   }
   function aiReset(){
+    if(typeof vozAbort==='function')vozAbort();
     aiTok++;if(aiCtrl){aiCtrl.cancelled=true;if(aiCtrl.ctrl)aiCtrl.ctrl.abort();aiCtrl=null;}
     ai.classList.remove('show');ai.dataset.state='idle';
     $('obsAiBtn').classList.remove('busy');
@@ -4454,37 +4495,152 @@ IAField.attach({
     ai.dataset.state=state;ai.classList.add('show');
     $('obsAiBtn').classList.toggle('busy',state==='loading');
   }
-  async function runAI(){
-    if(!ta.value.trim())return;
-    const hasSel=ta.selectionEnd>ta.selectionStart;
-    aiSel=hasSel?{s:ta.selectionStart,e:ta.selectionEnd}:null;
-    aiSrc=hasSel?ta.value.slice(ta.selectionStart,ta.selectionEnd):ta.value;
-    if(!aiSrc.trim())return;
+  async function runAI(arg){
+    const v=(typeof arg==='string')?arg:null;
+    let hasSel=false;
+    if(v!==null){
+      aiVoz=v;
+      aiSel=vozCaret?{s:vozCaret.s,e:vozCaret.e}:{s:ta.value.length,e:ta.value.length};
+      aiSrc=v;
+    }else{
+      aiVoz=null;
+      if(!ta.value.trim())return;
+      hasSel=ta.selectionEnd>ta.selectionStart;
+      aiSel=hasSel?{s:ta.selectionStart,e:ta.selectionEnd}:null;
+      aiSrc=hasSel?ta.value.slice(ta.selectionStart,ta.selectionEnd):ta.value;
+      if(!aiSrc.trim())return;
+    }
     const my=++aiTok;
     if(aiCtrl){aiCtrl.cancelled=true;if(aiCtrl.ctrl)aiCtrl.ctrl.abort();}
     aiCtrl={cancelled:false,ctrl:null};
-    setAi('loading');$('obsAiLoadTxt').textContent='Mejorando redacción...';
-    const res=await IAEngine.improve(aiSrc,{ctx:'obs',token:aiCtrl,onRetry:()=>{$('obsAiLoadTxt').textContent='Reintentando...';}});
+    if(v!==null)$('obsAiLoadTxt').textContent='Entendiendo y redactando...';
+    else{setAi('loading');$('obsAiLoadTxt').textContent='Mejorando redacción...';}
+    const res=await IAEngine.improve(aiSrc,{ctx:'obs',voz:v!==null,token:aiCtrl,onRetry:()=>{$('obsAiLoadTxt').textContent='Reintentando...';if(v!==null)$('ovTitle').textContent='Reintentando…';}});
     if(my!==aiTok||res.cancelled)return;
+    if(v!==null)vozUI('idle');
     if(res.ok){
       improved=res.text;
       $('obsAiNew').textContent=improved;
-      $('obsAiScope').textContent=hasSel?'Texto seleccionado':'Todo el campo';
+      $('obsAiScope').textContent=v!==null?'Dictado por voz':(hasSel?'Texto seleccionado':'Todo el campo');
+      $('obsAiRaw').style.display='none';
       setAi('result');
     }else{
-      $('obsAiErr').textContent='No se pudo mejorar el texto tras varios intentos: '+res.error+' — intenta de nuevo en un momento.';
+      $('obsAiErr').textContent=v!==null
+        ?'No se pudo redactar el dictado ('+res.error+'). Tu dictado no se perdió: pulsa Reintentar o inserta el texto tal cual.'
+        :'No se pudo mejorar el texto tras varios intentos: '+res.error+' — intenta de nuevo en un momento.';
+      $('obsAiRaw').style.display=v!==null?'inline-flex':'none';
       setAi('error');
     }
   }
   function applyAI(){
     if(!improved)return;
     preAI=ta.value;
-    ta.value=aiSel?ta.value.slice(0,aiSel.s)+improved+ta.value.slice(aiSel.e):improved;
-    ta.focus({preventScroll:true});ta.setSelectionRange(ta.value.length,ta.value.length);
+    let caretEnd=null;
+    if(aiVoz!==null&&aiSel){
+      const bf=ta.value.slice(0,aiSel.s),af=ta.value.slice(aiSel.e),j=vozJoin(bf,improved,af);
+      ta.value=bf+j.text+af;caretEnd=bf.length+j.text.length;
+    }else ta.value=aiSel?ta.value.slice(0,aiSel.s)+improved+ta.value.slice(aiSel.e):improved;
+    ta.focus({preventScroll:true});
+    if(caretEnd!==null){ta.setSelectionRange(caretEnd,caretEnd);ta.scrollTop=ta.scrollHeight;}else ta.setSelectionRange(ta.value.length,ta.value.length);
+    aiVoz=null;
     push(true);refresh();
     ai.classList.remove('show');
     setTimeout(()=>{if(!ai.classList.contains('show'))ai.dataset.state='idle';},420);
     $('obsUndo').classList.add('show');
+  }
+
+
+  /* ---------- DICTADO POR VOZ: reconocimiento del navegador + redacción con IA ---------- */
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  let rec=null,vozOn=false,vozBase='',vozCur='',vozInt='',vozT0=0,vozTick=null,vozCaret=null,vozFatal='',vozQuick=0,vozLastStart=0,vozFinishT=null,aiVoz=null;
+  const voiceEl=$('obsVoice'),micBtn=$('obsMicBtn');
+  function vozFmt(ms){const s=Math.floor(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+  function vozShow(){
+    const live=$('ovLive');live.textContent='';
+    const f=(vozBase+' '+vozCur).trim();
+    if(!f&&!vozInt){const p=document.createElement('span');p.className='ov-ph';p.textContent='Habla con naturalidad; yo me encargo de la redacción…';live.appendChild(p);return;}
+    live.appendChild(document.createTextNode(f+(f&&vozInt?' ':'')));
+    if(vozInt){const sp=document.createElement('span');sp.className='ov-int';sp.textContent=vozInt;live.appendChild(sp);}
+    live.scrollTop=live.scrollHeight;
+  }
+  function vozUI(st){
+    voiceEl.dataset.state=st;
+    micBtn.classList.toggle('rec',st==='listening');
+    micBtn.querySelector('span').textContent=st==='listening'?'Detener':'Dictar';
+    micBtn.querySelector('i').className='fas '+(st==='listening'?'fa-stop':'fa-microphone');
+    if(st!=='listening')voiceEl.classList.remove('talk');
+    $('obsAiBtn').disabled=(st!=='idle')||!ta.value.trim();
+    $('ovTitle').textContent=st==='processing'?'Entendiendo y redactando…':'Escuchando…';
+  }
+  function vozClean(){clearInterval(vozTick);vozTick=null;clearTimeout(vozFinishT);vozFinishT=null;}
+  function vozStart(){
+    if(vozOn)return;
+    if(!SR){$('obsAiErr').textContent='Este navegador no permite dictado por voz. Usa Chrome, Edge o Safari actualizados.';aiVoz=null;$('obsAiRaw').style.display='none';setAi('error');return;}
+    aiReset();
+    vozCaret={s:ta.selectionStart,e:ta.selectionEnd};
+    vozBase='';vozCur='';vozInt='';vozFatal='';vozQuick=0;vozOn=true;vozT0=Date.now();
+    $('ovTime').textContent='0:00';vozShow();vozUI('listening');
+    vozTick=setInterval(()=>{const d=Date.now()-vozT0;$('ovTime').textContent=vozFmt(d);if(d>300000)vozStop();},500);
+    vozBegin();
+  }
+  function vozBegin(){
+    rec=new SR();rec.lang='es-CO';rec.continuous=true;rec.interimResults=true;rec.maxAlternatives=1;
+    rec.onspeechstart=()=>voiceEl.classList.add('talk');
+    rec.onspeechend=()=>voiceEl.classList.remove('talk');
+    rec.onresult=e=>{
+      let f='',i='';
+      for(let k=0;k<e.results.length;k++){const r=e.results[k];if(r.isFinal)f+=r[0].transcript+' ';else i+=r[0].transcript;}
+      vozCur=f.trim();vozInt=i.trim();vozShow();
+    };
+    rec.onerror=e=>{
+      if(e.error==='not-allowed'||e.error==='service-not-allowed')vozFatal='No hay permiso para usar el micrófono. Permítelo en el navegador (ícono del candado) y vuelve a intentar.';
+      else if(e.error==='audio-capture')vozFatal='No se detectó ningún micrófono.';
+      else if(e.error==='network')vozFatal='Sin conexión: el dictado necesita internet.';
+      else if(e.error==='language-not-supported')vozFatal='El idioma de dictado no está disponible en este navegador.';
+    };
+    rec.onend=()=>{
+      vozBase=(vozBase+' '+vozCur+' '+vozInt).trim();vozCur='';vozInt='';vozShow();
+      if(vozOn&&!vozFatal){   /* el navegador corta tras silencios: se reanuda solo */
+        vozQuick=(Date.now()-vozLastStart<700)?vozQuick+1:0;
+        if(vozQuick>5){vozFatal='El dictado se interrumpió. Intenta de nuevo.';}
+        else{try{vozLastStart=Date.now();rec.start();return;}catch(_){}}
+      }
+      vozFinish();
+    };
+    vozLastStart=Date.now();
+    try{rec.start();}catch(_){}
+  }
+  function vozStop(){
+    if(!vozOn)return;
+    vozOn=false;
+    try{rec&&rec.stop();}catch(_){}
+    vozFinishT=setTimeout(vozFinish,1500);   /* por si el navegador no avisa el cierre */
+  }
+  function vozAbort(){
+    if(!voiceEl||(!vozOn&&voiceEl.dataset.state==='idle'))return;
+    vozOn=false;vozClean();
+    if(rec){rec.onend=null;rec.onresult=null;rec.onerror=null;try{rec.abort();}catch(_){}}
+    vozBase=vozCur=vozInt='';vozUI('idle');
+  }
+  let vozDone=false;
+  function vozFinish(){
+    if(vozDone)return;
+    if(voiceEl.dataset.state!=='listening'&&voiceEl.dataset.state!=='processing')return;
+    vozDone=true;vozOn=false;vozClean();
+    const txt=(vozBase+' '+vozCur+' '+vozInt).trim();
+    vozBase=vozCur=vozInt='';
+    setTimeout(()=>{vozDone=false;},0);
+    if(vozFatal&&!txt){vozUI('idle');$('obsAiErr').textContent=vozFatal;aiVoz=null;$('obsAiRaw').style.display='none';setAi('error');return;}
+    if(!txt){vozUI('idle');$('obsAiErr').textContent='No se escuchó nada. Acerca el micrófono e inténtalo de nuevo.';aiVoz=null;$('obsAiRaw').style.display='none';setAi('error');return;}
+    vozUI('processing');
+    runAI(txt);
+  }
+  /* si la IA falla, el dictado no se pierde: se inserta tal cual con mayúscula y punto */
+  function vozRaw(t){t=t.replace(/\s+/g,' ').trim();if(!t)return t;t=t.charAt(0).toUpperCase()+t.slice(1);return /[.!?…]$/.test(t)?t:t+'.';}
+  function vozJoin(before,ins,after){
+    const a=(before&&!/[\s(¿¡"“«]$/.test(before)&&!/^[\s.,;:!?)]/.test(ins))?' ':'';
+    const z=(after&&!/^[\s.,;:!?)]/.test(after)&&!/[\s]$/.test(ins))?' ':'';
+    return {text:a+ins+z,pre:a.length};
   }
 
   /* ---------- eventos ---------- */
@@ -4514,9 +4670,13 @@ IAField.attach({
   $('obsClose').addEventListener('click',close);
   $('obsDone').addEventListener('click',close);
   ta.addEventListener('input',()=>{push(false);refresh();$('obsUndo').classList.remove('show');});
-  $('obsAiBtn').addEventListener('click',runAI);
-  $('obsAiRetry').addEventListener('click',runAI);
-  $('obsAiRetry2').addEventListener('click',runAI);
+  $('obsAiBtn').addEventListener('click',()=>runAI());
+  $('obsAiRetry').addEventListener('click',()=>runAI(aiVoz));
+  $('obsAiRetry2').addEventListener('click',()=>runAI(aiVoz));
+  micBtn.addEventListener('click',()=>{if(voiceEl.dataset.state==='listening')vozStop();else if(voiceEl.dataset.state==='idle')vozStart();});
+  $('ovStop').addEventListener('click',vozStop);
+  $('ovCancel').addEventListener('click',()=>{vozAbort();ta.focus({preventScroll:true});});
+  $('obsAiRaw').addEventListener('click',()=>{if(aiVoz===null)return;improved=vozRaw(aiVoz);applyAI();});
   $('obsAiApply').addEventListener('click',applyAI);
   const discard=()=>{aiReset();ta.focus({preventScroll:true});};
   $('obsAiDiscard').addEventListener('click',discard);
