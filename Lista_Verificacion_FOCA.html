@@ -425,36 +425,58 @@
 .obs-btn-mic.rec{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border-color:transparent;animation:ovRing 1.6s ease-out infinite}
 .obs-btn-mic.rec:hover:not(:disabled){background:linear-gradient(135deg,#f05252,#e11d1d)}
 @keyframes ovRing{0%{box-shadow:0 0 0 0 rgba(239,68,68,.45)}70%{box-shadow:0 0 0 11px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
-#obsVoice{display:none;margin-top:12px;border:1.5px solid #fecaca;background:linear-gradient(180deg,#fff7f7,#fff);border-radius:14px;padding:12px 14px 13px;animation:obsPop .3s ease}
-#obsVoice[data-state=listening],#obsVoice[data-state=processing]{display:block}
-.ov-top{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:800;color:#dc2626;text-transform:uppercase;letter-spacing:.6px}
-.ov-dot{width:9px;height:9px;border-radius:50%;background:#ef4444;animation:ovPulse 1.2s ease-in-out infinite}
-@keyframes ovPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.55}}
-#ovTime{margin-left:auto;font-variant-numeric:tabular-nums;color:#94a3b8;text-transform:none;font-weight:600;letter-spacing:0;font-size:12px}
-.ov-bars{display:flex;align-items:center;justify-content:center;gap:3px;height:34px;margin:9px 0 7px}
-.ov-bars i{width:3px;height:5px;border-radius:3px;background:linear-gradient(#f87171,#dc2626);opacity:.55;transition:opacity .25s}
+#obsVoice{display:none;margin-top:12px;position:relative;overflow:hidden;border-radius:18px;padding:14px 15px 14px;color:#fff;background:radial-gradient(120% 140% at 0% 0%,#4338ca 0%,#312e81 45%,#1e1b4b 100%);box-shadow:0 14px 34px rgba(49,46,129,.38),inset 0 1px 0 rgba(255,255,255,.14);animation:obsPop .35s cubic-bezier(.2,.9,.3,1.1)}
+#obsVoice::before{content:"";position:absolute;right:-60px;top:-70px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(244,114,182,.35),transparent 70%);pointer-events:none}
+#obsVoice[data-state=listening],#obsVoice[data-state=processing],#obsVoice[data-state=paused]{display:block}
+#obsVoice>*{position:relative}
+.ov-top{display:flex;align-items:center;gap:8px}
+.ov-chip{display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 10px;border-radius:99px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-size:12px;font-weight:700;letter-spacing:.2px;color:#fff;backdrop-filter:blur(6px)}
+.ov-dot{width:8px;height:8px;border-radius:50%;background:#fb7185;box-shadow:0 0 0 0 rgba(251,113,133,.7);animation:ovPulse 1.3s ease-out infinite}
+#ovTime{margin-left:auto;font-variant-numeric:tabular-nums;color:#c7d2fe;font-weight:700;font-size:13px;letter-spacing:.4px;background:rgba(0,0,0,.22);padding:4px 10px;border-radius:8px}
+.ov-stage{display:flex;align-items:center;gap:16px;margin:14px 0 12px}
+.ov-orb{position:relative;flex:0 0 58px;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:21px;color:#fff;background:linear-gradient(145deg,#fb7185,#e11d48);box-shadow:0 8px 20px rgba(225,29,72,.5),inset 0 2px 0 rgba(255,255,255,.35);transition:background .4s,box-shadow .4s,transform .25s}
+.ov-orb::before,.ov-orb::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid rgba(251,113,133,.7);opacity:0;animation:ovRipple 2.4s ease-out infinite}
+.ov-orb::after{animation-delay:1.2s}
+.ov-orb .ov-i2{display:none}
+#obsVoice.talk .ov-orb{transform:scale(1.09)}
+#obsVoice.talk .ov-orb::before,#obsVoice.talk .ov-orb::after{animation-duration:1.4s}
+.ov-bars{flex:1;display:flex;align-items:center;justify-content:space-between;gap:3px;height:46px;min-width:0}
+.ov-bars i{flex:1;max-width:5px;height:6px;border-radius:4px;background:linear-gradient(#67e8f9,#a78bfa 55%,#f472b6);opacity:.4;transition:opacity .3s}
 #obsVoice.talk .ov-bars i{opacity:1;animation:ovBar .9s ease-in-out infinite}
-@keyframes ovBar{0%,100%{height:5px}50%{height:30px}}
-#obsVoice[data-state=processing] .ov-bars i{animation:ovBar 1.4s ease-in-out infinite;opacity:.8}
-#obsVoice[data-state=processing] .ov-dot{background:#7c3aed;animation:obsSpin 1s linear infinite;border-radius:3px}
-#obsVoice[data-state=processing] .ov-top{color:#7c3aed}
-.ov-live{font-size:14px;line-height:1.55;color:#334155;max-height:104px;overflow:auto;min-height:22px;word-break:break-word;text-align:left}
-.ov-live .ov-ph{color:#94a3b8}
-.ov-live .ov-int{color:#94a3b8;font-style:italic}
-.ov-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:11px}
-#obsVoice[data-state=processing] .ov-actions{display:none}
-.ov-btn-stop{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;box-shadow:0 4px 12px rgba(239,68,68,.35)}
-#obsAiRaw{display:none}
-#obsVoice[data-state=paused]{display:block;border-color:#e2e8f0;background:linear-gradient(180deg,#f8fafc,#fff)}
-#obsVoice[data-state=paused] .ov-top{color:#64748b}
+.ov-live{font-size:15px;line-height:1.6;color:#f1f5f9;max-height:112px;overflow:auto;min-height:48px;word-break:break-word;text-align:left;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 13px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.3) transparent}
+.ov-live:empty::before{content:attr(data-ph);color:#9aa3d6;font-style:italic}
+.ov-live .ov-int{color:#a5b4fc;font-style:italic}
+.ov-live.editing{outline:none;background:rgba(255,255,255,.14);border:1.5px dashed #a5b4fc;cursor:text}
+.ov-hint{min-height:0;margin-top:8px;font-size:12.5px;font-weight:600;color:#fde68a}
+.ov-hint:empty{display:none}
+.ov-tip{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#a5acd9;margin-top:9px}
+.ov-tip i{color:#c4b5fd}
+.ov-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:13px}
+#obsVoice .obs-btn{border-radius:12px;padding:10px 15px}
+#obsVoice .obs-btn-ghost{background:transparent;color:#c7d2fe}
+#obsVoice .obs-btn-ghost:hover{background:rgba(255,255,255,.1)}
+#obsVoice .obs-btn-soft{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.2)}
+#obsVoice .obs-btn-soft:hover{background:rgba(255,255,255,.22)}
+.ov-btn-stop{background:linear-gradient(135deg,#fb7185,#e11d48);color:#fff;box-shadow:0 6px 16px rgba(225,29,72,.45)}
+#obsVoice[data-state=paused]{background:radial-gradient(120% 140% at 0% 0%,#475569 0%,#334155 50%,#1e293b 100%);box-shadow:0 10px 26px rgba(30,41,59,.35),inset 0 1px 0 rgba(255,255,255,.12)}
+#obsVoice[data-state=paused]::before{opacity:.3}
 #obsVoice[data-state=paused] .ov-dot{background:#94a3b8;animation:none}
-#obsVoice[data-state=paused] .ov-bars i{animation:none;height:5px;opacity:.35}
-.ov-live:empty::before{content:attr(data-ph);color:#94a3b8}
-.ov-live.editing{outline:none;background:#fff;border:1.5px dashed #c4b5fd;border-radius:10px;padding:8px 10px;cursor:text}
-.ov-hint{min-height:16px;margin-top:6px;font-size:12px;font-weight:600;color:#b45309}
-.ov-tip{font-size:11px;color:#94a3b8;margin-top:2px}
-#obsVoice[data-state=processing] .ov-hint,#obsVoice[data-state=processing] .ov-tip{display:none}
-@media(max-width:600px){.ov-actions{flex-wrap:wrap}.ov-actions .obs-btn{flex:1 1 auto;justify-content:center}}
+#obsVoice[data-state=paused] .ov-orb{background:linear-gradient(145deg,#94a3b8,#64748b);box-shadow:0 6px 14px rgba(0,0,0,.3)}
+#obsVoice[data-state=paused] .ov-orb::before,#obsVoice[data-state=paused] .ov-orb::after{animation:none}
+#obsVoice[data-state=paused] .ov-bars i{animation:none;height:6px;opacity:.3}
+#obsVoice[data-state=processing] .ov-orb{background:linear-gradient(145deg,#a78bfa,#7c3aed);box-shadow:0 8px 22px rgba(124,58,237,.6),inset 0 2px 0 rgba(255,255,255,.35)}
+#obsVoice[data-state=processing] .ov-orb::before,#obsVoice[data-state=processing] .ov-orb::after{border-color:rgba(167,139,250,.8);animation-duration:1.6s}
+#obsVoice[data-state=processing] .ov-i1{display:none}
+#obsVoice[data-state=processing] .ov-i2{display:block;animation:ovSpark 1.4s ease-in-out infinite}
+#obsVoice[data-state=processing] .ov-dot{background:#c4b5fd;animation:ovPulse 1s ease-out infinite}
+#obsVoice[data-state=processing] .ov-bars i{opacity:.85;animation:ovBar 1.4s ease-in-out infinite}
+#obsVoice[data-state=processing] .ov-actions,#obsVoice[data-state=processing] .ov-hint,#obsVoice[data-state=processing] .ov-tip{display:none}
+@keyframes ovPulse{0%{box-shadow:0 0 0 0 rgba(251,113,133,.65)}70%,100%{box-shadow:0 0 0 8px rgba(251,113,133,0)}}
+@keyframes ovRipple{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.85);opacity:0}}
+@keyframes ovSpark{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.22) rotate(14deg)}}
+@keyframes ovBar{0%,100%{height:6px}50%{height:40px}}
+@media(max-width:600px){.ov-stage{gap:12px}.ov-orb{flex-basis:52px;width:52px;height:52px;font-size:19px}.ov-actions{flex-wrap:wrap}.ov-actions .obs-btn{flex:1 1 auto;justify-content:center}#ovStop{flex-basis:100%;order:-1}}
+@media(prefers-reduced-motion:reduce){#obsVoice *,#obsVoice *::before,#obsVoice *::after{animation-duration:.01s!important;animation-iteration-count:1!important}}
 
 @media(max-width:600px){#obsFoot{flex-wrap:wrap}.obs-btn-mic span{display:inline}}
 
@@ -761,11 +783,11 @@
         <button type="button" id="obsUndo"><i class="fas fa-rotate-left"></i> Deshacer IA</button>
       </div>
       <div id="obsVoice" data-state="idle" aria-live="polite">
-        <div class="ov-top"><span class="ov-dot"></span><b id="ovTitle">Escuchando…</b><span id="ovTime">0:00</span></div>
-        <div class="ov-bars"><i style="animation-delay:0ms"></i><i style="animation-delay:120ms"></i><i style="animation-delay:240ms"></i><i style="animation-delay:60ms"></i><i style="animation-delay:300ms"></i><i style="animation-delay:180ms"></i><i style="animation-delay:360ms"></i><i style="animation-delay:90ms"></i><i style="animation-delay:420ms"></i><i style="animation-delay:150ms"></i><i style="animation-delay:330ms"></i><i style="animation-delay:30ms"></i><i style="animation-delay:270ms"></i><i style="animation-delay:210ms"></i><i style="animation-delay:390ms"></i><i style="animation-delay:120ms"></i><i style="animation-delay:300ms"></i><i style="animation-delay:60ms"></i></div>
+        <div class="ov-top"><span class="ov-chip"><span class="ov-dot"></span><b id="ovTitle">Escuchando…</b></span><span id="ovTime">0:00</span></div>
+        <div class="ov-stage"><div class="ov-orb"><i class="fas fa-microphone ov-i1"></i><i class="fas fa-wand-magic-sparkles ov-i2"></i></div><div class="ov-bars"><i style="animation-delay:0ms"></i><i style="animation-delay:97ms"></i><i style="animation-delay:194ms"></i><i style="animation-delay:291ms"></i><i style="animation-delay:388ms"></i><i style="animation-delay:65ms"></i><i style="animation-delay:162ms"></i><i style="animation-delay:259ms"></i><i style="animation-delay:356ms"></i><i style="animation-delay:33ms"></i><i style="animation-delay:130ms"></i><i style="animation-delay:227ms"></i><i style="animation-delay:324ms"></i><i style="animation-delay:1ms"></i><i style="animation-delay:98ms"></i><i style="animation-delay:195ms"></i><i style="animation-delay:292ms"></i><i style="animation-delay:389ms"></i><i style="animation-delay:66ms"></i><i style="animation-delay:163ms"></i><i style="animation-delay:260ms"></i><i style="animation-delay:357ms"></i><i style="animation-delay:34ms"></i><i style="animation-delay:131ms"></i></div></div>
         <div class="ov-live" id="ovLive" data-ph="Habla con naturalidad; yo me encargo de la redacción…" spellcheck="true"></div>
         <div class="ov-hint" id="ovHint"></div>
-        <div class="ov-tip">Di «punto y aparte» o «nueva línea» para separar párrafos.</div>
+        <div class="ov-tip"><i class="fas fa-lightbulb"></i>Di «punto y aparte» o «nueva línea» para separar párrafos.</div>
         <div class="ov-actions">
           <button type="button" class="obs-btn obs-btn-ghost" id="ovCancel">Cancelar</button>
           <button type="button" class="obs-btn obs-btn-soft" id="ovPause"><i class="fas fa-pause"></i> Pausa</button>
