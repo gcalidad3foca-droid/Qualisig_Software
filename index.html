@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Qualisig Software</title>
+<title>Qualisig — Módulo de Auditorías</title>
 <link rel="icon" type="image/png" sizes="32x32" href="https://i.imgur.com/ht6IpCi.png">
 <link rel="icon" type="image/png" sizes="64x64" href="https://i.imgur.com/ht6IpCi.png">
 <link rel="icon" type="image/png" sizes="128x128" href="https://i.imgur.com/ht6IpCi.png">
@@ -4254,6 +4254,71 @@ button.b4-tile:hover{background:#fff;box-shadow:0 2px 4px rgba(16,24,40,.05),0 1
 @media(min-width:761px){#iso-view .dbi-header .iso-logo,#iso-view .iso-hd .iso-logo{width:68px!important;height:68px!important}}
 @media(max-width:760px){#iso-view .iso-hd .iso-logo{width:54px!important;height:54px!important}}
 @media(min-width:1201px){#iso-view .b5{height:calc(100vh - 240px)}}
+/* v18 — sobrio y refinado: menos peso, tipografía más fina */
+#iso-view .b5,#iso-view .b5 button,#iso-view .b5 input,#iso-view .b5 select{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+#iso-view .b5-g{gap:10px}#iso-view .b5{gap:10px}#iso-view .b4-band{gap:10px}
+#iso-view .b4-p,#iso-view .b4-tile{border-color:#e6eaf1;box-shadow:0 1px 2px rgba(30,60,114,.04),0 8px 24px -12px rgba(30,60,114,.12)}
+/* KPI */
+#iso-view .b4-tile{padding:11px 16px 12px}
+#iso-view .b4-tlb{font-size:9.5px;font-weight:600;letter-spacing:.7px;color:#98a2b3}
+#iso-view .b4-tile b,#iso-view .b4-tile:first-child b{font-size:23px;font-weight:600;letter-spacing:-.5px;margin-top:2px}
+#iso-view .b4-tile small{font-size:10.5px;color:#98a2b3}
+#iso-view .b4-tb{height:3px;margin-top:7px;background:#f1f4f8}
+/* encabezados */
+#iso-view .b5 .b4-p>header>b,#iso-view .b4-pth>b{font-size:10.5px;font-weight:600;letter-spacing:.7px;color:#475467}
+#iso-view .b4-pk{font-size:11.5px;color:#98a2b3;font-weight:400}#iso-view .b4-pk strong{font-size:13px;font-weight:600;color:#1d2939}
+#iso-view .b4-p>header span:not(.b3-lgd){font-size:10.5px;color:#98a2b3;font-weight:400}
+#iso-view .b4-ptin>header a{font-size:11.5px;font-weight:600}
+/* carga por responsable */
+#iso-view .b4-rhd{font-size:9px;font-weight:600;letter-spacing:.4px}
+#iso-view .b4-rn b{font-weight:600;font-size:12.5px;color:#1d2939}
+#iso-view .b4-rn small{font-size:10.5px;color:#98a2b3}
+#iso-view .b4-nn{font-size:12px!important;font-weight:600;border-radius:7px}
+#iso-view .b4-rt{font-size:13.5px!important;font-weight:600;color:#1d2939}
+#iso-view .b4-lt{font-weight:600!important;font-size:10px!important}
+/* resultado + estado */
+#iso-view .b5-res .iso-big{font-size:20px!important;font-weight:600}
+#iso-view .b5-res .b5-rb li{font-size:12px;font-weight:400;color:#475467}
+#iso-view .b5-res .b5-rb li b{font-size:13px!important;font-weight:600;color:#1d2939}
+#iso-view .b5-pr{font-size:12px}#iso-view .b5-pr *{font-weight:400}
+#iso-view .b5-pr b,#iso-view .b5-pr strong{font-weight:600;font-size:13px}
+/* plan por capítulo */
+#iso-view .b5-pcb{height:6px;border-radius:6px;overflow:hidden}
+#iso-view .b5-g .b5-pcr strong{font-size:11.5px!important;font-weight:400!important;color:#475467}
+#iso-view .b5-g .b5-pcr strong b{font-size:11.5px!important;font-weight:600;background:#f2f5fa;color:#344054;min-width:22px}
+#iso-view .b5-pcr em{font-size:12px;font-style:normal;font-weight:600}
+#iso-view .b5-ph b{font-size:9px;font-weight:600;letter-spacing:.4px}
+/* cumplimiento por capítulo */
+#iso-view .b5-cols,#iso-view .b5-col{gap:4px}
+#iso-view .b5-col .b5-stk{border-radius:6px;max-width:88px;margin-left:auto;margin-right:auto;width:100%;filter:saturate(.85)}
+#iso-view .b5-col>b,#iso-view .b5-col>strong,#iso-view .b5-col>span:first-child{font-size:12px;font-weight:600}
+#iso-view .b5-cc{font-size:11px;font-weight:600}
+#iso-view .b5-col small,#iso-view .b5-col em,#iso-view .b5-col label{font-size:10.5px;font-weight:400;color:#667085}
+/* tabla */
+#iso-view .b4-tabs button,#iso-view .b4-flt button,#iso-view .b4-ptin .b4-tabs *{font-size:11.5px!important;font-weight:500!important}
+#iso-view .b4-ptin input,#iso-view .b4-ptin select{font-size:12px;color:#475467}
+#iso-view .b4-thd,#iso-view .b4-thd *{font-size:9px!important;font-weight:600;letter-spacing:.5px;color:#98a2b3}
+#iso-view .b4-tqt b{font-size:12px;font-weight:600;color:#1d2939}
+#iso-view .b4-tqt small,#iso-view .b4-tv,#iso-view .b4-ta,#iso-view .b4-th{font-size:11.5px;font-weight:400;color:#475467}
+#iso-view .b4-tv{font-weight:500;color:#1d2939}
+#iso-view .b4-tq b{font-size:12px!important;font-weight:600;color:#344054}
+#iso-view .b4-pill{font-size:10.5px!important;font-weight:600;padding:2px 9px}
+#iso-view .b4-te small{font-size:10.5px;font-weight:500}
+#iso-view .b4-tw em{font-size:11px;font-weight:500}
+#iso-view .dbi-title{font-size:16px;font-weight:700}
+@media(min-width:1201px){
+#iso-view .b5-t .b4-tqt b,#iso-view .b5-t .b4-tq b{font-size:11.5px!important}
+#iso-view .b5-t .b4-tqt small,#iso-view .b5-t .b4-tv,#iso-view .b5-t .b4-ta,#iso-view .b5-t .b4-th{font-size:11px!important;line-height:1.35}
+#iso-view .b5-t .b4-tv{font-weight:500}
+#iso-view .b5-t .b4-th.z,#iso-view .b5-t .b4-ta.z{font-size:10.5px!important;color:#b0b8c5}
+#iso-view .b5-t .b4-tw em{font-size:10.5px!important}
+#iso-view .b5-t .b4-pill{font-size:10px!important;padding:2px 8px}
+#iso-view .b5-t .b4-tabs *,#iso-view .b5-t .b4-flt *{font-size:11px!important}
+#iso-view .b5-t input,#iso-view .b5-t select{font-size:11.5px!important}
+#iso-view .b5-pr,#iso-view .b5-pr *{font-size:11.5px!important}
+#iso-view .b5-pr b,#iso-view .b5-pr strong{font-size:12.5px!important}
+#iso-view .b4-rn b{font-size:12px}
+}
 </style>
 </head>
 <body>
