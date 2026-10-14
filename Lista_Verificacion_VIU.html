@@ -4056,56 +4056,150 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 });
 </script>
 <script>
-/* ===== MOTOR DE IA COMPARTIDO (Groq, misma API, modelos y prompt de Qualisig) + componente reutilizable ===== */
+/* ===== MOTOR DE IA COMPARTIDO (Groq vía Cloudflare Worker, sin clave en el HTML) + componente reutilizable ===== */
 window.IAEngine=(function(){
-  /* ÚNICO lugar donde vive la clave de Groq para toda la lista */
-  const GROQ_API_KEY='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';
-  const MODELOS=['llama-3.3-70b-versatile','llama-3.1-8b-instant','openai/gpt-oss-20b'];
+  /* La clave de Groq NO va aquí: vive como secreto en la Cloudflare Worker. */
+  const PROXY_URL='https://qualisig-api.luisangelbc13.workers.dev';
+  const MODELOS=['llama-3.3-70b-versatile','openai/gpt-oss-120b','openai/gpt-oss-20b','llama-3.1-8b-instant'];
   const CTX={
     obs:'una observación de calidad',
     hallazgo:'un hallazgo adicional identificado en una auditoría de calidad de servicios de salud',
     om:'una oportunidad de mejora (recomendación) derivada de una auditoría de calidad de servicios de salud'
   };
-  async function call(model,prompt,tok){
+  const BLOQUE_MAX=2000;
+  const esperar=ms=>new Promise(r=>setTimeout(r,ms));
+  const norm=t=>(t||'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+
+  async function call(model,messages,maxTokens,timeoutMs,temp,tok){
     const ctrl=new AbortController();tok.ctrl=ctrl;let timedOut=false;
-    const t=setTimeout(()=>{timedOut=true;ctrl.abort();},12000);
+    const t=setTimeout(()=>{timedOut=true;ctrl.abort();},timeoutMs);
+    const body={model,messages,temperature:temp,max_tokens:maxTokens};
+    if(model.indexOf('openai/gpt-oss')===0){body.reasoning_effort='low';body.max_tokens=maxTokens+1500;}
     try{
-      const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_API_KEY},
-        body:JSON.stringify({model,messages:[{role:'user',content:prompt}],temperature:.4,max_tokens:400}),
-        signal:ctrl.signal
-      });
-      return {ok:resp.ok,status:resp.status,data:await resp.json()};
+      const resp=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:ctrl.signal});
+      return {ok:resp.ok,status:resp.status,data:await resp.json().catch(()=>({}))};
     }catch(e){
-      if(e.name==='AbortError'&&timedOut)return {ok:false,status:408,data:{error:{message:'Tiempo de espera agotado (12s)'}}};
+      if(e.name==='AbortError'&&timedOut)return {ok:false,status:408,data:{error:{message:'Tiempo de espera agotado'}}};
       if(e.name==='AbortError')return {cancelled:true};
-      return {ok:false,status:0,data:{error:{message:e.message||'Error de red'}}};
+      return {ok:false,status:0,data:{error:{message:'No hay conexión con el servicio de IA'}}};
     }finally{clearTimeout(t);}
   }
+
+  function limpiar(t){
+    return (t||'').replace(/<think>[\s\S]*?<\/think>/gi,'')
+      .replace(/^\s*```[a-z]*\s*|\s*```\s*$/g,'')
+      .replace(/^\s*(texto (mejorado|corregido|final)|aquí (está|tienes)[^\n]*|claro[^\n]*)\s*:?\s*\n+/i,'')
+      .replace(/^\s*["“«]([\s\S]*)["”»]\s*$/,'$1').trim();
+  }
+  /* Cifras del original ausentes en la salida (tolera 63,5 = 63.5 y fechas con mes en letras) */
+  function faltantes(orig,sal){
+    const nz=x=>x.replace(/[.,](?=\d{1,2}\b)/g,'.').replace(/(?<=\d)[.,](?=\d{3}\b)/g,'');
+    const out=nz(sal),f=[];
+    (orig.match(/\d[\d.,:/\-]*\d|\d/g)||[]).forEach(tok=>{
+      const t=tok.replace(/[.,:/\-]+$/,'');
+      if(/[\/\-]/.test(t)){(t.match(/\d{3,}/g)||[]).forEach(y=>{if(out.indexOf(y)<0)f.push(y);});}
+      else if(out.indexOf(nz(t))<0)f.push(t);
+    });
+    return f;
+  }
+  function dividir(texto,max){
+    const partes=texto.split(/(\n+)/),unid=[];
+    for(let i=0;i<partes.length;i+=2){
+      const par=partes[i],sep=partes[i+1]||'';
+      if(par.length<=max){unid.push({t:par,s:sep});continue;}
+      const os=par.match(/[^.!?]+[.!?]+\s*|[^.!?]+$/g)||[par];let acc='';
+      os.forEach(o=>{if(acc&&(acc+o).length>max){unid.push({t:acc.trimEnd(),s:' '});acc='';}acc+=o;});
+      unid.push({t:acc.trimEnd(),s:sep});
+    }
+    const bl=[];let cur=null;
+    unid.forEach(u=>{
+      if(cur&&(cur.t+cur.s+u.t).length<=max){cur.t+=cur.s+u.t;cur.s=u.s;}
+      else{cur={t:u.t,s:u.s};bl.push(cur);}
+    });
+    return bl.filter(b=>b.t.trim()||b.s);
+  }
+  function sistema(ctx,max){
+    return 'Eres un corrector y editor de textos institucionales en español de Colombia. Recibirás '+(CTX[ctx]||CTX.obs)+' escrito en una organización de salud. '
+      +'Tu tarea es MEJORAR LA REDACCIÓN sin cambiar el sentido ni el estilo propio del autor:\n'
+      +'- Conserva el significado, el orden de las ideas y la estructura de cada oración. Si una frase ya está bien escrita, déjala igual o casi igual; cambia solo lo necesario.\n'
+      +'- Corrige ortografía, tildes, puntuación, concordancia, mayúsculas y errores de digitación.\n'
+      +'- Mejora la claridad y el tono profesional: quita repeticiones y muletillas, ajusta conectores y reemplaza palabras informales o imprecisas por otras equivalentes. Usa un vocabulario cercano al original.\n'
+      +'- Conserva EXACTAMENTE cifras, porcentajes, fechas, nombres, cargos, áreas, siglas y hechos. No inventes, no agregues ni elimines información, no resumas ni alargues.\n'
+      +'- Mantén los mismos párrafos, viñetas y numeración, y el mismo punto de vista (primera persona o impersonal).\n'
+      +(max?'- El resultado no debe superar '+max+' caracteres.\n':'')
+      +'- Responde ÚNICAMENTE con el texto mejorado, sin comillas, títulos, notas ni explicaciones.';
+  }
+
+  async function bloque(texto,o,tok,fragmento,ctxPrev){
+    const maxTokens=Math.min(8000,Math.ceil(texto.length/2.4)+400);
+    const timeoutMs=Math.min(75000,20000+texto.length*12);
+    let instr='';
+    if(fragmento)instr+='Este es un fragmento de un texto más largo; mejora solo este fragmento, sin introducciones ni cierres.\n';
+    if(ctxPrev)instr+='CONTEXTO PREVIO (solo referencia, NO lo reescribas ni lo incluyas): «'+ctxPrev+'»\n';
+    const msgs=[{role:'system',content:sistema(o.ctx,fragmento?0:o.max)},{role:'user',content:instr+'\nTEXTO:\n'+texto}];
+    let last='Error del servicio de IA',respaldo=null;
+    const pausas=[0,2500,6000,12000];
+    for(let ronda=0;ronda<pausas.length;ronda++){
+      if(ronda>0){if(o.onRetry)o.onRetry();await esperar(pausas[ronda]);}
+      if(tok.cancelled)return {cancelled:true};
+      let reint=false;
+      for(let i=0;i<MODELOS.length;i++){
+        if(tok.cancelled)return {cancelled:true};
+        const m=MODELOS[i],temp=0.3+(i?0.1:0);
+        let r=await call(m,msgs,maxTokens,timeoutMs,temp,tok);
+        if(r.cancelled||tok.cancelled)return {cancelled:true};
+        if(r.status===401||r.status===403)return {fatal:true,error:'El servicio de IA rechazó la solicitud (revisa la Worker y su dominio permitido)'};
+        if(r.status===429){await esperar(3000);r=await call(m,msgs,maxTokens,timeoutMs,temp,tok);if(r.cancelled||tok.cancelled)return {cancelled:true};}
+        if(!r.ok){
+          const e=r.data&&r.data.error;last=(e&&(e.message||e))||('Error '+r.status);if(typeof last!=='string')last='Error '+r.status;
+          if(r.status===0||r.status===408||r.status===429||r.status>=500)reint=true;
+          continue;
+        }
+        const ch=r.data.choices&&r.data.choices[0];
+        const sal=limpiar(ch&&ch.message&&ch.message.content);
+        const corta=ch&&ch.finish_reason==='length';
+        if(!sal||corta||sal.length<texto.length*0.6||sal.length>texto.length*1.6+60){last='La respuesta llegó incompleta';reint=true;continue;}
+        if(faltantes(texto,sal).length){if(!respaldo)respaldo=sal;continue;}
+        return {ok:true,text:sal};
+      }
+      if(respaldo)return {ok:true,text:respaldo};
+      if(!reint)break;
+    }
+    return {ok:false,error:last};
+  }
+
   /* o: {ctx:'obs'|'hallazgo'|'om', max:number, token:{cancelled,ctrl}, onRetry:fn} */
   async function improve(texto,o){
     o=o||{};const tok=o.token||{};
-    const prompt='Mejora la redacción del siguiente texto de '+(CTX[o.ctx]||CTX.obs)+' en una empresa colombiana. '
-      +'Corrige gramática y ortografía, hazlo más claro y profesional, pero conserva TODOS los datos, cifras, nombres y hechos exactamente igual — no inventes ni agregues información nueva. '
-      +(o.max?'El resultado no debe superar '+o.max+' caracteres. ':'')
-      +'Responde ÚNICAMENTE con el texto mejorado, sin comillas, sin explicaciones, sin encabezados.\n\nTexto original:\n'+texto;
-    let last='Error de la API de Groq';
-    for(let n=1;n<=3;n++){
-      if(tok.cancelled)return {cancelled:true};
-      const res=await call(MODELOS[(n-1)%MODELOS.length],prompt,tok);
-      if(tok.cancelled||res.cancelled)return {cancelled:true};
-      if(res.ok){
-        const c=res.data.choices&&res.data.choices[0]&&res.data.choices[0].message&&res.data.choices[0].message.content;
-        if(c&&c.trim()){return {ok:true,text:c.trim().replace(/^["“«]([\s\S]*)["”»]$/,'$1').trim()};}
-        last='Groq no devolvió ningún texto';
-      }else{
-        last=(res.data.error&&res.data.error.message)||last;
-        if(![404,503,429,408,0].includes(res.status))break;
-      }
-      if(n<3){if(o.onRetry)o.onRetry();await new Promise(r=>setTimeout(r,300));}
+    if(!texto||!texto.trim())return {ok:false,error:'No hay texto para mejorar'};
+    const bl=dividir(texto,BLOQUE_MAX),res=new Array(bl.length),fallos=[];
+    const un=bl.length===1;
+    let sig=0,fatal=null;
+    const hacer=async i=>{
+      if(!bl[i].t.trim()){res[i]=bl[i].t;return true;}
+      const r=await bloque(bl[i].t,o,tok,!un,i>0?bl[i-1].t.trim().slice(-300):'');
+      if(r.cancelled){tok.cancelled=true;return true;}
+      if(r.fatal){fatal=r;return false;}
+      if(r.ok){res[i]=r.text;return true;}
+      res[i]=null;return false;
+    };
+    const trab=async()=>{while(sig<bl.length&&!fatal&&!tok.cancelled){const i=sig++;if(!(await hacer(i))&&!fatal)fallos.push(i);}};
+    await Promise.all([trab(),trab()]);
+    if(tok.cancelled)return {cancelled:true};
+    if(fatal)return {ok:false,error:fatal.error};
+    for(let p=0;p<2&&fallos.length&&!tok.cancelled;p++){
+      await esperar(3000*(p+1));
+      for(const i of fallos.slice()){if(await hacer(i))fallos.splice(fallos.indexOf(i),1);if(fatal)return {ok:false,error:fatal.error};}
     }
-    return {ok:false,error:last};
+    if(tok.cancelled)return {cancelled:true};
+    if(fallos.length===bl.length)return {ok:false,error:'el servicio de IA no respondió'};
+    fallos.forEach(i=>{res[i]=bl[i].t;});
+    let out=bl.map((b,i)=>res[i]+b.s).join('').trim();
+    if(o.max&&out.length>o.max){   // respetar el límite del campo cortando en el último punto
+      const c=out.slice(0,o.max),p=Math.max(c.lastIndexOf('. '),c.lastIndexOf('.\n'));
+      out=(p>o.max*0.5?c.slice(0,p+1):c).trim();
+    }
+    return {ok:true,text:out,parcial:fallos.length>0};
   }
   return {improve:improve};
 })();
