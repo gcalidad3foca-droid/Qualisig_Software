@@ -422,61 +422,49 @@
 /* ===== DICTADO POR VOZ (Observaciones) ===== */
 .obs-btn-mic{background:#fff;color:#7c3aed;border:1.5px solid #ddd6fe;box-shadow:0 1px 3px rgba(124,58,237,.10)}
 .obs-btn-mic:hover:not(:disabled){background:#f5f3ff;border-color:#c4b5fd;transform:translateY(-1px)}
-.obs-btn-mic.rec{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border-color:transparent;animation:ovRing 1.6s ease-out infinite}
-.obs-btn-mic.rec:hover:not(:disabled){background:linear-gradient(135deg,#f05252,#e11d1d)}
+.obs-btn-mic.rec{background:#fff1f3;color:#e11d48;border-color:#fecdd3;box-shadow:none;animation:none}
+.obs-btn-mic.rec:hover:not(:disabled){background:#ffe4e8}
 @keyframes ovRing{0%{box-shadow:0 0 0 0 rgba(239,68,68,.45)}70%{box-shadow:0 0 0 11px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
-#obsVoice{display:none;margin-top:12px;position:relative;overflow:hidden;border-radius:18px;padding:14px 15px 14px;color:#fff;background:radial-gradient(120% 140% at 0% 0%,#4338ca 0%,#312e81 45%,#1e1b4b 100%);box-shadow:0 14px 34px rgba(49,46,129,.38),inset 0 1px 0 rgba(255,255,255,.14);animation:obsPop .35s cubic-bezier(.2,.9,.3,1.1)}
-#obsVoice::before{content:"";position:absolute;right:-60px;top:-70px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(244,114,182,.35),transparent 70%);pointer-events:none}
+#obsVoice{display:none;margin-top:14px;position:relative;overflow:hidden;background:#fff;border:1px solid #e4e7ef;border-radius:16px;padding:16px 18px 14px;color:#1f2937;box-shadow:0 1px 2px rgba(15,23,42,.04),0 8px 24px -12px rgba(15,23,42,.14);animation:obsPop .3s ease}
 #obsVoice[data-state=listening],#obsVoice[data-state=processing],#obsVoice[data-state=paused]{display:block}
-#obsVoice>*{position:relative}
+#obsVoice::before{content:"";position:absolute;left:0;top:0;height:2px;width:100%;background:linear-gradient(90deg,transparent,#1e3c72,transparent);background-size:50% 100%;background-repeat:no-repeat;opacity:0}
+#obsVoice[data-state=processing]::before{opacity:1;animation:ovSweep 1.3s ease-in-out infinite}
 .ov-top{display:flex;align-items:center;gap:8px}
-.ov-chip{display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 10px;border-radius:99px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-size:12px;font-weight:700;letter-spacing:.2px;color:#fff;backdrop-filter:blur(6px)}
-.ov-dot{width:8px;height:8px;border-radius:50%;background:#fb7185;box-shadow:0 0 0 0 rgba(251,113,133,.7);animation:ovPulse 1.3s ease-out infinite}
-#ovTime{margin-left:auto;font-variant-numeric:tabular-nums;color:#c7d2fe;font-weight:700;font-size:13px;letter-spacing:.4px;background:rgba(0,0,0,.22);padding:4px 10px;border-radius:8px}
-.ov-stage{display:flex;align-items:center;gap:16px;margin:14px 0 12px}
-.ov-orb{position:relative;flex:0 0 58px;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:21px;color:#fff;background:linear-gradient(145deg,#fb7185,#e11d48);box-shadow:0 8px 20px rgba(225,29,72,.5),inset 0 2px 0 rgba(255,255,255,.35);transition:background .4s,box-shadow .4s,transform .25s}
-.ov-orb::before,.ov-orb::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid rgba(251,113,133,.7);opacity:0;animation:ovRipple 2.4s ease-out infinite}
-.ov-orb::after{animation-delay:1.2s}
-.ov-orb .ov-i2{display:none}
-#obsVoice.talk .ov-orb{transform:scale(1.09)}
-#obsVoice.talk .ov-orb::before,#obsVoice.talk .ov-orb::after{animation-duration:1.4s}
-.ov-bars{flex:1;display:flex;align-items:center;justify-content:space-between;gap:3px;height:46px;min-width:0}
-.ov-bars i{flex:1;max-width:5px;height:6px;border-radius:4px;background:linear-gradient(#67e8f9,#a78bfa 55%,#f472b6);opacity:.4;transition:opacity .3s}
-#obsVoice.talk .ov-bars i{opacity:1;animation:ovBar .9s ease-in-out infinite}
-.ov-live{font-size:15px;line-height:1.6;color:#f1f5f9;max-height:112px;overflow:auto;min-height:48px;word-break:break-word;text-align:left;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 13px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.3) transparent}
-.ov-live:empty::before{content:attr(data-ph);color:#9aa3d6;font-style:italic}
-.ov-live .ov-int{color:#a5b4fc;font-style:italic}
-.ov-live.editing{outline:none;background:rgba(255,255,255,.14);border:1.5px dashed #a5b4fc;cursor:text}
-.ov-hint{min-height:0;margin-top:8px;font-size:12.5px;font-weight:600;color:#fde68a}
+.ov-chip{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:#64748b}
+.ov-chip b{font-weight:600}
+.ov-dot{width:7px;height:7px;border-radius:50%;background:#e11d48;animation:ovBlink 1.4s ease-in-out infinite}
+#ovTime{margin-left:auto;font-variant-numeric:tabular-nums;font-size:12px;font-weight:500;color:#94a3b8;letter-spacing:.5px}
+.ov-stage{margin:14px 0 12px}
+.ov-bars{display:flex;align-items:center;justify-content:space-between;gap:3px;height:32px}
+.ov-bars i{flex:1;max-width:3px;height:3px;border-radius:2px;background:#1e3c72;opacity:.22;transition:opacity .3s}
+#obsVoice.talk .ov-bars i{opacity:.85;animation:ovBar 1s ease-in-out infinite}
+.ov-live{font-size:16px;line-height:1.65;color:#1f2937;max-height:120px;overflow:auto;min-height:52px;word-break:break-word;text-align:left;padding:12px 0 0;border-top:1px solid #eef0f5;scrollbar-width:thin;scrollbar-color:#d5d9e4 transparent}
+.ov-live:empty::before{content:attr(data-ph);color:#a3abbb}
+.ov-live .ov-int{color:#9aa3b5}
+.ov-live.editing{outline:none;cursor:text;background:#f8f9fc;border-radius:10px;border-top-color:transparent;padding:10px 12px;margin-top:2px;box-shadow:inset 0 0 0 1px #c9d0e0}
+.ov-hint{margin-top:8px;font-size:12.5px;color:#b45309}
 .ov-hint:empty{display:none}
-.ov-tip{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#a5acd9;margin-top:9px}
-.ov-tip i{color:#c4b5fd}
-.ov-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:13px}
-#obsVoice .obs-btn{border-radius:12px;padding:10px 15px}
-#obsVoice .obs-btn-ghost{background:transparent;color:#c7d2fe}
-#obsVoice .obs-btn-ghost:hover{background:rgba(255,255,255,.1)}
-#obsVoice .obs-btn-soft{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.2)}
-#obsVoice .obs-btn-soft:hover{background:rgba(255,255,255,.22)}
-.ov-btn-stop{background:linear-gradient(135deg,#fb7185,#e11d48);color:#fff;box-shadow:0 6px 16px rgba(225,29,72,.45)}
-#obsVoice[data-state=paused]{background:radial-gradient(120% 140% at 0% 0%,#475569 0%,#334155 50%,#1e293b 100%);box-shadow:0 10px 26px rgba(30,41,59,.35),inset 0 1px 0 rgba(255,255,255,.12)}
-#obsVoice[data-state=paused]::before{opacity:.3}
-#obsVoice[data-state=paused] .ov-dot{background:#94a3b8;animation:none}
-#obsVoice[data-state=paused] .ov-orb{background:linear-gradient(145deg,#94a3b8,#64748b);box-shadow:0 6px 14px rgba(0,0,0,.3)}
-#obsVoice[data-state=paused] .ov-orb::before,#obsVoice[data-state=paused] .ov-orb::after{animation:none}
-#obsVoice[data-state=paused] .ov-bars i{animation:none;height:6px;opacity:.3}
-#obsVoice[data-state=processing] .ov-orb{background:linear-gradient(145deg,#a78bfa,#7c3aed);box-shadow:0 8px 22px rgba(124,58,237,.6),inset 0 2px 0 rgba(255,255,255,.35)}
-#obsVoice[data-state=processing] .ov-orb::before,#obsVoice[data-state=processing] .ov-orb::after{border-color:rgba(167,139,250,.8);animation-duration:1.6s}
-#obsVoice[data-state=processing] .ov-i1{display:none}
-#obsVoice[data-state=processing] .ov-i2{display:block;animation:ovSpark 1.4s ease-in-out infinite}
-#obsVoice[data-state=processing] .ov-dot{background:#c4b5fd;animation:ovPulse 1s ease-out infinite}
-#obsVoice[data-state=processing] .ov-bars i{opacity:.85;animation:ovBar 1.4s ease-in-out infinite}
+.ov-tip{margin-top:10px;font-size:11.5px;color:#a3abbb}
+.ov-tip i{display:none}
+.ov-actions{display:flex;gap:6px;justify-content:flex-end;align-items:center;margin-top:14px}
+#obsVoice .obs-btn{border-radius:10px;padding:9px 14px;font-size:13px;font-weight:600;box-shadow:none}
+#obsVoice .obs-btn-ghost{background:transparent;color:#64748b}
+#obsVoice .obs-btn-ghost:hover{background:#f3f5f9;color:#334155}
+#obsVoice .obs-btn-soft{background:transparent;color:#1e3c72;border:1px solid #d9deea}
+#obsVoice .obs-btn-soft:hover{background:#f6f8fc}
+.ov-btn-stop{background:#1e3c72;color:#fff;margin-left:4px}
+.ov-btn-stop:hover:not(:disabled){background:#264a8a}
+.ov-btn-stop i{font-size:10px}
+#obsVoice[data-state=paused] .ov-dot{background:#cbd5e1;animation:none}
+#obsVoice[data-state=paused] .ov-bars i{animation:none;height:3px;opacity:.15}
+#obsVoice[data-state=processing] .ov-dot{background:#1e3c72;animation:ovBlink .8s ease-in-out infinite}
+#obsVoice[data-state=processing] .ov-bars i{opacity:.4;animation:ovBar 1.6s ease-in-out infinite}
 #obsVoice[data-state=processing] .ov-actions,#obsVoice[data-state=processing] .ov-hint,#obsVoice[data-state=processing] .ov-tip{display:none}
-@keyframes ovPulse{0%{box-shadow:0 0 0 0 rgba(251,113,133,.65)}70%,100%{box-shadow:0 0 0 8px rgba(251,113,133,0)}}
-@keyframes ovRipple{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.85);opacity:0}}
-@keyframes ovSpark{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.22) rotate(14deg)}}
-@keyframes ovBar{0%,100%{height:6px}50%{height:40px}}
-@media(max-width:600px){.ov-stage{gap:12px}.ov-orb{flex-basis:52px;width:52px;height:52px;font-size:19px}.ov-actions{flex-wrap:wrap}.ov-actions .obs-btn{flex:1 1 auto;justify-content:center}#ovStop{flex-basis:100%;order:-1}}
-@media(prefers-reduced-motion:reduce){#obsVoice *,#obsVoice *::before,#obsVoice *::after{animation-duration:.01s!important;animation-iteration-count:1!important}}
+@keyframes ovBlink{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes ovBar{0%,100%{height:3px}50%{height:26px}}
+@keyframes ovSweep{0%{background-position:-100% 0}100%{background-position:200% 0}}
+@media(max-width:600px){#obsVoice{padding:14px 15px 12px}.ov-actions{flex-wrap:wrap}.ov-actions .obs-btn{flex:1 1 auto;justify-content:center}#ovStop{flex-basis:100%;order:-1;margin:0 0 2px}}
+@media(prefers-reduced-motion:reduce){#obsVoice *,#obsVoice::before{animation-duration:.01s!important;animation-iteration-count:1!important}}
 
 @media(max-width:600px){#obsFoot{flex-wrap:wrap}.obs-btn-mic span{display:inline}}
 
@@ -784,10 +772,10 @@
       </div>
       <div id="obsVoice" data-state="idle" aria-live="polite">
         <div class="ov-top"><span class="ov-chip"><span class="ov-dot"></span><b id="ovTitle">Escuchando…</b></span><span id="ovTime">0:00</span></div>
-        <div class="ov-stage"><div class="ov-orb"><i class="fas fa-microphone ov-i1"></i><i class="fas fa-wand-magic-sparkles ov-i2"></i></div><div class="ov-bars"><i style="animation-delay:0ms"></i><i style="animation-delay:97ms"></i><i style="animation-delay:194ms"></i><i style="animation-delay:291ms"></i><i style="animation-delay:388ms"></i><i style="animation-delay:65ms"></i><i style="animation-delay:162ms"></i><i style="animation-delay:259ms"></i><i style="animation-delay:356ms"></i><i style="animation-delay:33ms"></i><i style="animation-delay:130ms"></i><i style="animation-delay:227ms"></i><i style="animation-delay:324ms"></i><i style="animation-delay:1ms"></i><i style="animation-delay:98ms"></i><i style="animation-delay:195ms"></i><i style="animation-delay:292ms"></i><i style="animation-delay:389ms"></i><i style="animation-delay:66ms"></i><i style="animation-delay:163ms"></i><i style="animation-delay:260ms"></i><i style="animation-delay:357ms"></i><i style="animation-delay:34ms"></i><i style="animation-delay:131ms"></i></div></div>
+        <div class="ov-stage"><div class="ov-bars"><i style="animation-delay:0ms"></i><i style="animation-delay:83ms"></i><i style="animation-delay:166ms"></i><i style="animation-delay:249ms"></i><i style="animation-delay:332ms"></i><i style="animation-delay:415ms"></i><i style="animation-delay:498ms"></i><i style="animation-delay:81ms"></i><i style="animation-delay:164ms"></i><i style="animation-delay:247ms"></i><i style="animation-delay:330ms"></i><i style="animation-delay:413ms"></i><i style="animation-delay:496ms"></i><i style="animation-delay:79ms"></i><i style="animation-delay:162ms"></i><i style="animation-delay:245ms"></i><i style="animation-delay:328ms"></i><i style="animation-delay:411ms"></i><i style="animation-delay:494ms"></i><i style="animation-delay:77ms"></i><i style="animation-delay:160ms"></i><i style="animation-delay:243ms"></i><i style="animation-delay:326ms"></i><i style="animation-delay:409ms"></i><i style="animation-delay:492ms"></i><i style="animation-delay:75ms"></i><i style="animation-delay:158ms"></i><i style="animation-delay:241ms"></i><i style="animation-delay:324ms"></i><i style="animation-delay:407ms"></i><i style="animation-delay:490ms"></i><i style="animation-delay:73ms"></i><i style="animation-delay:156ms"></i><i style="animation-delay:239ms"></i><i style="animation-delay:322ms"></i><i style="animation-delay:405ms"></i><i style="animation-delay:488ms"></i><i style="animation-delay:71ms"></i><i style="animation-delay:154ms"></i><i style="animation-delay:237ms"></i><i style="animation-delay:320ms"></i><i style="animation-delay:403ms"></i><i style="animation-delay:486ms"></i><i style="animation-delay:69ms"></i><i style="animation-delay:152ms"></i><i style="animation-delay:235ms"></i><i style="animation-delay:318ms"></i><i style="animation-delay:401ms"></i></div></div>
         <div class="ov-live" id="ovLive" data-ph="Habla con naturalidad; yo me encargo de la redacción…" spellcheck="true"></div>
         <div class="ov-hint" id="ovHint"></div>
-        <div class="ov-tip"><i class="fas fa-lightbulb"></i>Di «punto y aparte» o «nueva línea» para separar párrafos.</div>
+        <div class="ov-tip">Di «punto y aparte» o «nueva línea» para separar párrafos.</div>
         <div class="ov-actions">
           <button type="button" class="obs-btn obs-btn-ghost" id="ovCancel">Cancelar</button>
           <button type="button" class="obs-btn obs-btn-soft" id="ovPause"><i class="fas fa-pause"></i> Pausa</button>
@@ -848,7 +836,7 @@
         <div class="ha-form-row" id="haModalFormRow">
           <div class="ha-cal-grp" id="haModalCalGrp"></div>
           <button type="button" class="ha-form-action-btn" id="haModalFotoBtn"><i class="fas fa-camera"></i> Foto</button>
-          <button type="button" class="ha-form-action-btn ha-form-om-btn" id="haModalOmBtn"><i class="fas fa-lightbulb"></i> OM</button>
+          <button type="button" class="ha-form-action-btn ha-form-om-btn" id="haModalOmBtn"> OM</button>
           <button type="button" class="ha-add-btn" id="haModalAddBtn"><i class="fas fa-plus"></i> Agregar</button>
         </div>
       </div>
@@ -930,7 +918,7 @@
 <div id="omInlineModal" class="om-inline-modal">
   <div class="om-inline-content" role="dialog" aria-modal="true" aria-labelledby="om-inline-title">
     <div class="om-hd">
-      <div class="om-hd-ico"><i class="fas fa-lightbulb"></i></div>
+      <div class="om-hd-ico"></div>
       <div class="om-hd-txt">
         <h3 id="om-inline-title">Oportunidad de mejora</h3>
         <p id="om-inline-subtitle">Ítem seleccionado</p>
@@ -1099,7 +1087,7 @@ function renderChecklist() {
 
       const tdOm = document.createElement('td'); tdOm.className = 'evidence-cell';
       const omBtn = document.createElement('button'); omBtn.className = 'om-btn';
-      omBtn.innerHTML = '<i class="fas fa-lightbulb"></i><span>OM</span>';
+      omBtn.innerHTML = '<span>OM</span>';
       omBtn.onclick = () => openOmInlineModal(section.name, idx, text);
       omBtn.id = 'om-btn-' + itemId;
       tdOm.appendChild(omBtn); row.appendChild(tdOm);
@@ -1530,7 +1518,7 @@ function omInlineRenderLista() {
   const prevN = (cont.dataset.item === String(_currentOmItem)) ? parseInt(cont.dataset.n || '0', 10) : items.length;
   cont.dataset.item = String(_currentOmItem); cont.dataset.n = items.length;
   if (items.length === 0) {
-    cont.innerHTML = '<div class="om-empty"><i class="fas fa-lightbulb"></i><span>Sin oportunidades registradas todavía</span></div>';
+    cont.innerHTML = '<div class="om-empty"><span>Sin oportunidades registradas todavía</span></div>';
     return;
   }
   const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -1602,7 +1590,7 @@ function refreshOmButton(itemId) {
   if (count > 0) {
     btn.classList.add('has-om');
     btn.classList.remove('has-om-draft');
-    btn.innerHTML = `<i class="fas fa-lightbulb"></i><span>OM (${count})</span>`;
+    btn.innerHTML = `<span>OM (${count})</span>`;
   } else if (hasDraft) {
     btn.classList.remove('has-om');
     btn.classList.add('has-om-draft');
@@ -1610,7 +1598,7 @@ function refreshOmButton(itemId) {
   } else {
     btn.classList.remove('has-om');
     btn.classList.remove('has-om-draft');
-    btn.innerHTML = '<i class="fas fa-lightbulb"></i><span>OM</span>';
+    btn.innerHTML = '<span>OM</span>';
   }
 }
 
@@ -2660,7 +2648,7 @@ function resetForm(){
   clearLocalStorage();
   idbClear();
   document.querySelectorAll('.evidence-btn').forEach(btn=>{ btn.classList.remove('has-evidence'); const b=btn.querySelector('.evidence-count'); if(b)b.remove(); });
-  document.querySelectorAll('.om-btn').forEach(btn=>{ btn.classList.remove('has-om'); btn.innerHTML='<i class="fas fa-lightbulb"></i><span>OM</span>'; });
+  document.querySelectorAll('.om-btn').forEach(btn=>{ btn.classList.remove('has-om'); btn.innerHTML='<span>OM</span>'; });
   computeResults();
   window.scrollTo({top:0,behavior:'smooth'});
   showNotification('Formulario restablecido','success');
@@ -3397,7 +3385,7 @@ function _haCreateListItem(secId, item) {
   omBtn.className = 'ha-act-btn om-s';
   omBtn.id = 'ha-om-' + item.iid;
   omBtn.title = 'Oportunidad de mejora';
-  omBtn.innerHTML = '<i class="fas fa-lightbulb"></i><span>OM</span>';
+  omBtn.innerHTML = '<span>OM</span>';
   (function(iid, txt){
     omBtn.addEventListener('click', function(){
       _currentOmItem  = iid;
@@ -3495,14 +3483,14 @@ function _haRefreshModalFormBtns() {
   omBtn.classList.remove('active', 'om-draft-pending');
   if (omCount > 0) {
     omBtn.classList.add('active');
-    omBtn.innerHTML = '<i class="fas fa-lightbulb"></i> OM';
+    omBtn.innerHTML = ' OM';
     var b2 = document.createElement('span'); b2.className = 'ha-form-count'; b2.textContent = omCount;
     omBtn.appendChild(b2);
   } else if (omDraft) {
     omBtn.classList.add('om-draft-pending');
-    omBtn.innerHTML = '<i class="fas fa-lightbulb"></i> OM <span style="font-size:9px;font-weight:700;opacity:0.9;letter-spacing:0.2px;">· sin guardar</span>';
+    omBtn.innerHTML = ' OM <span style="font-size:9px;font-weight:700;opacity:0.9;letter-spacing:0.2px;">· sin guardar</span>';
   } else {
-    omBtn.innerHTML = '<i class="fas fa-lightbulb"></i> OM';
+    omBtn.innerHTML = ' OM';
   }
 }
 
@@ -3614,7 +3602,7 @@ function haSetBtnCount(btnId, count, isOm) {
   if (existing) existing.remove();
   btn.classList.toggle('active', count > 0);
   btn.innerHTML = isOm
-    ? '<i class="fas fa-lightbulb"></i><span>OM</span>'
+    ? '<span>OM</span>'
     : '<i class="fas fa-camera"></i><span>Foto</span>';
   if (count > 0) {
     var badge = document.createElement('span');
