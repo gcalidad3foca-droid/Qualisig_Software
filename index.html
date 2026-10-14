@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Qualisig Software</title>
+<title>Qualisig — Módulo de Auditorías</title>
 <link rel="icon" type="image/png" sizes="32x32" href="https://i.imgur.com/ht6IpCi.png">
 <link rel="icon" type="image/png" sizes="64x64" href="https://i.imgur.com/ht6IpCi.png">
 <link rel="icon" type="image/png" sizes="128x128" href="https://i.imgur.com/ht6IpCi.png">
@@ -11581,15 +11581,16 @@ const _GROQ_BLOQUE_MAX = 1800;   // caracteres por bloque
 let _indMejorarPeticion = 0;     // invalida respuestas de solicitudes anteriores
 
 const _GROQ_SISTEMA = 'Eres un redactor y editor profesional en español de Colombia, con amplia experiencia en documentos institucionales: informes de gestión, actas, planes de acción, hallazgos, análisis, objetivos, correos y comunicados, especialmente del sector salud y de calidad (ISO 9001, habilitación, acreditación). '
-  + 'Recibirás un texto de cualquier tipo y largo. Tu trabajo es PARAFRASEARLO y REDACTARLO MEJOR, entregando una versión claramente superior a la original:\n'
-  + '1. REESCRIBE todo con otras palabras: cambia la estructura de las oraciones, el orden de las ideas dentro de cada párrafo cuando mejore la claridad, los conectores y el vocabulario. Nunca copies una oración tal cual.\n'
-  + '2. MEJORA la calidad: elimina muletillas, repeticiones y rodeos; usa voz activa y verbos precisos; une oraciones cortas entrecortadas y divide las excesivamente largas; da fluidez y cohesión entre oraciones y entre párrafos con conectores variados (no repitas el mismo).\n'
-  + '3. ADAPTA el tono al tipo de texto: formal, claro y técnico para informes y actas; directo y accionable para acciones y planes; cordial y profesional para correos. Si el texto es informal o mal escrito, llévalo a un registro profesional.\n'
-  + '4. CORRIGE ortografía, tildes, puntuación, concordancia, mayúsculas y errores de digitación o de dictado.\n'
-  + '5. CONSERVA EXACTAMENTE los hechos: cifras, porcentajes, fechas, horas, nombres de personas, cargos, áreas, entidades, normas, códigos, siglas y términos técnicos. No inventes, no agregues datos, no elimines ideas, no resumas ni acortes de forma notable; la extensión final debe ser similar a la original.\n'
-  + '6. RESPETA LA ESTRUCTURA: misma cantidad de párrafos y mismo orden. Si hay títulos, viñetas (•, -, *) o numeración (1., 2., a), b)), consérvalos con el mismo formato, un elemento por línea. Conserva los saltos de línea.\n'
-  + '7. Si el texto está en primera persona, déjalo en primera persona; si es impersonal, déjalo impersonal. No cambies el sentido ni el punto de vista.\n'
-  + '8. SALIDA: responde únicamente con el texto final, sin títulos, comillas, markdown, notas ni explicaciones.';
+  + 'Recibirás un texto de cualquier tipo y largo. Tu trabajo es PARAFRASEARLO y MEJORAR SU REDACCIÓN conservando fielmente su sentido:\n'
+  + '1. PARAFRASEA con naturalidad: usa sinónimos y expresiones equivalentes, cambia conectores y reestructura cada oración de forma moderada para que no quede copiada, pero sin alejarte de lo que el autor quiso decir. Mantén el mismo significado, el mismo orden de ideas y la misma intención; nunca cambies el sentido de una frase.\n'
+  + '2. MEJORA la calidad: elimina muletillas, repeticiones y rodeos; prefiere verbos precisos y voz activa; une oraciones cortas entrecortadas y divide las excesivamente largas. Si una frase ya está bien escrita, conserva su idea y ajusta solo lo necesario.\n'
+  + '3. ALINEA el texto completo: mismo tiempo verbal, misma persona gramatical, mismo registro y terminología consistente de principio a fin (no llames de dos formas distintas a lo mismo). Da cohesión entre oraciones y entre párrafos con conectores variados, sin repetir el mismo.\n'
+  + '4. ADAPTA el tono al tipo de texto: formal, claro y técnico para informes y actas; directo y accionable para acciones y planes; cordial y profesional para correos. Si el texto es informal o está mal escrito, llévalo a un registro profesional sin cambiar lo que dice.\n'
+  + '5. CORRIGE ortografía, tildes, puntuación, concordancia, mayúsculas y errores de digitación o de dictado.\n'
+  + '6. CONSERVA EXACTAMENTE los hechos: cifras, porcentajes, fechas, horas, nombres de personas, cargos, áreas, entidades, normas, códigos, siglas y términos técnicos. No inventes, no agregues datos, no elimines ideas, no resumas ni acortes de forma notable; la extensión final debe ser similar a la original.\n'
+  + '7. RESPETA LA ESTRUCTURA: misma cantidad de párrafos y mismo orden. Si hay títulos, viñetas (•, -, *) o numeración (1., 2., a), b)), consérvalos con el mismo formato, un elemento por línea. Conserva los saltos de línea.\n'
+  + '8. Si el texto está en primera persona, déjalo en primera persona; si es impersonal, déjalo impersonal.\n'
+  + '9. SALIDA: responde únicamente con el texto final, sin títulos, comillas, markdown, notas ni explicaciones.';
 
 async function _indLlamarGroqConModelo(modelo, mensajes, maxTokens, timeoutMs, temperatura) {
   const controller = new AbortController();
@@ -11680,7 +11681,7 @@ async function _indGroqParafrasearBloque(texto, esFragmento, contexto, alReinten
     let hayReintentable = false;
     for (let i = 0; i < _GROQ_MODELOS.length; i++) {
       const modelo = _GROQ_MODELOS[i];
-      const temp = (i === 0 ? 0.6 : 0.7) + (ronda ? 0.05 : 0);
+      const temp = (i === 0 ? 0.45 : 0.5) + (ronda ? 0.05 : 0);
       let r = await _indLlamarGroqConModelo(modelo, mensajes, maxTokens, timeoutMs, temp);
       if (r.status === 401 || r.status === 403) { const e = new Error('La clave de la IA no es válida o la Worker la rechazó'); e.fatal = true; throw e; }
       if (r.status === 429) { await _indEsperar(Math.min(8000, (r.retryAfter || 3) * 1000)); r = await _indLlamarGroqConModelo(modelo, mensajes, maxTokens, timeoutMs, temp); }
@@ -11695,7 +11696,7 @@ async function _indGroqParafrasearBloque(texto, esFragmento, contexto, alReinten
       const salida = _indLimpiarSalidaIA(choice && choice.message && choice.message.content);
       const cortada = choice && choice.finish_reason === 'length';
       const muyCorta = salida.length < texto.length * 0.6;
-      const muyLarga = salida.length > texto.length * 1.8 + 80;
+      const muyLarga = salida.length > texto.length * 1.5 + 60;
       const copiada = texto.length > 80 && _indNormalizarComparar(salida) === _indNormalizarComparar(texto);
       if (!salida || cortada || muyCorta || muyLarga || copiada) {
         ultimoError = copiada ? 'El modelo devolvió el mismo texto' : 'La respuesta llegó incompleta';
