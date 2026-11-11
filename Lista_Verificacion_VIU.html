@@ -785,10 +785,13 @@
             <div data-st="loading" class="obs-ai-load">
               <i class="fas fa-wand-magic-sparkles obs-varita"></i>
               <p id="obsAiLoadTxt">Mejorando redacción...</p>
+              <div class="opt-skel"></div><div class="opt-skel"></div><div class="opt-skel"></div>
             </div>
             <div data-st="result">
-              <div class="obs-ai-top"><i class="fas fa-wand-magic-sparkles"></i> Mejorado con IA <span class="obs-ai-scope" id="obsAiScope"></span></div>
+              <div class="obs-ai-top"><i class="fas fa-wand-magic-sparkles"></i> <span id="obsAiTopTxt">Mejorado con IA</span> <span class="obs-ai-scope" id="obsAiScope"></span></div>
               <div class="obs-ai-new" id="obsAiNew"></div>
+              <div class="obs-opts" id="obsOpts"></div>
+              <div class="om-sug" id="obsOm" style="display:none"></div>
               <div class="obs-ai-actions">
                 <button type="button" class="obs-btn obs-btn-cancel" id="obsAiDiscard">Descartar</button>
                 <button type="button" class="obs-btn obs-btn-soft" id="obsAiRetry"><i class="fas fa-rotate"></i> Reintentar</button>
@@ -4120,6 +4123,65 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   if(haTaEl) haTaEl.addEventListener('keydown',function(e){ if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();haAdd();} });
 });
 </script>
+<style id="iaOpts">
+/* ===== OPCIONES DE REDACCIÓN + OM SUGERIDA ===== */
+#obsAi.multi .obs-ai-new,#obsAi.multi #obsAiApply{display:none}
+#obsAi:not(.multi) .opt-skel{display:none}
+.obs-opts{display:flex;flex-direction:column;gap:10px}
+.opt,.omc{box-sizing:border-box;position:relative;display:flex;flex-direction:column;gap:9px;width:100%;margin:0;text-align:left;font:inherit;color:inherit;cursor:pointer;
+  background:#fff;border:1.5px solid #ebe5fa;border-radius:14px;padding:13px 14px 11px;
+  transition:border-color .2s ease,box-shadow .28s ease,transform .2s cubic-bezier(.22,1,.36,1),background-color .2s ease;
+  animation:optIn .5s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0)*65ms);-webkit-tap-highlight-color:transparent}
+.opt:hover,.omc:hover{border-color:#c4b5fd;box-shadow:0 10px 24px -16px rgba(109,40,217,.55);transform:translateY(-1px)}
+.opt:active,.omc:active{transform:scale(.992)}
+.opt:focus-visible,.omc:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(124,58,237,.28)}
+.opt-h{display:flex;align-items:center;gap:10px;min-width:0}
+.opt-ic{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-size:13px;background:var(--tint,#ede9fe);color:var(--ink,#6d28d9)}
+.opt-h b{font-size:13.5px;font-weight:700;color:#1f2a44;letter-spacing:-.005em}
+.opt-h small{min-width:0;font-size:11.5px;font-weight:500;color:#8b93a7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.opt[data-k=CORREGIDA]{--tint:#eef2f7;--ink:#475569}
+.opt[data-k=CONCISA]{--tint:#e0f2fe;--ink:#0369a1}
+.opt[data-k=TECNICA]{--tint:#ede9fe;--ink:#6d28d9}
+.opt[data-k=DETALLADA]{--tint:#dcfce7;--ink:#15803d}
+.opt-t{display:block;font-size:14px;line-height:1.58;color:#2b3350;white-space:pre-wrap;word-break:break-word;text-align:left}
+.opt-f{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.opt-f em{font-style:normal;font-size:11px;color:#a3a9bd;font-variant-numeric:tabular-nums}
+.opt-use,.omc-add{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;border-radius:999px;padding:6px 13px;transition:background-color .2s,color .2s,transform .2s}
+.opt-use{color:#6d28d9;background:#f3e8ff}
+.opt:hover .opt-use{background:#7c3aed;color:#fff}
+.opt.on{border-color:#7c3aed;background:linear-gradient(180deg,#faf7ff,#fff);box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+.opt.on .opt-use{background:#16a34a;color:#fff}
+.opt .opt-use i,.omc .omc-add i{font-size:10.5px}
+.om-sug{margin-top:16px}
+#obsOm{margin-top:18px;padding-top:16px;border-top:1px dashed #e4dcf7}
+#obsOm .omc,.omx-list .omc{margin-top:10px}
+.om-sug-h{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.om-sug-h b{display:block;font-size:13px;font-weight:700;color:#1f2a44}
+.om-sug-h small{display:block;font-size:11.5px;color:#8b93a7;font-weight:500;margin-top:1px}
+.om-sug-ic{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-size:13px;background:#fef3c7;color:#b45309}
+.omc{border-color:#f6e7b4}
+.omc:hover{border-color:#f5c542;box-shadow:0 10px 24px -16px rgba(217,119,6,.55)}
+.omc-tag{align-self:flex-start;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#b45309;background:#fef3c7;border-radius:999px;padding:3px 10px}
+.omc-add{color:#b45309;background:#fef3c7}
+.omc:hover .omc-add{background:#f59e0b;color:#fff}
+.omc.done{border-color:#86efac;background:#f6fef9;cursor:default;box-shadow:none;transform:none}
+.omc.done .omc-add{background:#16a34a;color:#fff}
+.opt-skel{height:74px;border-radius:14px;margin-top:10px;background:linear-gradient(100deg,#f4f0fc 30%,#faf8ff 50%,#f4f0fc 70%);background-size:220% 100%;animation:optShim 1.3s linear infinite}
+.omx-panel .ia-inner{padding:2px 2px 4px;margin:-2px}
+.omx-load-t{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:#7c6bb8;font-weight:600;padding:2px 0 4px}
+.omx-load-t i{animation:obsSpin 1.4s linear infinite;color:#f59e0b}
+.ia-pill-om{background:#fffbeb;color:#b45309;box-shadow:inset 0 0 0 1.5px #fcd34d;animation:none}
+.ia-pill-om:hover{background:#f59e0b;color:#fff;box-shadow:0 4px 14px rgba(217,119,6,.4)}
+.ia-pill-om.busy{opacity:.75}
+#omInlineModal .omx-panel.show{margin-top:9px}
+#omInlineModal .opt-t{font-size:13px}
+#omInlineModal .omc{padding:11px 12px 9px}
+#omInlineModal .om-sug-h small{display:none}
+@keyframes optIn{from{opacity:0;transform:translate3d(0,10px,0) scale(.985)}to{opacity:1;transform:none}}
+@keyframes optShim{to{background-position:-220% 0}}
+@media(max-width:560px){.opt-h small{display:none}.opt,.omc{padding:12px 12px 10px}.opt-t{font-size:14.5px}}
+@media(prefers-reduced-motion:reduce){.opt,.omc,.opt-skel{animation:none}}
+</style>
 <script>
 /* ===== MOTOR DE IA COMPARTIDO (Groq vía Cloudflare Worker, sin clave en el HTML) + componente reutilizable ===== */
 window.IAEngine=(function(){
@@ -4267,7 +4329,134 @@ window.IAEngine=(function(){
     }
     return {ok:true,text:out,parcial:fallos.length>0};
   }
-  return {improve:improve};
+  /* ───── Opciones de redacción (varios estilos) + sugerencias de OM, en UNA sola llamada ───── */
+  const ESTILOS=[
+    {k:'CORREGIDA',n:'Corregida',d:'Tu texto, sin errores'},
+    {k:'CONCISA',n:'Concisa',d:'Breve y directa'},
+    {k:'TECNICA',n:'Técnica',d:'Estilo hallazgo de auditoría'},
+    {k:'DETALLADA',n:'Detallada',d:'Con más contexto'}
+  ];
+  const TAGS='\\[\\s*(CORREGIDA|CONCISA|T[EÉ]CNICA|DETALLADA|OM\\s*1|OM\\s*2)\\s*\\]';
+  function secciones(raw){
+    const t=(raw||'').replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/\*\*/g,'');
+    const p=t.split(new RegExp(TAGS,'i')),out={};
+    for(let i=1;i<p.length;i+=2){
+      const k=p[i].toUpperCase().replace(/\s+/g,'').replace('É','E');
+      let b=(p[i+1]||'').replace(/^\s*:\s*/,'').trim();
+      b=b.replace(/^\s*(?:[-•*]|\d+[.)])\s+/,'').replace(/^["“«]([\s\S]*?)["”»]$/,'$1').trim();
+      if(b&&!out[k])out[k]=b;
+    }
+    return out;
+  }
+  const recortar=(t,max)=>{if(t.length<=max)return t;const c=t.slice(0,max),p=c.lastIndexOf('.');return (p>max*.5?c.slice(0,p+1):c).trim();};
+  const BASE_AUD='Eres un auditor líder de calidad en servicios de salud en Colombia (habilitación, acreditación e ISO 9001). ';
+  const REGLAS='- Conserva EXACTAMENTE cifras, fechas, nombres, cargos, áreas, siglas, cantidades y hechos. No inventes datos, causas, responsables, plazos ni normas.\n'
+    +'- Español de Colombia, tono institucional y punto de vista impersonal. Cada texto debe poder pegarse solo, sin depender de los demás.\n';
+  const OM_REGLAS='[OM1] Acción CORRECTIVA inmediata y concreta que corrija la situación observada.\n'
+    +'[OM2] Acción PREVENTIVA o de control que evite que se repita (verificación periódica, seguimiento, capacitación o ajuste del proceso).\n'
+    +'Cada OM: una sola oración que empiece con un verbo en infinitivo (Realizar, Implementar, Establecer, Verificar…), máximo 300 caracteres, sin responsables, plazos ni cifras que no estén en la observación.\n';
+  function sistemaOpc(conOM){
+    return BASE_AUD+'Recibirás la OBSERVACIÓN que un auditor escribió en una lista de verificación, junto con el ítem evaluado y su resultado.\n'
+      +'Entrega VARIAS versiones de redacción de la MISMA observación, cada una con un estilo distinto:\n'
+      +'[CORREGIDA] El mismo texto del autor con ortografía, tildes, puntuación y mayúsculas corregidas. Cambia lo mínimo.\n'
+      +'[CONCISA] Una sola oración clara, directa y profesional; solo lo esencial.\n'
+      +'[TECNICA] Estilo de hallazgo de auditoría ("Se observó que…", "Se evidenció que…"): describe la evidencia observada y, si el resultado es No cumple o Cumple parcialmente, la condición que se incumple y su implicación para la seguridad del paciente o la calidad (p. ej. control de vencimientos, trazabilidad, riesgo en una emergencia). Si el resultado es Cumple, redacta la evidencia que sustenta el cumplimiento, sin hablar de incumplimiento. No cites normas ni numerales.\n'
+      +'[DETALLADA] Redacción completa y fluida en 2 o 3 oraciones, con el contexto de lo observado, sin agregar hechos nuevos.\n'
+      +(conOM?'Además entrega 2 oportunidades de mejora (OM) derivadas de la observación:\n'+OM_REGLAS:'')
+      +'Reglas:\n'+REGLAS
+      +'Formato: responde ÚNICAMENTE con las secciones; cada una inicia con su etiqueta entre corchetes en una línea propia ([CORREGIDA], [CONCISA], [TECNICA], [DETALLADA]'+(conOM?', [OM1], [OM2]':'')+') seguida del texto. Sin títulos, comillas, numeración ni comentarios.';
+  }
+  function sistemaOM(){
+    return BASE_AUD+'A partir de la OBSERVACIÓN de un ítem de la lista de verificación, redacta 2 oportunidades de mejora (OM) distintas:\n'+OM_REGLAS
+      +'Reglas:\n'+REGLAS
+      +'Formato: responde ÚNICAMENTE con [OM1] y [OM2], cada etiqueta en una línea propia seguida del texto. Sin comillas, numeración ni comentarios.';
+  }
+  function leerOM(s){
+    const om=[];
+    ['OM1','OM2'].forEach((k,i)=>{
+      const t=recortar(limpiar(s[k]||''),400);
+      if(t.length<15||om.some(x=>norm(x.t)===norm(t)))return;
+      om.push({k:k,n:i?'Preventiva':'Correctiva',t:t});
+    });
+    return om;
+  }
+  function evaluarOpc(texto,conOM){
+    return function(raw,corta){
+      const s=secciones(raw);
+      if(corta){const ks=Object.keys(s);if(ks.length)delete s[ks[ks.length-1]];}
+      const vistos=new Set(),opc=[];
+      ESTILOS.forEach(e=>{
+        const t=limpiar(s[e.k]||'');
+        if(t.length<12||faltantes(texto,t).length||t.length>texto.length*3+400)return;
+        const n=norm(t);if(vistos.has(n))return;vistos.add(n);
+        opc.push({k:e.k,n:e.n,d:e.d,t:t});
+      });
+      const om=conOM?leerOM(s):[];
+      const val={opc:opc,om:om};
+      if(opc.length>=3&&(!conOM||om.length>=2))return {ok:true,val:val};
+      return {ok:false,parcial:opc.length>=2&&(!conOM||om.length>=1),score:opc.length+om.length,val:val,error:'La respuesta llegó incompleta'};
+    };
+  }
+  function evaluarOM(raw,corta){
+    const s=secciones(raw);
+    if(corta&&s.OM2)delete s.OM2;
+    const om=leerOM(s);
+    if(om.length>=2)return {ok:true,val:{om:om}};
+    return {ok:false,parcial:om.length>=1,score:om.length,val:{om:om},error:'La respuesta llegó incompleta'};
+  }
+  async function correr(msgs,maxTokens,timeoutMs,tok,onRetry,evaluar){
+    let last='Error del servicio de IA',mejor=null;
+    const pausas=[0,2500,6000];
+    for(let ronda=0;ronda<pausas.length;ronda++){
+      if(ronda>0){if(onRetry)onRetry();await esperar(pausas[ronda]);}
+      if(tok.cancelled)return {cancelled:true};
+      let reint=false;
+      for(let i=0;i<MODELOS.length;i++){
+        if(tok.cancelled)return {cancelled:true};
+        const m=MODELOS[i],temp=0.35+(i?0.1:0);
+        let r=await call(m,msgs,maxTokens,timeoutMs,temp,tok);
+        if(r.cancelled||tok.cancelled)return {cancelled:true};
+        if(r.status===401||r.status===403)return {ok:false,error:'El servicio de IA rechazó la solicitud (revisa la Worker y su dominio permitido)'};
+        if(r.status===429){await esperar(3000);r=await call(m,msgs,maxTokens,timeoutMs,temp,tok);if(r.cancelled||tok.cancelled)return {cancelled:true};}
+        if(!r.ok){
+          const e=r.data&&r.data.error;last=(e&&(e.message||e))||('Error '+r.status);if(typeof last!=='string')last='Error '+r.status;
+          if(r.status===0||r.status===408||r.status===429||r.status>=500)reint=true;
+          continue;
+        }
+        const ch=r.data.choices&&r.data.choices[0];
+        const ev=evaluar(ch&&ch.message&&ch.message.content,ch&&ch.finish_reason==='length');
+        if(ev.ok)return {ok:true,val:ev.val};
+        last=ev.error||last;reint=true;
+        if(ev.parcial&&(!mejor||ev.score>mejor.score))mejor=ev;
+        if(mejor&&i>=1)return {ok:true,val:mejor.val,parcial:true};
+      }
+      if(mejor)return {ok:true,val:mejor.val,parcial:true};
+      if(!reint)break;
+    }
+    return {ok:false,error:last};
+  }
+  /* o: {item, resultado, om:boolean, contexto, token, onRetry} → {ok, opciones:[{k,n,d,t}], om:[{k,n,t}]} */
+  async function opciones(texto,o){
+    o=o||{};const tok=o.token||{},conOM=!!o.om;
+    if(!texto||!texto.trim())return {ok:false,error:'No hay texto para mejorar'};
+    if(texto.length>1800)return {ok:false,error:'el texto es muy largo para generar opciones; selecciona solo la parte que quieres mejorar'};
+    const ctx=(o.contexto&&o.contexto.trim()!==texto.trim())?'\n\nOBSERVACIÓN COMPLETA (solo contexto para las OM, no la reescribas):\n'+o.contexto:'';
+    const msgs=[{role:'system',content:sistemaOpc(conOM)},{role:'user',content:'ÍTEM EVALUADO: '+(o.item||'(no indicado)')+'\nRESULTADO: '+(o.resultado||'(sin calificar)')+'\n\nOBSERVACIÓN A REDACTAR:\n'+texto+ctx}];
+    const maxTokens=Math.min(3500,Math.ceil(texto.length/2.2)*4+700+(conOM?400:0));
+    const r=await correr(msgs,maxTokens,Math.min(90000,25000+texto.length*20),tok,o.onRetry,evaluarOpc(texto,conOM));
+    if(!r.ok)return r;
+    return {ok:true,opciones:r.val.opc,om:r.val.om,parcial:!!r.parcial};
+  }
+  /* o: {item, resultado, token, onRetry} → {ok, om:[{k,n,t}]} */
+  async function sugerirOM(obs,o){
+    o=o||{};const tok=o.token||{};
+    if(!obs||!obs.trim())return {ok:false,error:'sin observación'};
+    const msgs=[{role:'system',content:sistemaOM()},{role:'user',content:'ÍTEM EVALUADO: '+(o.item||'(no indicado)')+'\nRESULTADO: '+(o.resultado||'(sin calificar)')+'\n\nOBSERVACIÓN:\n'+obs.slice(0,2500)}];
+    const r=await correr(msgs,900,40000,tok,o.onRetry,evaluarOM);
+    if(!r.ok)return r;
+    return {ok:true,om:r.val.om};
+  }
+  return {improve:improve,opciones:opciones,sugerirOM:sugerirOM};
 })();
 
 /* Componente: agrega botón "Mejorar con IA" + panel de propuesta debajo de un campo de texto */
@@ -4375,6 +4564,63 @@ IAField.attach({
   after:document.getElementById('om-inline-input').parentElement,
   modal:document.getElementById('omInlineModal'),isOpen:function(){return document.getElementById('omInlineModal').style.display!=='none';}
 });
+
+/* OM: sugerir 2 oportunidades de mejora a partir de la observación del ítem */
+(function(){
+  var om=document.getElementById('omInlineModal'),ta=document.getElementById('om-inline-input');
+  if(!om||!ta||!window.IAEngine)return;
+  var wrap=om.querySelector('.ia-wrap');if(!wrap)return;
+  var bar=wrap.querySelector('.ia-bar'),hint=wrap.querySelector('.ia-hint');
+  var pill=document.createElement('button');pill.type='button';pill.className='ia-pill ia-pill-om';
+  pill.title='Sugerir oportunidades de mejora según la observación del ítem';
+  pill.innerHTML='<i class="fas fa-lightbulb"></i><span>Sugerir OM</span>';
+  bar.insertBefore(pill,hint);
+  var panel=document.createElement('div');panel.className='ia-panel omx-panel';panel.dataset.state='idle';
+  panel.innerHTML='<div class="ia-inner"><div class="obs-ai-card">'
+    +'<div data-st="loading" class="omx-load"><div class="omx-load-t"><i class="fas fa-lightbulb"></i><span>Analizando la observación…</span></div><div class="opt-skel"></div><div class="opt-skel"></div></div>'
+    +'<div data-st="result"><div class="om-sug-h"><span class="om-sug-ic"><i class="fas fa-lightbulb"></i></span><div><b>Oportunidad de mejora sugerida</b><small>Elige una; la pasamos al cuadro para que la ajustes y agregues</small></div></div><div class="omx-list"></div>'
+    +'<div class="obs-ai-actions"><button type="button" class="obs-btn obs-btn-cancel omx-close">Ocultar</button><button type="button" class="obs-btn obs-btn-soft omx-retry"><i class="fas fa-rotate"></i> Otras opciones</button></div></div>'
+    +'<div data-st="error"><div class="obs-ai-err omx-err"></div><div class="obs-ai-actions"><button type="button" class="obs-btn obs-btn-cancel omx-close">Ocultar</button><button type="button" class="obs-btn obs-btn-soft omx-retry"><i class="fas fa-rotate"></i> Reintentar</button></div></div>'
+    +'</div></div>';
+  wrap.appendChild(panel);
+  var q=function(s){return panel.querySelector(s);},qa=function(s){return panel.querySelectorAll(s);};
+  var tok=null,my=0,sug=[],prev=null;
+  function ctx(){
+    var id=typeof _currentOmItem!=='undefined'?_currentOmItem:null;
+    var r=id?document.getElementsByName(id):[],row=r[0]&&r[0].closest('tr');
+    if(!row)return {obs:'',item:'',res:''};
+    var oi=row.querySelector('.obs-input'),on=row.querySelector('input[type=radio]:checked');
+    var RT={C:'Cumple',CP:'Cumple parcialmente',NC:'No cumple',NA:'No aplica'};
+    return {obs:oi?oi.value:'',item:row.cells[0]?row.cells[0].textContent.trim():'',res:on?RT[on.value]||'':''};
+  }
+  function set(st){panel.dataset.state=st;panel.classList.add('show');pill.classList.toggle('busy',st==='loading');}
+  function reset(){my++;if(tok){tok.cancelled=true;if(tok.ctrl)tok.ctrl.abort();}tok=null;panel.classList.remove('show');panel.dataset.state='idle';pill.classList.remove('busy');}
+  var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+  async function run(){
+    var c=ctx(),id=++my;
+    if(tok){tok.cancelled=true;if(tok.ctrl)tok.ctrl.abort();}
+    if(!c.obs.trim()){q('.omx-err').textContent='Este ítem todavía no tiene observación. Escríbela primero y la IA sugerirá la oportunidad de mejora que corresponde.';set('error');return;}
+    tok={cancelled:false,ctrl:null};var t=tok;
+    set('loading');q('.omx-load-t span').textContent='Analizando la observación…';
+    var res=await IAEngine.sugerirOM(c.obs,{item:c.item,resultado:c.res,token:t,onRetry:function(){q('.omx-load-t span').textContent='Reintentando…';}});
+    if(id!==my||res.cancelled)return;
+    if(!res.ok){q('.omx-err').textContent='No se pudieron generar las sugerencias ('+res.error+'). Intenta de nuevo en un momento.';set('error');return;}
+    sug=res.om;
+    q('.omx-list').innerHTML=sug.map(function(o,i){return '<button type="button" class="omc" data-i="'+i+'" style="--i:'+i+'"><span class="omc-tag">'+o.n+'</span><span class="opt-t">'+esc(o.t)+'</span><span class="opt-f"><em>'+o.t.length+' caracteres</em><span class="omc-add"><i class="fas fa-arrow-down"></i><span>Usar esta</span></span></span></button>';}).join('');
+    set('result');
+    setTimeout(function(){try{panel.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){}},430);
+  }
+  pill.addEventListener('click',run);
+  qa('.omx-retry').forEach(function(b){b.addEventListener('click',run);});
+  qa('.omx-close').forEach(function(b){b.addEventListener('click',reset);});
+  panel.addEventListener('click',function(e){
+    var b=e.target.closest('.omc');if(!b)return;var o=sug[+b.dataset.i];if(!o)return;
+    ta.value=o.t;ta.dispatchEvent(new Event('input',{bubbles:true}));
+    panel.querySelectorAll('.omc').forEach(function(x){var on=x===b;x.classList.toggle('done',on);x.querySelector('.omc-add').innerHTML=on?'<i class="fas fa-check"></i><span>En el cuadro</span>':'<i class="fas fa-arrow-down"></i><span>Usar esta</span>';});
+    try{ta.focus({preventScroll:true});ta.setSelectionRange(ta.value.length,ta.value.length);}catch(er){}
+  });
+  new MutationObserver(function(){if(om.style.display==='none')reset();}).observe(om,{attributes:true,attributeFilter:['style']});
+})();
 </script>
 <script>
 /* ===== OBSERVACIONES · MODAL FLOTANTE + IA (misma API Groq de Qualisig) ===== */
@@ -4529,8 +4775,9 @@ IAField.attach({
     const my=++aiTok;
     if(aiCtrl){aiCtrl.cancelled=true;if(aiCtrl.ctrl)aiCtrl.ctrl.abort();}
     aiCtrl={cancelled:false,ctrl:null};
-    if(v!==null)$('obsAiLoadTxt').textContent='Entendiendo y redactando...';
-    else{setAi('loading');$('obsAiLoadTxt').textContent='Mejorando redacción...';}
+    ai.classList.toggle('multi',v===null);
+    if(v!==null){$('obsAiLoadTxt').textContent='Entendiendo y redactando...';$('obsAiTopTxt').textContent='Mejorado con IA';}
+    else{setAi('loading');$('obsAiLoadTxt').textContent='Preparando opciones de redacción…';return multi(my,hasSel);}
     const res=await IAEngine.improve(aiSrc,{ctx:'obs',voz:v!==null,token:aiCtrl,onRetry:()=>{$('obsAiLoadTxt').textContent='Reintentando...';if(v!==null)$('ovTitle').textContent='Reintentando…';}});
     if(my!==aiTok||res.cancelled)return;
     if(v!==null)vozUI('idle');
@@ -4548,9 +4795,65 @@ IAField.attach({
       setAi('error');
     }
   }
-  function applyAI(){
+  /* ---------- OPCIONES DE REDACCIÓN + OPORTUNIDAD DE MEJORA SUGERIDA ---------- */
+  const ESC=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const OPT_ICON={CORREGIDA:'spell-check',CONCISA:'bolt',TECNICA:'clipboard-check',DETALLADA:'align-left'};
+  const RES_TXT={C:'Cumple',CP:'Cumple parcialmente',NC:'No cumple',NA:'No aplica'};
+  let mOpts=[],mOm=[];
+  function rowCtx(){
+    const row=inp&&inp.closest('tr'),any=row&&row.querySelector('input[type=radio]'),on=row&&row.querySelector('input[type=radio]:checked');
+    return {item:(row&&row.cells[0]?row.cells[0].textContent:'').trim(),res:on?on.value:'',id:any?any.name:''};
+  }
+  function omHas(id,t){return !!omStore[id]&&omStore[id].indexOf(t)>-1;}
+  function renderMulti(hasSel,rc){
+    $('obsAiTopTxt').textContent='Opciones de redacción';
+    $('obsAiScope').textContent=hasSel?'Texto seleccionado':'Todo el campo';
+    $('obsOpts').innerHTML=mOpts.map((o,i)=>
+      '<button type="button" class="opt" data-i="'+i+'" data-k="'+o.k+'" style="--i:'+i+'">'
+      +'<span class="opt-h"><span class="opt-ic"><i class="fas fa-'+OPT_ICON[o.k]+'"></i></span><b>'+o.n+'</b><small>'+o.d+'</small></span>'
+      +'<span class="opt-t">'+ESC(o.t)+'</span>'
+      +'<span class="opt-f"><em>'+o.t.length+' caracteres</em><span class="opt-use"><i class="fas fa-check"></i><span>Usar esta</span></span></span></button>').join('');
+    const omBox=$('obsOm');
+    if(mOm.length){
+      omBox.innerHTML='<div class="om-sug-h"><span class="om-sug-ic"><i class="fas fa-lightbulb"></i></span><div><b>Oportunidad de mejora sugerida</b><small>Elige la que corresponda y se agrega a la OM de este ítem</small></div></div>'
+        +mOm.map((o,i)=>{const done=omHas(rc.id,o.t);
+          return '<button type="button" class="omc'+(done?' done':'')+'" data-i="'+i+'" style="--i:'+(mOpts.length+i)+'">'
+          +'<span class="omc-tag">'+o.n+'</span><span class="opt-t">'+ESC(o.t)+'</span>'
+          +'<span class="opt-f"><em>'+o.t.length+' caracteres</em><span class="omc-add">'+(done?'<i class="fas fa-check"></i><span>Agregada</span>':'<i class="fas fa-plus"></i><span>Agregar a OM</span>')+'</span></span></button>';}).join('');
+      omBox.style.display='block';
+    }else{omBox.innerHTML='';omBox.style.display='none';}
+  }
+  async function multi(my,hasSel){
+    const rc=rowCtx(),conOM=(rc.res==='NC'||rc.res==='CP')&&!!rc.id;
+    const res=await IAEngine.opciones(aiSrc,{item:rc.item,resultado:RES_TXT[rc.res]||'',om:conOM,contexto:ta.value,token:aiCtrl,onRetry:()=>{$('obsAiLoadTxt').textContent='Reintentando…';}});
+    if(my!==aiTok||res.cancelled)return;
+    if(!res.ok){
+      $('obsAiErr').textContent='No se pudieron generar las opciones de redacción ('+res.error+'). Intenta de nuevo en un momento.';
+      $('obsAiRaw').style.display='none';setAi('error');return;
+    }
+    mOpts=res.opciones;mOm=conOM?res.om:[];
+    renderMulti(hasSel,rc);setAi('result');
+    setTimeout(()=>{try{$('obsBody').scrollTo({top:Math.max(0,ai.offsetTop-12),behavior:'smooth'});}catch(e){}},430);
+  }
+  $('obsOpts').addEventListener('click',e=>{
+    const b=e.target.closest('.opt');if(!b)return;
+    const o=mOpts[+b.dataset.i];if(!o)return;
+    improved=o.t;applyAI(true);
+    $('obsOpts').querySelectorAll('.opt').forEach(x=>{const on=x===b;x.classList.toggle('on',on);x.querySelector('.opt-use span').textContent=on?'Aplicada':'Usar esta';x.querySelector('.opt-use i').className='fas fa-check';});
+  });
+  ta.addEventListener('input',()=>{$('obsOpts').querySelectorAll('.opt.on').forEach(x=>{x.classList.remove('on');x.querySelector('.opt-use span').textContent='Usar esta';});});
+  $('obsOm').addEventListener('click',e=>{
+    const b=e.target.closest('.omc');if(!b||b.classList.contains('done'))return;
+    const o=mOm[+b.dataset.i],rc=rowCtx();if(!o||!rc.id)return;
+    if(!omStore[rc.id])omStore[rc.id]=[];
+    if(omStore[rc.id].indexOf(o.t)<0)omStore[rc.id].push(o.t);
+    try{refreshOmButton(rc.id);saveToLocalStorage();}catch(er){}
+    b.classList.add('done');b.querySelector('.omc-add').innerHTML='<i class="fas fa-check"></i><span>Agregada</span>';
+    try{showNotification('Oportunidad de mejora agregada al ítem','success');}catch(er){}
+  });
+  function applyAI(keep){
     if(!improved)return;
-    preAI=ta.value;
+    if(keep!==true||preAI===null||!$('obsUndo').classList.contains('show'))preAI=ta.value;
     let caretEnd=null;
     if(aiVoz!==null&&aiSel){
       const bf=ta.value.slice(0,aiSel.s),af=ta.value.slice(aiSel.e),j=vozJoin(bf,improved,af);
@@ -4559,9 +4862,10 @@ IAField.attach({
     ta.focus({preventScroll:true});
     if(caretEnd!==null){ta.setSelectionRange(caretEnd,caretEnd);ta.scrollTop=ta.scrollHeight;}else ta.setSelectionRange(ta.value.length,ta.value.length);
     aiVoz=null;
+    if(keep===true&&aiSel)aiSel={s:aiSel.s,e:aiSel.s+improved.length};
     push(true);refresh();
-    ai.classList.remove('show');
-    setTimeout(()=>{if(!ai.classList.contains('show'))ai.dataset.state='idle';},420);
+    if(keep!==true){ai.classList.remove('show');
+    setTimeout(()=>{if(!ai.classList.contains('show'))ai.dataset.state='idle';},420);}
     $('obsUndo').classList.add('show');
   }
 
@@ -4787,7 +5091,7 @@ IAField.attach({
   $('ovPause').addEventListener('click',()=>{if(voiceEl.dataset.state==='paused')vozResume();else vozPause();});
   $('ovCancel').addEventListener('click',()=>{vozAbort();ta.focus({preventScroll:true});});
   $('obsAiRaw').addEventListener('click',()=>{if(aiVoz===null)return;improved=vozRaw(aiVoz);applyAI();});
-  $('obsAiApply').addEventListener('click',applyAI);
+  $('obsAiApply').addEventListener('click',()=>applyAI());
   const discard=()=>{aiReset();ta.focus({preventScroll:true});};
   $('obsAiDiscard').addEventListener('click',discard);
   $('obsAiDiscard2').addEventListener('click',discard);
