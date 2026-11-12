@@ -4139,6 +4139,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 .opt-h b{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1f2a44}
 .opt-h small{min-width:0;font-size:12px;font-weight:500;color:#8a93a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .opt-h small::before{content:"·";margin-right:8px;color:#c3c9d8}
+.opt-h small.rev{color:#b45309}
 .opt-h em{margin-left:auto;flex:none;font-style:normal;font-size:11px;color:#a0a8bb;font-variant-numeric:tabular-nums}
 .opt-t{display:block;font-size:14px;line-height:1.6;color:#2b3350;white-space:pre-wrap;word-break:break-word;text-align:left}
 .opt-f{display:flex;justify-content:flex-end}
@@ -4338,15 +4339,25 @@ window.IAEngine=(function(){
     const f=fechaLarga(iso)||fechaLarga(new Date().toISOString().slice(0,10));
     return 'FECHA DE LA AUDITORÍA: '+f+'\n';
   }
-  const TAGS='\\[\\s*(CONCISA|T[EÉ]CNICA|OM\\s*1|OM\\s*2)\\s*\\]';
+  const TAG_RE='^[ \\t>\\-•]*(?:opci[oó]n\\s*\\d+\\s*[:\\-–(]*\\s*)?[\\[\\(]?\\s*(CONCISA|T[EÉ]CNICA|CORRECTIVA|PREVENTIVA|OM\\s*1|OM\\s*2)\\s*[\\]\\)]?[ \\t]*(?:\\([^)\\n]*\\))?[ \\t]*[:\\-–.]?[ \\t]*';
   function secciones(raw){
-    const t=(raw||'').replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/\*\*/g,'');
-    const p=t.split(new RegExp(TAGS,'i')),out={};
-    for(let i=1;i<p.length;i+=2){
-      const k=p[i].toUpperCase().replace(/\s+/g,'').replace('É','E');
-      let b=(p[i+1]||'').replace(/^\s*:\s*/,'').trim();
-      b=b.replace(/^\s*(?:[-•*]|\d+[.)])\s+/,'').replace(/^["“«]([\s\S]*?)["”»]$/,'$1').trim();
-      if(b&&!out[k])out[k]=b;
+    const t=(raw||'').replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/[*_`#]/g,'');
+    const re=new RegExp(TAG_RE,'gim'),hits=[];let m;
+    while((m=re.exec(t))){
+      if(m[0].length===0){re.lastIndex++;continue;}
+      let k=m[1].toUpperCase().replace(/\s+/g,'').replace('É','E');
+      if(k==='CORRECTIVA')k='OM1';if(k==='PREVENTIVA')k='OM2';
+      hits.push({k:k,ini:m.index,fin:m.index+m[0].length});
+    }
+    const out={};
+    hits.forEach((h,i)=>{
+      let b=t.slice(h.fin,i+1<hits.length?hits[i+1].ini:t.length).trim();
+      b=b.replace(/^\s*(?:[-•]|\d+[.)])\s+/,'').replace(/^["“«]([\s\S]*?)["”»]$/,'$1').trim();
+      if(b&&!out[h.k])out[h.k]=b;
+    });
+    if(!hits.length){/* sin etiquetas: se toma el orden de las líneas */
+      const ls=t.split(/\n+/).map(x=>x.trim().replace(/^(?:[-•]|\d+[.)])\s+/,'')).filter(x=>x.length>12);
+      ['CONCISA','TECNICA','OM1','OM2'].forEach((k,i)=>{if(ls[i])out[k]=ls[i];});
     }
     return out;
   }
@@ -4385,17 +4396,22 @@ window.IAEngine=(function(){
     return function(raw,corta){
       const s=secciones(raw);
       if(corta){const ks=Object.keys(s);if(ks.length)delete s[ks[ks.length-1]];}
-      const vistos=new Set(),opc=[];
+      const vistos=new Set(),opc=[],resp=[];
       ESTILOS.forEach(e=>{
         const t=limpiar(s[e.k]||'');
-        if(t.length<12||faltantes(texto,t).length||t.length>texto.length*3+400)return;
+        if(t.length<12||t.length>texto.length*3+400)return;
         const n=norm(t);if(vistos.has(n))return;vistos.add(n);
-        opc.push({k:e.k,n:e.n,d:e.d,t:t});
+        if(faltantes(texto,t).filter(x=>/\d{3,}|[.,:/\-]/.test(x)).length)resp.push({k:e.k,n:e.n,d:e.d,t:t,rev:true});
+        else opc.push({k:e.k,n:e.n,d:e.d,t:t});
       });
       const om=conOM?leerOM(s):[];
-      const val={opc:opc,om:om};
-      if(opc.length>=2&&(!conOM||om.length>=2))return {ok:true,val:val};
-      return {ok:false,parcial:opc.length>=1&&(!conOM||om.length>=1),score:opc.length+om.length,val:val,error:'La respuesta llegó incompleta'};
+      const razon=!Object.keys(s).length?'la respuesta no tuvo el formato esperado':(opc.length+resp.length<2?'faltó una de las dos redacciones':'');
+      if(opc.length>=2&&(!conOM||om.length>=2))return {ok:true,val:{opc:opc,om:om}};
+      /* respaldo: se completan con las que cambian cifras o fechas, marcadas para revisión */
+      const todo=ESTILOS.map(e=>opc.find(x=>x.k===e.k)||resp.find(x=>x.k===e.k)).filter(Boolean);
+      const val={opc:todo,om:om};
+      if(todo.length>=2&&(!conOM||om.length>=2))return {ok:true,val:val};
+      return {ok:false,parcial:todo.length>=1&&(!conOM||om.length>=1),score:todo.length+om.length,val:val,error:razon||'La respuesta llegó incompleta'};
     };
   }
   function evaluarOM(raw,corta){
@@ -4420,13 +4436,16 @@ window.IAEngine=(function(){
         if(r.status===401||r.status===403)return {ok:false,error:'El servicio de IA rechazó la solicitud (revisa la Worker y su dominio permitido)'};
         if(r.status===429){await esperar(3000);r=await call(m,msgs,maxTokens,timeoutMs,temp,tok);if(r.cancelled||tok.cancelled)return {cancelled:true};}
         if(!r.ok){
-          const e=r.data&&r.data.error;last=(e&&(e.message||e))||('Error '+r.status);if(typeof last!=='string')last='Error '+r.status;
+          const e=r.data&&r.data.error;let msg=(e&&(e.message||e))||('Error '+r.status);if(typeof msg!=='string')msg='Error '+r.status;
+          if(!/does not exist|not have access|decommission/i.test(msg))last=msg;
           if(r.status===0||r.status===408||r.status===429||r.status>=500)reint=true;
           continue;
         }
         const ch=r.data.choices&&r.data.choices[0];
-        const ev=evaluar(ch&&ch.message&&ch.message.content,ch&&ch.finish_reason==='length');
+        const rawOut=ch&&ch.message&&ch.message.content;
+        const ev=evaluar(rawOut,ch&&ch.finish_reason==='length');
         if(ev.ok)return {ok:true,val:ev.val};
+        try{console.warn('[IA] '+m+': '+(ev.error||'sin resultado'),String(rawOut||'').slice(0,600));}catch(er){}
         last=ev.error||last;reint=true;
         if(ev.parcial&&(!mejor||ev.score>mejor.score))mejor=ev;
         if(mejor&&i>=1)return {ok:true,val:mejor.val,parcial:true};
@@ -4812,7 +4831,7 @@ IAField.attach({
     $('obsAiScope').textContent=hasSel?'Texto seleccionado':'Todo el campo';
     $('obsOpts').innerHTML=mOpts.map((o,i)=>
       '<button type="button" class="opt" data-i="'+i+'" data-k="'+o.k+'" style="--i:'+i+'">'
-      +'<span class="opt-h"><i class="fas fa-'+OPT_ICON[o.k]+' opt-ic"></i><b>'+o.n+'</b><small>'+o.d+'</small><em>'+o.t.length+' car.</em></span>'
+      +'<span class="opt-h"><i class="fas fa-'+OPT_ICON[o.k]+' opt-ic"></i><b>'+o.n+'</b><small'+(o.rev?' class="rev"':'')+'>'+(o.rev?'Verifica cifras y fechas':o.d)+'</small><em>'+o.t.length+' car.</em></span>'
       +'<span class="opt-t">'+ESC(o.t)+'</span>'
       +'<span class="opt-f"><span class="opt-use"><i class="fas fa-check"></i><span>Usar esta</span></span></span></button>').join('');
     const omBox=$('obsOm');
