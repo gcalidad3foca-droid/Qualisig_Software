@@ -4137,57 +4137,49 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 /* ===== OPCIONES DE REDACCIÓN + OM SUGERIDA ===== */
 #obsAi.multi .obs-ai-new,#obsAi.multi #obsAiApply{display:none}
 #obsAi:not(.multi) .opt-skel{display:none}
-.obs-opts{display:flex;flex-direction:column;gap:10px}
-.opt,.omc{box-sizing:border-box;position:relative;display:flex;flex-direction:column;gap:9px;width:100%;margin:0;text-align:left;font:inherit;color:inherit;cursor:pointer;
-  background:#fff;border:1.5px solid #ebe5fa;border-radius:14px;padding:13px 14px 11px;
-  transition:border-color .2s ease,box-shadow .28s ease,transform .2s cubic-bezier(.22,1,.36,1),background-color .2s ease;
-  animation:optIn .5s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0)*65ms);-webkit-tap-highlight-color:transparent}
-.opt:hover,.omc:hover{border-color:#c4b5fd;box-shadow:0 10px 24px -16px rgba(109,40,217,.55);transform:translateY(-1px)}
-.opt:active,.omc:active{transform:scale(.992)}
-.opt:focus-visible,.omc:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(124,58,237,.28)}
-.opt-h{display:flex;align-items:center;gap:10px;min-width:0}
-.opt-ic{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-size:13px;background:var(--tint,#ede9fe);color:var(--ink,#6d28d9)}
-.opt-h b{font-size:13.5px;font-weight:700;color:#1f2a44;letter-spacing:-.005em}
-.opt-h small{min-width:0;font-size:11.5px;font-weight:500;color:#8b93a7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.opt[data-k=CORREGIDA]{--tint:#eef2f7;--ink:#475569}
-.opt[data-k=CONCISA]{--tint:#e0f2fe;--ink:#0369a1}
-.opt[data-k=TECNICA]{--tint:#ede9fe;--ink:#6d28d9}
-.opt[data-k=DETALLADA]{--tint:#dcfce7;--ink:#15803d}
-.opt-t{display:block;font-size:14px;line-height:1.58;color:#2b3350;white-space:pre-wrap;word-break:break-word;text-align:left}
-.opt-f{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.opt-f em{font-style:normal;font-size:11px;color:#a3a9bd;font-variant-numeric:tabular-nums}
-.opt-use,.omc-add{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;border-radius:999px;padding:6px 13px;transition:background-color .2s,color .2s,transform .2s}
-.opt-use{color:#6d28d9;background:#f3e8ff}
-.opt:hover .opt-use{background:#7c3aed;color:#fff}
-.opt.on{border-color:#7c3aed;background:linear-gradient(180deg,#faf7ff,#fff);box-shadow:0 0 0 3px rgba(124,58,237,.12)}
-.opt.on .opt-use{background:#16a34a;color:#fff}
-.opt .opt-use i,.omc .omc-add i{font-size:10.5px}
-.om-sug{margin-top:16px}
-#obsOm{margin-top:18px;padding-top:16px;border-top:1px dashed #e4dcf7}
-#obsOm .omc,.omx-list .omc{margin-top:10px}
-.om-sug-h{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.obs-opts{display:flex;flex-direction:column;gap:8px}
+.opt,.omc{box-sizing:border-box;position:relative;display:flex;flex-direction:column;gap:8px;width:100%;margin:0;text-align:left;font:inherit;color:inherit;cursor:pointer;
+  background:#fff;border:1px solid #e1e6f0;border-radius:12px;padding:12px 14px 10px;
+  transition:border-color .18s ease,background-color .18s ease,box-shadow .18s ease;
+  animation:optIn .32s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0)*50ms);-webkit-tap-highlight-color:transparent}
+.opt:hover,.omc:hover{border-color:#9fb0d6;background:#fbfcfe}
+.opt:focus-visible,.omc:focus-visible{outline:none;border-color:#27468c;box-shadow:0 0 0 3px rgba(39,70,140,.16)}
+.opt-h{display:flex;align-items:center;gap:8px;min-width:0}
+.opt-ic{flex:none;width:16px;text-align:center;font-size:13px;color:#27468c}
+.opt-h b{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1f2a44}
+.opt-h small{min-width:0;font-size:12px;font-weight:500;color:#8a93a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.opt-h small::before{content:"·";margin-right:8px;color:#c3c9d8}
+.opt-h em{margin-left:auto;flex:none;font-style:normal;font-size:11px;color:#a0a8bb;font-variant-numeric:tabular-nums}
+.opt-t{display:block;font-size:14px;line-height:1.6;color:#2b3350;white-space:pre-wrap;word-break:break-word;text-align:left}
+.opt-f{display:flex;justify-content:flex-end}
+.opt-use,.omc-add{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#27468c;border:1px solid #cfd8ec;border-radius:8px;padding:5px 11px;background:#fff;transition:background-color .18s,color .18s,border-color .18s}
+.opt:hover .opt-use,.omc:hover .omc-add{background:#27468c;border-color:#27468c;color:#fff}
+.opt-use i,.omc-add i{font-size:10px}
+.opt.on,.omc.done{border-color:#27468c;background:#f6f8fd;cursor:default}
+.opt.on{cursor:pointer}
+.opt.on .opt-use{background:#27468c;border-color:#27468c;color:#fff}
+.omc.done{border-color:#bfe3cd;background:#f7fcf9}
+.omc.done .omc-add{background:#fff;border-color:#bfe3cd;color:#1d7a46}
+.omc.done .opt-ic{color:#1d7a46}
+.omc.done:hover .omc-add{background:#fff;color:#1d7a46;border-color:#bfe3cd}
+#obsOm{margin-top:16px;padding-top:14px;border-top:1px solid #eaeef6}
+#obsOm .omc,.omx-list .omc{margin-top:8px}
+.om-sug-h{display:flex;align-items:flex-start;gap:10px;margin-bottom:2px}
+.om-sug-h>i{flex:none;width:16px;margin-top:2px;text-align:center;font-size:13px;color:#27468c}
 .om-sug-h b{display:block;font-size:13px;font-weight:700;color:#1f2a44}
-.om-sug-h small{display:block;font-size:11.5px;color:#8b93a7;font-weight:500;margin-top:1px}
-.om-sug-ic{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-size:13px;background:#fef3c7;color:#b45309}
-.omc{border-color:#f6e7b4}
-.omc:hover{border-color:#f5c542;box-shadow:0 10px 24px -16px rgba(217,119,6,.55)}
-.omc-tag{align-self:flex-start;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#b45309;background:#fef3c7;border-radius:999px;padding:3px 10px}
-.omc-add{color:#b45309;background:#fef3c7}
-.omc:hover .omc-add{background:#f59e0b;color:#fff}
-.omc.done{border-color:#86efac;background:#f6fef9;cursor:default;box-shadow:none;transform:none}
-.omc.done .omc-add{background:#16a34a;color:#fff}
-.opt-skel{height:74px;border-radius:14px;margin-top:10px;background:linear-gradient(100deg,#f4f0fc 30%,#faf8ff 50%,#f4f0fc 70%);background-size:220% 100%;animation:optShim 1.3s linear infinite}
+.om-sug-h small{display:block;font-size:12px;color:#8a93a8;font-weight:500;margin-top:1px}
+.opt-skel{height:68px;border-radius:12px;margin-top:8px;background:linear-gradient(100deg,#f1f4fa 30%,#f8f9fc 50%,#f1f4fa 70%);background-size:220% 100%;animation:optShim 1.4s linear infinite}
 .omx-panel .ia-inner{padding:2px 2px 4px;margin:-2px}
-.omx-load-t{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:#7c6bb8;font-weight:600;padding:2px 0 4px}
-.omx-load-t i{animation:obsSpin 1.4s linear infinite;color:#f59e0b}
-.ia-pill-om{background:#fffbeb;color:#b45309;box-shadow:inset 0 0 0 1.5px #fcd34d;animation:none}
-.ia-pill-om:hover{background:#f59e0b;color:#fff;box-shadow:0 4px 14px rgba(217,119,6,.4)}
+.omx-load-t{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:#5d6785;font-weight:600;padding:2px 0 4px}
+.omx-load-t i{animation:obsSpin 1s linear infinite;color:#27468c}
+.ia-pill-om{background:#fff;color:#27468c;box-shadow:inset 0 0 0 1.5px #c9d3ea;animation:none}
+.ia-pill-om:hover{background:#27468c;color:#fff;box-shadow:none}
 .ia-pill-om.busy{opacity:.75}
 #omInlineModal .omx-panel.show{margin-top:9px}
 #omInlineModal .opt-t{font-size:13px}
-#omInlineModal .omc{padding:11px 12px 9px}
+#omInlineModal .omc{padding:10px 12px 9px}
 #omInlineModal .om-sug-h small{display:none}
-@keyframes optIn{from{opacity:0;transform:translate3d(0,10px,0) scale(.985)}to{opacity:1;transform:none}}
+@keyframes optIn{from{opacity:0;transform:translate3d(0,6px,0)}to{opacity:1;transform:none}}
 @keyframes optShim{to{background-position:-220% 0}}
 @media(max-width:560px){.opt-h small{display:none}.opt,.omc{padding:12px 12px 10px}.opt-t{font-size:14.5px}}
 @media(prefers-reduced-motion:reduce){.opt,.omc,.opt-skel{animation:none}}
@@ -4341,12 +4333,22 @@ window.IAEngine=(function(){
   }
   /* ───── Opciones de redacción (varios estilos) + sugerencias de OM, en UNA sola llamada ───── */
   const ESTILOS=[
-    {k:'CORREGIDA',n:'Corregida',d:'Tu texto, sin errores'},
     {k:'CONCISA',n:'Concisa',d:'Breve y directa'},
-    {k:'TECNICA',n:'Técnica',d:'Estilo hallazgo de auditoría'},
-    {k:'DETALLADA',n:'Detallada',d:'Con más contexto'}
+    {k:'TECNICA',n:'Técnica',d:'Hallazgo de auditoría'}
   ];
-  const TAGS='\\[\\s*(CORREGIDA|CONCISA|T[EÉ]CNICA|DETALLADA|OM\\s*1|OM\\s*2)\\s*\\]';
+  const MESES_L=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const DIAS_L=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  function fechaLarga(iso){
+    const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||'');
+    if(!m)return '';
+    const d=new Date(+m[1],+m[2]-1,+m[3]);
+    return DIAS_L[d.getDay()]+' '+d.getDate()+' de '+MESES_L[d.getMonth()]+' de '+d.getFullYear();
+  }
+  function lineaFecha(iso){
+    const f=fechaLarga(iso)||fechaLarga(new Date().toISOString().slice(0,10));
+    return 'FECHA DE LA AUDITORÍA: '+f+'\n';
+  }
+  const TAGS='\\[\\s*(CONCISA|T[EÉ]CNICA|OM\\s*1|OM\\s*2)\\s*\\]';
   function secciones(raw){
     const t=(raw||'').replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/\*\*/g,'');
     const p=t.split(new RegExp(TAGS,'i')),out={};
@@ -4362,23 +4364,22 @@ window.IAEngine=(function(){
   const BASE_AUD='Eres un auditor líder de calidad en servicios de salud en Colombia (habilitación, acreditación e ISO 9001). ';
   const REGLAS='- Conserva EXACTAMENTE cifras, fechas, nombres, cargos, áreas, siglas, cantidades y hechos. No inventes datos, causas, responsables, plazos ni normas.\n'
     +'- Español de Colombia, tono institucional y punto de vista impersonal. Cada texto debe poder pegarse solo, sin depender de los demás.\n';
+  const REGLA_FECHA='- La observación se escribió el día de la auditoría (FECHA DE LA AUDITORÍA). Ese día es "el presente" de la redacción: NO uses la fecha de hoy ni "actualmente". Compara cualquier fecha que aparezca en el texto contra la fecha de la auditoría: si es anterior, ya pasó (un insumo o documento con esa fecha de vencimiento estaba VENCIDO); si es posterior, aún estaba vigente o próximo a vencer. Ajusta los tiempos verbales a esa relación. No calcules ni menciones cuánto tiempo transcurrió.\n';
   const OM_REGLAS='[OM1] Acción CORRECTIVA inmediata y concreta que corrija la situación observada.\n'
     +'[OM2] Acción PREVENTIVA o de control que evite que se repita (verificación periódica, seguimiento, capacitación o ajuste del proceso).\n'
     +'Cada OM: una sola oración que empiece con un verbo en infinitivo (Realizar, Implementar, Establecer, Verificar…), máximo 300 caracteres, sin responsables, plazos ni cifras que no estén en la observación.\n';
   function sistemaOpc(conOM){
-    return BASE_AUD+'Recibirás la OBSERVACIÓN que un auditor escribió en una lista de verificación, junto con el ítem evaluado y su resultado.\n'
-      +'Entrega VARIAS versiones de redacción de la MISMA observación, cada una con un estilo distinto:\n'
-      +'[CORREGIDA] El mismo texto del autor con ortografía, tildes, puntuación y mayúsculas corregidas. Cambia lo mínimo.\n'
-      +'[CONCISA] Una sola oración clara, directa y profesional; solo lo esencial.\n'
-      +'[TECNICA] Estilo de hallazgo de auditoría ("Se observó que…", "Se evidenció que…"): describe la evidencia observada y, si el resultado es No cumple o Cumple parcialmente, la condición que se incumple y su implicación para la seguridad del paciente o la calidad (p. ej. control de vencimientos, trazabilidad, riesgo en una emergencia). Si el resultado es Cumple, redacta la evidencia que sustenta el cumplimiento, sin hablar de incumplimiento. No cites normas ni numerales.\n'
-      +'[DETALLADA] Redacción completa y fluida en 2 o 3 oraciones, con el contexto de lo observado, sin agregar hechos nuevos.\n'
+    return BASE_AUD+'Recibirás la OBSERVACIÓN que un auditor escribió en una lista de verificación, junto con la fecha de la auditoría, el ítem evaluado y su resultado.\n'
+      +'Entrega EXACTAMENTE dos redacciones de la misma observación:\n'
+      +'[CONCISA] Una sola oración clara y directa, solo lo esencial. Debe iniciar con "Se observó", "Se evidenció", "Se observa" o "Se evidencia".\n'
+      +'[TECNICA] Redacción de hallazgo de auditoría, en una o dos oraciones. Debe iniciar con "Se observó que", "Se evidenció que", "Se observa que" o "Se evidencia que". Describe la evidencia y, si el resultado es No cumple o Cumple parcialmente, la condición que se incumple y su implicación para la seguridad del paciente o la calidad (p. ej. control de vencimientos, trazabilidad, riesgo en una emergencia). Si el resultado es Cumple, describe la evidencia que sustenta el cumplimiento, sin hablar de incumplimiento. No cites normas ni numerales.\n'
       +(conOM?'Además entrega 2 oportunidades de mejora (OM) derivadas de la observación:\n'+OM_REGLAS:'')
-      +'Reglas:\n'+REGLAS
-      +'Formato: responde ÚNICAMENTE con las secciones; cada una inicia con su etiqueta entre corchetes en una línea propia ([CORREGIDA], [CONCISA], [TECNICA], [DETALLADA]'+(conOM?', [OM1], [OM2]':'')+') seguida del texto. Sin títulos, comillas, numeración ni comentarios.';
+      +'Reglas:\n'+REGLAS+REGLA_FECHA
+      +'Formato: responde ÚNICAMENTE con las secciones; cada una inicia con su etiqueta entre corchetes en una línea propia ([CONCISA], [TECNICA]'+(conOM?', [OM1], [OM2]':'')+') seguida del texto. Sin títulos, comillas, numeración ni comentarios.';
   }
   function sistemaOM(){
     return BASE_AUD+'A partir de la OBSERVACIÓN de un ítem de la lista de verificación, redacta 2 oportunidades de mejora (OM) distintas:\n'+OM_REGLAS
-      +'Reglas:\n'+REGLAS
+      +'Reglas:\n'+REGLAS+REGLA_FECHA
       +'Formato: responde ÚNICAMENTE con [OM1] y [OM2], cada etiqueta en una línea propia seguida del texto. Sin comillas, numeración ni comentarios.';
   }
   function leerOM(s){
@@ -4403,8 +4404,8 @@ window.IAEngine=(function(){
       });
       const om=conOM?leerOM(s):[];
       const val={opc:opc,om:om};
-      if(opc.length>=3&&(!conOM||om.length>=2))return {ok:true,val:val};
-      return {ok:false,parcial:opc.length>=2&&(!conOM||om.length>=1),score:opc.length+om.length,val:val,error:'La respuesta llegó incompleta'};
+      if(opc.length>=2&&(!conOM||om.length>=2))return {ok:true,val:val};
+      return {ok:false,parcial:opc.length>=1&&(!conOM||om.length>=1),score:opc.length+om.length,val:val,error:'La respuesta llegó incompleta'};
     };
   }
   function evaluarOM(raw,corta){
@@ -4451,8 +4452,8 @@ window.IAEngine=(function(){
     if(!texto||!texto.trim())return {ok:false,error:'No hay texto para mejorar'};
     if(texto.length>1800)return {ok:false,error:'el texto es muy largo para generar opciones; selecciona solo la parte que quieres mejorar'};
     const ctx=(o.contexto&&o.contexto.trim()!==texto.trim())?'\n\nOBSERVACIÓN COMPLETA (solo contexto para las OM, no la reescribas):\n'+o.contexto:'';
-    const msgs=[{role:'system',content:sistemaOpc(conOM)},{role:'user',content:'ÍTEM EVALUADO: '+(o.item||'(no indicado)')+'\nRESULTADO: '+(o.resultado||'(sin calificar)')+'\n\nOBSERVACIÓN A REDACTAR:\n'+texto+ctx}];
-    const maxTokens=Math.min(3500,Math.ceil(texto.length/2.2)*4+700+(conOM?400:0));
+    const msgs=[{role:'system',content:sistemaOpc(conOM)},{role:'user',content:lineaFecha(o.fecha)+'ÍTEM EVALUADO: '+(o.item||'(no indicado)')+'\nRESULTADO: '+(o.resultado||'(sin calificar)')+'\n\nOBSERVACIÓN A REDACTAR:\n'+texto+ctx}];
+    const maxTokens=Math.min(3500,Math.ceil(texto.length/2.2)*2+600+(conOM?400:0));
     const r=await correr(msgs,maxTokens,Math.min(90000,25000+texto.length*20),tok,o.onRetry,evaluarOpc(texto,conOM));
     if(!r.ok)return r;
     return {ok:true,opciones:r.val.opc,om:r.val.om,parcial:!!r.parcial};
@@ -4461,7 +4462,7 @@ window.IAEngine=(function(){
   async function sugerirOM(obs,o){
     o=o||{};const tok=o.token||{};
     if(!obs||!obs.trim())return {ok:false,error:'sin observación'};
-    const msgs=[{role:'system',content:sistemaOM()},{role:'user',content:'ÍTEM EVALUADO: '+(o.item||'(no indicado)')+'\nRESULTADO: '+(o.resultado||'(sin calificar)')+'\n\nOBSERVACIÓN:\n'+obs.slice(0,2500)}];
+    const msgs=[{role:'system',content:sistemaOM()},{role:'user',content:lineaFecha(o.fecha)+'ÍTEM EVALUADO: '+(o.item||'(no indicado)')+'\nRESULTADO: '+(o.resultado||'(sin calificar)')+'\n\nOBSERVACIÓN:\n'+obs.slice(0,2500)}];
     const r=await correr(msgs,900,40000,tok,o.onRetry,evaluarOM);
     if(!r.ok)return r;
     return {ok:true,om:r.val.om};
@@ -4587,8 +4588,8 @@ IAField.attach({
   bar.insertBefore(pill,hint);
   var panel=document.createElement('div');panel.className='ia-panel omx-panel';panel.dataset.state='idle';
   panel.innerHTML='<div class="ia-inner"><div class="obs-ai-card">'
-    +'<div data-st="loading" class="omx-load"><div class="omx-load-t"><i class="fas fa-lightbulb"></i><span>Analizando la observación…</span></div><div class="opt-skel"></div><div class="opt-skel"></div></div>'
-    +'<div data-st="result"><div class="om-sug-h"><span class="om-sug-ic"><i class="fas fa-lightbulb"></i></span><div><b>Oportunidad de mejora sugerida</b><small>Elige una; la pasamos al cuadro para que la ajustes y agregues</small></div></div><div class="omx-list"></div>'
+    +'<div data-st="loading" class="omx-load"><div class="omx-load-t"><i class="fas fa-circle-notch"></i><span>Analizando la observación…</span></div><div class="opt-skel"></div><div class="opt-skel"></div></div>'
+    +'<div data-st="result"><div class="om-sug-h"><i class="fas fa-lightbulb"></i><div><b>Oportunidad de mejora</b><small>Elige una; pasa al cuadro para que la ajustes y la agregues</small></div></div><div class="omx-list"></div>'
     +'<div class="obs-ai-actions"><button type="button" class="obs-btn obs-btn-cancel omx-close">Ocultar</button><button type="button" class="obs-btn obs-btn-soft omx-retry"><i class="fas fa-rotate"></i> Otras opciones</button></div></div>'
     +'<div data-st="error"><div class="obs-ai-err omx-err"></div><div class="obs-ai-actions"><button type="button" class="obs-btn obs-btn-cancel omx-close">Ocultar</button><button type="button" class="obs-btn obs-btn-soft omx-retry"><i class="fas fa-rotate"></i> Reintentar</button></div></div>'
     +'</div></div>';
@@ -4612,11 +4613,12 @@ IAField.attach({
     if(!c.obs.trim()){q('.omx-err').textContent='Este ítem todavía no tiene observación. Escríbela primero y la IA sugerirá la oportunidad de mejora que corresponde.';set('error');return;}
     tok={cancelled:false,ctrl:null};var t=tok;
     set('loading');q('.omx-load-t span').textContent='Analizando la observación…';
-    var res=await IAEngine.sugerirOM(c.obs,{item:c.item,resultado:c.res,token:t,onRetry:function(){q('.omx-load-t span').textContent='Reintentando…';}});
+    var res=await IAEngine.sugerirOM(c.obs,{fecha:(document.getElementById('fecha')||{}).value||'',item:c.item,resultado:c.res,token:t,onRetry:function(){q('.omx-load-t span').textContent='Reintentando…';}});
     if(id!==my||res.cancelled)return;
     if(!res.ok){q('.omx-err').textContent='No se pudieron generar las sugerencias ('+res.error+'). Intenta de nuevo en un momento.';set('error');return;}
     sug=res.om;
-    q('.omx-list').innerHTML=sug.map(function(o,i){return '<button type="button" class="omc" data-i="'+i+'" style="--i:'+i+'"><span class="omc-tag">'+o.n+'</span><span class="opt-t">'+esc(o.t)+'</span><span class="opt-f"><em>'+o.t.length+' caracteres</em><span class="omc-add"><i class="fas fa-arrow-down"></i><span>Usar esta</span></span></span></button>';}).join('');
+    var IC=['screwdriver-wrench','shield-halved'],DS=['Corrige lo observado','Evita que se repita'];
+    q('.omx-list').innerHTML=sug.map(function(o,i){return '<button type="button" class="omc" data-i="'+i+'" style="--i:'+i+'"><span class="opt-h"><i class="fas fa-'+IC[i]+' opt-ic"></i><b>'+o.n+'</b><small>'+DS[i]+'</small><em>'+o.t.length+' car.</em></span><span class="opt-t">'+esc(o.t)+'</span><span class="opt-f"><span class="omc-add"><i class="fas fa-arrow-down"></i><span>Usar esta</span></span></span></button>';}).join('');
     set('result');
     setTimeout(function(){try{panel.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){}},430);
   }
@@ -4807,7 +4809,7 @@ IAField.attach({
   }
   /* ---------- OPCIONES DE REDACCIÓN + OPORTUNIDAD DE MEJORA SUGERIDA ---------- */
   const ESC=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const OPT_ICON={CORREGIDA:'spell-check',CONCISA:'bolt',TECNICA:'clipboard-check',DETALLADA:'align-left'};
+  const OPT_ICON={CONCISA:'align-left',TECNICA:'clipboard-check'},OM_ICON=['screwdriver-wrench','shield-halved'],OM_DESC=['Corrige lo observado','Evita que se repita'];
   const RES_TXT={C:'Cumple',CP:'Cumple parcialmente',NC:'No cumple',NA:'No aplica'};
   let mOpts=[],mOm=[];
   function rowCtx(){
@@ -4820,22 +4822,23 @@ IAField.attach({
     $('obsAiScope').textContent=hasSel?'Texto seleccionado':'Todo el campo';
     $('obsOpts').innerHTML=mOpts.map((o,i)=>
       '<button type="button" class="opt" data-i="'+i+'" data-k="'+o.k+'" style="--i:'+i+'">'
-      +'<span class="opt-h"><span class="opt-ic"><i class="fas fa-'+OPT_ICON[o.k]+'"></i></span><b>'+o.n+'</b><small>'+o.d+'</small></span>'
+      +'<span class="opt-h"><i class="fas fa-'+OPT_ICON[o.k]+' opt-ic"></i><b>'+o.n+'</b><small>'+o.d+'</small><em>'+o.t.length+' car.</em></span>'
       +'<span class="opt-t">'+ESC(o.t)+'</span>'
-      +'<span class="opt-f"><em>'+o.t.length+' caracteres</em><span class="opt-use"><i class="fas fa-check"></i><span>Usar esta</span></span></span></button>').join('');
+      +'<span class="opt-f"><span class="opt-use"><i class="fas fa-check"></i><span>Usar esta</span></span></span></button>').join('');
     const omBox=$('obsOm');
     if(mOm.length){
-      omBox.innerHTML='<div class="om-sug-h"><span class="om-sug-ic"><i class="fas fa-lightbulb"></i></span><div><b>Oportunidad de mejora sugerida</b><small>Elige la que corresponda y se agrega a la OM de este ítem</small></div></div>'
+      omBox.innerHTML='<div class="om-sug-h"><i class="fas fa-lightbulb"></i><div><b>Oportunidad de mejora</b><small>Elige una para agregarla a la OM de este ítem</small></div></div>'
         +mOm.map((o,i)=>{const done=omHas(rc.id,o.t);
           return '<button type="button" class="omc'+(done?' done':'')+'" data-i="'+i+'" style="--i:'+(mOpts.length+i)+'">'
-          +'<span class="omc-tag">'+o.n+'</span><span class="opt-t">'+ESC(o.t)+'</span>'
-          +'<span class="opt-f"><em>'+o.t.length+' caracteres</em><span class="omc-add">'+(done?'<i class="fas fa-check"></i><span>Agregada</span>':'<i class="fas fa-plus"></i><span>Agregar a OM</span>')+'</span></span></button>';}).join('');
+          +'<span class="opt-h"><i class="fas fa-'+OM_ICON[i]+' opt-ic"></i><b>'+o.n+'</b><small>'+OM_DESC[i]+'</small><em>'+o.t.length+' car.</em></span>'
+          +'<span class="opt-t">'+ESC(o.t)+'</span>'
+          +'<span class="opt-f"><span class="omc-add">'+(done?'<i class="fas fa-check"></i><span>Agregada</span>':'<i class="fas fa-plus"></i><span>Agregar a OM</span>')+'</span></span></button>';}).join('');
       omBox.style.display='block';
     }else{omBox.innerHTML='';omBox.style.display='none';}
   }
   async function multi(my,hasSel){
     const rc=rowCtx(),conOM=(rc.res==='NC'||rc.res==='CP')&&!!rc.id;
-    const res=await IAEngine.opciones(aiSrc,{item:rc.item,resultado:RES_TXT[rc.res]||'',om:conOM,contexto:ta.value,token:aiCtrl,onRetry:()=>{$('obsAiLoadTxt').textContent='Reintentando…';}});
+    const res=await IAEngine.opciones(aiSrc,{fecha:(document.getElementById('fecha')||{}).value||'',item:rc.item,resultado:RES_TXT[rc.res]||'',om:conOM,contexto:ta.value,token:aiCtrl,onRetry:()=>{$('obsAiLoadTxt').textContent='Reintentando…';}});
     if(my!==aiTok||res.cancelled)return;
     if(!res.ok){
       $('obsAiErr').textContent='No se pudieron generar las opciones de redacción ('+res.error+'). Intenta de nuevo en un momento.';
