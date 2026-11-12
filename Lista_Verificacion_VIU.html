@@ -4127,52 +4127,49 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 /* ===== OPCIONES DE REDACCIÓN + OM SUGERIDA ===== */
 #obsAi.multi .obs-ai-new,#obsAi.multi #obsAiApply{display:none}
 #obsAi:not(.multi) .opt-skel{display:none}
-.obs-opts{display:flex;flex-direction:column;gap:8px}
-.opt,.omc{box-sizing:border-box;position:relative;display:flex;flex-direction:column;gap:8px;width:100%;margin:0;text-align:left;font:inherit;color:inherit;cursor:pointer;
-  background:#fff;border:1px solid #e1e6f0;border-radius:12px;padding:12px 14px 10px;
-  transition:border-color .18s ease,background-color .18s ease,box-shadow .18s ease;
-  animation:optIn .32s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0)*50ms);-webkit-tap-highlight-color:transparent}
-.opt:hover,.omc:hover{border-color:#9fb0d6;background:#fbfcfe}
+.obs-opts{display:flex;flex-direction:column;gap:10px}
+.opt,.omc{box-sizing:border-box;position:relative;display:flex;flex-direction:column;gap:10px;width:100%;margin:0;text-align:left;font:inherit;color:inherit;cursor:pointer;
+  background:#fff;border:1px solid #e6eaf3;border-radius:16px;padding:14px 16px 12px;
+  box-shadow:0 1px 2px rgba(31,42,68,.04),0 6px 16px -12px rgba(31,42,68,.16);
+  transition:border-color .22s ease,background-color .22s ease,box-shadow .28s ease,transform .22s cubic-bezier(.22,1,.36,1);
+  animation:optIn .4s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0)*60ms);-webkit-tap-highlight-color:transparent}
+.opt:hover,.omc:hover{border-color:#c6d2ec;box-shadow:0 1px 2px rgba(31,42,68,.04),0 14px 26px -16px rgba(39,70,140,.34);transform:translateY(-1px)}
+.opt:active,.omc:active{transform:scale(.993)}
 .opt:focus-visible,.omc:focus-visible{outline:none;border-color:#27468c;box-shadow:0 0 0 3px rgba(39,70,140,.16)}
-.opt-h{display:flex;align-items:center;gap:8px;min-width:0}
-.opt-ic{flex:none;width:16px;text-align:center;font-size:13px;color:#27468c}
-.opt-h b{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#1f2a44}
-.opt-h small{min-width:0;font-size:12px;font-weight:500;color:#8a93a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.opt-h small::before{content:"·";margin-right:8px;color:#c3c9d8}
-.opt-h small.rev{color:#b45309}
-.opt-h em{margin-left:auto;flex:none;font-style:normal;font-size:11px;color:#a0a8bb;font-variant-numeric:tabular-nums}
-.opt-t{display:block;font-size:14px;line-height:1.6;color:#2b3350;white-space:pre-wrap;word-break:break-word;text-align:left}
+.opt-h{display:flex;align-items:center;gap:9px;min-width:0}
+.opt-h b{flex:none;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#3a5aa8;background:#eef3fc;border-radius:999px;padding:4px 11px}
+.opt[data-k=TECNICA] .opt-h b{color:#5b46b5;background:#f1eefb}
+.omc .opt-h b{color:#a4630f;background:#fdf3e1}
+.omc:nth-of-type(2) .opt-h b{color:#1d7a56;background:#e8f6ef}
+.opt-h small{min-width:0;font-size:12px;font-weight:500;color:#8f98ad;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.opt-h em{margin-left:auto;flex:none;font-style:normal;font-size:11px;color:#a9b0c2;font-variant-numeric:tabular-nums}
+.opt-t{display:block;font-size:14px;line-height:1.65;color:#2b3350;white-space:pre-wrap;word-break:break-word;text-align:left}
 .opt-f{display:flex;justify-content:flex-end}
-.opt-use,.omc-add{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#27468c;border:1px solid #cfd8ec;border-radius:8px;padding:5px 11px;background:#fff;transition:background-color .18s,color .18s,border-color .18s}
-.opt:hover .opt-use,.omc:hover .omc-add{background:#27468c;border-color:#27468c;color:#fff}
-.opt-use i,.omc-add i{font-size:10px}
-.opt.on,.omc.done{border-color:#27468c;background:#f6f8fd;cursor:default}
-.opt.on{cursor:pointer}
-.opt.on .opt-use{background:#27468c;border-color:#27468c;color:#fff}
-.omc.done{border-color:#bfe3cd;background:#f7fcf9}
-.omc.done .omc-add{background:#fff;border-color:#bfe3cd;color:#1d7a46}
-.omc.done .opt-ic{color:#1d7a46}
-.omc.done:hover .omc-add{background:#fff;color:#1d7a46;border-color:#bfe3cd}
-#obsOm{margin-top:16px;padding-top:14px;border-top:1px solid #eaeef6}
-#obsOm .omc,.omx-list .omc{margin-top:8px}
-.om-sug-h{display:flex;align-items:flex-start;gap:10px;margin-bottom:2px}
-.om-sug-h>i{flex:none;width:16px;margin-top:2px;text-align:center;font-size:13px;color:#27468c}
-.om-sug-h b{display:block;font-size:13px;font-weight:700;color:#1f2a44}
-.om-sug-h small{display:block;font-size:12px;color:#8a93a8;font-weight:500;margin-top:1px}
-.opt-skel{height:68px;border-radius:12px;margin-top:8px;background:linear-gradient(100deg,#f1f4fa 30%,#f8f9fc 50%,#f1f4fa 70%);background-size:220% 100%;animation:optShim 1.4s linear infinite}
-.omx-panel .ia-inner{padding:2px 2px 4px;margin:-2px}
+.opt-use,.omc-add{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#27468c;background:#f2f5fc;border:1px solid transparent;border-radius:999px;padding:6px 14px;transition:background-color .2s,color .2s,border-color .2s}
+.opt:hover .opt-use,.omc:hover .omc-add{background:#27468c;color:#fff}
+.opt.on{border-color:#27468c;background:linear-gradient(180deg,#f8faff,#fff);box-shadow:0 0 0 3px rgba(39,70,140,.1)}
+.opt.on .opt-use{background:#27468c;color:#fff}
+.omc.done{border-color:#b7e2c8;background:#f8fdfa;cursor:default;transform:none;box-shadow:0 0 0 3px rgba(29,122,70,.08)}
+.omc.done .omc-add,.omc.done:hover .omc-add{background:#e3f5ea;color:#1d7a46}
+.omc-add i{font-size:10px}
+#obsOm{margin-top:18px;padding-top:16px;border-top:1px solid #edf0f7}
+#obsOm .omc,.omx-list .omc{margin-top:10px}
+.om-sug-h b{display:block;font-size:13.5px;font-weight:700;color:#1f2a44}
+.om-sug-h small{display:block;font-size:12px;color:#8f98ad;font-weight:500;margin-top:2px}
+.opt-skel{height:76px;border-radius:16px;margin-top:10px;background:linear-gradient(100deg,#f3f5fb 30%,#fafbfe 50%,#f3f5fb 70%);background-size:220% 100%;animation:optShim 1.4s linear infinite}
 .omx-load-t{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:#5d6785;font-weight:600;padding:2px 0 4px}
 .omx-load-t i{animation:obsSpin 1s linear infinite;color:#27468c}
 .ia-pill-om{background:#fff;color:#27468c;box-shadow:inset 0 0 0 1.5px #c9d3ea;animation:none}
 .ia-pill-om:hover{background:#27468c;color:#fff;box-shadow:none}
 .ia-pill-om.busy{opacity:.75}
-#omInlineModal .omx-panel.show{margin-top:9px}
-#omInlineModal .opt-t{font-size:13px}
-#omInlineModal .omc{padding:10px 12px 9px}
+.omx-panel .ia-inner{padding:2px 2px 4px;margin:-2px}
+#omInlineModal .omx-panel.show{margin-top:10px}
+#omInlineModal .opt-t{font-size:13.5px}
+#omInlineModal .omc{padding:12px 14px 10px}
 #omInlineModal .om-sug-h small{display:none}
-@keyframes optIn{from{opacity:0;transform:translate3d(0,6px,0)}to{opacity:1;transform:none}}
+@keyframes optIn{from{opacity:0;transform:translate3d(0,8px,0)}to{opacity:1;transform:none}}
 @keyframes optShim{to{background-position:-220% 0}}
-@media(max-width:560px){.opt-h small{display:none}.opt,.omc{padding:12px 12px 10px}.opt-t{font-size:14.5px}}
+@media(max-width:560px){.opt-h small{display:none}.opt,.omc{padding:13px 13px 11px}.opt-t{font-size:14.5px}}
 @media(prefers-reduced-motion:reduce){.opt,.omc,.opt-skel{animation:none}}
 </style>
 <script>
@@ -4368,7 +4365,7 @@ window.IAEngine=(function(){
   const REGLA_FECHA='- La observación se escribió el día de la auditoría (FECHA DE LA AUDITORÍA). Ese día es "el presente" de la redacción: NO uses la fecha de hoy ni "actualmente". Compara cualquier fecha que aparezca en el texto contra la fecha de la auditoría: si es anterior, ya pasó (un insumo o documento con esa fecha de vencimiento estaba VENCIDO); si es posterior, aún estaba vigente o próximo a vencer. Ajusta los tiempos verbales a esa relación. No calcules ni menciones cuánto tiempo transcurrió.\n';
   const OM_REGLAS='[OM1] Acción CORRECTIVA inmediata y concreta que corrija la situación observada.\n'
     +'[OM2] Acción PREVENTIVA o de control que evite que se repita (verificación periódica, seguimiento, capacitación o ajuste del proceso).\n'
-    +'Cada OM: una sola oración que empiece con un verbo en infinitivo (Realizar, Implementar, Establecer, Verificar…), máximo 300 caracteres, sin responsables, plazos ni cifras que no estén en la observación.\n';
+    +'Cada OM: una sola oración que EMPIECE con "Se recomienda" seguido de un verbo en infinitivo (p. ej. "Se recomienda retirar…", "Se recomienda establecer…"), máximo 300 caracteres, sin responsables, plazos ni cifras que no estén en la observación.\n';
   function sistemaOpc(conOM){
     return BASE_AUD+'Recibirás la OBSERVACIÓN que un auditor escribió en una lista de verificación, junto con la fecha de la auditoría, el ítem evaluado y su resultado.\n'
       +'Entrega EXACTAMENTE dos redacciones de la misma observación:\n'
@@ -4386,7 +4383,9 @@ window.IAEngine=(function(){
   function leerOM(s){
     const om=[];
     ['OM1','OM2'].forEach((k,i)=>{
-      const t=recortar(limpiar(s[k]||''),400);
+      let t=limpiar(s[k]||'');
+      if(t.length>=15&&!/^se recomienda\b/i.test(t))t='Se recomienda '+t.charAt(0).toLowerCase()+t.slice(1);
+      t=recortar(t,400);
       if(t.length<15||om.some(x=>norm(x.t)===norm(t)))return;
       om.push({k:k,n:i?'Preventiva':'Correctiva',t:t});
     });
@@ -4593,12 +4592,12 @@ IAField.attach({
   var bar=wrap.querySelector('.ia-bar'),hint=wrap.querySelector('.ia-hint');
   var pill=document.createElement('button');pill.type='button';pill.className='ia-pill ia-pill-om';
   pill.title='Sugerir oportunidades de mejora según la observación del ítem';
-  pill.innerHTML='<i class="fas fa-lightbulb"></i><span>Sugerir OM</span>';
+  pill.innerHTML='<span>Sugerir OM</span>';
   bar.insertBefore(pill,hint);
   var panel=document.createElement('div');panel.className='ia-panel omx-panel';panel.dataset.state='idle';
   panel.innerHTML='<div class="ia-inner"><div class="obs-ai-card">'
     +'<div data-st="loading" class="omx-load"><div class="omx-load-t"><i class="fas fa-circle-notch"></i><span>Analizando la observación…</span></div><div class="opt-skel"></div><div class="opt-skel"></div></div>'
-    +'<div data-st="result"><div class="om-sug-h"><i class="fas fa-lightbulb"></i><div><b>Oportunidad de mejora</b><small>Elige una; pasa al cuadro para que la ajustes y la agregues</small></div></div><div class="omx-list"></div>'
+    +'<div data-st="result"><div class="om-sug-h"><div><b>Oportunidad de mejora</b><small>Elige una; pasa al cuadro para que la ajustes y la agregues</small></div></div><div class="omx-list"></div>'
     +'<div class="obs-ai-actions"><button type="button" class="obs-btn obs-btn-cancel omx-close">Ocultar</button><button type="button" class="obs-btn obs-btn-soft omx-retry"><i class="fas fa-rotate"></i> Otras opciones</button></div></div>'
     +'<div data-st="error"><div class="obs-ai-err omx-err"></div><div class="obs-ai-actions"><button type="button" class="obs-btn obs-btn-cancel omx-close">Ocultar</button><button type="button" class="obs-btn obs-btn-soft omx-retry"><i class="fas fa-rotate"></i> Reintentar</button></div></div>'
     +'</div></div>';
@@ -4627,7 +4626,7 @@ IAField.attach({
     if(!res.ok){q('.omx-err').textContent='No se pudieron generar las sugerencias ('+res.error+'). Intenta de nuevo en un momento.';set('error');return;}
     sug=res.om;
     var IC=['screwdriver-wrench','shield-halved'],DS=['Corrige lo observado','Evita que se repita'];
-    q('.omx-list').innerHTML=sug.map(function(o,i){return '<button type="button" class="omc" data-i="'+i+'" style="--i:'+i+'"><span class="opt-h"><i class="fas fa-'+IC[i]+' opt-ic"></i><b>'+o.n+'</b><small>'+DS[i]+'</small><em>'+o.t.length+' car.</em></span><span class="opt-t">'+esc(o.t)+'</span><span class="opt-f"><span class="omc-add"><i class="fas fa-arrow-down"></i><span>Usar esta</span></span></span></button>';}).join('');
+    q('.omx-list').innerHTML=sug.map(function(o,i){return '<button type="button" class="omc" data-i="'+i+'" style="--i:'+i+'"><span class="opt-h"><b>'+o.n+'</b><small>'+DS[i]+'</small><em>'+o.t.length+' car.</em></span><span class="opt-t">'+esc(o.t)+'</span><span class="opt-f"><span class="omc-add"><span>Usar esta</span></span></span></button>';}).join('');
     set('result');
     setTimeout(function(){try{panel.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){}},430);
   }
@@ -4637,7 +4636,7 @@ IAField.attach({
   panel.addEventListener('click',function(e){
     var b=e.target.closest('.omc');if(!b)return;var o=sug[+b.dataset.i];if(!o)return;
     ta.value=o.t;ta.dispatchEvent(new Event('input',{bubbles:true}));
-    panel.querySelectorAll('.omc').forEach(function(x){var on=x===b;x.classList.toggle('done',on);x.querySelector('.omc-add').innerHTML=on?'<i class="fas fa-check"></i><span>En el cuadro</span>':'<i class="fas fa-arrow-down"></i><span>Usar esta</span>';});
+    panel.querySelectorAll('.omc').forEach(function(x){var on=x===b;x.classList.toggle('done',on);x.querySelector('.omc-add').innerHTML=on?'<i class="fas fa-check"></i><span>En el cuadro</span>':'<span>Usar esta</span>';});
     try{ta.focus({preventScroll:true});ta.setSelectionRange(ta.value.length,ta.value.length);}catch(er){}
   });
   new MutationObserver(function(){if(om.style.display==='none')reset();}).observe(om,{attributes:true,attributeFilter:['style']});
@@ -4831,17 +4830,17 @@ IAField.attach({
     $('obsAiScope').textContent=hasSel?'Texto seleccionado':'Todo el campo';
     $('obsOpts').innerHTML=mOpts.map((o,i)=>
       '<button type="button" class="opt" data-i="'+i+'" data-k="'+o.k+'" style="--i:'+i+'">'
-      +'<span class="opt-h"><i class="fas fa-'+OPT_ICON[o.k]+' opt-ic"></i><b>'+o.n+'</b><small'+(o.rev?' class="rev"':'')+'>'+(o.rev?'Verifica cifras y fechas':o.d)+'</small><em>'+o.t.length+' car.</em></span>'
+      +'<span class="opt-h"><b>'+o.n+'</b><small>'+o.d+'</small><em>'+o.t.length+' car.</em></span>'
       +'<span class="opt-t">'+ESC(o.t)+'</span>'
-      +'<span class="opt-f"><span class="opt-use"><i class="fas fa-check"></i><span>Usar esta</span></span></span></button>').join('');
+      +'<span class="opt-f"><span class="opt-use"><span>Usar esta</span></span></span></button>').join('');
     const omBox=$('obsOm');
     if(mOm.length){
-      omBox.innerHTML='<div class="om-sug-h"><i class="fas fa-lightbulb"></i><div><b>Oportunidad de mejora</b><small>Elige una para agregarla a la OM de este ítem</small></div></div>'
+      omBox.innerHTML='<div class="om-sug-h"><div><b>Oportunidad de mejora</b><small>Elige una para agregarla a la OM de este ítem</small></div></div>'
         +mOm.map((o,i)=>{const done=omHas(rc.id,o.t);
           return '<button type="button" class="omc'+(done?' done':'')+'" data-i="'+i+'" style="--i:'+(mOpts.length+i)+'">'
-          +'<span class="opt-h"><i class="fas fa-'+OM_ICON[i]+' opt-ic"></i><b>'+o.n+'</b><small>'+OM_DESC[i]+'</small><em>'+o.t.length+' car.</em></span>'
+          +'<span class="opt-h"><b>'+o.n+'</b><small>'+OM_DESC[i]+'</small><em>'+o.t.length+' car.</em></span>'
           +'<span class="opt-t">'+ESC(o.t)+'</span>'
-          +'<span class="opt-f"><span class="omc-add">'+(done?'<i class="fas fa-check"></i><span>Agregada</span>':'<i class="fas fa-plus"></i><span>Agregar a OM</span>')+'</span></span></button>';}).join('');
+          +'<span class="opt-f"><span class="omc-add">'+(done?'<i class="fas fa-check"></i><span>Agregada</span>':'<span>Agregar a OM</span>')+'</span></span></button>';}).join('');
       omBox.style.display='block';
     }else{omBox.innerHTML='';omBox.style.display='none';}
   }
@@ -4861,7 +4860,7 @@ IAField.attach({
     const b=e.target.closest('.opt');if(!b)return;
     const o=mOpts[+b.dataset.i];if(!o)return;
     improved=o.t;applyAI(true);
-    $('obsOpts').querySelectorAll('.opt').forEach(x=>{const on=x===b;x.classList.toggle('on',on);x.querySelector('.opt-use span').textContent=on?'Aplicada':'Usar esta';x.querySelector('.opt-use i').className='fas fa-check';});
+    $('obsOpts').querySelectorAll('.opt').forEach(x=>{const on=x===b;x.classList.toggle('on',on);x.querySelector('.opt-use span').textContent=on?'Aplicada':'Usar esta';});
   });
   ta.addEventListener('input',()=>{$('obsOpts').querySelectorAll('.opt.on').forEach(x=>{x.classList.remove('on');x.querySelector('.opt-use span').textContent='Usar esta';});});
   $('obsOm').addEventListener('click',e=>{
