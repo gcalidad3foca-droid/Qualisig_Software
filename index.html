@@ -5117,6 +5117,9 @@ button.b4-tile:hover{background:#fff;box-shadow:0 2px 4px rgba(16,24,40,.05),0 1
             <button class="btn-primary-sm" onclick="openIndicadorModal()">
               <i class="fas fa-plus"></i> Nuevo indicador
             </button>
+            <button class="btn-primary-sm" id="btn-depurar-mc" style="display:none;background:#fff;color:#1e3c72;border:1.5px solid #c7d7f0" onclick="depurarMariaClara()" title="Unifica los perfiles duplicados de María Clara Pizarro: un solo perfil con su foto e indicadores">
+              <i class="fas fa-broom"></i> Depurar María Clara
+            </button>
             <button class="btn-primary-sm" id="btn-reiniciar-indicadores" style="display:none;background:#fff;color:#b91c1c;border:1.5px solid #fecaca" onclick="reiniciarModuloIndicadores()" title="Borra TODOS los indicadores, su seguimiento e informes, y vuelve a cargar los indicadores base desde cero">
               <i class="fas fa-trash-can"></i> Reiniciar módulo
             </button>
@@ -8774,6 +8777,8 @@ function _indAplicarPermisos() {
   if (tabHistorico) tabHistorico.style.display = esDirectora ? 'inline-flex' : 'none';
   const btnReiniciar = document.getElementById('btn-reiniciar-indicadores');
   if (btnReiniciar) btnReiniciar.style.display = esDirectora ? 'inline-flex' : 'none';
+  const btnDepMc = document.getElementById('btn-depurar-mc');
+  if (btnDepMc) btnDepMc.style.display = esDirectora ? 'inline-flex' : 'none';
   const segSub = document.getElementById('ind-seg-sub');
   if (segSub) segSub.textContent = esDirectora
     ? 'Ficha viva de cada indicador propio: alimenta el mes actual y observa la tendencia histórica'
@@ -13857,15 +13862,70 @@ function _indNormalizeName(s) {
 }
 function _indFindUidByName(nombreBuscado) {
   const target = _indNormalizeName(nombreBuscado);
-  const perfiles = Object.values(_allPerfiles || {});
-  let match = perfiles.find(p => _indNormalizeName(p.nombre) === target);
-  if (match) return match.uid;
   const targetParts = target.split(' ').filter(Boolean);
-  match = perfiles.find(p => {
+  const perfiles = Object.values(_allPerfiles || {});
+  // Si hay varios perfiles que coinciden (duplicados), se prefiere: nombre exacto,
+  // luego el que tiene foto, luego el más recientemente actualizado.
+  const score = p => (_indNormalizeName(p.nombre) === target ? 4 : 0) + (p.avatarUrl ? 2 : 0) + (p.updatedAt ? 1 : 0);
+  const orden = (a, b) => score(b) - score(a) || (b.updatedAt || 0) - (a.updatedAt || 0);
+  let ms = perfiles.filter(p => _indNormalizeName(p.nombre) === target).sort(orden);
+  if (ms.length) return ms[0].uid;
+  ms = perfiles.filter(p => {
     const pParts = _indNormalizeName(p.nombre).split(' ').filter(Boolean);
     return targetParts.every(t => pParts.includes(t)) || pParts.every(t => targetParts.includes(t));
+  }).sort(orden);
+  return ms.length ? ms[0].uid : null;
+}
+
+// Depurar María Clara: deja UN solo perfil "Maria Clara Pizarro" con su foto y
+// reasigna a ese perfil todos sus indicadores/informes; elimina los duplicados.
+async function depurarMariaClara() {
+  if (!_indEsDirectora()) { showToast('Solo la Directora puede depurar perfiles', 'error'); return; }
+  const NOMBRE = 'Maria Clara Pizarro';
+  const norm = _indNormalizeName;
+  const cands = Object.values(_allPerfiles || {}).filter(p => {
+    const n = norm(p.nombre), e = norm(p.email);
+    if (n.includes('mary')) return false;
+    return n.includes('clara') || e.includes('clara') || e.includes('mclara') || (n.includes('pizarro') && !n.includes('mary'));
   });
-  return match ? match.uid : null;
+  if (!cands.length) { showToast('No se encontró ningún perfil de María Clara. Que inicie sesión una vez e intenta de nuevo.', 'error'); return; }
+  const nInd = uid => Object.values(_indIndicadores).filter(i => i.asignadoUid === uid).length;
+  cands.sort((a,b) => (norm(b.nombre)===norm(NOMBRE)) - (norm(a.nombre)===norm(NOMBRE)) || (b.avatarUrl?1:0)-(a.avatarUrl?1:0) || (b.updatedAt||0)-(a.updatedAt||0));
+  const lista = cands.map((p,i) => (i+1)+') '+(p.nombre||'(sin nombre)')+' | '+(p.email||'sin correo')+' | foto: '+(p.avatarUrl?'sí':'no')+' | indicadores: '+nInd(p.uid)).join('\n');
+  const resp = prompt('Perfiles encontrados de María Clara:\n\n'+lista+'\n\nEscribe el NÚMERO del perfil que debe quedar (el que ella usa para entrar, normalmente el que tiene su correo). Los demás se unifican y se eliminan.', '1');
+  if (resp === null) return;
+  const idx = parseInt(resp, 10) - 1;
+  if (!(idx >= 0 && idx < cands.length)) { showToast('Número inválido', 'error'); return; }
+  const keep = cands[idx];
+  const dups = cands.filter((_, i) => i !== idx);
+  const btn = document.getElementById('btn-depurar-mc');
+  if (btn) btn.disabled = true;
+  try {
+    const upd = {};
+    // Foto: conservar la del perfil elegido o heredar la de un duplicado
+    const foto = keep.avatarUrl || (dups.find(d => d.avatarUrl) || {}).avatarUrl || null;
+    upd['perfiles/'+keep.uid+'/nombre'] = NOMBRE;
+    if (foto) upd['perfiles/'+keep.uid+'/avatarUrl'] = foto;
+    if (!keep.email) { const d = dups.find(d => d.email); if (d) upd['perfiles/'+keep.uid+'/email'] = d.email; }
+    if (!keep.cargo) upd['perfiles/'+keep.uid+'/cargo'] = 'Asistente de Calidad';
+    upd['perfiles/'+keep.uid+'/updatedAt'] = Date.now();
+    const dupUids = new Set(dups.map(d => d.uid));
+    // Indicadores (propios y espejo) de duplicados → perfil elegido
+    Object.values(_indIndicadores).forEach(i => {
+      if (dupUids.has(i.asignadoUid)) upd['indicadores/'+i.id+'/asignadoUid'] = keep.uid;
+      else if (!i.asignadoUid && norm(i.nombre) && IND_SEED_DATA.some(sd => sd.usuario_nombre === 'María Clara' && norm(sd.nombre) === norm(i.nombre))) upd['indicadores/'+i.id+'/asignadoUid'] = keep.uid;
+    });
+    // Informes de duplicados → perfil elegido
+    Object.entries(_indInformes || {}).forEach(([k, inf]) => { if (dupUids.has(inf.uid)) upd['indicadores_informes/'+k+'/uid'] = keep.uid; });
+    // Eliminar perfiles duplicados
+    dups.forEach(d => { upd['perfiles/'+d.uid] = null; });
+    await db.ref().update(upd);
+    showToast('María Clara depurada: 1 perfil, foto e indicadores unificados ✓', 'success');
+  } catch(e) {
+    showToast('Error al depurar: ' + e.message, 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 }
 
 // Diagnóstico visual: muestra, para cada usuario del seed de indicadores base,
