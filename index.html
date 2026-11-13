@@ -4461,19 +4461,6 @@ button.b4-tile:hover{background:#fff;box-shadow:0 2px 4px rgba(16,24,40,.05),0 1
     </div>
   </header>
 
-  <!-- Body -->
-  <div class="dash-body">
-
-    <!-- ══ MODULE: AUDITORÍAS ══════════════════ -->
-    <div class="module active" id="module-auditorias">
-
-    <!-- Ghost elements for JS compatibility (panel de perfil eliminado del UI) -->
-    <span id="user-fullname"    style="display:none"></span>
-    <span id="user-cargo-display" style="display:none"></span>
-    <span id="user-phone-display" style="display:none;position:absolute;left:-9999px;visibility:hidden"></span>
-    <span id="user-email-display" style="display:none"></span>
-    <div  id="user-avatar"      style="display:none"></div>
-
     <!-- Edit Profile Modal -->
     <div class="profile-modal-overlay" id="profile-modal">
       <div class="profile-modal-box">
@@ -4493,6 +4480,10 @@ button.b4-tile:hover{background:#fff;box-shadow:0 2px 4px rgba(16,24,40,.05),0 1
           <div class="pf-group">
             <label class="pf-label">Nombre completo</label>
             <input class="pf-input" type="text" id="pf-nombre" placeholder="Ej: Luis Angel Bolaño Castro">
+          </div>
+          <div class="pf-group">
+            <label class="pf-label">Correo asociado</label>
+            <input class="pf-input" type="email" id="pf-email" readonly style="background:var(--gray100);color:var(--gray600)">
           </div>
           <div class="pf-group">
             <label class="pf-label">Cargo</label>
@@ -4516,6 +4507,20 @@ button.b4-tile:hover{background:#fff;box-shadow:0 2px 4px rgba(16,24,40,.05),0 1
         </div>
       </div>
     </div>
+
+
+  <!-- Body -->
+  <div class="dash-body">
+
+    <!-- ══ MODULE: AUDITORÍAS ══════════════════ -->
+    <div class="module active" id="module-auditorias">
+
+    <!-- Ghost elements for JS compatibility (panel de perfil eliminado del UI) -->
+    <span id="user-fullname"    style="display:none"></span>
+    <span id="user-cargo-display" style="display:none"></span>
+    <span id="user-phone-display" style="display:none;position:absolute;left:-9999px;visibility:hidden"></span>
+    <span id="user-email-display" style="display:none"></span>
+    <div  id="user-avatar"      style="display:none"></div>
 
     <!-- Sub-nav interno: Auditorías de Servicio / Paciente Incógnito -->
     <div class="nav-tabs" style="background:var(--gray100);border-radius:12px;padding:4px;display:inline-flex;margin-bottom:18px;">
@@ -7505,6 +7510,13 @@ let _profileAvatarDataUrl = null;
 function loadProfileFromFirebase(uid, defaultName, email) {
   db.ref('perfiles/' + uid).once('value').then(snap => {
     const p = snap.exists() ? snap.val() : {};
+    // Asociar correo al perfil de inmediato (crea el perfil si no existe)
+    if (email && p.email !== email) {
+      const base = snap.exists() ? { email } : { email, nombre: defaultName, cargo: 'Gestor de Calidad', updatedAt: Date.now() };
+      db.ref('perfiles/' + uid).update(base).catch(e => console.warn('sync email error:', e));
+    }
+    const pfEmail = document.getElementById('pf-email');
+    if (pfEmail) pfEmail.value = email || '';
     const nombre = p.nombre || defaultName;
     const cargo  = p.cargo  || 'Gestor de Calidad';
     const tel    = p.telefono || '';
@@ -7649,7 +7661,7 @@ async function saveProfile() {
   }
 
   try {
-    await db.ref('perfiles/' + currentUser.uid).set(profileData);
+    await db.ref('perfiles/' + currentUser.uid).update(profileData);
     // Actualizar panel en tiempo real (null-safe)
     const elN = document.getElementById('user-fullname');
     const elC = document.getElementById('user-cargo-display');
