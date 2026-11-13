@@ -7510,9 +7510,60 @@ function renderEquipo() {
 // ══════════════════════════════════════════════
 let _profileAvatarDataUrl = null;
 
+// Busca un perfil ya existente (clave distinta al uid actual) que pertenezca a esta
+// persona: mismo correo, o perfil sin correo cuyo nombre coincide con el correo.
+// Lo migra al uid actual y reasigna sus indicadores e informes.
+async function _adoptarPerfilExistente(uid, email) {
+  try {
+    const snap = await db.ref('perfiles').once('value');
+    if (!snap.exists()) return null;
+    const emailN = (email || '').toLowerCase();
+    const local = _indNormalizeName(emailN.split('@')[0]).replace(/[^a-z]/g, '');
+    let cands = [];
+    snap.forEach(c => {
+      if (c.key === uid) return;
+      const v = c.val() || {};
+      const ve = (v.email || '').toLowerCase();
+      if (ve && ve === emailN) { cands.push({ k: c.key, v, score: 100 }); return; }
+      if (ve) return; // pertenece a otro correo
+      const toks = _indNormalizeName(v.nombre).split(' ').filter(t => t.length >= 4);
+      const score = toks.filter(t => local.includes(t)).length;
+      if (score >= 2) cands.push({ k: c.key, v, score });
+    });
+    if (!cands.length) return null;
+    cands.sort((a, b) => b.score - a.score || (b.v.updatedAt || 0) - (a.v.updatedAt || 0));
+    if (cands.length > 1 && cands[0].score === cands[1].score && cands[0].score < 100) return null; // ambiguo
+    const best = cands[0], old = best.k;
+    const data = { ...best.v, email, updatedAt: Date.now() };
+    const upd = {};
+    upd['perfiles/' + uid] = data;
+    upd['perfiles/' + old] = null;
+    const [inds, infs] = await Promise.all([db.ref('indicadores').once('value'), db.ref('indicadores_informes').once('value')]);
+    inds.forEach(c => { if ((c.val() || {}).asignadoUid === old) upd['indicadores/' + c.key + '/asignadoUid'] = uid; });
+    infs.forEach(c => { if ((c.val() || {}).uid === old) upd['indicadores_informes/' + c.key + '/uid'] = uid; });
+    try {
+      await db.ref().update(upd);
+    } catch (e) {
+      console.warn('Migración completa rechazada, copiando solo el perfil:', e);
+      await db.ref('perfiles/' + uid).set(data);
+    }
+    return data;
+  } catch (e) {
+    console.warn('adoptarPerfilExistente error:', e);
+    return null;
+  }
+}
+
 function loadProfileFromFirebase(uid, defaultName, email) {
-  db.ref('perfiles/' + uid).once('value').then(snap => {
-    const p = snap.exists() ? snap.val() : {};
+  db.ref('perfiles/' + uid).once('value').then(async snap => {
+    let p = snap.exists() ? snap.val() : {};
+    // Si no hay perfil propio (o es uno autogenerado vacío), adoptar el perfil ya
+    // existente de esta persona (mismo correo o nombre coincidente) con sus indicadores.
+    const esAuto = !snap.exists() || (p.nombre === defaultName && !p.avatarUrl && !p.telefono);
+    if (esAuto) {
+      const adoptado = await _adoptarPerfilExistente(uid, email);
+      if (adoptado) { p = adoptado; snap = { exists: () => true }; }
+    }
     // Asociar correo al perfil de inmediato (crea el perfil si no existe)
     if (email && p.email !== email) {
       const base = snap.exists() ? { email } : { email, nombre: defaultName, cargo: 'Gestor de Calidad', updatedAt: Date.now() };
@@ -7665,6 +7716,8 @@ async function saveProfile() {
 
   try {
     await db.ref('perfiles/' + currentUser.uid).update(profileData);
+    const _chk = await db.ref('perfiles/' + currentUser.uid + '/nombre').once('value');
+    if (_chk.val() !== nombre) throw new Error('la base de datos no confirmó el cambio (revisa reglas de Firebase)');
     // Actualizar panel en tiempo real (null-safe)
     const elN = document.getElementById('user-fullname');
     const elC = document.getElementById('user-cargo-display');
