@@ -4900,6 +4900,14 @@ html.hab-lock,html.hab-lock body{overflow:hidden}
 .hab-ov-load>img,.hab-ov-load>.hab-ov-bar,.hab-ov-load>span{display:none}
 .hab-ov.slow .hab-ov-load>img,.hab-ov.slow .hab-ov-load>.hab-ov-bar{display:block}
 .hab-ov iframe{transition:opacity .22s ease!important}
+@media (min-width:1001px){
+  .qs-side{cursor:w-resize}
+  html.qs-col .qs-side{cursor:e-resize}
+  .qs-side .qs-brand{cursor:pointer}
+  .qs-side button,.qs-side .dash-user-chip,.qs-side .nav-tab{cursor:pointer}
+  .qs-side .qs-brand img{transition:transform .3s var(--q-ease)}
+  .qs-side .qs-brand:active img.qs-brand-full,.qs-side .qs-brand:active img.qs-brand-ico{filter:brightness(.92)}
+}
 </style>
 </head>
 <body>
@@ -16245,6 +16253,14 @@ function qsSideToggle() {
   qsSideToggle.t = setTimeout(() => { h.classList.remove('qs-anim'); if (body) body.classList.remove('qs-slide'); qsAllInd(); }, 560);
 }
 (function () { const b = document.getElementById('qs-collapse'); if (b && document.documentElement.classList.contains('qs-col')) { b.setAttribute('aria-label', 'Expandir menú'); b.title = 'Expandir menú'; } })();
+/* Contraer/expandir tocando el logo o el espacio libre de la columna */
+document.addEventListener('click', e => {
+  if (window.innerWidth <= 1000) return;
+  const side = e.target.closest && e.target.closest('.qs-side'); if (!side) return;
+  if (e.target.closest('button, a, input, select, .dash-user-chip, .nav-tab')) return;
+  if (window.getSelection && String(window.getSelection())) return;
+  qsSideToggle();
+});
 
 </script>
 <div class="hab-ov" id="hab-overlay" aria-hidden="true" role="dialog" aria-label="Lista de habilitación 3100">
