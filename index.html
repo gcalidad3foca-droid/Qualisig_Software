@@ -15899,7 +15899,7 @@ return{ptab,pq,pch,prs,pclr,init,expAll,togCh,togAllRq,quickResp,pickRespQ,keys,
 // HABILITACIÓN 3100 — enlace con Lista_Habilitacion_3100.html
 // ══════════════════════════════════════════════════════════════
 LISTA_URLS.habilitacion = 'https://gcalidad3foca-droid.github.io/Qualisig_Software/Lista_Habilitacion_3100.html';
-const habOrigin = () => { try { const u = new URL(LISTA_URLS.habilitacion, location.href); return /^https?:$/.test(u.protocol) ? u.origin : '*'; } catch (e) { return '*'; } };
+const habOrigin = () => { try { const u = new URL(HAB.url || LISTA_URLS.habilitacion, location.href); return /^https?:$/.test(u.protocol) ? u.origin : '*'; } catch (e) { return '*'; } };
 const HAB = { all: [], filter: 'todas', ready: false, pending: null, charts: {}, f: { inst: 'all', sedes: new Set(), meses: new Set(), estado: 'all' } };
 const HAB_MES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const habEsc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -15972,9 +15972,22 @@ async function habJsonChosen(inp) {
 }
 
 /* ── Superposición con la lista (iframe) ── */
-function habPreload() {
-  const fr = document.getElementById('hab-frame'); if (!fr || fr.getAttribute('src')) return;
-  HAB.ready = false; fr.src = LISTA_URLS.habilitacion + '?embed=1';
+function habFrameUrl() {
+  // Si Qualisig y la lista están en el mismo sitio, se usa la ruta local (abre más rápido y sin bloqueos del navegador)
+  try { if (/^https?:$/.test(location.protocol) && !/github\.io$/.test(location.hostname)) { const u = new URL('Lista_Habilitacion_3100.html', location.href); if (u.origin === location.origin) return u.href; } } catch (e) {}
+  return LISTA_URLS.habilitacion;
+}
+async function habPreload() {
+  const fr = document.getElementById('hab-frame'); if (!fr || fr.getAttribute('src') || HAB.preloading) return;
+  HAB.preloading = true; HAB.ready = false; HAB.loaded = false;
+  let url = LISTA_URLS.habilitacion; const loc = habFrameUrl();
+  if (loc !== url) { try { const r = await fetch(loc, { method: 'HEAD', cache: 'no-store' }); if (r.ok) url = loc; } catch (e) {} }
+  HAB.url = url;
+  fr.addEventListener('load', () => {
+    HAB.loaded = true;
+    setTimeout(() => { if (!HAB.ready) { HAB.legacy = true; const ov = document.getElementById('hab-overlay'); if (ov.classList.contains('open')) { clearTimeout(HAB.slow); ov.classList.remove('slow'); ov.classList.add('ready'); } } }, 1800);
+  });
+  fr.src = url + '?embed=1';
 }
 function habOpenId(id) { const a = habGet(id); if (a) habOpen({ record: a }); }
 function habNew() { habOpen({ mode: 'new' }); }
@@ -15983,9 +15996,10 @@ function habOpen(opts) {
   HAB.pending = opts; HAB.lastFocus = document.activeElement;
   ov.classList.remove('ready'); ov.setAttribute('aria-hidden', 'false'); document.documentElement.classList.add('hab-lock');
   requestAnimationFrame(() => ov.classList.add('open'));
-  if (!fr.getAttribute('src')) { HAB.ready = false; fr.src = LISTA_URLS.habilitacion + '?embed=1'; }
+  if (!fr.getAttribute('src')) habPreload();
   else if (HAB.ready) habSendInit();
-  clearTimeout(HAB.slow); HAB.slow = setTimeout(() => { if (!ov.classList.contains('ready')) ov.classList.add('slow'); }, 6000);
+  else if (HAB.legacy) { ov.classList.add('ready'); }
+  clearTimeout(HAB.slow); HAB.slow = setTimeout(() => { if (!ov.classList.contains('ready')) ov.classList.add('slow'); }, 3500);
 }
 function habSendInit() {
   const fr = document.getElementById('hab-frame'), o = HAB.pending; if (!o || !fr.contentWindow) return; HAB.pending = null;
@@ -15995,6 +16009,8 @@ function habSendInit() {
   (typeof allTeamAuditorias !== 'undefined' ? allTeamAuditorias : []).forEach(a => a && a.auditorNombre && names.add(a.auditorNombre));
   fr.contentWindow.postMessage({ type: 'qs-hab-init', user, auditores: [...names], mode: o.mode || '', record: o.record || null, importData: o.importData || null }, habOrigin());
 }
+function habOpenTab() { const o = HAB.pending || {}; const id = o.record && o.record.id; window.open((HAB.url || LISTA_URLS.habilitacion) + (id ? '?id=' + encodeURIComponent(id) : ''), '_blank'); habClose(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { const ov = document.getElementById('hab-overlay'); if (ov && ov.classList.contains('open') && !ov.classList.contains('ready')) habClose(); } });
 function habClose() {
   const ov = document.getElementById('hab-overlay'); clearTimeout(HAB.slow);
   ov.classList.remove('open', 'slow'); ov.setAttribute('aria-hidden', 'true');
@@ -16233,7 +16249,7 @@ function qsSideToggle() {
 </script>
 <div class="hab-ov" id="hab-overlay" aria-hidden="true" role="dialog" aria-label="Lista de habilitación 3100">
   <div class="hab-ov-load"><img src="https://i.imgur.com/L8Fpofk.png" alt=""><div class="hab-ov-bar"></div><span>Abriendo la lista de habilitación…</span>
-    <div class="hab-ov-slow">La lista tarda en responder. Revise la conexión a internet.<br><button class="btn-ghost" onclick="habClose()">Volver a Qualisig</button></div></div>
+    <div class="hab-ov-slow">La lista está tardando en responder.<br><span style="display:flex;gap:8px;justify-content:center;margin-top:12px"><button class="btn-ghost" onclick="habClose()">Volver</button><button class="btn-nueva" onclick="habOpenTab()">Abrir en pestaña nueva</button></span></div></div>
   <iframe id="hab-frame" title="Lista de habilitación 3100" allow="camera; clipboard-write"></iframe>
 </div>
 <script>
