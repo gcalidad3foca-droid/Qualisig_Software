@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var c=localStorage.getItem("qs_side");if(c==="1"||(c===null&&innerWidth<=1240&&innerWidth>1000))document.documentElement.classList.add("qs-col")}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <title>Qualisig Software</title>
 <link rel="icon" type="image/png" sizes="32x32" href="https://i.imgur.com/ht6IpCi.png">
 <link rel="icon" type="image/png" sizes="64x64" href="https://i.imgur.com/ht6IpCi.png">
@@ -4379,6 +4381,460 @@ button.b4-tile:hover{background:#fff;box-shadow:0 2px 4px rgba(16,24,40,.05),0 1
 #iso-view .b5-t .b4-ft,#iso-view .b5-t footer{padding:10px 16px}
 }
 @media(max-width:900px){#iso-view .b5-t .b4-trs{max-height:74vh!important;overflow-y:auto!important;overscroll-behavior:contain}}
+/* ══════════ Qualisig 4.5 · base COPASST ══════════ */
+:root{--blue:#1F47B8;--blue2:#193A98;--accent:#3563E9;--gray50:#F3F5FA;--gray100:#EDF0F6;--gray200:#E4E9F2;--gray400:#8C97AD;--gray600:#38455F;--gray800:#0E1A33;
+  --q-bg:#F3F5FA;--q-card:#fff;--q-ink:#0E1A33;--q-ink2:#38455F;--q-mut:#68758E;--q-line:#E4E9F2;--q-line2:#EDF0F6;--q-wash:#F7F9FC;--q-brand:#1F47B8;--q-brand2:#193A98;--q-soft:#EBF0FD;--q-bline:#CBD8F8;
+  --q-c:#14915B;--q-cbg:#E5F5EC;--q-nc:#D8443A;--q-ncbg:#FDEBE9;--q-warn:#B36A00;--q-warnbg:#FFF3D9;
+  --q-sh1:0 1px 2px rgba(14,26,51,.05),0 1px 1px rgba(14,26,51,.03);--q-sh2:0 1px 2px rgba(14,26,51,.04),0 12px 32px -18px rgba(14,26,51,.16);--q-sh3:0 24px 70px -18px rgba(14,26,51,.38),0 0 0 1px rgba(14,26,51,.05);
+  --q-ease:cubic-bezier(.22,1,.36,1);--q-f:'Plus Jakarta Sans','Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;--shadow:var(--q-sh2);--shadow2:0 18px 36px -22px rgba(14,26,51,.3)}
+html,body{font-family:var(--q-f)!important;-webkit-font-smoothing:antialiased;background:var(--q-bg)}
+body,button,input,select,textarea{font-family:var(--q-f)}
+::selection{background:#D6E2FF}
+/* Logos */
+img.qsl{opacity:0;transition:opacity .35s ease}img.qsl.qsl-ok{opacity:1}img.qsl.qsl-now{transition:none}img.qsl-raw{mix-blend-mode:multiply}
+/* ── Ingreso ── */
+#screen-login{background:radial-gradient(900px 520px at 8% -8%,#DCE5FB 0,transparent 62%),radial-gradient(760px 460px at 105% 108%,#E2F2EA 0,transparent 58%),var(--q-bg)!important}
+#screen-login::before,#screen-login::after{display:none!important}
+#screen-login .login-card{border-radius:28px;box-shadow:var(--q-sh3);background:#fff;animation:qRise .6s var(--q-ease) both;border:0}
+.qs-login-logo{display:grid;place-items:center;height:auto!important;overflow:visible!important;margin:4px 0 18px!important}
+.qs-login-logo img{display:block;height:54px;width:auto;max-width:100%;object-fit:contain}
+#screen-login .login-title{font-weight:800;letter-spacing:-.03em;color:var(--q-ink)}
+#screen-login .login-desc{color:var(--q-mut)}
+#screen-login input{border-radius:14px!important}
+#screen-login .login-btn{border-radius:99px!important;background:var(--q-brand)!important;box-shadow:0 10px 24px -12px rgba(31,71,184,.7)!important;transition:background .2s,transform .25s var(--q-ease)!important}#screen-login .login-btn:hover{background:var(--q-brand2)!important;transform:translate3d(0,-1px,0)!important}
+#screen-login .google-btn{border-radius:99px!important}
+@keyframes qRise{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+/* ── Estructura con barra lateral ── */
+#screen-dashboard{background:var(--q-bg)!important;padding-left:264px}
+.qs-side{position:fixed;left:0;top:0;bottom:0;width:264px;z-index:60;display:flex;flex-direction:column;padding:24px 14px 14px;background:#FAFBFD;border-right:1px solid var(--q-line)}
+.qs-brand{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:0 10px 24px}
+.qs-brand img{display:block;height:auto;max-height:50px;width:auto;max-width:100%;object-fit:contain;object-position:center}
+.qs-brand span{font-size:11.5px;color:#A1AABC;font-weight:500;letter-spacing:.01em}
+.qs-nav{position:relative;display:grid!important;gap:2px;flex:1 1 auto;align-content:start;background:none!important;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;overflow:visible!important}
+.qs-nav .nav-tab{position:relative;z-index:1;display:flex!important;align-items:center;justify-content:flex-start!important;gap:12px;width:100%;height:auto!important;border:0;background:transparent!important;padding:11px 12px!important;border-radius:12px!important;color:var(--q-ink2)!important;font-weight:600!important;font-size:14.5px!important;text-align:left;box-shadow:none!important;transition:color .25s,background .2s!important;flex:none!important}
+.qs-nav .nav-tab i{width:20px;text-align:center;font-size:15px;color:var(--q-mut);transition:color .25s}
+.qs-nav .nav-tab img.iso-ntab{width:20px;height:20px;border-radius:5px}
+.qs-nav .nav-tab:hover:not(.active){background:#EEF1F7!important}
+.qs-nav .nav-tab.active{color:var(--q-ink)!important;background:transparent!important}
+.qs-nav .nav-tab.active i{color:var(--q-brand)}
+.qs-nav-ind{position:absolute;left:0;right:0;top:0;height:46px;border-radius:12px;background:#fff;box-shadow:var(--q-sh1),0 0 0 1px var(--q-line);transform:translate3d(0,var(--y,0),0);transition:transform .5s var(--q-ease),height .5s var(--q-ease);will-change:transform;pointer-events:none;z-index:0}
+.qs-nav h4{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--q-mut);margin:22px 12px 6px}
+.qs-sfoot{flex:none;padding-top:14px;border-top:1px solid var(--q-line2);display:flex;align-items:center;gap:8px}
+.qs-side .dash-user-chip{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:16px;background:#fff;border:0!important;box-shadow:var(--q-sh1),0 0 0 1px var(--q-line)!important;transition:box-shadow .25s,transform .25s var(--q-ease)}
+.qs-side .dash-user-chip:hover{box-shadow:0 10px 22px -14px rgba(14,26,51,.35),0 0 0 1px #D3DBEA!important}
+.qs-side .duc-avatar{width:36px;height:36px;background:linear-gradient(135deg,#3563E9,#193A98)}
+.qs-side .duc-info{min-width:0}
+.qs-side .duc-name{font-size:13.5px;max-width:140px;color:var(--q-ink)}
+.qs-side .duc-cargo{font-size:12px;max-width:140px;color:var(--q-mut)}
+.qs-side .btn-logout-icon{width:40px;height:40px;border-radius:12px;border:0;background:transparent;color:var(--q-mut);display:grid;place-items:center;flex:none;transition:background .2s,color .2s;cursor:pointer}
+.qs-side .btn-logout-icon:hover{background:var(--q-ncbg);color:var(--q-nc)}
+.dash-body{padding:30px 38px 80px!important;max-width:1380px!important}
+/* ── Movimiento ── */
+.module.active,.audit-view.active,.dash-view.active{animation:qIn .42s var(--q-ease) both}
+@keyframes qIn{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:none}}
+html.qs-vt .module.active,html.qs-vt .audit-view.active,html.qs-vt .dash-view.active{animation:none}
+::view-transition-old(qs-main){animation:qVtOut .2s ease both}
+::view-transition-new(qs-main){animation:qVtIn .38s var(--q-ease) both}
+::view-transition-old(root),::view-transition-new(root){animation:none}
+.dash-body{view-transition-name:qs-main}
+@keyframes qVtOut{to{opacity:0;transform:translate3d(0,-6px,0)}}
+@keyframes qVtIn{from{opacity:0;transform:translate3d(0,10px,0)}}
+@media (prefers-reduced-motion:reduce){.module.active,.audit-view.active,.dash-view.active,.hab-item{animation:none}.qs-nav-ind{transition:none}}
+/* ── Encabezados de página y subpestañas ── */
+.page-title{font-weight:800!important;font-size:clamp(26px,3vw,34px)!important;letter-spacing:-.03em!important;color:var(--q-ink)!important;line-height:1.1}
+.page-subtitle{color:var(--q-mut)!important;font-size:14.5px!important;margin-top:7px!important}
+.dash-body .module>.nav-tabs{position:relative;display:inline-flex!important;gap:3px!important;padding:4px!important;background:#E7EBF3!important;border-radius:99px!important;margin-bottom:22px!important;box-shadow:none!important;border:0!important;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.dash-body .module>.nav-tabs .nav-tab{position:relative;z-index:1;height:38px;padding:0 16px!important;border-radius:99px!important;font-weight:600!important;font-size:13.5px!important;color:var(--q-ink2)!important;background:transparent!important;box-shadow:none!important;transition:color .3s!important;white-space:nowrap;display:inline-flex;align-items:center;gap:8px}
+.dash-body .module>.nav-tabs .nav-tab i{font-size:13px;color:var(--q-mut);transition:color .3s}
+.dash-body .module>.nav-tabs .nav-tab.active{color:var(--q-ink)!important}
+.dash-body .module>.nav-tabs .nav-tab.active i{color:var(--q-brand)}
+.dash-body .module>.nav-tabs .nav-tab:hover:not(.active){color:var(--q-ink)!important}
+.qs-seg-th{position:absolute;z-index:0;top:4px;bottom:4px;left:0;border-radius:99px;background:#fff;box-shadow:var(--q-sh1);transform:translate3d(var(--x,4px),0,0);width:var(--w,0);transition:transform .5s var(--q-ease),width .5s var(--q-ease);will-change:transform,width;pointer-events:none}
+/* ── Botones ── */
+.btn-nueva{border-radius:99px!important;height:46px;padding:0 22px!important;background:var(--q-brand)!important;box-shadow:0 10px 24px -12px rgba(31,71,184,.7)!important;font-size:14.5px!important;font-weight:700!important;transition:background .2s,transform .25s var(--q-ease),box-shadow .25s!important}
+.btn-nueva:hover{background:var(--q-brand2)!important;transform:translate3d(0,-1px,0)!important;box-shadow:0 14px 28px -12px rgba(31,71,184,.75)!important}
+.btn-nueva:active{transform:scale(.97)!important}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 20px;border-radius:99px;border:1px solid var(--q-line);background:#fff;color:var(--q-ink2);font:600 14.5px var(--q-f);cursor:pointer;box-shadow:var(--q-sh1);transition:background .2s,border-color .2s,transform .25s var(--q-ease)}
+.btn-ghost:hover{background:var(--q-wash);border-color:#D3DBEA}
+.btn-ghost:active{transform:scale(.97)}
+.filters .filter-btn{height:36px;padding:0 14px!important;border-radius:99px!important;border:1px solid var(--q-line)!important;background:#fff!important;color:var(--q-ink2)!important;font-weight:600!important;font-size:13.5px!important;box-shadow:var(--q-sh1);transition:background .25s,color .25s,border-color .25s!important;display:inline-flex;align-items:center;gap:6px}
+.filters .filter-btn:hover{background:var(--q-wash)!important}
+.filters .filter-btn.active{background:var(--q-ink)!important;border-color:var(--q-ink)!important;color:#fff!important}
+.section-title{font-size:17px!important;font-weight:700!important;color:var(--q-ink)!important}
+.section-title i{color:var(--q-brand)!important}
+/* ── Indicadores ── */
+.stats-row{gap:14px!important;margin-bottom:24px!important}
+.stat-card{position:relative;border-radius:18px!important;border:0!important;box-shadow:var(--q-sh2),0 0 0 1px var(--q-line)!important;padding:18px 20px!important;overflow:hidden;transition:transform .3s var(--q-ease)!important}
+.stat-card:hover{transform:translate3d(0,-2px,0)}
+.stat-icon{width:44px!important;height:44px!important;border-radius:14px!important;font-size:18px!important}
+.stat-icon.blue{background:var(--q-soft)!important;color:var(--q-brand)!important}
+.stat-icon.orange{background:var(--q-warnbg)!important;color:#E59A0E!important}
+.stat-icon.green{background:var(--q-cbg)!important;color:var(--q-c)!important}
+.stat-number{font-size:30px!important;letter-spacing:-.04em;color:var(--q-ink)!important;font-variant-numeric:tabular-nums}
+.stat-label{font-size:13px!important;color:var(--q-mut)!important;font-weight:600!important}
+/* ── Tarjetas de auditoría ── */
+.audit-list{gap:12px!important}
+.audit-item{border-radius:18px!important;border:0!important;box-shadow:var(--q-sh2),0 0 0 1px var(--q-line)!important;padding:18px 22px!important;transition:transform .35s var(--q-ease),box-shadow .35s!important}
+.audit-item:hover{transform:translate3d(0,-2px,0)!important;box-shadow:0 18px 36px -22px rgba(14,26,51,.3),0 0 0 1px #D3DBEA!important}
+.audit-inst-logo{background:#fff!important;border:0!important;box-shadow:var(--q-sh1),0 0 0 1px var(--q-line)!important;border-radius:14px!important}
+.audit-inst-logo img{object-fit:contain}
+.audit-title{font-weight:700!important;color:var(--q-ink)!important;letter-spacing:-.01em}
+.audit-badge{border-radius:99px!important;font-weight:700!important;text-transform:none!important;letter-spacing:0!important;font-size:12.5px!important;padding:4px 11px!important}
+.audit-badge.en-progreso{background:var(--q-soft)!important;color:var(--q-brand)!important}
+.audit-badge.completada{background:var(--q-cbg)!important;color:#0C7346!important}
+.btn-action.btn-continuar{border-radius:99px!important;background:var(--q-brand)!important;box-shadow:0 8px 18px -10px rgba(31,71,184,.7)!important}
+.btn-action.btn-delete,.hab-btn-ico{border-radius:99px!important}
+.hab-btn-ico{width:36px;padding:0!important;justify-content:center;background:#fff!important;border:1px solid var(--q-line)!important;color:var(--q-mut)!important}
+.hab-btn-ico:hover{color:var(--q-brand)!important}
+.hab-nc{color:#B5322A}
+.hab-item{animation:qIn .45s var(--q-ease) both;animation-delay:calc(min(var(--i,0),10) * 30ms)}
+.hab-actions{display:flex;gap:10px;flex-wrap:wrap}
+.hab-empty-logo img{height:44px;width:auto;margin:0 auto 14px;display:block;opacity:.9}
+/* ── Tableros (BI) ── */
+.dbi-title{font-size:20px!important;letter-spacing:-.025em!important;color:var(--q-ink)!important}
+.dbi-sub{font-size:13px!important;color:var(--q-mut)!important}
+.dbi-header{margin-bottom:16px!important}
+.dbi-ent-btns{background:#E7EBF3!important;border-radius:99px!important;padding:4px!important;gap:3px!important}
+.dbi-ent-btn{height:36px;border-radius:99px!important;padding:0 14px!important;font-size:13px!important;transition:background .25s,box-shadow .25s,color .25s!important}
+.dbi-ent-btn img{height:20px!important}
+.dbi-ent-btn.active{box-shadow:var(--q-sh1)!important;color:var(--q-ink)!important}
+.dbi-report-btn{border-radius:99px!important;height:40px;padding:0 18px!important;background:var(--q-brand)!important;box-shadow:0 10px 24px -12px rgba(31,71,184,.7)!important}
+.db-fsel,.db-msel-trigger{border-radius:99px!important;height:40px;border:1px solid var(--q-line)!important;box-shadow:var(--q-sh1);background-color:#fff!important}
+.db-msel-panel{border-radius:16px!important;box-shadow:0 24px 60px -18px rgba(14,26,51,.35)!important;border:1px solid var(--q-line)!important;animation:qPop .26s var(--q-ease) both}
+@keyframes qPop{from{opacity:0;transform:translate3d(0,-6px,0) scale(.98)}to{opacity:1;transform:none}}
+.db-btn-ref{border-radius:99px!important;width:40px;height:40px}
+.dbi-kpi-row{gap:14px!important;margin-bottom:16px!important}
+.dbi-kpi{position:relative;border-radius:18px!important;border:0!important;box-shadow:var(--q-sh2),0 0 0 1px var(--q-line)!important;padding:16px 18px 14px!important;overflow:hidden;transition:transform .3s var(--q-ease)}
+.dbi-kpi:hover{transform:translate3d(0,-2px,0)}
+.dbi-kpi::before{content:"";position:absolute;left:0;top:16px;width:3px;height:22px;border-radius:0 3px 3px 0;background:var(--ka,#C8D0DE)}
+.dbi-kpi:nth-child(2){--ka:var(--q-brand)}.dbi-kpi:nth-child(3){--ka:var(--q-c)}.dbi-kpi:nth-child(4){--ka:#E59A0E}.dbi-kpi:nth-child(5){--ka:var(--q-nc)}
+.dbi-kl{font-size:12px!important;text-transform:none!important;letter-spacing:0!important;color:var(--q-mut)!important;font-weight:600!important}
+.dbi-kv{font-size:30px!important;letter-spacing:-.04em;margin-top:6px;font-variant-numeric:tabular-nums}
+.dbi-ks{font-size:12px!important;color:var(--q-mut)!important}
+.dbi-main-row,.dbi-bottom-row{gap:14px!important;margin-bottom:14px!important}
+.dbi-panel{border-radius:20px!important;border:0!important;box-shadow:var(--q-sh2),0 0 0 1px var(--q-line)!important;overflow:hidden}
+.dbi-panel-head{padding:14px 16px!important;border-bottom:1px solid var(--q-line2)!important}
+.dbi-panel-title{font-size:14px!important;text-transform:none!important;letter-spacing:-.01em!important;font-weight:700!important;color:var(--q-ink)!important}
+.dbi-sede-row{padding:9px 16px!important;border-bottom:1px solid var(--q-line2)!important;transition:background .2s!important}
+.dbi-sede-row:hover{background:var(--q-wash)!important}
+.dbi-sede-name{font-size:13px!important;font-weight:600}
+.dbi-sede-pct{font-size:13px!important}
+.dbi-sede-bar-wrap{width:72px!important;height:6px!important;border-radius:9px!important}
+.dbi-sede-bar{border-radius:9px!important;transition:width .7s var(--q-ease)}
+.dbi-sede-mes{font-size:11px!important}
+.dbi-sede-ent{width:auto!important;max-width:44px;height:18px!important}
+.dbi-cat-pill{border-radius:99px!important;font-size:11.5px!important;padding:4px 11px!important}
+.dbi-res-tab{border-radius:99px!important;font-size:12px!important;padding:6px 0!important}
+.dbi-nc-item{border-radius:12px;transition:background .2s}
+.dbi-nc-item:hover{background:var(--q-wash)}
+/* Habilitación: tablero */
+.hb-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--q-line2);cursor:pointer;transition:background .2s}
+.hb-row:hover{background:var(--q-wash)}
+.hb-row .m{font-size:11px;font-weight:700;color:#94a3b8;width:30px;text-align:center;flex:none}
+.hb-row img{height:18px;width:auto;max-width:44px;object-fit:contain;flex:none}
+.hb-row .s{flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--q-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hb-row .s small{display:block;font-size:11px;color:var(--q-mut);font-weight:500}
+.hb-row .b{width:72px;height:6px;border-radius:9px;background:var(--q-line2);overflow:hidden;flex:none}
+.hb-row .b i{display:block;height:100%;border-radius:9px;transition:width .7s var(--q-ease)}
+.hb-row .p{font-size:13px;font-weight:800;min-width:40px;text-align:right}
+.hb-dist{display:grid;gap:9px}
+.hb-dist div{display:flex;align-items:center;gap:10px;font-size:12px}
+.hb-dist span{width:78px;font-weight:700}
+.hb-dist .t{flex:1;height:8px;border-radius:9px;background:var(--q-line2);overflow:hidden}
+.hb-dist .t i{display:block;height:100%;border-radius:9px;transition:width .7s var(--q-ease)}
+.hb-dist em{width:86px;text-align:right;font-style:normal;color:var(--q-mut);font-variant-numeric:tabular-nums}
+.hb-std{display:grid;gap:10px}
+.hb-std div{display:flex;align-items:center;gap:10px}
+.hb-std span{width:170px;font-size:12.5px;color:var(--q-ink2);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:none}
+.hb-std .t{flex:1;height:8px;border-radius:9px;background:var(--q-line2);overflow:hidden}
+.hb-std .t i{display:block;height:100%;border-radius:9px;transition:width .7s var(--q-ease)}
+.hb-std b{width:42px;text-align:right;font-size:13px}
+.hb-std em{font-style:normal;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;width:56px;text-align:center}
+.hb-pills{display:flex;gap:5px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--q-line2)}
+.hb-pill{height:28px;padding:0 11px;border-radius:99px;border:1px solid var(--q-line);background:#fff;font:700 11.5px var(--q-f);color:var(--q-ink2);cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.hb-pill.on{background:var(--q-ncbg);color:#B5322A;border-color:#F3C6C2}
+.hb-hall{padding:6px 10px;overflow-y:auto;flex:1;max-height:360px}
+.hb-h{padding:10px 8px;border-radius:12px;cursor:pointer;transition:background .2s}
+.hb-h:hover{background:var(--q-wash)}
+.hb-h p{margin:0;font-size:12.5px;line-height:1.45;color:var(--q-ink)}
+.hb-h p b{color:var(--q-mut);font-weight:700;margin-right:4px}
+.hb-h .f{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:11px;color:var(--q-mut)}
+.hb-h .f i{height:5px;border-radius:9px;background:var(--q-nc);display:block}
+.hb-h .f strong{color:#B5322A}
+.hb-h .o{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--q-ease)}
+.hb-h.open .o{grid-template-rows:1fr}
+.hb-h .o>div{overflow:hidden}
+.hb-h .o ul{margin:8px 0 2px;padding:0 0 0 16px;font-size:12px;color:var(--q-ink2)}
+.hb-empty{padding:26px 14px;text-align:center;color:var(--q-mut);font-size:13px}
+.hb-sec{padding:6px 16px 12px;overflow-y:auto;max-height:260px}
+.hb-sec div{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--q-line2)}
+.hb-sec code{font:700 11px var(--q-f);padding:3px 8px;border-radius:99px;background:var(--q-soft);color:var(--q-brand);flex:none}
+.hb-sec span{flex:1;min-width:0;font-size:12.5px;color:var(--q-ink);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hb-sec b{color:#B5322A;font-size:12.5px}
+/* ── Superposición de la lista ── */
+html.hab-lock,html.hab-lock body{overflow:hidden}
+.hab-ov{position:fixed;inset:0;z-index:9000;background:var(--q-bg);opacity:0;visibility:hidden;transform:scale(.985);transition:opacity .34s var(--q-ease),transform .5s var(--q-ease),visibility 0s linear .5s;will-change:opacity,transform}
+.hab-ov.open{opacity:1;visibility:visible;transform:none;transition:opacity .34s var(--q-ease),transform .5s var(--q-ease),visibility 0s}
+.hab-ov iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .38s ease .04s}
+.hab-ov.ready iframe{opacity:1}
+.hab-ov-load{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:18px;transition:opacity .3s ease;pointer-events:none}
+.hab-ov.ready .hab-ov-load{opacity:0}
+.hab-ov-load img{height:46px;width:auto;animation:qBreath 1.6s ease-in-out infinite}
+.hab-ov-load span{font-size:13.5px;font-weight:600;color:var(--q-mut)}
+.hab-ov-bar{width:180px;height:3px;border-radius:3px;background:#E1E7F3;overflow:hidden;position:relative}
+.hab-ov-bar::after{content:"";position:absolute;inset:0;width:40%;border-radius:3px;background:var(--q-brand);animation:qBar 1.1s var(--q-ease) infinite}
+.hab-ov-slow{display:none;pointer-events:auto;font-size:12.5px;color:var(--q-mut);text-align:center;max-width:340px}
+.hab-ov.slow .hab-ov-slow{display:block}
+.hab-ov-slow button{margin-top:10px}
+@keyframes qBreath{50%{transform:scale(.96);opacity:.75}}
+@keyframes qBar{from{transform:translateX(-100%)}to{transform:translateX(260%)}}
+/* Confirmación */
+.qs-cf{position:fixed;inset:0;z-index:9500;background:rgba(14,26,51,.32);display:grid;place-items:center;padding:20px;opacity:0;transition:opacity .2s ease}
+.qs-cf.on{opacity:1}
+.qs-cf-box{width:min(420px,100%);background:#fff;border-radius:22px;padding:24px 24px 20px;box-shadow:var(--q-sh3);transform:translate3d(0,10px,0) scale(.98);transition:transform .34s var(--q-ease)}
+.qs-cf.on .qs-cf-box{transform:none}
+.qs-cf h4{font-size:17px;font-weight:800;color:var(--q-ink);margin:0 0 8px;letter-spacing:-.01em}
+.qs-cf p{font-size:13.5px;color:var(--q-mut);line-height:1.55;margin:0}
+.qs-cf-act{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}
+.qs-cf-act button{height:42px;padding:0 18px;border-radius:99px;font:700 13.5px var(--q-f);cursor:pointer;border:1px solid var(--q-line);background:#fff;color:var(--q-ink2)}
+.qs-cf-ok{background:var(--q-brand)!important;border-color:var(--q-brand)!important;color:#fff!important}
+.qs-cf-ok.dng{background:var(--q-nc)!important;border-color:var(--q-nc)!important}
+/* ── Responsivo ── */
+@media (max-width:1240px){.qs-side{width:232px}#screen-dashboard{padding-left:232px}.dash-body{padding:26px 26px 80px!important}}
+@media (max-width:1000px){
+  #screen-dashboard{padding-left:0;padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))}
+  .qs-side{top:auto;bottom:auto;width:auto;height:auto;flex-direction:row;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;background:#F3F5FA;border-right:0;position:relative;border-bottom:1px solid var(--q-line)}
+  .qs-brand{padding:0;flex:1;min-width:0;align-items:flex-start}.qs-brand img{max-height:32px}.qs-brand span{display:none}
+  .qs-sfoot{border:0;padding:0;gap:4px}
+  .qs-side .dash-user-chip{padding:3px;border-radius:99px;flex:none}.qs-side .duc-info{display:none}
+  .qs-nav{position:fixed!important;left:0;right:0;bottom:0;z-index:70;grid-template-columns:repeat(5,1fr);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))!important;background:rgba(255,255,255,.95)!important;backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);border-top:1px solid var(--q-line)!important}
+  .qs-nav .nav-tab{flex-direction:column;justify-content:center!important;gap:3px;padding:7px 0!important;font-size:11px!important;font-weight:700!important;color:var(--q-mut)!important;text-align:center}
+  .qs-nav .nav-tab i{font-size:18px;width:auto}
+  .qs-nav .nav-tab.active{color:var(--q-brand)!important}
+  .qs-nav-ind{display:none}
+  .dash-body{padding:18px 16px 30px!important;view-transition-name:none}
+  .dash-body .module>.nav-tabs{display:flex!important;width:100%}
+  .dash-body .module>.nav-tabs .nav-tab{flex:1 0 auto;justify-content:center;padding:0 12px!important}
+  .btn-nueva,.btn-ghost{white-space:nowrap;padding:0 16px!important}
+}
+@media (max-width:640px){.page-title-row{align-items:stretch!important}.hab-actions{width:100%}.hab-actions>*{flex:1;justify-content:center}.btn-nueva{justify-content:center}.dash-body .module>.nav-tabs .nav-tab{font-size:12.5px!important}.dash-body .module>.nav-tabs .nav-tab i{display:none}.hb-std span{width:110px}}
+@media (max-width:640px){
+  .audit-item{flex-wrap:wrap!important;gap:12px 14px!important;padding:16px!important}
+  .audit-item .audit-status-dot{order:0}
+  .audit-item .audit-info{flex:1 1 calc(100% - 90px)!important;min-width:0}
+  .audit-item .audit-title{white-space:normal!important}
+  .audit-item .audit-meta{gap:4px 10px!important}
+  .audit-item .audit-score{order:5;font-size:22px!important}
+  .audit-item .audit-badge{order:6;margin-right:auto}
+  .audit-item .audit-actions{order:7;width:100%;display:flex}
+  .audit-item .audit-actions .btn-continuar{flex:1;justify-content:center}
+}
+#screen-login .login-divider,#screen-login #btn-google{display:none!important}
+#screen-login .login-btn{gap:10px}
+#screen-login .login-btn:disabled{opacity:1!important;cursor:progress}
+.qs-spin{width:20px;height:20px;flex:none;animation:qSpin .8s linear infinite;transform-origin:50% 50%}
+.qs-spin circle{fill:none;stroke:rgba(255,255,255,.28);stroke-width:2.6}
+.qs-spin circle.a{stroke:#fff;stroke-linecap:round;stroke-dasharray:60;stroke-dashoffset:44;animation:qDash 1.4s ease-in-out infinite;transform-origin:50% 50%}
+@keyframes qSpin{to{transform:rotate(360deg)}}
+@keyframes qDash{0%{stroke-dashoffset:56}50%{stroke-dashoffset:18;transform:rotate(90deg)}100%{stroke-dashoffset:56;transform:rotate(360deg)}}
+/* ══ ISO 9001 con el mismo diseño de los tableros ══ */
+#iso-root .iso-logo{display:none!important}
+#iso-root .iso-hd{gap:0!important}
+#iso-root .iso-subrow{background:var(--q-bg)!important}
+#iso-tabs{position:relative;display:inline-flex!important;gap:3px!important;padding:4px!important;background:#E7EBF3!important;border-radius:99px!important;box-shadow:none!important;border:0!important;margin:0!important;max-width:100%;overflow-x:auto;scrollbar-width:none}
+#iso-tabs .nav-tab{position:relative;z-index:1;height:38px;padding:0 16px!important;border-radius:99px!important;font-weight:600!important;font-size:13.5px!important;color:var(--q-ink2)!important;background:transparent!important;box-shadow:none!important;transition:color .3s!important;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;border:0!important}
+#iso-tabs .nav-tab i{font-size:13px;color:var(--q-mut);transition:color .3s}
+#iso-tabs .nav-tab.active{color:var(--q-ink)!important}
+#iso-tabs .nav-tab.active i{color:var(--q-brand)}
+#iso-root .iso-xl{border-radius:99px!important;height:40px!important;padding:0 16px!important;border:1px solid var(--q-line)!important;background:#fff!important;box-shadow:var(--q-sh1)!important;font-weight:600!important}
+#iso-root .db-fsel{height:40px!important}
+#iso-root .dbi-report-btn{height:40px!important}
+#iso-root .b4-band{gap:14px!important;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important;overflow:visible!important}
+#iso-root .b4-tile{position:relative;background:#fff!important;border:0!important;border-radius:18px!important;box-shadow:var(--q-sh2),0 0 0 1px var(--q-line)!important;padding:16px 18px 14px!important;overflow:hidden;transition:transform .3s var(--q-ease),box-shadow .3s!important}
+#iso-root .b4-tile:hover{transform:translate3d(0,-2px,0);background:#fff!important}
+#iso-root .b4-tile::before{content:"";position:absolute;left:0;top:16px;width:3px;height:22px;border-radius:0 3px 3px 0;background:var(--ac,#C8D0DE)}
+#iso-root .b4-tlb{font-size:12px!important;font-weight:600!important;text-transform:none!important;letter-spacing:0!important;color:var(--q-mut)!important}
+#iso-root .b4-tile b{font-size:30px!important;font-weight:800!important;letter-spacing:-.04em!important;margin-top:6px}
+#iso-root .b4-tile small{font-size:12px!important;color:var(--q-mut)!important}
+#iso-root .b4-tb{height:5px!important;border-radius:9px!important;overflow:hidden}
+#iso-root .b4-tb i{border-radius:9px!important;transition:width .7s var(--q-ease)}
+#iso-root .b5-g,#iso-root .b5-a,#iso-root .b5-b,#iso-root .b5-c,#iso-root .b5-d,#iso-root .b5-t{gap:14px!important}
+#iso-root .b5{gap:14px!important}
+#iso-root .b4-p,#iso-root .iso-dr{border:0!important;border-radius:20px!important;box-shadow:var(--q-sh2),0 0 0 1px var(--q-line)!important;background:#fff!important}
+#iso-root .b4-p>header,#iso-root .iso-dr .dbi-panel-head{padding:14px 16px!important;border-bottom:1px solid var(--q-line2)!important}
+#iso-root .b4-p>header b,#iso-root .dbi-panel-title{font-size:14px!important;font-weight:700!important;text-transform:none!important;letter-spacing:-.01em!important;color:var(--q-ink)!important}
+#iso-root .b4-p>header span:not(.b3-lgd),#iso-root .dbi-panel-badge{font-size:12px!important;color:var(--q-mut)!important}
+#iso-root .b4-p>header a{font-weight:700!important;color:var(--q-brand)!important}
+#iso-root .b4-rhd,#iso-root .b4-thd{text-transform:none!important;letter-spacing:0!important;font-size:11.5px!important;font-weight:700!important;background:var(--q-wash)!important;border-color:var(--q-line2)!important}
+#iso-root .b5-col{border-radius:12px!important;transition:background .2s,transform .3s var(--q-ease)!important}
+#iso-root .b5-col:hover{transform:translate3d(0,-2px,0)}
+#iso-root .b5-pcr{border-radius:10px!important;transition:background .2s!important}
+#iso-root .b5-pcr:hover{background:var(--q-wash)!important}
+#iso-root .dbi-res-tab,#iso-root .dbi-cat-pill{border-radius:99px!important}
+#iso-root input[type=search],#iso-root .b4-bar2 input,#iso-root .b4-bar2 select{border-radius:99px!important}
+@media (max-width:1000px){#iso-tabs{display:flex!important;width:100%}#iso-tabs .nav-tab{flex:1 0 auto;justify-content:center}}
+#iso-root .b4-pt,#iso-root .b4-ptin{border-radius:20px!important}
+#iso-root .b4-pt{overflow:hidden}
+#iso-root .b4-ptin>header{padding:14px 16px!important;border-bottom:1px solid var(--q-line2)!important}
+#iso-root .b4-pth>b,#iso-root .b5 .b4-ptin>header>b{font-size:14px!important;font-weight:700!important;text-transform:none!important;letter-spacing:-.01em!important;color:var(--q-ink)!important;padding-left:0!important}
+#iso-root .b4-pth>b::before{display:none!important}
+#iso-root .b4-ptin>header a{font-size:12.5px!important;font-weight:700!important;color:var(--q-brand)!important}
+#iso-root .b4-ft{background:var(--q-wash)!important;border-top:1px solid var(--q-line2)!important}
+
+/* ISO · tablero de seguimiento con alturas naturales (nada se corta) */
+#iso-root .iso-subrow{box-shadow:none!important;margin-bottom:18px!important;padding-top:0!important}
+#iso-root .iso-saved{font-size:12.5px;color:var(--q-mut)}
+@media (min-width:1201px){
+  #iso-view .b5{height:auto!important;min-height:0!important;grid-template-rows:auto auto!important;gap:14px!important}
+  #iso-view .b5-g{display:grid!important;gap:14px!important;grid-template-columns:minmax(0,.92fr) minmax(0,.92fr) minmax(0,1.3fr)!important;grid-template-rows:auto auto auto!important;grid-template-areas:"b b t" "a c t" "d d t"!important}
+  #iso-view .b5-a{grid-area:a!important;order:0!important}#iso-view .b5-b{grid-area:b!important;order:0!important;flex-direction:row!important}#iso-view .b5-c{grid-area:c!important;order:0!important;display:flex!important}#iso-view .b5-d{grid-area:d!important;order:0!important}
+  #iso-view .b5-t{grid-area:t!important;order:0!important;position:relative;min-height:520px}
+  #iso-view .b5-t>.b4-pt{position:absolute!important;inset:0;height:auto!important}
+  #iso-view .b5-b>.b4-p{flex:1 1 0!important}
+  #iso-view .b5-b>.b5-res{flex:1.35 1 0!important}
+  #iso-view .b5-a .b4-rl{max-height:330px!important;overflow:auto}
+}
+#iso-view .b4-p{min-height:0!important;height:auto}
+#iso-view .b5-rb{padding:18px!important;gap:22px!important;justify-content:flex-start!important;flex-wrap:wrap}
+#iso-view .b5-rb .iso-dn{width:112px!important;height:112px!important}
+#iso-view .b5-rb ul{gap:10px!important;flex:1 1 140px}
+#iso-view .b5-rb li{min-width:0!important;font-size:13px!important;white-space:nowrap}
+#iso-view .b5-rb li b{font-size:15px!important;font-weight:800!important}
+#iso-view .b5-pb{padding:16px 18px!important;gap:14px!important;justify-content:flex-start!important}
+#iso-view .b5-pr{font-size:13px!important}
+#iso-view .b5-pcw{padding:10px 18px 16px!important;overflow:visible!important}
+#iso-view .b5-pcr{min-height:30px!important;padding:3px 6px!important;align-items:center!important;font-size:13px!important}
+#iso-view .b5-pcr strong{font-size:13px!important}
+#iso-view .b5-pcr strong b{display:inline-grid;place-items:center;min-width:24px;height:22px;border-radius:7px;background:var(--q-soft);color:var(--q-brand);font-size:11.5px!important;margin-right:8px}
+#iso-view .b5-cols{padding:14px 18px 18px!important;gap:10px!important}
+#iso-view .b5-col{min-height:132px!important}
+#iso-view .b5-stk{min-height:44px!important;border-radius:9px!important}
+#iso-view .b4-rhd{font-size:11px!important;letter-spacing:0!important}
+#iso-view .b4-rl{min-height:120px}
+#iso-view .b4-band{display:grid!important;grid-template-columns:1.35fr repeat(5,minmax(0,1fr))!important}
+@media (max-width:1439px){#iso-view .b4-band{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media (max-width:640px){#iso-view .b4-band{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media (min-width:1201px) and (max-width:1499px){
+  #iso-view .b5-g{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;grid-template-areas:"b b" "a c" "d d" "t t"!important}
+  #iso-view .b5-t{min-height:0}
+  #iso-view .b5-t>.b4-pt{position:static!important;height:auto!important}
+  #iso-view .b5-t .b4-trs{max-height:480px!important}
+}
+
+/* Pestañas ISO: sin saltos (el texto no cambia de grosor ni de tamaño) */
+#iso-tabs .nav-tab,#iso-tabs .nav-tab.active{transform:none!important;animation:none!important;font-weight:600!important}
+#iso-tabs .nav-tab.active{font-weight:700!important}
+#iso-tabs .nav-tab i{transition:color .3s!important}
+/* ISO · seguimiento compacto (menos desplazamiento) */
+#iso-view .dbi-header{margin-bottom:12px!important}
+#iso-view .b4-band{gap:10px!important}
+#iso-view .b4-tile{padding:12px 14px 11px!important;border-radius:16px!important}
+#iso-view .b4-tile::before{top:13px;height:18px}
+#iso-view .b4-tlb{font-size:11.5px!important}
+#iso-view .b4-tile b{font-size:24px!important;margin-top:3px}
+#iso-view .b4-tile small{font-size:11.5px!important}
+#iso-view .b5,#iso-view .b5-g{gap:10px!important}
+#iso-view .b5-b,#iso-view .b5-c,#iso-view .b5-a,#iso-view .b5-d{gap:10px!important}
+#iso-view .b4-p,#iso-view .b4-pt,#iso-view .b4-ptin{border-radius:16px!important}
+#iso-view .b4-p>header,#iso-view .b4-ptin>header{padding:10px 14px!important}
+#iso-view .b4-p>header b,#iso-view .b4-pth>b{font-size:13.5px!important}
+#iso-view .b5-rb{padding:12px 14px!important;gap:16px!important}
+#iso-view .b5-rb .iso-dn{width:92px!important;height:92px!important}
+#iso-view .b5-rb ul{gap:7px!important}
+#iso-view .b5-rb li{font-size:12.5px!important}
+#iso-view .b5-rb li b{font-size:14px!important}
+#iso-view .b5-pb{padding:12px 14px!important;gap:10px!important}
+#iso-view .b5-pr{font-size:12.5px!important}
+#iso-view .b5-pcw{padding:6px 14px 10px!important}
+#iso-view .b5-pcr{min-height:24px!important;font-size:12.5px!important;padding:1px 4px!important}
+#iso-view .b5-pcr strong b{min-width:22px;height:20px;font-size:11px!important}
+#iso-view .b5-cols{padding:10px 14px 12px!important;gap:8px!important}
+#iso-view .b5-col{min-height:104px!important}
+#iso-view .b5-stk{min-height:34px!important}
+#iso-view .b5-col em{font-size:10.5px!important}
+#iso-view .b5-a .b4-rl{max-height:260px!important}
+#iso-view .b4-rl{min-height:90px}
+@media (min-width:1201px){#iso-view .b5-t{min-height:440px}}
+/* ══ Menú lateral contraíble ══ */
+.qs-brand .qs-brand-ico{display:none}
+.qs-collapse{display:none}
+@media (min-width:1001px){
+  .qs-side{transition:width .45s var(--q-ease),padding .45s var(--q-ease);will-change:width}
+  #screen-dashboard{transition:padding-left .45s var(--q-ease)}
+  .qs-brand{position:relative;min-height:62px;justify-content:center;transition:padding .45s var(--q-ease)}
+  .qs-brand-full,.qs-brand span{transition:opacity .25s ease,transform .45s var(--q-ease)}
+  .qs-brand .qs-brand-ico{display:block;position:absolute;left:50%;top:6px;width:40px;height:40px;object-fit:contain;transform:translate3d(-50%,0,0) scale(.6);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .45s var(--q-ease)}
+  .qs-collapse{display:grid;place-items:center;position:absolute;top:30px;right:-14px;z-index:5;width:28px;height:28px;border-radius:50%;border:0;background:#fff;color:var(--q-mut);font-size:11px;cursor:pointer;box-shadow:0 4px 12px -4px rgba(14,26,51,.3),0 0 0 1px var(--q-line);opacity:0;transform:scale(.85);transition:opacity .2s,transform .3s var(--q-ease),color .2s,background .2s}
+  .qs-side:hover .qs-collapse,.qs-collapse:focus-visible{opacity:1;transform:none}
+  .qs-collapse:hover{color:var(--q-brand);background:var(--q-soft)}
+  .qs-collapse i{transition:transform .45s var(--q-ease)}
+  .qs-nav .nav-tab{transition:color .25s,background .2s,padding .45s var(--q-ease)!important;white-space:nowrap}
+  .qs-nav .nav-tab span{transition:opacity .22s ease,transform .45s var(--q-ease),max-width .45s var(--q-ease);display:inline-block;max-width:170px;overflow:hidden;vertical-align:middle}
+  .qs-side .duc-info{transition:opacity .22s ease}
+  .qs-sfoot{transition:gap .45s var(--q-ease)}
+  html.qs-col .qs-side{width:84px;padding-left:12px;padding-right:12px}
+  html.qs-col #screen-dashboard{padding-left:84px}
+  html.qs-col .qs-brand{padding:0 0 24px}
+  html.qs-col .qs-brand-full,html.qs-col .qs-brand span{opacity:0;transform:translate3d(-8px,0,0) scale(.92);pointer-events:none}
+  html.qs-col .qs-brand-ico{opacity:1;transform:translate3d(-50%,0,0)}
+  html.qs-col .qs-collapse i{transform:rotate(180deg)}
+  html.qs-col .qs-nav .nav-tab{padding-left:19px!important;padding-right:0!important}
+  html.qs-col .qs-nav .nav-tab span{opacity:0;max-width:0;transform:translate3d(-6px,0,0);pointer-events:none}
+  html.qs-col .qs-nav .nav-tab{gap:0}
+  html.qs-col .qs-sfoot{flex-direction:column;gap:6px}
+  html.qs-col .qs-side .dash-user-chip{flex:none;padding:5px;border-radius:99px}
+  html.qs-col .qs-side .duc-info{opacity:0;width:0;overflow:hidden}
+  html.qs-col .qs-side [data-tip]{position:relative}
+  html.qs-col .qs-side [data-tip]:hover::after{content:attr(data-tip);position:absolute;left:calc(100% + 14px);top:50%;transform:translateY(-50%);z-index:100;white-space:nowrap;background:#0E1A33;color:#fff;font:600 12.5px var(--q-f);padding:7px 11px;border-radius:9px;box-shadow:0 10px 24px -10px rgba(14,26,51,.5);pointer-events:none;animation:qTip .2s var(--q-ease) both}
+  @keyframes qTip{from{opacity:0;transform:translate(-4px,-50%)}to{opacity:1;transform:translate(0,-50%)}}
+  .qs-side.qs-noanim,.qs-side.qs-noanim *,html.qs-noanim #screen-dashboard{transition:none!important}
+}
+@media (min-width:1001px) and (max-width:1240px){html:not(.qs-col) .qs-side{width:232px}}
+/* ══ Responsivo tipo COPASST ══ */
+@media (max-width:1000px){
+  .qs-side{z-index:65}
+  .qs-brand img.qs-brand-full{max-height:30px}
+  .qs-side .dash-user-chip{display:flex;align-items:center;gap:8px;padding:3px 12px 3px 3px!important;border-radius:99px!important;max-width:160px}
+  .qs-side .duc-info{display:block!important}
+  .qs-side .duc-cargo{display:none}
+  .qs-side .duc-name{font-size:13px!important;max-width:100px!important}
+  .qs-side .duc-avatar{width:30px;height:30px}
+  .qs-side .btn-logout-icon{width:38px;height:38px}
+  .qs-nav{box-shadow:0 -8px 24px -18px rgba(14,26,51,.35)}
+  .qs-nav .nav-tab{border-radius:14px!important}
+  .qs-nav .nav-tab i,.qs-nav .nav-tab img.iso-ntab{transition:background .3s var(--q-ease),color .3s,transform .4s var(--q-ease)}
+  .qs-nav .nav-tab i{padding:5px 16px;border-radius:99px}
+  .qs-nav .nav-tab.active i{background:var(--q-soft);color:var(--q-brand)}
+  .qs-nav .nav-tab:active i{transform:scale(.9)}
+  .qs-nav .nav-tab:hover:not(.active){background:transparent!important}
+  .dash-body .page-title-row{margin-bottom:18px!important}
+  .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .dbi-kpi-row{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .dbi-main-row{grid-template-columns:minmax(0,1fr)!important}
+  .dbi-bottom-row{flex-direction:column}
+  .dbi-header{flex-direction:column;align-items:stretch!important}
+  .dbi-filters{width:100%;flex-direction:row!important;flex-wrap:wrap!important;align-items:center!important}
+  .dbi-filters>.db-msel,.dbi-filters>.db-fsel{flex:1 1 180px;min-width:0;height:auto}
+  .dbi-filters .db-fsel{height:40px!important;max-height:40px}
+  .dbi-filters>.dbi-report-btn{margin-left:auto}
+}
+@media (max-width:640px){
+  .qs-side .duc-info{display:none!important}
+  .qs-side .dash-user-chip{padding:3px!important}
+  .dbi-kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .dbi-kpi:first-child{grid-column:1/-1}
+  .dbi-ent-btns{width:100%}.dbi-ent-btn{flex:1;justify-content:center}
+  .dbi-report-btn{flex:1 1 0;justify-content:center}
+  .dbi-filters>.db-fsel,.dbi-filters>.db-msel{flex:1 1 100%!important}
+  .stat-card{padding:14px!important;gap:12px!important}
+  .stat-number{font-size:24px!important}
+  .stat-icon{width:38px!important;height:38px!important;font-size:16px!important}
+  .page-title{font-size:26px!important}
+  .section-header{flex-direction:column;align-items:flex-start!important;gap:10px}
+  .section-header .filters{width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .section-header .filters .filter-btn{flex:none}
+  .hb-std span{width:110px}
+}
 </style>
 </head>
 <body>
@@ -4386,9 +4842,7 @@ button.b4-tile:hover{background:#fff;box-shadow:0 2px 4px rgba(16,24,40,.05),0 1
 <!-- ══ SCREEN: LOGIN ══════════════════════════ -->
 <div id="screen-login" class="screen active">
   <div class="login-card">
-    <div class="login-logo" style="height: 90px; overflow: hidden; margin-bottom: 8px;">
-      <img class="login-logo-img" src="https://i.imgur.com/L8Fpofk.png" alt="Qualisig" style="width: 280px; height: 140px; object-fit: contain; margin-top: -25px;">
-    </div>
+    <div class="login-logo qs-login-logo"><img src="https://i.imgur.com/L8Fpofk.png" alt="Qualisig"></div>
 
     <h2 class="login-title" style="text-align:center !important; width:100%;">Bienvenido</h2>
     <p class="login-desc" style="text-align:center !important; width:100%;">Ingresa tus credenciales para acceder al módulo de auditorías</p>
@@ -4418,10 +4872,7 @@ button.b4-tile:hover{background:#fff;box-shadow:0 2px 4px rgba(16,24,40,.05),0 1
       <span id="forgot-success-msg">Se envió un correo para restablecer tu contraseña</span>
     </div>
 
-    <button class="login-btn" id="btn-login" onclick="doLogin()">
-      <i class="fas fa-sign-in-alt"></i>
-      <span>Iniciar sesión</span>
-    </button>
+    <button class="login-btn" id="btn-login" onclick="doLogin()"><span>Iniciar sesión</span></button>
 
     <!-- Separador OR -->
     <div class="login-divider">
@@ -4447,45 +4898,25 @@ button.b4-tile:hover{background:#fff;box-shadow:0 2px 4px rgba(16,24,40,.05),0 1
 <!-- ══ SCREEN: DASHBOARD ═════════════════════ -->
 <div id="screen-dashboard" class="screen">
 
-  <!-- Header -->
-  <header class="dash-header">
-    <!-- Fila 1: logo + perfil + logout -->
-    <div class="header-top-row">
-      <div class="dash-logo">
-        <img class="dash-logo-img" src="https://i.imgur.com/L8Fpofk.png" alt="Qualisig">
-      </div>
-      <div class="dash-divider"></div>
-      <div style="flex:1"></div>
-      <div class="dash-user-chip" id="dash-user-chip" onclick="openProfileModal()" title="Mi perfil">
+  <aside class="qs-side" aria-label="Navegación">
+    <div class="qs-brand"><img class="qs-brand-full" src="https://i.imgur.com/L8Fpofk.png" alt="Qualisig"><img class="qs-brand-ico" src="https://i.imgur.com/ht6IpCi.png" alt="Qualisig"><span>Sistema de gestión de calidad</span></div>
+    <button class="qs-collapse" id="qs-collapse" type="button" onclick="qsSideToggle()" aria-label="Contraer menú" title="Contraer menú"><i class="fas fa-angles-left"></i></button>
+    <nav class="nav-tabs qs-nav" id="main-nav-tabs">
+      <span class="qs-nav-ind" aria-hidden="true"></span>
+      <button class="nav-tab active" data-tip="Auditorías" id="tab-auditorias" onclick="switchModule('auditorias')"><i class="fas fa-clipboard-list"></i><span>Auditorías</span></button>
+      <button class="nav-tab" data-tip="Dashboard" id="tab-dashboard" onclick="switchModule('dashboard')"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
+      <button class="nav-tab" data-tip="Equipo" id="tab-equipo" onclick="switchModule('equipo')"><i class="fas fa-users"></i><span>Equipo</span></button>
+      <button class="nav-tab" data-tip="Indicadores" id="tab-indicadores" onclick="switchModule('indicadores')"><i class="fas fa-bullseye"></i><span>Indicadores</span></button>
+      <button class="nav-tab" data-tip="ISO 9001" id="tab-autoeval" onclick="switchModule('autoeval')"><img class="iso-ntab" src="https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/autoevaluacion-iso/istockphoto-1138661921-612x612.png" alt="" width="20" height="20" onerror="this.outerHTML='<i class=&quot;fas fa-shield-halved&quot;></i>'"><span>ISO 9001</span></button>
+    </nav>
+    <div class="qs-sfoot">
+      <div class="dash-user-chip" id="dash-user-chip" onclick="openProfileModal()" title="Mi perfil" data-tip="Mi perfil" role="button" tabindex="0">
         <div class="duc-avatar" id="duc-avatar"><i class="fas fa-user" style="font-size:12px;color:#fff"></i></div>
-        <div class="duc-info">
-          <div class="duc-name" id="dash-user-name">Cargando...</div>
-          <div class="duc-cargo" id="duc-cargo">—</div>
-        </div>
+        <div class="duc-info"><div class="duc-name" id="dash-user-name">Cargando...</div><div class="duc-cargo" id="duc-cargo">—</div></div>
       </div>
-      <button class="btn-logout-icon" onclick="doLogout()" title="Cerrar sesión">
-        <i class="fas fa-sign-out-alt"></i>
-      </button>
+      <button class="btn-logout-icon" data-tip="Cerrar sesión" onclick="doLogout()" title="Cerrar sesión" aria-label="Cerrar sesión"><i class="fas fa-arrow-right-from-bracket"></i></button>
     </div>
-    <!-- Fila 2: nav tabs -->
-    <div class="nav-tabs" id="main-nav-tabs">
-      <button class="nav-tab active" id="tab-auditorias" onclick="switchModule('auditorias')">
-        <i class="fas fa-clipboard-list"></i> Auditorías
-      </button>
-      <button class="nav-tab" id="tab-dashboard" onclick="switchModule('dashboard')">
-        <i class="fas fa-chart-bar"></i> Dashboard
-      </button>
-      <button class="nav-tab" id="tab-equipo" onclick="switchModule('equipo')">
-        <i class="fas fa-users"></i> Equipo
-      </button>
-      <button class="nav-tab" id="tab-indicadores" onclick="switchModule('indicadores')">
-        <i class="fas fa-bullseye"></i> Indicadores
-      </button>
-      <button class="nav-tab" id="tab-autoeval" onclick="switchModule('autoeval')">
-        <img class="iso-ntab" src="https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/autoevaluacion-iso/istockphoto-1138661921-612x612.png" alt="" width="20" height="20" onerror="this.outerHTML='<i class=&quot;fas fa-shield-halved&quot;></i>'"> ISO 9001
-      </button>
-    </div>
-  </header>
+  </aside>
 
     <!-- Edit Profile Modal -->
     <div class="profile-modal-overlay" id="profile-modal">
@@ -4555,6 +4986,9 @@ button.b4-tile:hover{background:#fff;box-shadow:0 2px 4px rgba(16,24,40,.05),0 1
       </button>
       <button class="nav-tab" id="subtab-audit-pi" onclick="switchAuditView('pi')">
         <i class="fas fa-user-secret"></i> Paciente Incógnito
+      </button>
+      <button class="nav-tab" id="subtab-audit-hab" onclick="switchAuditView('hab')">
+        <i class="fas fa-file-shield"></i> Habilitación 3100
       </button>
     </div>
 
@@ -4669,6 +5103,34 @@ button.b4-tile:hover{background:#fff;box-shadow:0 2px 4px rgba(16,24,40,.05),0 1
 
     </div><!-- end audit-view-pi -->
 
+    <!-- ── VISTA: HABILITACIÓN 3100 ── -->
+    <div class="audit-view" id="audit-view-hab" style="display:none">
+      <div class="page-title-row">
+        <div>
+          <h1 class="page-title">Habilitación 3100</h1>
+          <p class="page-subtitle">Tus listas de verificación de habilitación · Resolución 3100 de 2019</p>
+        </div>
+        <div class="hab-actions">
+          <button class="btn-ghost" onclick="habPickJson()" title="Cargar una auditoría hecha antes (archivo JSON)"><i class="fas fa-file-arrow-up"></i> Cargar JSON</button>
+          <button class="btn-nueva" onclick="habNew()"><i class="fas fa-plus"></i> Nueva auditoría</button>
+          <input type="file" id="hab-json-in" accept="application/json,.json" hidden onchange="habJsonChosen(this)">
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-file-shield"></i></div><div><div class="stat-number" id="hab-stat-total">0</div><div class="stat-label">Total</div></div></div><div class="stat-card"><div class="stat-icon orange"><i class="fas fa-clock"></i></div><div><div class="stat-number" id="hab-stat-progreso">0</div><div class="stat-label">En progreso</div></div></div><div class="stat-card"><div class="stat-icon green"><i class="fas fa-check-circle"></i></div><div><div class="stat-number" id="hab-stat-completadas">0</div><div class="stat-label">Completadas</div></div></div><div class="stat-card"><div class="stat-icon blue"><i class="fas fa-chart-line"></i></div><div><div class="stat-number" id="hab-stat-promedio">0</div><div class="stat-label">Promedio</div></div></div>
+      </div>
+      <div class="section-header">
+        <div class="section-title"><i class="fas fa-list-check"></i> Auditorías de habilitación</div>
+        <div class="filters">
+          <button class="filter-btn active" onclick="setHabFilter('todas', this)">Todas</button>
+          <button class="filter-btn" onclick="setHabFilter('en-progreso', this)">En progreso</button>
+          <button class="filter-btn" onclick="setHabFilter('completada', this)">Completadas</button>
+          <button class="filter-btn" onclick="setHabFilter('papelera', this)"><i class="fas fa-trash-alt" style="font-size:10px"></i> Papelera <span class="papelera-badge" id="hab-papelera-count" style="display:none">0</span></button>
+        </div>
+      </div>
+      <div class="audit-list" id="hab-audit-list"><div class="loading-state"><div class="spinner-sm"></div><p>Cargando auditorías...</p></div></div>
+    </div><!-- end audit-view-hab -->
+
     </div><!-- end module-auditorias -->
 
     <!-- ══ MODULE: DASHBOARD ══════════════════ -->
@@ -4681,6 +5143,9 @@ button.b4-tile:hover{background:#fff;box-shadow:0 2px 4px rgba(16,24,40,.05),0 1
       </button>
       <button class="nav-tab" id="subtab-dash-pi" onclick="switchDashView('pi')">
         <i class="fas fa-user-secret"></i> Paciente Incógnito
+      </button>
+      <button class="nav-tab" id="subtab-dash-hab" onclick="switchDashView('hab')">
+        <i class="fas fa-file-shield"></i> Habilitación 3100
       </button>
     </div>
 
@@ -4987,7 +5452,67 @@ button.b4-tile:hover{background:#fff;box-shadow:0 2px 4px rgba(16,24,40,.05),0 1
         </div>
       </div>
 
-    </div><!-- end module-dashboard -->
+    
+    <!-- ── VISTA: DASHBOARD HABILITACIÓN 3100 ── -->
+    <div class="dash-view" id="dash-view-hab" style="display:none">
+      <div class="dbi-header">
+        <div class="dbi-title-wrap">
+          <span class="dbi-title">Business Intelligence · Habilitación 3100</span>
+          <span class="dbi-sub" id="hdb-sub">Cargando...</span>
+        </div>
+        <div class="dbi-filters">
+          <div class="dbi-ent-btns">
+            <button class="dbi-ent-btn active" id="hbtn-ent-all" onclick="habSetInst('all')"><span class="dbi-ent-all-icon">⊕</span> Todas</button>
+            <button class="dbi-ent-btn" id="hbtn-ent-foca" onclick="habSetInst('foca')"><img src="https://i.imgur.com/gkAallJ.png" alt="FOCA"></button>
+            <button class="dbi-ent-btn" id="hbtn-ent-viu" onclick="habSetInst('viu')"><img src="https://i.imgur.com/IitwgHx.png" alt="VIU"></button>
+          </div>
+          <div class="db-msel" id="msel-hab-sede"></div>
+          <div class="db-msel" id="msel-hab-mes"></div>
+          <select class="db-fsel" id="hdb-estado" onchange="habSetEstado(this.value)" aria-label="Estado"><option value="all">Todos los estados</option><option value="completada">Completadas</option><option value="en-progreso">En progreso</option></select>
+          <button class="db-btn-ref" onclick="habExportXlsx()" title="Descargar Excel"><i class="fas fa-file-excel"></i></button>
+          <button class="dbi-report-btn" onclick="habExportPdf()"><i class="fas fa-file-pdf"></i> Generar Informe</button>
+        </div>
+      </div>
+      <div class="dbi-kpi-row">
+        <div class="dbi-kpi"><div class="dbi-kl">Auditorías</div><div class="dbi-kv" id="hdv0">—</div><div class="dbi-ks" id="hds0">—</div></div>
+        <div class="dbi-kpi"><div class="dbi-kl">Promedio global</div><div class="dbi-kv" id="hdv1">—</div><div class="dbi-ks" id="hds1">—</div></div>
+        <div class="dbi-kpi"><div class="dbi-kl">Riesgo bajo ≥92%</div><div class="dbi-kv" id="hdv2" style="color:#15803d">—</div><div class="dbi-ks" id="hds2">—</div></div>
+        <div class="dbi-kpi"><div class="dbi-kl">Riesgo medio</div><div class="dbi-kv" id="hdv3" style="color:#b45309">—</div><div class="dbi-ks">85–91%</div></div>
+        <div class="dbi-kpi"><div class="dbi-kl">Riesgo alto &lt;85%</div><div class="dbi-kv" id="hdv4" style="color:#b91c1c">—</div><div class="dbi-ks" id="hds4">—</div></div>
+      </div>
+      <div class="dbi-main-row">
+        <div class="dbi-panel">
+          <div class="dbi-panel-head"><span class="dbi-panel-title">Ranking de sedes</span><span class="dbi-panel-badge" id="hdb-nsedes">—</span></div>
+          <div class="dbi-panel-body" id="hdb-sedes-body" style="overflow-y:auto;max-height:372px"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+          <div class="dbi-panel" style="padding:14px 16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span class="dbi-panel-title">Tendencia mensual</span><span id="hdb-trend-badge" style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px"></span></div>
+            <div style="position:relative;height:150px"><canvas id="hb-c-mes"></canvas></div>
+          </div>
+          <div class="dbi-panel" style="padding:14px 16px">
+            <div class="dbi-panel-title" style="margin-bottom:12px">Distribución C / NC / N/A</div>
+            <div class="hb-dist" id="hdb-dist"></div>
+          </div>
+        </div>
+        <div class="dbi-panel">
+          <div class="dbi-panel-head"><span class="dbi-panel-title">Análisis de hallazgos</span><span class="dbi-panel-badge" id="hdb-hall-total"></span></div>
+          <div class="hb-pills" id="hdb-pills"></div>
+          <div class="hb-hall" id="hdb-hall"></div>
+        </div>
+      </div>
+      <div class="dbi-bottom-row">
+        <div class="dbi-panel" style="padding:14px 16px;flex:1.4;min-width:0">
+          <div class="dbi-panel-title" style="margin-bottom:14px">% cumplimiento por estándar</div>
+          <div class="hb-std" id="hdb-std"></div>
+        </div>
+        <div class="dbi-panel" style="flex:1;min-width:0">
+          <div class="dbi-panel-head"><span class="dbi-panel-title">Servicios con más no conformidades</span><span class="dbi-panel-badge" id="hdb-sec-cnt"></span></div>
+          <div class="hb-sec" id="hdb-sec"></div>
+        </div>
+      </div>
+    </div>
+</div><!-- end module-dashboard -->
 
     <!-- ══ MODULE: EQUIPO ═══════════════════════ -->
     <div class="module" id="module-equipo">
@@ -5759,6 +6284,8 @@ auth.onAuthStateChanged(user => {
     loadProfileFromFirebase(user.uid, name, user.email);
     loadAuditorias();
     loadAuditoriasPi();
+    loadHabilitacion();
+    if (/^#hab/.test(location.hash)) setTimeout(() => { switchModule('auditorias'); switchAuditView('hab'); try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }, 0);
   } else {
     currentUser = null;
     showScreen('login');
@@ -5773,7 +6300,7 @@ function showScreen(name) {
     const btn = document.getElementById('btn-login');
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Iniciar sesión</span>';
+      btn.innerHTML = '<span>Iniciar sesión</span>';
     }
     const err = document.getElementById('login-error');
     if (err) err.classList.remove('show');
@@ -5803,7 +6330,7 @@ async function doLogin() {
   if (!email || !pass) { showLoginError('Completa todos los campos'); return; }
 
   btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Ingresando...</span>';
+  btn.innerHTML = '<svg class="qs-spin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><circle class="a" cx="12" cy="12" r="9.5"/></svg><span>Ingresando…</span>';
   err.classList.remove('show');
 
   try {
@@ -5819,7 +6346,7 @@ async function doLogin() {
     if (e.code === 'auth/network-request-failed') msg = 'Error de red. Verifica tu conexión.';
     showLoginError(msg);
     btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Iniciar sesión</span>';
+    btn.innerHTML = '<span>Iniciar sesión</span>';
   }
 }
 
@@ -7788,6 +8315,7 @@ function switchModule(name) {
   document.querySelectorAll('#main-nav-tabs .nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('module-' + name).classList.add('active');
   document.getElementById('tab-' + name).classList.add('active');
+  if (typeof qsAllInd === 'function') requestAnimationFrame(qsAllInd);
   if (name === 'dashboard')      loadDashboard();
   if (name === 'capacitaciones') loadCapacitaciones();
   if (name === 'equipo')         renderEquipo();
@@ -7821,6 +8349,7 @@ function switchDashView(view){
   document.getElementById('subtab-dash-' + view).classList.add('active');
   if (view === 'servicio') loadDashboard();
   if (view === 'pi')       loadPiDashboard();
+  if (view === 'hab')      renderHabDash();
 }
 
 // ══════════════════════════════════════════════
@@ -14746,7 +15275,7 @@ function init(){
     renderTabs();$('#iso-view').innerHTML='<div class="iso-empty"><i class="fas fa-spinner fa-spin"></i> Cargando…</div>';attach()}
   else if(!REF)attach()}
 function renderTabs(){const n=tasks().filter(x=>x.t.estado!=='Realizada').length,tb=$('#iso-tabs');if(!tb)return;
-  tb.innerHTML=[['dash','fa-chart-bar','Seguimiento'],['eval','fa-list-check','Evaluación'],['tareas','fa-diagram-project','Plan de acción',n]].map(t=>`<button class="nav-tab ${VIEW===t[0]?'active':''}" onclick="ISOA.setView('${t[0]}')"><i class="fas ${t[1]}"></i> ${t[2]}${t[3]?` <span class="papelera-badge">${t[3]}</span>`:''}</button>`).join('')}
+  tb.innerHTML=[['dash','fa-chart-pie','Seguimiento'],['eval','fa-clipboard-check','Evaluación'],['tareas','fa-list-check','Plan de acción',n]].map(t=>`<button class="nav-tab ${VIEW===t[0]?'active':''}" onclick="ISOA.setView('${t[0]}')"><i class="fas ${t[1]}"></i> ${t[2]}${t[3]?` <span class="papelera-badge">${t[3]}</span>`:''}</button>`).join('')}
 function setView(v,first){VIEW=v;kOff();ls('iso_view',v);renderTabs();const m=$('#iso-view');
   v==='dash'?renderDash():v==='eval'?renderEval():renderTareas();
   m.classList.remove('iso-fade');void m.offsetWidth;m.classList.add('iso-fade');
@@ -15299,6 +15828,385 @@ document.addEventListener('keydown',e=>{
   }});
 return{ptab,pq,pch,prs,pclr,init,expAll,togCh,togAllRq,quickResp,pickRespQ,keys,shutReq,mTab,dRes,dCat,dGo,clearEv,clearReq,delTask,resetAll,planCap,planResp,setView,setCap,evalCap,setMode,goReq,goTask,goPlan,hideHelp,setRes,ncTog,setPerf,confirmAll,markAll,openReq,setEstado,setTarea,quickDone,adv,openTask,togAll,pickResp,pickDate,togRq,setTF,closePv,expXlsx,expPdf};
 })();
+
+// ══════════════════════════════════════════════════════════════
+// HABILITACIÓN 3100 — enlace con Lista_Habilitacion_3100.html
+// ══════════════════════════════════════════════════════════════
+LISTA_URLS.habilitacion = 'https://gcalidad3foca-droid.github.io/Qualisig_Software/Lista_Habilitacion_3100.html';
+const habOrigin = () => { try { const u = new URL(LISTA_URLS.habilitacion, location.href); return /^https?:$/.test(u.protocol) ? u.origin : '*'; } catch (e) { return '*'; } };
+const HAB = { all: [], filter: 'todas', ready: false, pending: null, charts: {}, f: { inst: 'all', sedes: new Set(), meses: new Set(), estado: 'all' } };
+const HAB_MES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const habEsc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const habMesTx = m => { const [y, n] = String(m || '').split('-'); return n ? HAB_MES[+n - 1] + ' ' + y : '—'; };
+const habRisk = p => p < 0 || p == null ? null : p >= 92 ? 'bajo' : p >= 85 ? 'medio' : 'alto';
+const HAB_RISK_TX = { bajo: 'Riesgo bajo', medio: 'Riesgo medio', alto: 'Riesgo alto' };
+const HAB_RISK_C = { bajo: '#12A15F', medio: '#E0A100', alto: '#D92D20' };
+const habFecha = f => f ? new Date(f + 'T12:00:00').toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+const habAvg = arr => { const v = arr.filter(a => a.pct >= 0); return v.length ? Math.round(v.reduce((s, a) => s + a.pct, 0) / v.length) : null; };
+
+function loadHabilitacion() {
+  if (!currentUser) return;
+  db.ref('habilitacion').on('value', snap => {
+    const L = []; if (snap.exists()) snap.forEach(c => { const v = c.val(); if (v && typeof v === 'object') L.push(Object.assign({}, v, { id: c.key })); });
+    L.sort((a, b) => (b.fecha || '').localeCompare(a.fecha || '') || (b.updatedAt || 0) - (a.updatedAt || 0));
+    HAB.all = L; renderHabList();
+    const dv = document.getElementById('dash-view-hab'); if (dv && dv.classList.contains('active')) renderHabDash();
+  }, err => { console.warn('habilitacion', err); const l = document.getElementById('hab-audit-list'); if (l) l.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><h3>Sin acceso a Habilitación</h3><p>Agregue la regla del nodo “habilitacion” en Firebase (ver instrucciones).</p></div>'; });
+}
+
+/* ── Mis auditorías de habilitación ── */
+function renderHabList() {
+  const list = document.getElementById('hab-audit-list'); if (!list || !currentUser) return;
+  const mine = HAB.all.filter(a => a.uid === currentUser.uid), act = mine.filter(a => !a.deletedAt), pap = mine.filter(a => a.deletedAt);
+  const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  const avg = habAvg(act);
+  set('hab-stat-total', act.length); set('hab-stat-progreso', act.filter(a => a.estado !== 'completada').length);
+  set('hab-stat-completadas', act.filter(a => a.estado === 'completada').length); set('hab-stat-promedio', avg == null ? '—' : avg + '%');
+  const pb = document.getElementById('hab-papelera-count'); if (pb) { pb.textContent = pap.length; pb.style.display = pap.length ? '' : 'none'; }
+  const f = HAB.filter, items = f === 'papelera' ? pap : act.filter(a => f === 'todas' || a.estado === f);
+  if (!items.length) {
+    list.innerHTML = `<div class="empty-state hab-empty"><div class="hab-empty-logo"><img src="https://i.imgur.com/L8Fpofk.png" alt=""></div><h3>${f === 'todas' ? 'Aún no tienes auditorías de habilitación' : f === 'papelera' ? 'La papelera está vacía' : 'Sin auditorías en este estado'}</h3><p>${f === 'todas' ? 'Inicia una nueva o carga el JSON de una auditoría hecha antes.' : 'Cambia el filtro para ver otras auditorías.'}</p></div>`;
+    return;
+  }
+  list.innerHTML = items.map((a, i) => habItem(a, f === 'papelera', i)).join('');
+}
+function habItem(a, pap, i) {
+  const pct = a.pct >= 0 ? a.pct : null, sc = pct == null ? 'none' : pct >= 92 ? 'high' : pct >= 85 ? 'medium' : 'low';
+  const logo = INST_LOGOS[a.institucion] || INST_LOGOS.foca, est = a.estado === 'completada' ? 'completada' : 'en-progreso';
+  const ns = (a.servicios || []).length, id = habEsc(a.id);
+  const meta = `<div class="audit-meta"><div class="audit-meta-item"><i class="fas fa-calendar"></i>${habFecha(a.fecha)}</div><div class="audit-meta-item"><i class="fas fa-user"></i>${habEsc(a.auditor || '—')}</div>
+    <div class="audit-meta-item"><i class="fas fa-layer-group"></i>${ns ? ns + (ns === 1 ? ' servicio' : ' servicios') : 'Estándares comunes'}</div>${a.noCumple ? `<div class="audit-meta-item hab-nc"><i class="fas fa-circle-exclamation"></i>${a.noCumple} no cumple</div>` : ''}<div class="audit-meta-item"><i class="fas fa-tag"></i>${id}</div></div>`;
+  const head = `<div class="audit-inst-logo"><img src="${logo}" alt="${habEsc(a.institucion)}"></div><div class="audit-info"><div class="audit-title">${habEsc(a.sede || 'Sin sede')} — ${habEsc((a.institucion || '').toUpperCase())}</div>${meta}</div>`;
+  if (pap) return `<div class="audit-item hab-item" style="--i:${i};opacity:.85;border-left:3px solid #fca5a5">${head}<div class="audit-score ${sc}">${pct == null ? 'Sin calificar' : pct + '%'}</div>
+    <div class="audit-actions"><button class="btn-restaurar" onclick="habRestore('${id}')"><i class="fas fa-undo-alt"></i> Restaurar</button><button class="btn-elim-def" title="Eliminar definitivamente" onclick="habDeleteForever('${id}')"><i class="fas fa-times"></i></button></div></div>`;
+  return `<div class="audit-item hab-item" style="--i:${i}"><div class="audit-status-dot ${est}"></div>${head}
+    <div class="audit-score ${sc}">${pct == null ? 'Sin calificar' : pct + '%'}</div><div class="audit-badge ${est}">${est === 'completada' ? 'Completada' : 'En progreso'}</div>
+    <div class="audit-actions"><button class="btn-action btn-continuar" onclick="habOpenId('${id}')"><i class="fas ${est === 'completada' ? 'fa-folder-open' : 'fa-play'}"></i> ${est === 'completada' ? 'Abrir' : 'Continuar'}</button>
+    <button class="btn-action hab-btn-ico" title="Descargar JSON" onclick="habDownloadJson('${id}')"><i class="fas fa-download"></i></button>
+    <button class="btn-action btn-delete" title="Enviar a la papelera" onclick="habTrash('${id}')"><i class="fas fa-trash-alt"></i></button></div></div>`;
+}
+function setHabFilter(f, btn) { HAB.filter = f; document.querySelectorAll('#audit-view-hab .filter-btn').forEach(b => b.classList.toggle('active', b === btn)); renderHabList(); }
+const habGet = id => HAB.all.find(a => a.id === id);
+async function habTrash(id) { const a = habGet(id); if (!a || !await qsConfirm('Enviar a la papelera', `La auditoría de ${a.sede || 'sin sede'} (${habFecha(a.fecha)}) pasará a la papelera. Podrá restaurarla.`, 'Enviar a papelera', true)) return; await db.ref('habilitacion/' + id).update({ deletedAt: Date.now() }); showToast('Auditoría enviada a la papelera', 'success'); }
+async function habRestore(id) { await db.ref('habilitacion/' + id + '/deletedAt').remove(); showToast('Auditoría restaurada', 'success'); }
+async function habDeleteForever(id) { const a = habGet(id); if (!a || !await qsConfirm('Eliminar definitivamente', 'Esta acción no se puede deshacer. Descargue el JSON antes si lo necesita.', 'Eliminar', true)) return; await db.ref('habilitacion/' + id).remove(); showToast('Auditoría eliminada', 'success'); }
+function habDownloadJson(id) {
+  const a = habGet(id); if (!a) return; let st = {}; try { st = JSON.parse(a.stateJson || '{}'); } catch (e) {}
+  const blob = new Blob([JSON.stringify({ app: 'res3100', version: 2, exportedAt: new Date().toISOString(), state: st, evidence: {} })], { type: 'application/json' });
+  const l = document.createElement('a'); l.href = URL.createObjectURL(blob); l.download = 'Habilitacion_' + (a.sede || 'sede').replace(/\s+/g, '_') + '_' + (a.fecha || '') + '.json'; document.body.appendChild(l); l.click(); setTimeout(() => { URL.revokeObjectURL(l.href); l.remove(); }, 1200);
+}
+function habPickJson() { document.getElementById('hab-json-in').click(); }
+async function habJsonChosen(inp) {
+  const f = inp.files[0]; inp.value = ''; if (!f) return; let d;
+  try { d = JSON.parse(await f.text()); } catch (e) { showToast('El archivo no es un JSON válido', 'error'); return; }
+  const ok = d && (d.stateJson || (d.app === 'res3100' && d.state) || d.marks || Array.isArray(d) || Array.isArray(d.hist));
+  if (!ok) { showToast('El JSON no corresponde a una auditoría de habilitación 3100', 'error'); return; }
+  habOpen({ importData: d });
+}
+
+/* ── Superposición con la lista (iframe) ── */
+function habOpenId(id) { const a = habGet(id); if (a) habOpen({ record: a }); }
+function habNew() { habOpen({ mode: 'new' }); }
+function habOpen(opts) {
+  const ov = document.getElementById('hab-overlay'), fr = document.getElementById('hab-frame');
+  HAB.pending = opts; HAB.lastFocus = document.activeElement;
+  ov.classList.remove('ready'); ov.setAttribute('aria-hidden', 'false'); document.documentElement.classList.add('hab-lock');
+  requestAnimationFrame(() => ov.classList.add('open'));
+  if (!fr.getAttribute('src')) { HAB.ready = false; fr.src = LISTA_URLS.habilitacion + '?embed=1'; }
+  else if (HAB.ready) setTimeout(habSendInit, 60);
+  clearTimeout(HAB.slow); HAB.slow = setTimeout(() => { if (!ov.classList.contains('ready')) ov.classList.add('slow'); }, 6000);
+}
+function habSendInit() {
+  const fr = document.getElementById('hab-frame'), o = HAB.pending; if (!o || !fr.contentWindow) return; HAB.pending = null;
+  const p = _allPerfiles[currentUser.uid] || {};
+  const user = { uid: currentUser.uid, email: currentUser.email || '', nombre: p.nombre || currentUser.email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), cargo: p.cargo || '', foto: p.avatarUrl || '' };
+  const names = new Set(); Object.values(_allPerfiles || {}).forEach(x => x && x.nombre && names.add(x.nombre));
+  (typeof allTeamAuditorias !== 'undefined' ? allTeamAuditorias : []).forEach(a => a && a.auditorNombre && names.add(a.auditorNombre));
+  fr.contentWindow.postMessage({ type: 'qs-hab-init', user, auditores: [...names], mode: o.mode || '', record: o.record || null, importData: o.importData || null }, habOrigin());
+}
+function habClose() {
+  const ov = document.getElementById('hab-overlay'); clearTimeout(HAB.slow);
+  ov.classList.remove('open', 'slow'); ov.setAttribute('aria-hidden', 'true');
+  setTimeout(() => { document.documentElement.classList.remove('hab-lock'); ov.classList.remove('ready'); }, 380);
+  switchModule('auditorias'); switchAuditView('hab');
+  try { document.getElementById('hab-frame').blur(); window.focus(); const lf = HAB.lastFocus && HAB.lastFocus !== document.body && document.contains(HAB.lastFocus) ? HAB.lastFocus : document.getElementById('subtab-audit-hab'); lf.focus({ preventScroll: true }); } catch (e) {}
+}
+async function habSave(m) {
+  const fr = document.getElementById('hab-frame'), r = m.record || {}, id = String(m.id || r.id || '');
+  const reply = d => fr.contentWindow && fr.contentWindow.postMessage(d, habOrigin());
+  if (!/^[A-Za-z0-9_-]{6,60}$/.test(id) || r.id !== id) { reply({ type: 'qs-hab-error', msg: 'Identificador de auditoría no válido.' }); return; }
+  const prev = habGet(id); if (!r.uid) r.uid = (prev && prev.uid) || currentUser.uid;
+  if (!r.auditorEmail && r.uid === currentUser.uid) r.auditorEmail = currentUser.email || '';
+  delete r.deletedAt;
+  try { await db.ref('habilitacion/' + id).update(r); reply({ type: 'qs-hab-saved', id, at: Date.now(), loud: !!m.loud }); }
+  catch (e) { console.error(e); reply({ type: 'qs-hab-error', msg: 'Firebase rechazó el guardado (' + (e.code || e.message) + ').' }); }
+}
+window.addEventListener('message', e => {
+  const fr = document.getElementById('hab-frame'); if (!fr || e.source !== fr.contentWindow) return; const m = e.data || {};
+  if (m.type === 'qs-hab-ready') { HAB.ready = true; if (HAB.pending) habSendInit(); }
+  else if (m.type === 'qs-hab-shown') { const ov = document.getElementById('hab-overlay'); clearTimeout(HAB.slow); ov.classList.remove('slow'); ov.classList.add('ready'); }
+  else if (m.type === 'qs-hab-save') habSave(m);
+  else if (m.type === 'qs-hab-close') habClose();
+});
+
+/* ── Confirmación propia ── */
+function qsConfirm(title, msg, ok, danger) {
+  return new Promise(res => {
+    const d = document.createElement('div'); d.className = 'qs-cf'; d.innerHTML = `<div class="qs-cf-box" role="alertdialog" aria-modal="true"><h4>${habEsc(title)}</h4><p>${habEsc(msg)}</p><div class="qs-cf-act"><button class="qs-cf-no">Cancelar</button><button class="qs-cf-ok${danger ? ' dng' : ''}">${habEsc(ok)}</button></div></div>`;
+    document.body.appendChild(d); requestAnimationFrame(() => d.classList.add('on')); d.querySelector('.qs-cf-ok').focus();
+    const done = v => { d.classList.remove('on'); setTimeout(() => d.remove(), 220); document.removeEventListener('keydown', k); res(v); };
+    const k = e => { if (e.key === 'Escape') done(false); };
+    document.addEventListener('keydown', k);
+    d.addEventListener('click', e => { if (e.target === d || e.target.closest('.qs-cf-no')) done(false); else if (e.target.closest('.qs-cf-ok')) done(true); });
+  });
+}
+
+
+function habAgg(L) {
+  const bySede = {}, byMes = {}, std = {}, sec = {};
+  L.forEach(a => {
+    (bySede[a.sede || 'Sin sede'] = bySede[a.sede || 'Sin sede'] || { sede: a.sede || 'Sin sede', inst: a.institucion, L: [] }).L.push(a);
+    (byMes[a.mes] = byMes[a.mes] || []).push(a);
+    (a.porEstandar || []).forEach(y => { const o = std[y.k] = std[y.k] || { k: y.k, name: y.name, c: 0, nc: 0, na: 0 }; o.c += y.c || 0; o.nc += y.nc || 0; o.na += y.na || 0; });
+    (a.porSeccion || []).forEach(x => { const o = sec[x.code] = sec[x.code] || { code: x.code, name: x.name, c: 0, nc: 0 }; o.c += x.c || 0; o.nc += x.nc || 0; });
+  });
+  const sedes = Object.values(bySede).map(s => { const p = habAvg(s.L); return { sede: s.sede, inst: s.inst, n: s.L.length, pct: p, nc: s.L.reduce((t, a) => t + (a.noCumple || 0), 0), c: s.L.reduce((t, a) => t + (a.cumple || 0), 0), last: s.L.map(a => a.fecha).sort().pop(), riesgo: habRisk(p) }; }).sort((a, b) => (b.pct ?? -1) - (a.pct ?? -1));
+  const meses = Object.keys(byMes).sort().map(m => ({ m, n: byMes[m].length, pct: habAvg(byMes[m]) }));
+  const stds = Object.values(std).map(o => Object.assign(o, { pct: o.c + o.nc ? Math.round(o.c / (o.c + o.nc) * 100) : null }));
+  const secs = Object.values(sec).filter(o => o.nc).sort((a, b) => b.nc - a.nc).slice(0, 8);
+  const C = L.reduce((t, a) => t + (a.cumple || 0), 0), NC = L.reduce((t, a) => t + (a.noCumple || 0), 0);
+  return { sedes, meses, stds, secs, C, NC, avg: habAvg(L), alto: L.filter(a => habRisk(a.pct) === 'alto').length };
+}
+
+function habFilterTx() {
+  const f = HAB.f; return [f.inst === 'all' ? 'FOCA y VIU' : f.inst.toUpperCase(), f.sedes.size ? [...f.sedes].join(', ') : 'todas las sedes', f.meses.size ? [...f.meses].sort().map(habMesTx).join(', ') : 'todos los meses', f.estado === 'all' ? 'todos los estados' : f.estado === 'completada' ? 'completadas' : 'en progreso'].join(' · ');
+}
+function habFileTag() { const f = HAB.f; return [f.inst === 'all' ? 'FOCA-VIU' : f.inst.toUpperCase(), f.sedes.size === 1 ? [...f.sedes][0] : f.sedes.size ? f.sedes.size + 'sedes' : '', f.meses.size === 1 ? [...f.meses][0] : f.meses.size ? f.meses.size + 'meses' : ''].filter(Boolean).join('_').replace(/\s+/g, '-'); }
+function habExportXlsx() {
+  const L = habFiltered(); if (!L.length) { showToast('No hay auditorías con estos filtros', 'error'); return; } if (typeof XLSX === 'undefined') { showToast('No se cargó la librería de Excel', 'error'); return; }
+  const A = habAgg(L), wb = XLSX.utils.book_new(), rt = r => r ? HAB_RISK_TX[r] : '';
+  const res = [['Qualisig · Informe de habilitación (Resolución 3100 de 2019)'], ['Filtros', habFilterTx()], ['Generado', new Date().toLocaleString('es-CO')], [], ['Auditorías', L.length], ['Cumplimiento promedio', A.avg == null ? '' : A.avg / 100], ['Sedes evaluadas', A.sedes.length], ['Criterios que cumplen', A.C], ['Criterios que no cumplen', A.NC], ['Auditorías con riesgo alto', A.alto]];
+  const ws0 = XLSX.utils.aoa_to_sheet(res); ws0['!cols'] = [{ wch: 30 }, { wch: 80 }]; if (ws0.B6) ws0.B6.z = '0%'; XLSX.utils.book_append_sheet(wb, ws0, 'Resumen');
+  const add = (rows, name, cols) => { const ws = XLSX.utils.json_to_sheet(rows); ws['!cols'] = cols.map(w => ({ wch: w })); XLSX.utils.book_append_sheet(wb, ws, name); };
+  add(A.sedes.map(s => ({ Sede: s.sede, Entidad: (s.inst || '').toUpperCase(), Auditorías: s.n, 'Cumplimiento %': s.pct, 'No cumple': s.nc, 'Última auditoría': s.last, Riesgo: rt(s.riesgo) })), 'Por sede', [26, 9, 11, 15, 11, 15, 14]);
+  add(A.meses.map(m => ({ Mes: habMesTx(m.m), Auditorías: m.n, 'Cumplimiento %': m.pct })), 'Por mes', [18, 11, 15]);
+  add(A.stds.map(s => ({ Estándar: s.name, Cumple: s.c, 'No cumple': s.nc, 'No aplica': s.na, 'Cumplimiento %': s.pct })), 'Por estándar', [30, 9, 11, 10, 15]);
+  add(L.map(a => ({ ID: a.id, Fecha: a.fecha, Mes: habMesTx(a.mes), Entidad: (a.institucion || '').toUpperCase(), Sede: a.sede, Auditor: a.auditor, Servicios: (a.servicios || []).join('; '), 'Cumplimiento %': a.pct >= 0 ? a.pct : '', Cumple: a.cumple, 'No cumple': a.noCumple, 'No aplica': a.na, Pendientes: a.pend, Riesgo: rt(habRisk(a.pct)), Estado: a.estado === 'completada' ? 'Completada' : 'En progreso' })), 'Auditorías', [22, 11, 15, 8, 24, 26, 40, 14, 8, 10, 10, 11, 13, 12]);
+  const H = []; L.forEach(a => (a.hallazgos || []).forEach(h => H.push({ Sede: a.sede, Fecha: a.fecha, Auditor: a.auditor, Sección: h.sec + ' ' + (h.svc || ''), Estándar: h.std, Criterio: (h.num ? h.num + '. ' : '') + h.txt, Observación: h.obs || '' })));
+  add(H.length ? H : [{ Sede: 'Sin hallazgos de no cumplimiento con estos filtros' }], 'Hallazgos', [22, 11, 22, 28, 9, 80, 50]);
+  XLSX.writeFile(wb, 'Qualisig_Habilitacion_' + habFileTag() + '_' + new Date().toISOString().slice(0, 10) + '.xlsx'); showToast('Excel descargado', 'success');
+}
+function habExportPdf() {
+  const L = habFiltered(); if (!L.length) { showToast('No hay auditorías con estos filtros', 'error'); return; }
+  if (!window.jspdf) { showToast('No se cargó la librería de PDF', 'error'); return; }
+  const A = habAgg(L), { jsPDF } = window.jspdf, doc = new jsPDF({ unit: 'mm', format: 'a4' }), PW = 210, M = 14, NAVY = [19, 44, 119], INK = [14, 26, 51], MUT = [104, 117, 142];
+  const rcol = r => r === 'bajo' ? [18, 161, 95] : r === 'medio' ? [180, 125, 0] : r === 'alto' ? [217, 45, 32] : MUT;
+  // Encabezado
+  doc.setFillColor(...NAVY); doc.rect(0, 0, PW, 34, 'F');
+  doc.setFillColor(255, 255, 255); doc.roundedRect(M, 9, 16, 16, 4, 4, 'F'); doc.setDrawColor(...NAVY); doc.setLineWidth(1.1); doc.circle(M + 7.6, 16.6, 3.9); doc.line(M + 6, 16.8, M + 7.2, 18); doc.line(M + 7.2, 18, M + 9.6, 15.4); doc.setDrawColor(120, 160, 240); doc.line(M + 10.4, 19.6, M + 12.6, 21.8);
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(15); doc.text('Informe de habilitación · Resolución 3100', M + 22, 16.5);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.text('Qualisig Software · ' + new Date().toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' }), M + 22, 22.5);
+  doc.setTextColor(...INK); doc.setFontSize(8.5); doc.setTextColor(...MUT); doc.text(doc.splitTextToSize('Alcance: ' + habFilterTx(), PW - 2 * M), M, 42);
+  // KPIs
+  const K = [['Auditorías', String(L.length)], ['Promedio', A.avg == null ? '—' : A.avg + '%'], ['Sedes', String(A.sedes.length)], ['No cumple', String(A.NC)], ['Riesgo alto', String(A.alto)]];
+  const kw = (PW - 2 * M - 4 * 4) / 5; K.forEach((k, i) => { const x = M + i * (kw + 4); doc.setFillColor(243, 245, 250); doc.roundedRect(x, 48, kw, 19, 2.5, 2.5, 'F'); doc.setTextColor(...MUT); doc.setFontSize(7.5); doc.text(k[0].toUpperCase(), x + 4, 54); doc.setTextColor(...INK); doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.text(k[1], x + 4, 62.5); doc.setFont('helvetica', 'normal'); });
+  let y = 73;
+  const img = (id, x, w, hmax) => { const ch = HAB.charts[id]; if (!ch) return 0; const h = Math.min(hmax, w * ch.canvas.height / ch.canvas.width); try { doc.addImage(ch.toBase64Image('image/png', 1), 'PNG', x, y, w, h); } catch (e) {} return h; };
+  const cw = (PW - 2 * M - 6) / 2;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(...INK); doc.text('Tendencia mensual del cumplimiento', M, y); y += 3;
+  y += img('hb-c-mes', M, PW - 2 * M, 62) + 8;
+  const T = (title, head, body, opts) => { if (y > 255) { doc.addPage(); y = 18; } doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(...INK); doc.text(title, M, y); y += 2.5;
+    doc.autoTable(Object.assign({ startY: y, head: [head], body, margin: { left: M, right: M }, theme: 'plain', styles: { fontSize: 8, cellPadding: 2.2, textColor: INK, lineColor: [228, 232, 241], lineWidth: { bottom: .2 } }, headStyles: { fillColor: [243, 245, 250], textColor: MUT, fontStyle: 'bold', fontSize: 7.5 } }, opts || {})); y = doc.lastAutoTable.finalY + 9; };
+  const riskCell = (data, col) => { if (data.section === 'body' && data.column.index === col) { const r = (data.cell.raw || '').toLowerCase().replace('riesgo ', ''); data.cell.styles.textColor = rcol(r); data.cell.styles.fontStyle = 'bold'; } };
+  T('Resultado por sede', ['Sede', 'Entidad', 'Auditorías', 'Cumplimiento', 'No cumple', 'Última', 'Riesgo'], A.sedes.map(s => [s.sede, (s.inst || '').toUpperCase(), s.n, s.pct == null ? '—' : s.pct + '%', s.nc, habFecha(s.last), s.riesgo ? HAB_RISK_TX[s.riesgo] : '—']), { didParseCell: d => riskCell(d, 6), columnStyles: { 2: { halign: 'right' }, 3: { halign: 'right', fontStyle: 'bold' }, 4: { halign: 'right' } } });
+  T('Cumplimiento por estándar', ['Estándar', 'Cumple', 'No cumple', 'No aplica', 'Cumplimiento'], A.stds.map(s => [s.name, s.c, s.nc, s.na, s.pct == null ? '—' : s.pct + '%']), { columnStyles: { 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right', fontStyle: 'bold' } } });
+  T('Auditorías incluidas', ['Fecha', 'Sede', 'Auditor', 'Cumplimiento', 'C', 'NC', 'N/A', 'Riesgo', 'Estado'], L.map(a => [habFecha(a.fecha), a.sede, a.auditor || '', a.pct >= 0 ? a.pct + '%' : '—', a.cumple || 0, a.noCumple || 0, a.na || 0, habRisk(a.pct) ? HAB_RISK_TX[habRisk(a.pct)] : '—', a.estado === 'completada' ? 'Completada' : 'En progreso']), { didParseCell: d => riskCell(d, 7), columnStyles: { 3: { halign: 'right', fontStyle: 'bold' }, 4: { halign: 'right' }, 5: { halign: 'right' }, 6: { halign: 'right' } } });
+  // Hallazgos por sede
+  const bySede = {}; L.forEach(a => (a.hallazgos || []).forEach(h => (bySede[a.sede] = bySede[a.sede] || []).push([habFecha(a.fecha), h.sec + (h.svc ? ' ' + h.svc : ''), (h.num ? h.num + '. ' : '') + h.txt, h.obs || ''])));
+  const sk = Object.keys(bySede).sort();
+  if (sk.length) { doc.addPage(); y = 18; doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(...INK); doc.text('Hallazgos de no cumplimiento por sede', M, y); y += 8;
+    sk.forEach(s => T(s + ' · ' + bySede[s].length + ' hallazgo(s)', ['Fecha', 'Sección', 'Criterio', 'Observación'], bySede[s], { columnStyles: { 0: { cellWidth: 20 }, 1: { cellWidth: 32 }, 2: { cellWidth: 82 } }, styles: { fontSize: 7.5, cellPadding: 2, textColor: INK, lineColor: [228, 232, 241], lineWidth: { bottom: .2 }, valign: 'top' } })); }
+  const n = doc.getNumberOfPages(); for (let i = 1; i <= n; i++) { doc.setPage(i); doc.setFontSize(7.5); doc.setTextColor(...MUT); doc.text('Qualisig · Habilitación 3100', M, 289); doc.text(i + ' / ' + n, PW - M, 289, { align: 'right' }); }
+  doc.save('Informe_Habilitacion_' + habFileTag() + '_' + new Date().toISOString().slice(0, 10) + '.pdf'); showToast('Informe PDF descargado', 'success');
+}
+
+
+/* ══════════ Tablero de habilitación (mismo modelo que Auditorías de Servicio) ══════════ */
+function habFiltered() {
+  const f = HAB.f; return HAB.all.filter(a => !a.deletedAt && (f.inst === 'all' || a.institucion === f.inst) && (!f.sedes.size || f.sedes.has(a.sede)) && (!f.meses.size || f.meses.has(a.mes)) && (f.estado === 'all' || a.estado === f.estado));
+}
+const HB_MES_C = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+HAB.mesLbl = {};
+function habSedeList() {
+  const inst = HAB.f.inst, base = (inst === 'viu' ? [] : FOCA_SEDES).concat(inst === 'foca' ? [] : VIU_SEDES);
+  const seen = new Set(base); HAB.all.forEach(a => { if (!a.deletedAt && a.sede && !seen.has(a.sede) && (inst === 'all' || a.institucion === inst)) { seen.add(a.sede); base.push(a.sede); } });
+  return base;
+}
+function habMesList() {
+  const s = [...new Set(HAB.all.filter(a => !a.deletedAt && a.mes).map(a => a.mes))].sort().reverse();
+  HAB.mesLbl = {}; return s.map(m => { const l = habMesTx(m); HAB.mesLbl[l] = m; return l; });
+}
+function habInitFilters() {
+  if (!_multiSelects['msel-hab-sede']) createMultiSelect('msel-hab-sede', 'Todas las sedes', () => { HAB.f.sedes = new Set(_multiSelects['msel-hab-sede'].getSelected()); renderHabDash(true); });
+  if (!_multiSelects['msel-hab-mes']) createMultiSelect('msel-hab-mes', 'Todos los meses', () => { HAB.f.meses = new Set(_multiSelects['msel-hab-mes'].getSelected().map(l => HAB.mesLbl[l]).filter(Boolean)); renderHabDash(true); });
+  const ms = _multiSelects['msel-hab-sede'], mm = _multiSelects['msel-hab-mes'];
+  const keepS = !ms.open, keepM = !mm.open;
+  if (keepS) ms.setOptions(habSedeList()); if (keepM) mm.setOptions(habMesList());
+  HAB.f.sedes = new Set(ms.getSelected()); HAB.f.meses = new Set(mm.getSelected().map(l => HAB.mesLbl[l]).filter(Boolean));
+}
+function habSetInst(k) {
+  HAB.f.inst = k; ['all', 'foca', 'viu'].forEach(x => { const b = document.getElementById('hbtn-ent-' + x); if (b) b.classList.toggle('active', x === k); });
+  if (_multiSelects['msel-hab-sede']) _multiSelects['msel-hab-sede'].setOptions(habSedeList());
+  renderHabDash();
+}
+function habSetEstado(v) { HAB.f.estado = v; renderHabDash(); }
+HAB.std = 'all';
+function renderHabDash(fromFilter) {
+  const root = document.getElementById('dash-view-hab'); if (!root || typeof createMultiSelect !== 'function') return;
+  if (!fromFilter) habInitFilters();
+  const L = habFiltered(), A = habAgg(L), $i = id => document.getElementById(id), nS = new Set(L.map(a => a.sede)).size;
+  $i('hdb-sub').textContent = L.length ? L.length + (L.length === 1 ? ' auditoría · ' : ' auditorías · ') + nS + (nS === 1 ? ' sede' : ' sedes') : 'Sin auditorías para los filtros';
+  const P = L.filter(a => a.pct >= 0).map(a => a.pct), fav = P.filter(p => p >= 92).length, med = P.filter(p => p >= 85 && p < 92).length, alt = P.filter(p => p < 85).length;
+  $i('hdv0').textContent = L.length; $i('hds0').textContent = nS + (nS === 1 ? ' sede' : ' sedes');
+  const k1 = $i('hdv1'); k1.textContent = A.avg == null ? '—' : A.avg + '%'; k1.style.color = A.avg == null ? '' : _rc(A.avg); $i('hds1').textContent = A.avg == null ? '—' : 'Riesgo ' + _rl(A.avg).toLowerCase();
+  $i('hdv2').textContent = fav; $i('hds2').textContent = P.length ? Math.round(fav / P.length * 100) + '% del total' : '—';
+  $i('hdv3').textContent = med; $i('hdv4').textContent = alt; $i('hds4').textContent = alt ? 'Requiere plan de acción' : 'Sin riesgo alto';
+  // Ranking de sedes: una fila por auditoría
+  const rows = L.filter(a => a.pct >= 0).slice().sort((a, b) => (b.mes || '').localeCompare(a.mes || '') || b.pct - a.pct);
+  $i('hdb-nsedes').textContent = rows.length + (rows.length === 1 ? ' auditoría' : ' auditorías');
+  $i('hdb-sedes-body').innerHTML = rows.length ? rows.map(a => `<div class="hb-row" onclick="habOpenId('${habEsc(a.id)}')" title="Abrir la auditoría"><span class="m">${a.mes ? HB_MES_C[+a.mes.slice(5) - 1] : '—'}</span><img src="${_DB_LOGOS[a.institucion] || _DB_LOGOS.foca}" alt=""><span class="s">${habEsc(a.sede)}<small>${habEsc(a.auditor || '')}</small></span><span class="b"><i style="width:${a.pct}%;background:${_rc(a.pct)}"></i></span><span class="p" style="color:${_rc(a.pct)}">${a.pct}%</span></div>`).join('') : '<div class="hb-empty">Sin auditorías calificadas</div>';
+  // Tendencia mensual
+  const M = A.meses.filter(m => m.pct != null), mV = M.map(m => m.pct), mL = M.map(m => HB_MES_C[+m.m.slice(5) - 1] + ' ' + m.m.slice(2, 4));
+  const tb = $i('hdb-trend-badge');
+  if (mV.length > 1) { const d = mV[mV.length - 1] - mV[mV.length - 2]; tb.textContent = (d > 0 ? '↑ ' : d < 0 ? '↓ ' : '→ ') + Math.abs(d) + ' pts vs mes anterior'; tb.style.cssText = 'background:' + _rb(mV[mV.length - 1]) + ';color:' + _rc(mV[mV.length - 1]); } else { tb.textContent = ''; tb.style.cssText = ''; }
+  const tc = mV.length > 1 && mV[mV.length - 1] < mV[mV.length - 2] ? '#D8443A' : '#14915B', minY = mV.length ? Math.max(0, Math.min(...mV) - 12) : 0;
+  if (HAB.charts['hb-c-mes']) HAB.charts['hb-c-mes'].destroy();
+  if (typeof Chart !== 'undefined') HAB.charts['hb-c-mes'] = new Chart($i('hb-c-mes'), { type: 'line', data: { labels: mL, datasets: [{ data: mV, borderColor: tc, backgroundColor: tc === '#14915B' ? 'rgba(20,145,91,.08)' : 'rgba(216,68,58,.08)', borderWidth: 2.5, tension: .4, fill: true, pointRadius: 5, pointBackgroundColor: '#fff', pointBorderColor: tc, pointBorderWidth: 2.5, pointHoverRadius: 7 }] },
+    options: { responsive: true, maintainAspectRatio: false, animation: { duration: 600, easing: 'easeOutQuart' }, layout: { padding: { top: 24, right: 12, bottom: 2, left: 2 } }, plugins: { legend: { display: false }, datalabels: { display: true, align: 'top', offset: 4, color: '#0E1A33', font: { size: 10.5, weight: '800' }, formatter: v => v + '%' }, tooltip: { backgroundColor: '#0E1A33', padding: 10, cornerRadius: 10, displayColors: false, callbacks: { label: c => c.raw + '% · riesgo ' + _rl(c.raw).toLowerCase() + ' · ' + M[c.dataIndex].n + ' auditoría(s)' } } }, scales: { y: { min: minY, max: 100, ticks: { callback: v => v + '%', font: { size: 10 }, color: '#8C97AD' }, grid: { color: 'rgba(14,26,51,.05)' }, border: { display: false } }, x: { ticks: { font: { size: 10.5, weight: '600' }, color: '#68758E', maxRotation: 0 }, grid: { display: false }, border: { display: false } } } } });
+  // Distribución C / NC / N/A / Pendiente
+  const NA = L.reduce((t, a) => t + (a.na || 0), 0), PE = L.reduce((t, a) => t + (a.pend || 0), 0), tot = (A.C + A.NC + NA + PE) || 1;
+  $i('hdb-dist').innerHTML = [['Cumple', A.C, '#14915B'], ['No cumple', A.NC, '#D8443A'], ['No aplica', NA, '#8C97AD'], ['Pendiente', PE, '#C9D1DE']].map(r => `<div><span style="color:${r[2] === '#C9D1DE' ? '#68758E' : r[2]}">${r[0]}</span><div class="t"><i style="width:${Math.round(r[1] / tot * 100)}%;background:${r[2]}"></i></div><em>${r[1].toLocaleString('es-CO')} · ${Math.round(r[1] / tot * 100)}%</em></div>`).join('');
+  // Hallazgos
+  habRenderHall(L);
+  // % por estándar
+  const T = A.stds.filter(s => s.pct != null).sort((a, b) => a.pct - b.pct);
+  $i('hdb-std').innerHTML = T.length ? T.map(s => `<div><span title="${habEsc(s.name)}">${habEsc(s.name)}</span><div class="t"><i style="width:${s.pct}%;background:${_rc(s.pct)}"></i></div><b style="color:${_rc(s.pct)}">${s.pct}%</b><em style="background:${_rb(s.pct)};color:${_rc(s.pct)}">${_rl(s.pct)}</em></div>`).join('') : '<div class="hb-empty">Sin criterios evaluados</div>';
+  // Servicios con más NC
+  $i('hdb-sec-cnt').textContent = A.secs.length ? A.secs.reduce((t, s) => t + s.nc, 0) + ' no cumple' : '';
+  $i('hdb-sec').innerHTML = A.secs.length ? A.secs.map(s => `<div><code>${habEsc(s.code)}</code><span title="${habEsc(s.name)}">${habEsc(s.name)}</span><b>${s.nc}</b></div>`).join('') : '<div class="hb-empty" style="display:block;border:0">Sin no conformidades en el periodo</div>';
+}
+function habRenderHall(L) {
+  L = L || habFiltered(); const std = HAB.std, by = {}, cnt = {};
+  L.forEach(a => (a.hallazgos || []).forEach(h => { cnt[h.std] = (cnt[h.std] || 0) + 1; if (std !== 'all' && h.std !== std) return; const k = h.sec + '|' + h.num + '|' + h.txt; const o = by[k] = by[k] || { h, n: 0, sedes: new Set(), obs: [] }; o.n++; o.sedes.add(a.sede); if (h.obs) o.obs.push(a.sede + ': ' + h.obs); }));
+  const tot = Object.values(cnt).reduce((t, n) => t + n, 0), names = { TH: 'Talento humano', INF: 'Infraestructura', DOT: 'Dotación', MD: 'Medicamentos y DM', PP: 'Procesos prioritarios', HCR: 'Historia clínica', INT: 'Interdependencia' };
+  document.getElementById('hdb-hall-total').textContent = tot ? tot + ' hallazgos NC' : '';
+  document.getElementById('hdb-pills').innerHTML = `<button class="hb-pill${std === 'all' ? ' on' : ''}" onclick="HAB.std='all';habRenderHall()">Todos ${tot || ''}</button>` + Object.keys(names).filter(k => cnt[k]).map(k => `<button class="hb-pill${std === k ? ' on' : ''}" onclick="HAB.std='${k}';habRenderHall()" title="${names[k]}">${k} ${cnt[k]}</button>`).join('');
+  const items = Object.values(by).sort((a, b) => b.n - a.n).slice(0, 40), mx = items.length ? items[0].n : 1;
+  document.getElementById('hdb-hall').innerHTML = items.length ? items.map(o => `<div class="hb-h" onclick="this.classList.toggle('open')"><p><b>${habEsc(o.h.sec)}${o.h.num ? ' · ' + habEsc(o.h.num) : ''}</b>${habEsc((o.h.txt || '').slice(0, 150))}${(o.h.txt || '').length > 150 ? '…' : ''}</p><div class="f"><i style="width:${Math.round(o.n / mx * 70) + 6}px"></i><strong>${o.n}×</strong><span>${habEsc([...o.sedes].slice(0, 2).join(', ') + (o.sedes.size > 2 ? ' +' + (o.sedes.size - 2) : ''))}</span></div><div class="o"><div>${o.obs.length ? '<ul>' + o.obs.slice(0, 6).map(x => '<li>' + habEsc(x) + '</li>').join('') + '</ul>' : '<ul><li>Sin observaciones registradas</li></ul>'}</div></div></div>`).join('') : '<div class="hb-empty">Sin hallazgos de no cumplimiento</div>';
+}
+
+/* ══════════ Movimiento: indicadores deslizantes y transiciones ══════════ */
+const QS_RM = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+function qsNavInd() {
+  const nav = document.getElementById('main-nav-tabs'), ind = nav && nav.querySelector('.qs-nav-ind'), b = nav && nav.querySelector('.nav-tab.active'); if (!ind || !b) return;
+  ind.style.setProperty('--y', b.offsetTop + 'px'); ind.style.height = b.offsetHeight + 'px';
+}
+const QS_SEGPOS = {};
+function qsSegInd(seg) {
+  if (!seg) return; const key = seg.id || (seg.parentElement && seg.parentElement.id) || 'seg';
+  const b = seg.querySelector('.nav-tab.active'); if (!b) return;
+  const x = b.offsetLeft, w = b.offsetWidth; if (!w) return;
+  let th = seg.querySelector('.qs-seg-th');
+  if (!th) {
+    th = document.createElement('span'); th.className = 'qs-seg-th'; const p = QS_SEGPOS[key] || { x, w };
+    th.style.transition = 'none'; th.style.setProperty('--x', p.x + 'px'); th.style.setProperty('--w', p.w + 'px'); seg.prepend(th);
+    void th.offsetWidth; th.style.transition = '';
+  }
+  if (th.dataset.x != x || th.dataset.w != w) { th.dataset.x = x; th.dataset.w = w; th.style.setProperty('--x', x + 'px'); th.style.setProperty('--w', w + 'px'); }
+  QS_SEGPOS[key] = { x, w };
+  if (seg.scrollWidth > seg.clientWidth + 2) seg.scrollTo({ left: Math.max(0, x - (seg.clientWidth - w) / 2), behavior: QS_RM.matches ? 'auto' : 'smooth' });
+}
+function qsAllInd() { qsNavInd(); document.querySelectorAll('.dash-body .module.active>.nav-tabs, #iso-tabs').forEach(qsSegInd); }
+function qsVT(fn) {
+  if (!document.startViewTransition || QS_RM.matches || document.hidden || window.innerWidth <= 1000 || !document.getElementById('screen-dashboard').classList.contains('active')) { fn(); requestAnimationFrame(qsAllInd); return; }
+  document.documentElement.classList.add('qs-vt');
+  const t = document.startViewTransition(() => { fn(); qsAllInd(); });
+  t.ready.catch(() => {}); t.updateCallbackDone.catch(() => {}); t.finished.catch(() => {}).finally(() => document.documentElement.classList.remove('qs-vt'));
+}
+(function () {
+  const wrap = n => { const o = window[n]; if (typeof o !== 'function') return; window[n] = function (...a) { let r; qsVT(() => { r = o.apply(this, a); }); return r; }; };
+  ['switchModule', 'switchAuditView', 'switchDashView'].forEach(wrap);
+  window.addEventListener('resize', () => requestAnimationFrame(qsAllInd), { passive: true });
+  document.addEventListener('click', e => { if (e.target.closest && e.target.closest('.nav-tabs')) { requestAnimationFrame(qsAllInd); setTimeout(qsAllInd, 80); } });
+  document.addEventListener('DOMContentLoaded', () => setTimeout(qsAllInd, 60));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(qsAllInd);
+  setTimeout(qsAllInd, 400);
+  let moT = 0; const mo = new MutationObserver(() => { const t = document.getElementById('iso-tabs'); if (t) qsSegInd(t); clearTimeout(moT); moT = setTimeout(qsAllInd, 60); });
+  const watch = () => { const r = document.getElementById('iso-root'); if (r) mo.observe(r, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] }); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watch); else watch();
+})();
+
+/* Menú lateral contraíble */
+function qsSideToggle() {
+  const h = document.documentElement, on = !h.classList.contains('qs-col');
+  h.classList.toggle('qs-col', on); try { localStorage.setItem('qs_side', on ? '1' : '0'); } catch (e) {}
+  const b = document.getElementById('qs-collapse'); if (b) { b.setAttribute('aria-label', on ? 'Expandir menú' : 'Contraer menú'); b.title = on ? 'Expandir menú' : 'Contraer menú'; }
+  setTimeout(() => { qsAllInd(); window.dispatchEvent(new Event('resize')); }, 470);
+}
+(function () { const b = document.getElementById('qs-collapse'); if (b && document.documentElement.classList.contains('qs-col')) { b.setAttribute('aria-label', 'Expandir menú'); b.title = 'Expandir menú'; } })();
+
+</script>
+<div class="hab-ov" id="hab-overlay" aria-hidden="true" role="dialog" aria-label="Lista de habilitación 3100">
+  <div class="hab-ov-load"><img src="https://i.imgur.com/L8Fpofk.png" alt=""><div class="hab-ov-bar"></div><span>Abriendo la lista de habilitación…</span>
+    <div class="hab-ov-slow">La lista tarda en responder. Revise la conexión a internet.<br><button class="btn-ghost" onclick="habClose()">Volver a Qualisig</button></div></div>
+  <iframe id="hab-frame" title="Lista de habilitación 3100" allow="camera; clipboard-write"></iframe>
+</div>
+<script>
+/* Logos limpios: quita el fondo blanco y recorta el margen sobrante (se guarda en caché) */
+(function () {
+  const KEYS = ['L8Fpofk', 'ht6IpCi', 'gkAallJ', 'IitwgHx'], MEM = {}, WAIT = {};
+  try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith('qslogo2:')) MEM[k.slice(8)] = localStorage.getItem(k); } } catch (e) {}
+  const want = s => s && /i\.imgur\.com\//.test(s) && KEYS.some(k => s.includes(k));
+  function clean(src) {
+    if (MEM[src]) return Promise.resolve(MEM[src]);
+    try { const c = localStorage.getItem('qslogo2:' + src); if (c) return Promise.resolve(MEM[src] = c); } catch (e) {}
+    if (WAIT[src]) return WAIT[src];
+    return WAIT[src] = new Promise(res => {
+      const im = new Image(); im.crossOrigin = 'anonymous';
+      im.onload = () => {
+        try {
+          const k = Math.min(1, 900 / Math.max(im.naturalWidth, im.naturalHeight)), w = Math.max(1, Math.round(im.naturalWidth * k)), h = Math.max(1, Math.round(im.naturalHeight * k));
+          const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(im, 0, 0, w, h);
+          const d = x.getImageData(0, 0, w, h), q = d.data; let x0 = w, y0 = h, x1 = -1, y1 = -1;
+          for (let i = 0, p = 0; i < q.length; i += 4, p++) {
+            const mn = Math.min(q[i], q[i + 1], q[i + 2]), mx = Math.max(q[i], q[i + 1], q[i + 2]);
+            if (mx - mn < 26 && mn > 228) q[i + 3] = Math.round(q[i + 3] * Math.max(0, (255 - mn) / 27));
+            if (q[i + 3] > 18) { const px = p % w, py = (p / w) | 0; if (px < x0) x0 = px; if (px > x1) x1 = px; if (py < y0) y0 = py; if (py > y1) y1 = py; }
+          }
+          x.putImageData(d, 0, 0);
+          if (x1 < 0) return res(null);
+          const pad = Math.round(Math.max(x1 - x0, y1 - y0) * .02), o = document.createElement('canvas');
+          x0 = Math.max(0, x0 - pad); y0 = Math.max(0, y0 - pad); x1 = Math.min(w - 1, x1 + pad); y1 = Math.min(h - 1, y1 + pad);
+          o.width = x1 - x0 + 1; o.height = y1 - y0 + 1; o.getContext('2d').drawImage(c, x0, y0, o.width, o.height, 0, 0, o.width, o.height);
+          const u = o.toDataURL('image/png'); MEM[src] = u; try { localStorage.setItem('qslogo2:' + src, u); } catch (e) {}
+          res(u);
+        } catch (e) { res(null); }
+      };
+      im.onerror = () => res(null); im.src = src + (src.includes('?') ? '&' : '?') + 'qs=1';
+      setTimeout(() => res(null), 9000);
+    });
+  }
+  function fix(img) {
+    if (img.dataset.qsl) return; const src = img.getAttribute('src'); if (!want(src)) return; img.dataset.qsl = '1';
+    if (MEM[src]) { img.src = MEM[src]; img.classList.add('qsl', 'qsl-ok', 'qsl-now'); return; }
+    img.classList.add('qsl'); clean(src).then(u => { if (u) { img.onload = () => img.classList.add('qsl-ok'); img.src = u; if (img.complete) img.classList.add('qsl-ok'); } else img.classList.add('qsl-ok', 'qsl-raw'); });
+  }
+  window.qsLogoClean = clean;
+  const scan = r => (r.querySelectorAll ? r.querySelectorAll('img') : []).forEach(fix);
+  const go = () => { scan(document); new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType !== 1) return; if (n.tagName === 'IMG') fix(n); else scan(n); }))).observe(document.body, { childList: true, subtree: true }); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
+})();
+
 </script>
 </body>
 </html>
