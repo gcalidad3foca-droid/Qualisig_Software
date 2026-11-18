@@ -1695,7 +1695,7 @@ function downloadBlob(blob, name) {
 async function loadFromPayload(state, evidence) {
   const b = blankState(); S = Object.assign(b, state); S.meta = fixMeta(Object.assign(b.meta, state.meta || {}));
   S.scope = { sel: Object.assign({}, (state.scope || {}).sel) }; S.exp = state.exp || b.exp; delete S.rec; purgeParentMarks();
-  await clearEvIDB(); EV = evidence || {}; for (const k of Object.keys(EV)) await saveEv(k);
+  await Promise.race([clearEvIDB(), sleep(900)]).catch(() => {}); EV = evidence || {}; await Promise.race([(async () => { for (const k of Object.keys(EV)) await saveEv(k); })(), sleep(1500)]).catch(() => {});
   dirty = true; flush(); renderAll();
 }
 
@@ -2364,17 +2364,17 @@ function init() {
   const tape = $('#tape'); const stick = () => tape.classList.toggle('stuck', tape.getBoundingClientRect().top <= 0.5);
   window.addEventListener('scroll', stick, { passive: true }); stick();
   const startCharts = () => { if (window.Chart) queueSummary(); else setTimeout(startCharts, 400); };
-  restoreEv().then(() => {
+  Promise.race([restoreEv(), sleep(1200)]).catch(() => {}).then(() => {
     renderAll(); startCharts(); setSaved('ok'); $('#savedTx').textContent = had ? 'Borrador restaurado' : 'Listo';
     if (had && hasWork() && !QS.embed) toast('Borrador restaurado. Puede continuar donde lo dejó.', 'ok');
-    if (QS.embed) window.parent.postMessage({ type: 'qs-hab-ready' }, '*');
+    QS.bootDone();
   });
   if (!had) S.meta.fecha = todayISO();
 }
 /* ═══════════ Enlace con Qualisig Software ═══════════
    Esta línea conecta la lista con Qualisig (misma base de datos Firebase).
    Las auditorías se guardan en /habilitacion/{id} y aparecen en Qualisig → Auditorías → Habilitación 3100. */
-const QS_LINK = { app: 'https://gcalidad3foca-droid.github.io/Qualisig_Software/', node: 'habilitacion', ai: 'https://qualisig-api.luisangelbc13.workers.dev', firebase: { apiKey: "AIzaSyDdATmr1x7nNObgKjcqKiexbM2YNMP0D9Y", authDomain: "qualisig-auditorias.firebaseapp.com", databaseURL: "https://qualisig-auditorias-default-rtdb.firebaseio.com", projectId: "qualisig-auditorias", storageBucket: "qualisig-auditorias.firebasestorage.app", messagingSenderId: "155027246268", appId: "1:155027246268:web:75a8394fbb0a2a2ccb54b9" } };
+const QS_LINK = { app: /^https?:$/.test(location.protocol) ? new URL('./', location.href).href : 'https://gcalidad3foca-droid.github.io/Qualisig_Software/', node: 'habilitacion', ai: 'https://qualisig-api.luisangelbc13.workers.dev', firebase: { apiKey: "AIzaSyDdATmr1x7nNObgKjcqKiexbM2YNMP0D9Y", authDomain: "qualisig-auditorias.firebaseapp.com", databaseURL: "https://qualisig-auditorias-default-rtdb.firebaseio.com", projectId: "qualisig-auditorias", storageBucket: "qualisig-auditorias.firebasestorage.app", messagingSenderId: "155027246268", appId: "1:155027246268:web:75a8394fbb0a2a2ccb54b9" } };
 
 const INST = {
   foca: { name: 'FOCA', razon: 'Fundación Oftalmológica del Caribe (FOCA)', logo: 'https://i.imgur.com/gkAallJ.png',
@@ -2383,7 +2383,8 @@ const INST = {
 };
 const SEDE_CITY = [[/VALLEDUPAR/, 'Cesar', 'Valledupar'], [/RIOHACHA/, 'La Guajira', 'Riohacha'], [/SANTA MARTA/, 'Magdalena', 'Santa Marta'], [/CARTAGENA/, 'Bolívar', 'Cartagena de Indias'],
   [/BARANOA/, 'Atlántico', 'Baranoa'], [/GALAPA/, 'Atlántico', 'Galapa'], [/SABANALARGA/, 'Atlántico', 'Sabanalarga'], [/MALAMBO/, 'Atlántico', 'Malambo']];
-const QS = { embed: /[?&]embed=1/.test(location.search), linked: false, user: null, db: null, t: null, origin: '*', auditors: [] };
+let _bootRes; const QS_BOOT = new Promise(r => _bootRes = r);
+const QS = { bootDone: () => _bootRes(), embed: /[?&]embed=1/.test(location.search), linked: false, user: null, db: null, t: null, origin: '*', auditors: [] };
 
 function guessSede(txt) {
   const n = norm(txt || ''); if (!n) return null; let best = null;
@@ -2543,6 +2544,7 @@ function qsBoot() {
     window.addEventListener('message', async e => {
       if (e.source !== window.parent) return; const m = e.data || {};
       if (m.type === 'qs-hab-init') {
+        await Promise.race([QS_BOOT, sleep(2500)]);
         QS.origin = e.origin && e.origin !== 'null' ? e.origin : '*'; QS.linked = true; QS.user = m.user || null; setAuditors(m.auditores); setLink('ok');
         try {
           if (m.record && m.record.stateJson) await openRecord(m.record);
@@ -2554,6 +2556,7 @@ function qsBoot() {
       } else if (m.type === 'qs-hab-saved') { setLink('sync', m.at); if (m.loud) toast('Sincronizada con Qualisig: ' + m.id, 'ok'); }
       else if (m.type === 'qs-hab-error') { setLink('err'); toast(m.msg || 'No se pudo guardar en Qualisig.', 'err'); }
     });
+    window.parent.postMessage({ type: 'qs-hab-ready' }, '*');
     setTimeout(() => { if (document.body.classList.contains('qs-pre')) revealPage(); }, 4000);
     return;
   }
