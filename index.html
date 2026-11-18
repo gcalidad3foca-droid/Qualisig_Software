@@ -4846,7 +4846,7 @@ html.hab-lock,html.hab-lock body{overflow:hidden}
 /* ══ Contraer/expandir: coreografía fluida ══ */
 @media (min-width:1001px){
   :root{--q-sw:cubic-bezier(.32,.72,0,1)}
-  #screen-dashboard{transition:none!important}
+  #screen-dashboard{transition:padding-left .52s var(--q-sw)!important}
   .qs-side{transition:width .52s var(--q-sw),padding .52s var(--q-sw)!important}
   .dash-body.qs-slide{transition:transform .52s var(--q-sw)!important}
   html.qs-anim,html.qs-anim body{overflow-x:hidden}
@@ -4877,6 +4877,22 @@ html.hab-lock,html.hab-lock body{overflow:hidden}
 .hab-ov-load{opacity:0;transition:opacity .2s ease .25s}
 .hab-ov.open:not(.ready) .hab-ov-load{opacity:1}
 .hab-ov.ready .hab-ov-load{opacity:0;transition:opacity .15s ease}
+
+/* ══ Contraer sin saltos ══ */
+@media (min-width:1001px){
+  .qs-brand{overflow:visible}
+  .qs-brand span{white-space:nowrap;overflow:hidden;max-width:220px;transition:opacity .28s ease .18s,max-width .52s var(--q-sw)!important}
+  html.qs-col .qs-brand span{max-width:60px!important;transition:opacity .12s ease,max-width .52s var(--q-sw)!important}
+  .qs-brand img.qs-brand-full{max-width:220px!important}
+  .qs-sfoot{position:relative;display:block!important;padding-bottom:0;transition:padding-bottom .52s var(--q-sw)!important}
+  html.qs-col .qs-sfoot{padding-bottom:46px}
+  .qs-side .dash-user-chip{margin-right:48px;padding:9px 10px!important;transition:margin-right .52s var(--q-sw),padding .52s var(--q-sw),box-shadow .25s!important;overflow:hidden;border-radius:16px!important}
+  html.qs-col .qs-side .dash-user-chip{margin-right:0;padding:9px 11px!important;border-radius:16px!important}
+  .qs-side .duc-info{max-width:150px;white-space:nowrap;width:auto!important;overflow:hidden;transition:opacity .28s ease .18s,max-width .52s var(--q-sw)!important}
+  html.qs-col .qs-side .duc-info{max-width:0;opacity:0}
+  .qs-side .btn-logout-icon{position:absolute;right:auto;left:calc(100% - 40px);bottom:7px;transition:left .52s var(--q-sw),bottom .52s var(--q-sw),background .2s,color .2s!important}
+  html.qs-col .qs-side .btn-logout-icon{left:calc(50% - 20px);bottom:0}
+}
 </style>
 </head>
 <body>
@@ -16200,10 +16216,6 @@ function qsSideToggle() {
   clearTimeout(qsSideToggle.t); h.classList.add('qs-anim'); h.classList.toggle('qs-col', on);
   try { localStorage.setItem('qs_side', on ? '1' : '0'); } catch (e) {}
   const after = sc ? parseFloat(getComputedStyle(sc).paddingLeft) || 0 : 0, d = before - after;
-  if (body && d && !QS_RM.matches) {
-    body.classList.remove('qs-slide'); body.style.transform = 'translate3d(' + d + 'px,0,0)'; void body.offsetWidth;
-    body.classList.add('qs-slide'); body.style.transform = '';
-  }
   const b = document.getElementById('qs-collapse'); if (b) { b.setAttribute('aria-label', on ? 'Expandir menú' : 'Contraer menú'); b.title = on ? 'Expandir menú' : 'Contraer menú'; }
   requestAnimationFrame(qsAllInd);
   qsSideToggle.t = setTimeout(() => { h.classList.remove('qs-anim'); if (body) body.classList.remove('qs-slide'); qsAllInd(); }, 560);
