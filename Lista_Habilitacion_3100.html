@@ -1435,7 +1435,18 @@ function updateFilterCounts(st) {
   Object.keys(v).forEach(k => { const e = $('[data-fc="' + k + '"]'); if (e) e.textContent = v[k]; });
 }
 const ntext = it => it._n || (it._n = norm(it.num + ' ' + it.text));
+const KEEP = new Set(); let _kq = '', _ks = 'all', _tapeRO = null;
+function scrollAnchor() {
+  const top = 96; let best = null;
+  for (const r of document.querySelectorAll('.row')) { if (r.hidden || !r.offsetParent) continue; const b = r.getBoundingClientRect(); if (b.bottom > top) { best = { el: r, y: b.top }; break; } }
+  return best;
+}
+function keepScroll(a) { if (!a || !a.el.isConnected || a.el.hidden || !a.el.offsetParent) return; const d = a.el.getBoundingClientRect().top - a.y; if (Math.abs(d) > 1) window.scrollBy({ top: d, left: 0, behavior: 'instant' }); }
 function applyFilters() {
+  if (F.q !== _kq || F.s !== _ks) { KEEP.clear(); _kq = F.q; _ks = F.s; }
+  const _a = scrollAnchor(); _applyFilters(); keepScroll(_a);
+}
+function _applyFilters() {
   const q = norm(F.q.trim()), active = !!q || F.s !== 'all';
   document.body.classList.toggle('filtering', active);
   const okMap = {}, hit = {}, vis = {}; let any = false;
@@ -1443,6 +1454,7 @@ function applyFilters() {
     const m = S.marks[it.id] || ''; let ok = true;
     if (F.s === 'P') ok = !m; else if (F.s !== 'all') ok = m === F.s;
     if (ok && q) ok = ntext(it).includes(q);
+    if (!ok && KEEP.has(it.id)) ok = true;
     okMap[it.id] = ok;
     if (ok) { any = true; hit[it.sid] = 1; vis[it.gkey] = 1; vis[it.sid + '|' + it.g.std] = 1; }
   });
@@ -1514,7 +1526,7 @@ function initRuler() {
   ruler.addEventListener('pointercancel', () => { down = false; off(); });
   ruler.addEventListener('pointerleave', () => { if (!down) off(); });
   window.addEventListener('resize', () => { buildTape(); updateSummary(); });
-  if (window.ResizeObserver) { let w = 0; new ResizeObserver(() => { const nw = $('#ticks').clientWidth; if (Math.abs(nw - w) > 40) { w = nw; buildTape(); updateSummary(); } }).observe($('#ticks')); }
+  if (window.ResizeObserver && !_tapeRO) { let w = 0; _tapeRO = new ResizeObserver(() => { const nw = $('#ticks').clientWidth; if (Math.abs(nw - w) > 40) { w = nw; buildTape(); updateSummary(); } }); _tapeRO.observe($('#ticks')); }
 }
 let spyIO = null; const spySeen = new Set();
 function initSpy() {
@@ -2311,7 +2323,7 @@ function init() {
 
   $('#sections').addEventListener('click', e => {
     const rb = e.target.closest('.rate button');
-    if (rb) { setMark(rb.closest('.row').dataset.id, rb.dataset.v); if (F.s !== 'all') applyFilters(); return; }
+    if (rb) { const rid = rb.closest('.row').dataset.id; if (F.s !== 'all') KEEP.add(rid); setMark(rid, rb.dataset.v); if (F.s !== 'all') applyFilters(); return; }
     const a = e.target.closest('[data-act]'); if (!a) return; const act = a.dataset.act, row = a.closest('.row'), id = row && row.dataset.id;
     if (act === 'collapse') toggleSection(a.closest('.sec').dataset.sec);
     else if (act === 'cfg') openScope(a.dataset.sid);
