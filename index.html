@@ -4893,6 +4893,13 @@ html.hab-lock,html.hab-lock body{overflow:hidden}
   .qs-side .btn-logout-icon{position:absolute;right:auto;left:calc(100% - 40px);bottom:7px;transition:left .52s var(--q-sw),bottom .52s var(--q-sw),background .2s,color .2s!important}
   html.qs-col .qs-side .btn-logout-icon{left:calc(50% - 20px);bottom:0}
 }
+
+/* Sin pantalla de "cargando": la lista aparece directamente */
+.hab-ov-load,.hab-ov.open:not(.ready) .hab-ov-load{opacity:0!important}
+.hab-ov.slow .hab-ov-load{opacity:1!important;transition:opacity .3s ease!important}
+.hab-ov-load>img,.hab-ov-load>.hab-ov-bar,.hab-ov-load>span{display:none}
+.hab-ov.slow .hab-ov-load>img,.hab-ov.slow .hab-ov-load>.hab-ov-bar{display:block}
+.hab-ov iframe{transition:opacity .22s ease!important}
 </style>
 </head>
 <body>
@@ -6343,6 +6350,7 @@ auth.onAuthStateChanged(user => {
     loadAuditorias();
     loadAuditoriasPi();
     loadHabilitacion();
+    setTimeout(() => { if (typeof habPreload === 'function') habPreload(); }, 300);
     if (/^#hab/.test(location.hash)) setTimeout(() => { switchModule('auditorias'); switchAuditView('hab'); try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }, 0);
   } else {
     currentUser = null;
