@@ -2550,7 +2550,7 @@ function qsBoot() {
           else if (m.mode === 'new') await startNew();
         } catch (er) { console.error(er); }
         if (!S.meta.auditor && QS.user) S.meta.auditor = QS.user.nombre || '';
-        fillMeta(); renderWho(); requestAnimationFrame(() => requestAnimationFrame(revealPage));
+        fillMeta(); renderWho(); window.scrollTo(0, 0); revealPage();
       } else if (m.type === 'qs-hab-saved') { setLink('sync', m.at); if (m.loud) toast('Sincronizada con Qualisig: ' + m.id, 'ok'); }
       else if (m.type === 'qs-hab-error') { setLink('err'); toast(m.msg || 'No se pudo guardar en Qualisig.', 'err'); }
     });
