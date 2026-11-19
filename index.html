@@ -4644,8 +4644,11 @@ html.hab-lock,html.hab-lock body{overflow:hidden}
 @keyframes qSpin{to{transform:rotate(360deg)}}
 @keyframes qDash{0%{stroke-dashoffset:56}50%{stroke-dashoffset:18;transform:rotate(90deg)}100%{stroke-dashoffset:56;transform:rotate(360deg)}}
 /* ══ ISO 9001 con el mismo diseño de los tableros ══ */
-#iso-root .iso-logo{display:none!important}
-#iso-root .iso-hd{gap:0!important}
+#iso-root .iso-logo{display:grid!important;width:46px!important;height:46px!important;background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:0!important;overflow:visible!important}
+#iso-root .iso-logo img,.nav-tab img.iso-ntab,.qs-nav .nav-tab img.iso-ntab{background:transparent!important;filter:none!important;box-shadow:none!important;border-radius:0!important;mix-blend-mode:multiply;object-fit:contain}
+#iso-root .iso-hd{gap:12px!important}
+.nav-tab img.iso-ntab{width:26px!important;height:26px!important}
+@media(max-width:760px){#iso-root .iso-logo{width:38px!important;height:38px!important}}
 #iso-root .iso-subrow{background:var(--q-bg)!important}
 #iso-tabs{position:relative;display:inline-flex!important;gap:3px!important;padding:4px!important;background:#E7EBF3!important;border-radius:99px!important;box-shadow:none!important;border:0!important;margin:0!important;max-width:100%;overflow-x:auto;scrollbar-width:none}
 #iso-tabs .nav-tab{position:relative;z-index:1;height:38px;padding:0 16px!important;border-radius:99px!important;font-weight:600!important;font-size:13.5px!important;color:var(--q-ink2)!important;background:transparent!important;box-shadow:none!important;transition:color .3s!important;white-space:nowrap;display:inline-flex;align-items:center;gap:8px;border:0!important}
@@ -5062,7 +5065,7 @@ html,body{overflow-x:clip;overscroll-behavior-x:none}
       <button class="nav-tab" data-tip="Dashboard" id="tab-dashboard" onclick="switchModule('dashboard')"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
       <button class="nav-tab" data-tip="Equipo" id="tab-equipo" onclick="switchModule('equipo')"><i class="fas fa-users"></i><span>Equipo</span></button>
       <button class="nav-tab" data-tip="Indicadores" id="tab-indicadores" onclick="switchModule('indicadores')"><i class="fas fa-bullseye"></i><span>Indicadores</span></button>
-      <button class="nav-tab" data-tip="ISO 9001" id="tab-autoeval" onclick="switchModule('autoeval')"><img class="iso-ntab" src="https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/autoevaluacion-iso/istockphoto-1138661921-612x612.png" alt="" width="20" height="20" onerror="this.outerHTML='<i class=&quot;fas fa-shield-halved&quot;></i>'"><span>ISO 9001</span></button>
+      <button class="nav-tab" data-tip="ISO 9001" id="tab-autoeval" onclick="switchModule('autoeval')"><img class="iso-ntab" src="https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/Logotipo%20ISO%209001%20con%20globo%20estilizado%20(1).png" alt="" width="20" height="20" onerror="this.outerHTML='<i class=&quot;fas fa-shield-halved&quot;></i>'"><span>ISO 9001</span></button>
     </nav>
     <button class="qs-install" id="qs-install" type="button" onclick="qsInstall()" data-tip="Instalar app" title="Instalar Qualisig como aplicación"><i class="fas fa-download"></i><span>Instalar app</span></button>
     <div class="qs-sfoot">
@@ -15604,7 +15607,7 @@ function resetAll(){const n=ITEMS.filter(i=>hasData(i.id)).length;
 /* ═══════ SEGUIMIENTO ═══════ */
 function segBar(o,keys=['ok','sub','curso','pend','sin']){const t=keys.reduce((s,k)=>s+o[k],0)||1;return`<span class="iso-bar">${keys.map(k=>`<i style="width:${o[k]/t*100}%;background:${ST[k][1]}"></i>`).join('')}</span>`}
 let LOGOEL=null;
-function slotLogo(){const sl=document.querySelector('#iso-view .iso-logo');if(!sl)return;if(!LOGOEL){LOGOEL=document.createElement('img');LOGOEL.alt='ISO 9001';LOGOEL.decoding='sync';LOGOEL.draggable=false;LOGOEL.src='https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/autoevaluacion-iso/istockphoto-1138661921-612x612.png';LOGOEL.onerror=()=>{sl.classList.add('nf');LOGOEL.remove();LOGOEL=null}}sl.appendChild(LOGOEL)}
+function slotLogo(){const sl=document.querySelector('#iso-view .iso-logo');if(!sl)return;if(!LOGOEL){LOGOEL=document.createElement('img');LOGOEL.alt='ISO 9001';LOGOEL.decoding='sync';LOGOEL.draggable=false;LOGOEL.src='https://pub-446f9b994cb74c75bad642b850f0cce9.r2.dev/indicadores/Logotipo%20ISO%209001%20con%20globo%20estilizado%20(1).png';LOGOEL.onerror=()=>{sl.classList.add('nf');LOGOEL.remove();LOGOEL=null}}sl.appendChild(LOGOEL)}
 function renderDash(){renderDash0();slotLogo()}
 function renderDash0(){const m=$('#iso-view');if(!m)return;
   const S=calc(inCap),tk=tasks().filter(x=>inCap(x.it)),open=tk.filter(x=>x.t.estado!=='Realizada'),venc=open.filter(x=>late(x.t)),sinResp=open.filter(x=>!x.t.responsable),sinFecha=open.filter(x=>!x.t.fechaLimite);
