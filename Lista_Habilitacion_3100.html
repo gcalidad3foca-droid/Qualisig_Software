@@ -695,6 +695,13 @@ body.qs-out{opacity:0;transition:opacity .22s ease}
 }
 #fab{transition:opacity .3s ease,transform .4s var(--ease)}
 #fab.qs-hide{opacity:0;transform:translate3d(0,16px,0) scale(.96);pointer-events:none}
+/* bloqueo horizontal: la página nunca se desplaza hacia los lados */
+html,body{max-width:100%;overflow-x:clip;overscroll-behavior-x:none}
+@media (max-width:1000px){
+  html,body{overflow-x:hidden;touch-action:pan-y;position:relative}
+  .rwrap,.acts,#fseg,.fseg{touch-action:pan-x pan-y;overscroll-behavior-x:contain}
+  main,.wrap,.toolbar,.tape,.hero,.sec{max-width:100%;min-width:0}
+}
 </style>
 
 </head>
