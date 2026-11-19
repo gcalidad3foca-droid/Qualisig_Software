@@ -4908,6 +4908,60 @@ html.hab-lock,html.hab-lock body{overflow:hidden}
   .qs-side .qs-brand img{transition:transform .3s var(--q-ease)}
   .qs-side .qs-brand:active img.qs-brand-full,.qs-side .qs-brand:active img.qs-brand-ico{filter:brightness(.92)}
 }
+/* Subpestañas: una sola fila siempre; etiquetas cortas en celular */
+.nav-tab .ts{display:none}
+.dash-body .module>.nav-tabs{flex-wrap:nowrap!important;align-items:center}
+.dash-body .module>.nav-tabs .nav-tab{flex-shrink:0}
+@media (max-width:640px){
+  .dash-body .module>.nav-tabs{display:flex!important;width:100%;gap:2px!important}
+  .dash-body .module>.nav-tabs .nav-tab{flex:1 1 auto!important;min-width:0;padding:0 10px!important;justify-content:center}
+  .dash-body .module>.nav-tabs .nav-tab .tl{display:none}
+  .dash-body .module>.nav-tabs .nav-tab .ts{display:inline}
+  .dash-body .module>.nav-tabs .nav-tab .papelera-badge{margin-left:4px}
+}
+/* Celular/tablet: la lista entra deslizándose desde la derecha y sale igual (como una app) */
+@media (max-width:1000px){
+  .hab-ov{opacity:1!important;transform:translate3d(100%,0,0)!important;box-shadow:-24px 0 48px -24px rgba(14,26,51,.35);transition:transform .44s cubic-bezier(.32,.72,0,1),visibility 0s linear .44s!important}
+  .hab-ov.open{transform:none!important;transition:transform .44s cubic-bezier(.32,.72,0,1),visibility 0s!important}
+  .hab-ov iframe{transition:opacity .2s ease!important}
+}
+@media (prefers-reduced-motion:reduce){.hab-ov,.hab-ov.open{transition:none!important}}
+/* ══ Celular: ajustes finos ══ */
+@media (max-width:640px){
+  .dash-body{padding:16px 14px 28px!important}
+  .page-title{font-size:24px!important;line-height:1.15!important}
+  .page-subtitle{font-size:13.5px!important}
+  .page-title-row{gap:12px!important;margin-bottom:16px!important}
+  .audit-item .audit-meta-item{font-size:12px!important}
+  .audit-item .audit-title{font-size:14.5px!important}
+  .audit-item .audit-actions{gap:8px!important}
+  .audit-item .audit-actions .btn-action,.audit-item .audit-actions .btn-elim-def,.audit-item .audit-actions .btn-restaurar{flex:none!important}
+  .audit-item .audit-actions .btn-continuar,.audit-item .audit-actions .btn-restaurar{flex:1 1 auto!important}
+  .audit-item .audit-actions .btn-delete,.audit-item .audit-actions .hab-btn-ico,.audit-item .audit-actions .btn-elim-def{width:40px!important;padding:0!important;justify-content:center}
+  .dbi-title{font-size:18px!important;line-height:1.25}
+  .dbi-filters>.db-msel{flex:1 1 100%!important;width:100%}
+  .dbi-filters>.db-msel .db-msel-trigger{width:100%}
+  .dbi-kv{font-size:26px!important}
+  .dbi-panel-title{font-size:13.5px!important}
+  .hb-row{gap:8px;padding:10px 12px}
+  .hb-row .b{width:44px}
+  .hb-row .s{font-size:12.5px}
+  .hb-row .p{min-width:36px;font-size:12.5px}
+  #iso-tabs .nav-tab{flex:1 1 auto!important;padding:0 8px!important;font-size:12.5px!important}
+  #iso-tabs .nav-tab i{display:none}
+  #iso-view .b5-ch>header{flex-wrap:wrap!important}
+  #iso-view .b5-ch .b3-lgd{display:none!important}
+  #iso-view .b4-tile b{font-size:22px!important}
+}
+/* Tablero habilitación en celular: orden lógico y gráfica a lo ancho */
+@media (max-width:1000px){
+  #dash-view-hab .dbi-main-row{display:flex!important;flex-direction:column!important}
+  #dash-view-hab .dbi-main-row>*{width:100%;min-width:0}
+  #dash-view-hab .dbi-main-row>:nth-child(1){order:1}
+  #dash-view-hab .dbi-main-row>:nth-child(2){order:2}
+  #dash-view-hab .dbi-main-row>:nth-child(3){order:3}
+}
+@media (max-width:640px){#dash-view-hab .db-msel,#dash-view-servicio .db-msel,#dash-view-pi .db-msel{display:block!important;flex:1 1 100%!important;width:100%!important}.dbi-filters .db-msel-trigger{width:100%!important;max-width:none!important}}
 </style>
 </head>
 <body>
@@ -5055,13 +5109,13 @@ html.hab-lock,html.hab-lock body{overflow:hidden}
     <!-- Sub-nav interno: Auditorías de Servicio / Paciente Incógnito -->
     <div class="nav-tabs" style="background:var(--gray100);border-radius:12px;padding:4px;display:inline-flex;margin-bottom:18px;">
       <button class="nav-tab active" id="subtab-audit-servicio" onclick="switchAuditView('servicio')">
-        <i class="fas fa-clipboard-list"></i> Auditorías de Servicio
+        <i class="fas fa-clipboard-list"></i> <span class="tl">Auditorías de Servicio</span><span class="ts">Servicio</span>
       </button>
       <button class="nav-tab" id="subtab-audit-pi" onclick="switchAuditView('pi')">
-        <i class="fas fa-user-secret"></i> Paciente Incógnito
+        <i class="fas fa-user-secret"></i> <span class="tl">Paciente Incógnito</span><span class="ts">Incógnito</span>
       </button>
       <button class="nav-tab" id="subtab-audit-hab" onclick="switchAuditView('hab')">
-        <i class="fas fa-file-shield"></i> Habilitación 3100
+        <i class="fas fa-file-shield"></i> <span class="tl">Habilitación 3100</span><span class="ts">Habilitación</span>
       </button>
     </div>
 
@@ -5212,13 +5266,13 @@ html.hab-lock,html.hab-lock body{overflow:hidden}
     <!-- Sub-nav interno: Dashboard de Servicio / Paciente Incógnito -->
     <div class="nav-tabs" style="background:var(--gray100);border-radius:12px;padding:4px;display:inline-flex;margin-bottom:18px;">
       <button class="nav-tab active" id="subtab-dash-servicio" onclick="switchDashView('servicio')">
-        <i class="fas fa-chart-bar"></i> Auditorías de Servicio
+        <i class="fas fa-chart-bar"></i> <span class="tl">Auditorías de Servicio</span><span class="ts">Servicio</span>
       </button>
       <button class="nav-tab" id="subtab-dash-pi" onclick="switchDashView('pi')">
-        <i class="fas fa-user-secret"></i> Paciente Incógnito
+        <i class="fas fa-user-secret"></i> <span class="tl">Paciente Incógnito</span><span class="ts">Incógnito</span>
       </button>
       <button class="nav-tab" id="subtab-dash-hab" onclick="switchDashView('hab')">
-        <i class="fas fa-file-shield"></i> Habilitación 3100
+        <i class="fas fa-file-shield"></i> <span class="tl">Habilitación 3100</span><span class="ts">Habilitación</span>
       </button>
     </div>
 
@@ -5627,19 +5681,19 @@ html.hab-lock,html.hab-lock body{overflow:hidden}
       <!-- Sub-nav interno -->
       <div class="nav-tabs" id="ind-subnav" style="background:var(--gray100);border-radius:12px;padding:4px;display:inline-flex;margin-bottom:18px;flex-wrap:wrap">
         <button class="nav-tab active" id="subtab-ind-seguimiento" onclick="switchIndView('seguimiento')">
-          <i class="fas fa-tasks"></i> Mi seguimiento
+          <i class="fas fa-tasks"></i> <span class="tl">Mi seguimiento</span><span class="ts">Seguimiento</span>
         </button>
         <button class="nav-tab" id="subtab-ind-informe" onclick="switchIndView('informe')">
-          <i class="fas fa-file-alt"></i> Mi informe bimensual
+          <i class="fas fa-file-alt"></i> <span class="tl">Mi informe bimensual</span><span class="ts">Informe</span>
         </button>
         <button class="nav-tab" id="subtab-ind-historico" onclick="switchIndView('historico')" style="display:none">
-          <i class="fas fa-list-check"></i> Lista maestra
+          <i class="fas fa-list-check"></i> <span class="tl">Lista maestra</span><span class="ts">Maestra</span>
         </button>
         <button class="nav-tab" id="subtab-ind-aprobaciones" onclick="switchIndView('aprobaciones')" style="display:none">
           <i class="fas fa-stamp"></i> Aprobaciones <span id="ind-aprob-badge" class="papelera-badge" style="display:none">0</span>
         </button>
         <button class="nav-tab" id="subtab-ind-config" onclick="switchIndView('config')">
-          <i class="fas fa-cog"></i> Parametrización
+          <i class="fas fa-cog"></i> <span class="tl">Parametrización</span><span class="ts">Parámetros</span>
         </button>
       </div>
 
@@ -16178,6 +16232,7 @@ function renderHabDash(fromFilter) {
   if (HAB.charts['hb-c-mes']) HAB.charts['hb-c-mes'].destroy();
   if (typeof Chart !== 'undefined') HAB.charts['hb-c-mes'] = new Chart($i('hb-c-mes'), { type: 'line', data: { labels: mL, datasets: [{ data: mV, borderColor: tc, backgroundColor: tc === '#14915B' ? 'rgba(20,145,91,.08)' : 'rgba(216,68,58,.08)', borderWidth: 2.5, tension: .4, fill: true, pointRadius: 5, pointBackgroundColor: '#fff', pointBorderColor: tc, pointBorderWidth: 2.5, pointHoverRadius: 7 }] },
     options: { responsive: true, maintainAspectRatio: false, animation: { duration: 600, easing: 'easeOutQuart' }, layout: { padding: { top: 24, right: 12, bottom: 2, left: 2 } }, plugins: { legend: { display: false }, datalabels: { display: true, align: 'top', offset: 4, color: '#0E1A33', font: { size: 10.5, weight: '800' }, formatter: v => v + '%' }, tooltip: { backgroundColor: '#0E1A33', padding: 10, cornerRadius: 10, displayColors: false, callbacks: { label: c => c.raw + '% · riesgo ' + _rl(c.raw).toLowerCase() + ' · ' + M[c.dataIndex].n + ' auditoría(s)' } } }, scales: { y: { min: minY, max: 100, ticks: { callback: v => v + '%', font: { size: 10 }, color: '#8C97AD' }, grid: { color: 'rgba(14,26,51,.05)' }, border: { display: false } }, x: { ticks: { font: { size: 10.5, weight: '600' }, color: '#68758E', maxRotation: 0 }, grid: { display: false }, border: { display: false } } } } });
+  requestAnimationFrame(() => { const c = HAB.charts['hb-c-mes']; if (c) c.resize(); });
   // Distribución C / NC / N/A / Pendiente
   const NA = L.reduce((t, a) => t + (a.na || 0), 0), PE = L.reduce((t, a) => t + (a.pend || 0), 0), tot = (A.C + A.NC + NA + PE) || 1;
   $i('hdb-dist').innerHTML = [['Cumple', A.C, '#14915B'], ['No cumple', A.NC, '#D8443A'], ['No aplica', NA, '#8C97AD'], ['Pendiente', PE, '#C9D1DE']].map(r => `<div><span style="color:${r[2] === '#C9D1DE' ? '#68758E' : r[2]}">${r[0]}</span><div class="t"><i style="width:${Math.round(r[1] / tot * 100)}%;background:${r[2]}"></i></div><em>${r[1].toLocaleString('es-CO')} · ${Math.round(r[1] / tot * 100)}%</em></div>`).join('');
