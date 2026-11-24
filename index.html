@@ -6445,6 +6445,8 @@ auth.onAuthStateChanged(user => {
     loadAuditoriasPi();
     loadHabilitacion();
     setTimeout(() => { if (typeof habPreload === 'function') habPreload(); }, 300);
+    if (/^#serv/.test(location.hash)) setTimeout(() => { switchModule('auditorias'); switchAuditView('servicio'); try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }, 0);
+    setTimeout(() => { if (typeof svcWarm === 'function') svcWarm(); }, 1500);
     if (/^#hab/.test(location.hash)) setTimeout(() => { switchModule('auditorias'); switchAuditView('hab'); try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }, 0);
   } else {
     currentUser = null;
@@ -6816,9 +6818,8 @@ async function crearAuditoria() {
     closeNuevaModal();
     showToast('Auditoría creada — abriendo lista...', 'success');
     setTimeout(() => {
-      const url = LISTA_URLS[selectedInst] + '?auditId=' + id + '&uid=' + currentUser.uid;
-      window.open(url, '_blank');
-    }, 700);
+      svcOpen(selectedInst, id);
+    }, 350);
   } catch(e) {
     showToast('Error al crear: ' + e.message, 'error');
   } finally {
@@ -6827,10 +6828,51 @@ async function crearAuditoria() {
   }
 }
 
-function abrirAuditoria(id, inst) {
-  const url = LISTA_URLS[inst||'foca'] + '?auditId=' + id + '&uid=' + currentUser.uid;
-  window.open(url, '_blank');
+function abrirAuditoria(id, inst) { svcOpen(inst || 'foca', id); }
+
+/* ── Lista de auditoría de servicio dentro de Qualisig (igual que la 3100) ── */
+const SVC = { base: {}, slow: null, lastFocus: null, warm: false };
+function svcLocal(inst) {
+  try { if (/^https?:$/.test(location.protocol) && !/github\.io$/.test(location.hostname)) return new URL(LISTA_URLS[inst].split('/').pop(), location.href).href; } catch (e) {}
+  return LISTA_URLS[inst];
 }
+async function svcBase(inst) {
+  if (SVC.base[inst]) return SVC.base[inst];
+  let url = LISTA_URLS[inst]; const loc = svcLocal(inst);
+  if (loc !== url) { try { const r = await fetch(loc, { method: 'HEAD', cache: 'no-store' }); if (r.ok) url = loc; } catch (e) {} }
+  return (SVC.base[inst] = url);
+}
+async function svcWarm() {
+  if (SVC.warm) return; SVC.warm = true;
+  for (const inst of ['foca', 'viu']) { try { const u = await svcBase(inst); await fetch(u, { cache: 'force-cache' }); } catch (e) {} }
+}
+async function svcOpen(inst, id) {
+  if (!LISTA_URLS[inst]) inst = 'foca';
+  const ov = document.getElementById('svc-overlay'), fr = document.getElementById('svc-frame');
+  SVC.lastFocus = document.activeElement;
+  ov.classList.remove('ready', 'slow'); ov.setAttribute('aria-hidden', 'false'); document.documentElement.classList.add('hab-lock');
+  requestAnimationFrame(() => ov.classList.add('open'));
+  const base = await svcBase(inst);
+  SVC.url = base + '?auditId=' + encodeURIComponent(id) + '&uid=' + encodeURIComponent(currentUser.uid);
+  fr.onload = () => { if (fr.getAttribute('src') === SVC.url) setTimeout(svcShown, 120); };
+  fr.setAttribute('src', SVC.url);
+  clearTimeout(SVC.slow); SVC.slow = setTimeout(() => { if (!ov.classList.contains('ready')) ov.classList.add('slow'); }, 4000);
+}
+function svcShown() { const ov = document.getElementById('svc-overlay'); clearTimeout(SVC.slow); ov.classList.remove('slow'); ov.classList.add('ready'); }
+function svcOpenTab() { if (SVC.url) window.open(SVC.url, '_blank'); svcClose(); }
+function svcClose() {
+  const ov = document.getElementById('svc-overlay'); if (!ov.classList.contains('open')) return; clearTimeout(SVC.slow);
+  switchModule('auditorias'); switchAuditView('servicio');
+  ov.classList.remove('open', 'slow'); ov.setAttribute('aria-hidden', 'true');
+  setTimeout(() => { document.documentElement.classList.remove('hab-lock'); ov.classList.remove('ready'); }, 420);
+  try { document.getElementById('svc-frame').blur(); window.focus(); const lf = SVC.lastFocus; if (lf && lf !== document.body && document.contains(lf) && lf.offsetParent) lf.focus({ preventScroll: true, focusVisible: false }); } catch (e) {}
+}
+window.addEventListener('message', e => {
+  const fr = document.getElementById('svc-frame'); if (!fr || e.source !== fr.contentWindow) return; const m = e.data || {};
+  if (m.type === 'qs-svc-shown') svcShown();
+  else if (m.type === 'qs-svc-close') svcClose();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { const ov = document.getElementById('svc-overlay'); if (ov && ov.classList.contains('open') && !ov.classList.contains('ready')) svcClose(); } });
 
 // ══════════════════════════════════════════════════════════════
 // MÓDULO: PACIENTE INCÓGNITO
@@ -16361,10 +16403,15 @@ document.addEventListener('click', e => {
 })();
 
 </script>
+<div class="hab-ov" id="svc-overlay" aria-hidden="true" role="dialog" aria-label="Lista de auditoría de servicio">
+  <div class="hab-ov-load"><img src="https://i.imgur.com/L8Fpofk.png" alt=""><div class="hab-ov-bar"></div><span>Abriendo la lista de auditoría…</span>
+    <div class="hab-ov-slow">La lista está tardando en responder.<br><span style="display:flex;gap:8px;justify-content:center;margin-top:12px"><button class="btn-ghost" onclick="svcClose()">Volver</button><button class="btn-nueva" onclick="svcOpenTab()">Abrir en pestaña nueva</button></span></div></div>
+  <iframe id="svc-frame" title="Lista de auditoría de servicio" allow="camera; microphone; clipboard-write"></iframe>
+</div>
 <div class="hab-ov" id="hab-overlay" aria-hidden="true" role="dialog" aria-label="Lista de habilitación 3100">
   <div class="hab-ov-load"><img src="https://i.imgur.com/L8Fpofk.png" alt=""><div class="hab-ov-bar"></div><span>Abriendo la lista de habilitación…</span>
     <div class="hab-ov-slow">La lista está tardando en responder.<br><span style="display:flex;gap:8px;justify-content:center;margin-top:12px"><button class="btn-ghost" onclick="habClose()">Volver</button><button class="btn-nueva" onclick="habOpenTab()">Abrir en pestaña nueva</button></span></div></div>
-  <iframe id="hab-frame" title="Lista de habilitación 3100" allow="camera; clipboard-write"></iframe>
+  <iframe id="hab-frame" title="Lista de habilitación 3100" allow="camera; microphone; clipboard-write"></iframe>
 </div>
 <script>
 /* Logos limpios: quita el fondo blanco y recorta el margen sobrante (se guarda en caché) */

@@ -1,0 +1,24 @@
+{
+  "id": "./",
+  "name": "Qualisig Software",
+  "short_name": "Qualisig",
+  "description": "Sistema de gestión de calidad de FOCA y VIU: auditorías, indicadores, habilitación 3100 e ISO 9001.",
+  "lang": "es-CO",
+  "dir": "ltr",
+  "start_url": "./?app=1",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#F3F5FA",
+  "theme_color": "#F3F5FA",
+  "categories": ["business", "productivity", "medical"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Habilitación 3100", "short_name": "Habilitación", "url": "./#habilitacion", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
+  ]
+}
