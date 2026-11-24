@@ -16398,8 +16398,24 @@ document.addEventListener('click', e => {
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
   let deferred = null; const btn = () => document.getElementById('qs-install');
   window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; const b = btn(); if (b) b.classList.add('on'); });
-  window.addEventListener('appinstalled', () => { deferred = null; const b = btn(); if (b) b.classList.remove('on'); if (typeof showToast === 'function') showToast('Qualisig quedó instalado como aplicación', 'success'); });
-  window.qsInstall = async () => { if (!deferred) return; deferred.prompt(); try { await deferred.userChoice; } catch (e) {} deferred = null; const b = btn(); if (b) b.classList.remove('on'); };
+  window.addEventListener('appinstalled', () => { deferred = null; if (typeof showToast === 'function') showToast('Qualisig quedó instalado como aplicación', 'success'); });
+  const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const showBtn = () => { const b = btn(); if (b && !standalone()) b.classList.add('on'); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showBtn); else showBtn();
+  function guide() {
+    const ua = navigator.userAgent, ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1), android = /Android/i.test(ua);
+    const safari = ios && !/CriOS|FxiOS|EdgiOS/i.test(ua);
+    let msg;
+    if (ios && !safari) msg = 'En iPhone solo se puede instalar desde Safari. Abra qualisig.co en Safari, toque el botón Compartir (cuadro con flecha) y elija «Agregar a pantalla de inicio».';
+    else if (ios) msg = 'Toque el botón Compartir (cuadro con flecha, abajo en el centro), deslice el menú y elija «Agregar a pantalla de inicio». Luego toque «Agregar».';
+    else if (android) msg = 'Abra el menú ⋮ de Chrome (arriba a la derecha) y elija «Instalar aplicación» o «Agregar a la pantalla principal». Si no aparece, recargue la página una vez y espere unos segundos.';
+    else msg = 'En Chrome o Edge, haga clic en el ícono de instalar que aparece a la derecha de la barra de direcciones, o abra el menú ⋮ y elija «Transmitir, guardar y compartir» → «Instalar página como aplicación». Si ya está instalada, ábrala desde el escritorio o el menú Inicio.';
+    if (typeof qsConfirm === 'function') qsConfirm('Instalar Qualisig', msg, 'Entendido'); else alert(msg);
+  }
+  window.qsInstall = async () => {
+    if (!deferred) { guide(); return; }
+    deferred.prompt(); try { await deferred.userChoice; } catch (e) {} deferred = null;
+  };
 })();
 
 </script>
