@@ -16396,6 +16396,36 @@ function qsSideToggle() {
   requestAnimationFrame(qsAllInd);
   qsSideToggle.t = setTimeout(() => { h.classList.remove('qs-anim'); if (body) body.classList.remove('qs-slide'); qsAllInd(); }, 560);
 }
+/* Al contraer/expandir el menú, lo que estás viendo se queda en su sitio */
+(function () {
+  const raw = qsSideToggle;
+  function scroller(el) { for (let n = el && el.parentElement; n && n !== document.body; n = n.parentElement) { const c = getComputedStyle(n); if (/(auto|scroll)/.test(c.overflowY) && n.scrollHeight > n.clientHeight + 2) return n; } return null; }
+  function anchor() {
+    const sc = document.getElementById('screen-dashboard'); if (!sc) return null;
+    const side = document.querySelector('.qs-side'), sw = side ? side.getBoundingClientRect().right : 0;
+    const x = Math.round(sw + (innerWidth - sw) / 2), ys = [Math.round(innerHeight * .3), 140, Math.round(innerHeight * .55)];
+    for (const y of ys) {
+      let el = document.elementFromPoint(x, y);
+      while (el && el !== sc && el.getBoundingClientRect().height < 40) el = el.parentElement;
+      if (el && el !== sc && sc.contains(el) && !el.closest('.qs-side')) return { el, top: el.getBoundingClientRect().top, sc: scroller(el) };
+    }
+    return null;
+  }
+  window.qsSideToggle = qsSideToggle = function () {
+    const a = (window.scrollY > 0 || document.querySelector('.dash-body') ) ? anchor() : null;
+    const r = raw.apply(this, arguments);
+    if (a) {
+      const t0 = performance.now();
+      (function keep() {
+        if (!document.contains(a.el)) return;
+        const d = a.el.getBoundingClientRect().top - a.top;
+        if (Math.abs(d) > .5) { if (a.sc) a.sc.scrollTop += d; else window.scrollBy(0, d); }
+        if (performance.now() - t0 < 700) requestAnimationFrame(keep);
+      })();
+    }
+    return r;
+  };
+})();
 (function () { const b = document.getElementById('qs-collapse'); if (b && document.documentElement.classList.contains('qs-col')) { b.setAttribute('aria-label', 'Expandir menú'); b.title = 'Expandir menú'; } })();
 /* Contraer/expandir tocando el logo o el espacio libre de la columna */
 document.addEventListener('click', e => {
