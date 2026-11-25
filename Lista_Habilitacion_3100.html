@@ -717,6 +717,16 @@ dialog textarea.ta{display:block;width:100%;min-height:150px;resize:vertical}
   #dObs textarea.ta{min-height:min(34vh,260px)}
   .df{background:#fff!important;box-shadow:0 -1px 0 var(--line-2)}
 }
+/* respaldo para Safari: alto mínimo garantizado del contenido, sin tapar el botón Listo */
+#dObs .db{min-height:min(300px,calc(var(--qs-vvh,100vh) - 230px))}
+#dOm .db{min-height:min(260px,calc(var(--qs-vvh,100vh) - 230px))}
+#dEv .db{min-height:150px}
+
+@supports (-webkit-touch-callout:none){
+  dialog[open]{display:flex!important;flex-direction:column!important}
+  dialog .db{flex:1 1 auto!important;-webkit-flex:1 1 auto!important}
+  dialog textarea.ta{-webkit-appearance:none;appearance:none}
+}
 /* en celulares y tabletas no se muestra el recuadro de arrastrar */
 @media (hover:none) and (pointer:coarse){ #dEv .drop{display:none} #dEv .up-opts{margin-top:4px} }
 /* evidencias: tarjetas estables y sin parpadeo */
