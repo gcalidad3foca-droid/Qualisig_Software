@@ -5003,6 +5003,9 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,[tabindex]:focu
 [role=button][onclick]:focus-visible,.nav-tab:focus-visible{outline:2px solid #3563E9!important;outline-offset:2px!important}
 </style>
 <style id="qs-ovfix">
+/* contraer menú sin reiniciar el desplazamiento: recortar solo el área del panel, no la página */
+html.qs-anim,html.qs-anim body{overflow-x:visible!important}
+html.qs-anim #screen-dashboard{overflow-x:clip}
 /* ventana de listas: sin capa forzada una vez abierta (evita parpadeo con fotos) */
 .hab-ov.open.ready{will-change:auto!important;transform:none!important;box-shadow:none!important}
 .hab-ov:not(.open){will-change:opacity,transform}
@@ -16415,6 +16418,8 @@ function qsSideToggle() {
     const a = (window.scrollY > 0 || document.querySelector('.dash-body') ) ? anchor() : null;
     const r = raw.apply(this, arguments);
     if (a) {
+      const d0 = a.el.getBoundingClientRect().top - a.top;
+      if (Math.abs(d0) > .5) { if (a.sc) a.sc.scrollTop += d0; else window.scrollBy(0, d0); }
       const t0 = performance.now();
       (function keep() {
         if (!document.contains(a.el)) return;
