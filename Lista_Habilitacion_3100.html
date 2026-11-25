@@ -704,6 +704,28 @@ html,body{max-width:100%;overflow-x:clip;overscroll-behavior-x:none}
 }
 </style>
 
+<style id="qs-ios-fix">
+/* iOS Safari: el contenido de las ventanas no se colapsa (flex con base automática) */
+dialog[open]{display:flex;flex-direction:column}
+dialog .dh,dialog .df{flex:0 0 auto}
+dialog .db{flex:1 1 auto!important;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+dialog textarea.ta{display:block;width:100%;min-height:150px;resize:vertical}
+#dOm textarea.ta{min-height:110px}
+@media (max-width:820px){
+  dialog,dialog.wide,dialog.narrow{max-height:calc(var(--qs-vvh,100dvh) - 10px)!important}
+  dialog textarea.ta{min-height:130px}
+  #dObs textarea.ta{min-height:min(34vh,260px)}
+  .df{background:#fff!important;box-shadow:0 -1px 0 var(--line-2)}
+}
+/* en celulares y tabletas no se muestra el recuadro de arrastrar */
+@media (hover:none) and (pointer:coarse){ #dEv .drop{display:none} #dEv .up-opts{margin-top:4px} }
+/* evidencias: tarjetas estables y sin parpadeo */
+.thumbs{contain:layout}
+.thumb{transform:translateZ(0)}
+.thumb img{background:#E6EBF3}
+.thumb .rm{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(14,26,51,.72)}
+.thumb input{font-size:16px}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -2700,6 +2722,17 @@ document.addEventListener('DOMContentLoaded', init);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
 })();
 
+</script>
+<script id="qs-ios-js">
+/* iOS: la ventana se ajusta al espacio visible cuando aparece el teclado */
+(function(){
+  var vv=window.visualViewport; if(!vv) return; var r=document.documentElement;
+  function fit(){ r.style.setProperty('--qs-vvh', Math.round(vv.height)+'px');
+    var d=document.querySelector('dialog[open]'); if(!d||innerWidth>820) return;
+    var off=Math.max(0, innerHeight - vv.height - vv.offsetTop); d.style.marginBottom=off?off+'px':''; }
+  vv.addEventListener('resize',fit); vv.addEventListener('scroll',fit); fit();
+  document.addEventListener('focusin',function(e){ var t=e.target; if(t&&t.matches&&t.matches('dialog textarea,dialog input')) setTimeout(function(){ fit(); try{ t.scrollIntoView({block:'nearest'}); }catch(_){} },260); });
+})();
 </script>
 </body>
 </html>
