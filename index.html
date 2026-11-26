@@ -6424,11 +6424,13 @@ const db   = firebase.database();
     window.__qsAuthWait = true;
     var Q = firebase.database.Query.prototype, A = function(){ return firebase.auth(); }, ready = null, had = false, hooked = false;
     function hook(){ if (hooked || !firebase.apps.length) return; hooked = true; A().onAuthStateChanged(function(u){ if (u) had = true; else if (had) setTimeout(function(){ location.reload(); }, 150); }); }
-    function waitAuth(){ hook(); if (A().currentUser) return Promise.resolve(); if (!ready) ready = new Promise(function(res){ var un = A().onAuthStateChanged(function(u){ if (u) { un(); ready = null; res(); } }); }); return ready; }
+    /* espera solo a que Firebase termine de revisar la sesión guardada (sale enseguida aunque no haya sesión) */
+    var known = false;
+    function waitAuth(){ hook(); if (known || A().currentUser) return Promise.resolve(); if (!ready) ready = new Promise(function(res){ var done = function(){ known = true; res(); }; var un = A().onAuthStateChanged(function(){ un(); done(); }); setTimeout(done, 4000); }); return ready; }
     var on = Q.on, once = Q.once, get = Q.get;
-    Q.on = function(ev, cb, cancel, ctx){ hook(); if (A().currentUser) return on.call(this, ev, cb, cancel, ctx); var self = this; waitAuth().then(function(){ on.call(self, ev, cb, cancel, ctx); }); return cb; };
-    Q.once = function(){ var a = arguments, self = this; hook(); if (A().currentUser) return once.apply(self, a); return waitAuth().then(function(){ return once.apply(self, a); }); };
-    if (get) Q.get = function(){ var a = arguments, self = this; hook(); if (A().currentUser) return get.apply(self, a); return waitAuth().then(function(){ return get.apply(self, a); }); };
+    Q.on = function(ev, cb, cancel, ctx){ hook(); if (known || A().currentUser) return on.call(this, ev, cb, cancel, ctx); var self = this; waitAuth().then(function(){ on.call(self, ev, cb, cancel, ctx); }); return cb; };
+    Q.once = function(){ var a = arguments, self = this; hook(); if (known || A().currentUser) return once.apply(self, a); return waitAuth().then(function(){ return once.apply(self, a); }); };
+    if (get) Q.get = function(){ var a = arguments, self = this; hook(); if (known || A().currentUser) return get.apply(self, a); return waitAuth().then(function(){ return get.apply(self, a); }); };
     hook();
   }catch(e){ console.warn('authwait', e); }
 })();
@@ -16633,6 +16635,49 @@ html.qsp-admin #tab-config{display:flex!important}
   .qa-ef .qa-btn{flex:1 1 auto}
   .qa-top .qa-btn span{display:none}.qa-top .qa-btn{width:42px;padding:0}
 }
+.qa-sum{flex:none;text-align:right;line-height:1.1}.qa-sum b{display:block;font-size:26px;font-weight:800;color:var(--q-brand,#1F47B8)}.qa-sum small{font-size:12px;color:var(--q-mut,#68758E);font-weight:600}
+.qa-acc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.qa-it{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;border:1px solid var(--q-line,#E4E9F2);background:#fff;cursor:pointer;transition:border-color .15s,background .15s,opacity .2s}
+.qa-it:hover{border-color:#C9D4E8}
+.qa-it.dis{opacity:.45;pointer-events:none}
+.qa-itt{flex:1;min-width:0}.qa-itt b{display:block;font-size:14px;font-weight:700;color:var(--q-ink,#0E1A33)}.qa-itt small{display:block;font-size:12.5px;color:var(--q-mut,#68758E);line-height:1.35;margin-top:1px}
+.qa-tgl{position:relative;flex:none;display:inline-flex}
+.qa-tgl input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:1}
+.qa-tgl input:checked+.qa-tg{background:var(--q-brand,#1F47B8)}
+.qa-tgl input:checked+.qa-tg::after{transform:translateX(18px)}
+.qa-tgl input:focus-visible+.qa-tg{outline:2px solid var(--q-brand,#1F47B8);outline-offset:2px}
+.qa-tgl.sm .qa-tg{width:36px;height:20px}.qa-tgl.sm .qa-tg::after{width:14px;height:14px}.qa-tgl.sm input:checked+.qa-tg::after{transform:translateX(16px)}
+.qa-pres{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.qa-pre{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:14px;border-radius:14px;border:1px solid var(--q-line,#E4E9F2);background:#fff;font:inherit;cursor:pointer;transition:border-color .15s,background .15s,transform .12s}
+.qa-pre:hover{border-color:var(--q-brand,#1F47B8);background:#FAFBFF}.qa-pre:active{transform:scale(.98)}
+.qa-pre i{color:var(--q-brand,#1F47B8);font-size:16px;margin-bottom:4px}.qa-pre b{font-size:14px;font-weight:800;color:var(--q-ink,#0E1A33)}.qa-pre small{font-size:12px;color:var(--q-mut,#68758E);line-height:1.35}
+.qa-sh{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.qa-sh span{font-size:12.5px;color:var(--q-mut,#68758E)}
+.qa-lnk{border:0;background:none;padding:0;font:inherit;font-weight:700;color:var(--q-brand,#1F47B8);cursor:pointer}
+.qa-mc{border:1px solid var(--q-line,#E4E9F2);border-radius:16px;margin-top:10px;background:#fff;overflow:hidden;transition:border-color .2s}
+.qa-mc.open{border-color:#C9D4E8}
+.qa-mh2{display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;user-select:none}
+.qa-mh2:hover{background:var(--q-wash,#F7F9FC)}
+.qa-mi{width:40px;height:40px;border-radius:12px;flex:none;display:grid;place-items:center;background:var(--q-soft,#EBF0FD);color:var(--q-brand,#1F47B8);font-size:16px}
+.qa-mc.mOff .qa-mi{background:#EEF1F6;color:#9AA6BA}
+.qa-mt{flex:1;min-width:0}.qa-mt b{display:block;font-size:15px;font-weight:800}.qa-mt small{display:block;font-size:12.5px;color:var(--q-mut,#68758E);font-weight:600}
+.qa-chev{color:var(--q-mut,#68758E);font-size:12px;transition:transform .3s cubic-bezier(.32,.72,0,1);width:20px;text-align:center}
+.qa-mc.open .qa-chev{transform:rotate(180deg)}
+.qa-mbody{display:none;padding:0 16px 16px;border-top:1px solid var(--q-line2,#EDF0F6)}
+.qa-mc.open .qa-mbody{display:block;animation:qaIn .25s ease}
+@keyframes qaIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.qa-md{margin:12px 0 4px;font-size:12.5px;color:var(--q-mut,#68758E)}
+.qa-grp{margin-top:14px}
+.qa-gh{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.qa-gi{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--q-wash,#F7F9FC);color:var(--q-ink2,#38455F);font-size:12px}
+.qa-gh b{flex:1;font-size:13.5px;font-weight:800;color:var(--q-ink2,#38455F)}
+.qa-gl{font-size:11.5px;font-weight:700;color:var(--q-mut,#68758E)}
+.qa-grp.gOff .qa-gl{color:#B5322A}
+.qa-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.qa-items .qa-it{padding:10px 12px}
+@media (max-width:1100px){.qa-pres{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){.qa-acc,.qa-items{grid-template-columns:1fr}.qa-sum b{font-size:20px}.qa-mh2{padding:12px}.qa-mbody{padding:0 12px 12px}}
+@media (max-width:420px){.qa-pres{grid-template-columns:1fr 1fr}.qa-pre{padding:12px}}
 </style>
 
 <div id="screen-admin" class="screen" aria-label="Configuración de Qualisig">
@@ -16657,77 +16702,143 @@ html.qsp-admin #tab-config{display:flex!important}
 </div>
 
 <script id="qa-js">
-/* ═══ Configuración de acceso ═══
-   Datos en Firebase:  config/acceso/usuarios/{uid} = { activo, admin, modulos{}, auditorias{}, funciones{} }
-   Si un usuario no tiene configuración, ve y puede hacer todo (como hasta ahora). */
-const QA_CONFIG_EMAILS = ['adminbolcas@qualisig.co'];   // cuentas solo de configuración
-const QA_MODS = [
-  ['auditorias','Auditorías','fa-clipboard-list','Listas de verificación'],
-  ['dashboard','Dashboard','fa-chart-pie','Resultados y gráficas'],
-  ['equipo','Equipo','fa-users','Equipo auditor'],
-  ['indicadores','Indicadores','fa-bullseye','Fichas y seguimiento'],
-  ['autoeval','ISO 9001','fa-certificate','Autoevaluación ISO 9001:2015']
+/* ═══ Configuración de acceso (detallada) ═══
+   Firebase: config/acceso/usuarios/{uid} = { v:2, activo, admin, permisos:{ clave:true|false } }
+   Lo que no esté configurado queda permitido (como hasta ahora). */
+const QA_CONFIG_EMAILS = ['adminbolcas@qualisig.co'];
+/* it: [clave, título, descripción, funciones que protege, ocultarBotones] */
+const QA_TREE = [
+  { k:'auditorias', t:'Auditorías', i:'fa-clipboard-list', d:'Listas de verificación y su papelera', tab:'tab-auditorias', groups:[
+    { k:'aud.servicio', t:'Auditoría de servicio', i:'fa-clipboard-check', sub:'subtab-audit-servicio', items:[
+      ['aud.servicio.crear','Crear auditorías','Iniciar una auditoría nueva de FOCA o VIU',['openNuevaModal','crearAuditoria'],1],
+      ['aud.servicio.editar','Abrir y diligenciar','Continuar, responder y guardar las listas',['abrirAuditoria'],0],
+      ['aud.servicio.eliminar','Enviar a la papelera','Quitar auditorías de la lista',['confirmarEliminar','eliminarAuditoria'],1],
+      ['aud.servicio.restaurar','Restaurar de la papelera','Recuperar auditorías eliminadas',['restaurarAuditoria'],1],
+      ['aud.servicio.definitivo','Borrar definitivamente','Eliminar para siempre y vaciar la papelera',['eliminarDefinitivo','confirmarEliminarDefinitivo','vaciarPapelera'],1] ]},
+    { k:'aud.pi', t:'Paciente incógnito', i:'fa-user-secret', sub:'subtab-audit-pi', items:[
+      ['aud.pi.crear','Crear auditorías','Iniciar una auditoría nueva',['openNuevaPiModal','crearAuditoriaPi'],1],
+      ['aud.pi.editar','Abrir y diligenciar','Continuar y responder las listas',['abrirAuditoriaPi'],0],
+      ['aud.pi.detalle','Ver detalle y resultados','Resumen, preguntas y comentarios',['verDetalleAuditoriaPi'],0],
+      ['aud.pi.informe','Generar informe','Informe de paciente incógnito',['generarInformePiDesdeQualisig'],1],
+      ['aud.pi.eliminar','Enviar a la papelera','Quitar auditorías de la lista',['confirmarEliminarPi','eliminarAuditoriaPi'],1],
+      ['aud.pi.restaurar','Restaurar de la papelera','Recuperar auditorías eliminadas',['restaurarAuditoriaPi'],1],
+      ['aud.pi.definitivo','Borrar definitivamente','Eliminar para siempre y vaciar la papelera',['eliminarDefinitivoPi','vaciarPapeleraPi'],1] ]},
+    { k:'aud.hab', t:'Habilitación 3100', i:'fa-hospital', sub:'subtab-audit-hab', items:[
+      ['aud.hab.crear','Crear auditorías','Iniciar una autoevaluación nueva',['habNew'],1],
+      ['aud.hab.editar','Abrir y diligenciar','Continuar y responder la lista 3100',['habOpenId','habOpenTab'],0],
+      ['aud.hab.exportar','Exportar PDF y Excel','Descargar resultados',['habExportXlsx','habExportPdf'],1],
+      ['aud.hab.respaldo','Copias de respaldo','Descargar o cargar archivos JSON',['habDownloadJson','habPickJson'],1],
+      ['aud.hab.eliminar','Enviar a la papelera','Quitar auditorías de la lista',['habTrash'],1],
+      ['aud.hab.restaurar','Restaurar de la papelera','Recuperar auditorías eliminadas',['habRestore'],1],
+      ['aud.hab.definitivo','Borrar definitivamente','Eliminar para siempre',['habDeleteForever'],1] ]} ]},
+  { k:'dashboard', t:'Dashboard', i:'fa-chart-pie', d:'Resultados, gráficas e informes', tab:'tab-dashboard', groups:[
+    { t:'Vistas que puede consultar', i:'fa-eye', items:[
+      ['dash.servicio','Auditoría de servicio','Resultados de FOCA y VIU',[],0,'subtab-dash-servicio'],
+      ['dash.pi','Paciente incógnito','Resultados de paciente incógnito',[],0,'subtab-dash-pi'],
+      ['dash.hab','Habilitación 3100','Resultados de habilitación',[],0,'subtab-dash-hab'] ]},
+    { t:'Acciones', i:'fa-bolt', items:[
+      ['dash.informe','Generar informe PDF','Informe de resultados del período',['openReportModal','exportReportPDF'],1],
+      ['dash.evidencias','Ver y descargar evidencias','Fotos de las auditorías',['openEvidenciaPreviewModal','downloadEvidenciaPreview'],1] ]} ]},
+  { k:'equipo', t:'Equipo', i:'fa-users', d:'Equipo auditor y capacitaciones', tab:'tab-equipo', groups:[
+    { t:'Capacitaciones', i:'fa-chalkboard-user', items:[
+      ['eq.cap','Registrar y editar capacitaciones','Crear, editar, asistentes y evidencias',['openCapModal','saveCapacitacion','editCapacitacion','removeCapEvidencia','addAsistente','removeAsistente'],1] ]} ]},
+  { k:'indicadores', t:'Indicadores', i:'fa-bullseye', d:'Fichas, datos mensuales e informes', tab:'tab-indicadores', groups:[
+    { t:'Pestañas que puede ver', i:'fa-eye', items:[
+      ['ind.v.seguimiento','Seguimiento','Tablero de indicadores',[],0,'subtab-ind-seguimiento'],
+      ['ind.v.informe','Informe','Informe de indicadores',[],0,'subtab-ind-informe'],
+      ['ind.v.historico','Lista maestra','Solo aplica si su cargo ya la permite',[],0,'subtab-ind-historico'],
+      ['ind.v.aprobaciones','Aprobaciones','Solo aplica si su cargo ya la permite',[],0,'subtab-ind-aprobaciones'],
+      ['ind.v.config','Configuración de indicadores','Fichas técnicas',[],0,'subtab-ind-config'] ]},
+    { t:'Datos mensuales', i:'fa-pen-to-square', items:[
+      ['ind.alimentar','Alimentar indicadores','Registrar numerador y denominador del mes',['guardarAlimentarPendiente'],1],
+      ['ind.eliminarReg','Eliminar registros del mes','Borrar un dato ya registrado',['eliminarRegistroAlimentar'],1],
+      ['ind.historial','Editar el historial','Corregir datos de meses anteriores',['abrirEdicionHistorial','guardarEdicionHistorial'],1],
+      ['ind.historialDel','Eliminar del historial','Borrar datos de meses anteriores',['eliminarRegistroHistorial'],1],
+      ['ind.seguimiento','Registrar seguimiento','Acciones y evidencias de seguimiento',['guardarSeguimiento','removeSegEvidencia'],1] ]},
+    { t:'Informes y aprobación', i:'fa-file-signature', items:[
+      ['ind.enviar','Enviar informe a revisión','Enviar o reabrir el informe',['enviarInformeARevision','reabrirInformeParaRevision'],1],
+      ['ind.aprobar','Aprobar o devolver informes','Decisión sobre informes enviados',['resolverInforme'],1],
+      ['ind.exportar','Exportar fichas e informes PDF','Descargar documentos',['exportFichaIndicadorDetallePDF','confirmarGenerarFichaPDF','exportFichaIndicadorPDF','exportIndicadoresPDF'],1] ]},
+    { t:'Administración de indicadores', i:'fa-sliders', items:[
+      ['ind.crear','Crear y editar indicadores','Fichas, fórmulas y metas',['openIndicadorModal','guardarIndicador','swapNumeradorDenominador'],1],
+      ['ind.activar','Activar o inactivar indicadores','Mostrar u ocultar un indicador',['toggleIndicadorActivo'],1],
+      ['ind.mant','Mantenimiento de la base','Importar, fusionar duplicados y reiniciar',['importarIndicadoresBase','fusionarIndicadoresDuplicados','fusionarDuplicadosExactos','desvincularEspejo','reiniciarModuloIndicadores'],1] ]} ]},
+  { k:'autoeval', t:'ISO 9001', i:'fa-certificate', d:'Autoevaluación ISO 9001:2015', tab:'tab-autoeval', groups:[
+    { t:'Acciones', i:'fa-list-check', items:[
+      ['iso.evaluar','Evaluar requisitos','Calificar, marcar y confirmar requisitos',['ISOA.setRes','ISOA.quickResp','ISOA.markAll','ISOA.confirmAll','ISOA.ncTog','ISOA.clearEv','ISOA.clearReq'],0],
+      ['iso.plan','Gestionar el plan de acción','Cambiar estado y eliminar tareas',['ISOA.setEstado','ISOA.delTask'],0],
+      ['iso.exportar','Exportar PDF y Excel','Descargar la autoevaluación',['ISOA.expPdf','ISOA.expXlsx'],1],
+      ['iso.reiniciar','Reiniciar la evaluación','Borrar todas las respuestas',['ISOA.resetAll'],1] ]} ]},
+  { k:'general', t:'Herramientas generales', i:'fa-wand-magic-sparkles', d:'Funciones disponibles en varios módulos', groups:[
+    { t:'Inteligencia artificial', i:'fa-wand-magic-sparkles', items:[
+      ['gen.ia','Mejorar redacción con IA','Reescribir textos con ayuda de la IA',['mejorarRedaccionIA','aplicarTextoMejorado'],1] ]} ]}
 ];
-const QA_AUD = [
-  ['servicio','Auditoría de servicio','fa-clipboard-check','Listas FOCA y VIU'],
-  ['pi','Paciente incógnito','fa-user-secret','Listas de paciente incógnito'],
-  ['hab','Habilitación 3100','fa-hospital','Resolución 3100']
-];
-const QA_FN = [
-  ['crear','Crear auditorías','fa-plus','Iniciar auditorías nuevas'],
-  ['eliminar','Eliminar','fa-trash-can','Enviar a papelera, vaciar y borrar registros'],
-  ['exportar','Exportar','fa-file-arrow-down','Descargar PDF y Excel'],
-  ['ind_config','Configurar indicadores','fa-sliders','Crear, editar y activar indicadores'],
-  ['ind_alimentar','Alimentar indicadores','fa-pen-to-square','Registrar los datos de cada mes']
-];
-const QA_GUARD = {
-  crear:['openNuevaModal','openNuevaPiModal','habNew'],
-  eliminar:['confirmarEliminar','confirmarEliminarPi','eliminarDefinitivo','eliminarDefinitivoPi','vaciarPapelera','vaciarPapeleraPi','habTrash','habDeleteForever','eliminarRegistroAlimentar','eliminarRegistroHistorial'],
-  exportar:['exportReportPDF','exportFichaIndicadorDetallePDF','confirmarGenerarFichaPDF','exportFichaIndicadorPDF','exportIndicadoresPDF','habExportXlsx','habExportPdf'],
-  ind_config:['openIndicadorModal','guardarIndicador','toggleIndicadorActivo','reiniciarModuloIndicadores','importarIndicadoresBase','fusionarIndicadoresDuplicados'],
-  ind_alimentar:['guardarAlimentarPendiente','eliminarRegistroAlimentar']
-};
-const QA = { me:null, perfiles:{}, acceso:{}, sel:null, draft:null, configOnly:false, isAdmin:false };
+const QA_KEYS = (() => { const L = []; QA_TREE.forEach(m => { if (m.tab) L.push('mod.' + m.k); m.groups.forEach(g => { if (g.k) L.push(g.k); g.items.forEach(it => L.push(it[0])); }); }); return L; })();
+const QA = { me:null, perfiles:{}, acceso:{}, sel:null, draft:null, configOnly:false, isAdmin:false, open:{} };
 const qaEsc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const qaIni = n => { const p = String(n || '?').trim().split(/\s+/); return ((p[0]||'')[0] + ((p[1]||'')[0]||'')).toUpperCase() || '?'; };
-const qaFull = () => ({ activo:true, admin:false, modulos:Object.fromEntries(QA_MODS.map(m=>[m[0],true])), auditorias:Object.fromEntries(QA_AUD.map(m=>[m[0],true])), funciones:Object.fromEntries(QA_FN.map(m=>[m[0],true])) });
-function qaNorm(p) { const f = qaFull(); p = p || {}; return { activo:p.activo !== false, admin:!!p.admin, modulos:Object.assign(f.modulos, p.modulos||{}), auditorias:Object.assign(f.auditorias, p.auditorias||{}), funciones:Object.assign(f.funciones, p.funciones||{}) }; }
+function qaAll(v) { const p = {}; QA_KEYS.forEach(k => p[k] = v); return p; }
+const qaFull = () => ({ v:2, activo:true, admin:false, permisos:qaAll(true) });
+/* convierte la configuración anterior (módulos/funciones) al esquema detallado */
+function qaNorm(raw) {
+  raw = raw || {}; const p = qaAll(true);
+  if (raw.modulos) Object.keys(raw.modulos).forEach(m => { if (raw.modulos[m] === false) p['mod.' + m] = false; });
+  if (raw.auditorias) Object.keys(raw.auditorias).forEach(a => { if (raw.auditorias[a] === false) p['aud.' + a] = false; });
+  const f = raw.funciones || {}, off = (re) => QA_KEYS.forEach(k => { if (re.test(k)) p[k] = false; });
+  if (f.crear === false) off(/^aud\.[a-z]+\.crear$/);
+  if (f.eliminar === false) { off(/\.(eliminar|definitivo)$/); off(/^ind\.(eliminarReg|historialDel)$/); }
+  if (f.exportar === false) { off(/exportar$/); off(/^(dash\.informe|aud\.pi\.informe)$/); }
+  if (f.ind_config === false) off(/^ind\.(crear|activar|mant)$/);
+  if (f.ind_alimentar === false) off(/^ind\.(alimentar|eliminarReg)$/);
+  if (raw.permisos) Object.keys(raw.permisos).forEach(k => { if (k in p) p[k] = raw.permisos[k] !== false; });
+  return { v:2, activo:raw.activo !== false, admin:!!raw.admin, permisos:p };
+}
+/* permiso efectivo: un permiso apagado arriba (módulo o sección) apaga lo de abajo */
+function qaCan(p, key) {
+  if (p[key] === false) return false;
+  for (const m of QA_TREE) for (const g of m.groups) for (const it of g.items) if (it[0] === key) return (!m.tab || p['mod.' + m.k] !== false) && (!g.k || p[g.k] !== false);
+  return true;
+}
 
 /* ── Aplicar permisos al usuario que inicia sesión ── */
 const QA_RAW = {};
 function qaDenied() { showToast('Su usuario no tiene permiso para esta acción.', 'error'); }
-function qaApply(p) {
-  const h = document.documentElement;
-  QA_MODS.forEach(([k]) => { const t = document.getElementById('tab-' + k); if (t) t.hidden = !p.modulos[k]; });
-  QA_AUD.forEach(([k]) => { const t = document.getElementById('subtab-audit-' + k); if (t) t.hidden = !p.auditorias[k]; });
-  let css = '';
-  Object.keys(QA_GUARD).forEach(fn => {
-    const ok = !!p.funciones[fn];
-    QA_GUARD[fn].forEach(name => {
-      if (typeof window[name] !== 'function' && !QA_RAW[name]) return;
-      if (!QA_RAW[name]) QA_RAW[name] = window[name];
-      if (ok && window[name].__qaBlocked) window[name] = QA_RAW[name];
-      if (!ok) { const g = function () { qaDenied(); return false; }; g.__qaBlocked = true; window[name] = g; css += `[onclick*="${name}("]{display:none!important}`; }
+function qaGet(name) { if (name.indexOf('ISOA.') === 0) return window.ISOA && window.ISOA[name.slice(5)]; return window[name]; }
+function qaSet(name, fn) { if (name.indexOf('ISOA.') === 0) { if (window.ISOA) window.ISOA[name.slice(5)] = fn; } else window[name] = fn; }
+function qaApply(raw) {
+  const P = qaNorm(raw).permisos, h = document.documentElement; let css = '';
+  const show = (id, on) => { const el = document.getElementById(id); if (el) el.classList.toggle('qsp-off', !on); };
+  QA_TREE.forEach(m => {
+    if (m.tab) show(m.tab, P['mod.' + m.k] !== false);
+    m.groups.forEach(g => {
+      if (g.sub) show(g.sub, qaCan(P, g.k) && P['mod.' + m.k] !== false && P[g.k] !== false);
+      g.items.forEach(([key, , , fns, hide, sub]) => {
+        const ok = qaCan(P, key);
+        if (sub) show(sub, ok);
+        (fns || []).forEach(name => {
+          const cur = qaGet(name); if (typeof cur !== 'function' && !QA_RAW[name]) return;
+          if (!QA_RAW[name]) QA_RAW[name] = cur;
+          if (ok) { if (cur && cur.__qaBlocked) qaSet(name, QA_RAW[name]); }
+          else if (!(cur && cur.__qaBlocked)) { const g2 = function () { qaDenied(); return false; }; g2.__qaBlocked = true; qaSet(name, g2); }
+          if (!ok && hide) css += `[onclick*="${name}("]{display:none!important}`;
+        });
+      });
     });
   });
-  if (!p.funciones.crear) css += '#module-auditorias .btn-nueva{display:none!important}';
+  if (!qaCan(P, 'aud.servicio.crear')) css += '#audit-view-servicio .btn-nueva{display:none!important}';
+  if (!qaCan(P, 'aud.pi.crear')) css += '#audit-view-pi .btn-nueva{display:none!important}';
   let st = document.getElementById('qsp-css'); if (!st) { st = document.createElement('style'); st.id = 'qsp-css'; document.head.appendChild(st); }
-  st.textContent = css;
-  h.classList.toggle('qsp-admin', !!p.admin);
-  // si el módulo o la pestaña activa ya no está permitida, ir a la primera permitida
-  const act = document.querySelector('#main-nav-tabs .nav-tab.active');
-  if (act && act.hidden) { const f = QA_MODS.find(([k]) => p.modulos[k]); if (f) switchModule(f[0]); }
-  const sa = document.querySelector('#module-auditorias > .nav-tabs .nav-tab.active');
-  if (sa && sa.hidden) { const f = QA_AUD.find(([k]) => p.auditorias[k]); if (f) switchAuditView(f[0]); }
+  st.textContent = css + '.qsp-off,html body .nav-tab.qsp-off,html body #main-nav-tabs .nav-tab.qsp-off,html body .qs-nav .nav-tab.qsp-off{display:none!important}';
+  h.classList.toggle('qsp-admin', !!(raw && raw.admin));
+  const fix = (sel, list, fn) => { const a = document.querySelector(sel); if (a && a.classList.contains('qsp-off')) { const f = list.find(x => { const e = document.getElementById(x[0]); return e && !e.classList.contains('qsp-off'); }); if (f) fn(f[1]); } };
+  fix('#main-nav-tabs .nav-tab.active', QA_TREE.filter(m => m.tab).map(m => [m.tab, m.k]), k => switchModule(k));
+  fix('#module-auditorias > .nav-tabs .nav-tab.active', [['subtab-audit-servicio','servicio'],['subtab-audit-pi','pi'],['subtab-audit-hab','hab']], k => switchAuditView(k));
+  fix('#module-dashboard > .nav-tabs .nav-tab.active', [['subtab-dash-servicio','servicio'],['subtab-dash-pi','pi'],['subtab-dash-hab','hab']], k => typeof switchDashView === 'function' && switchDashView(k));
 }
-if (typeof switchModule === 'function') {
-  const _sm = switchModule;
-  window.switchModule = switchModule = function (name) { const t = document.getElementById('tab-' + name); if (t && t.hidden) return; return _sm.apply(this, arguments); };
-}
-if (typeof switchAuditView === 'function') {
-  const _sv = switchAuditView;
-  window.switchAuditView = switchAuditView = function (v) { const t = document.getElementById('subtab-audit-' + v); if (t && t.hidden) return; return _sv.apply(this, arguments); };
-}
+[['switchModule','tab-'],['switchAuditView','subtab-audit-'],['switchDashView','subtab-dash-'],['switchIndView','subtab-ind-']].forEach(([fn, pre]) => {
+  if (typeof window[fn] !== 'function') return; const raw = window[fn];
+  window[fn] = function (v) { const t = document.getElementById(pre + v); if (t && t.classList.contains('qsp-off')) return; return raw.apply(this, arguments); };
+});
 
 auth.onAuthStateChanged(async user => {
   if (!user) { QA.me = null; document.documentElement.classList.remove('qsp-admin'); return; }
@@ -16735,11 +16846,10 @@ auth.onAuthStateChanged(async user => {
   QA.configOnly = QA_CONFIG_EMAILS.includes(String(user.email || '').toLowerCase());
   if (QA.configOnly) { showScreen('admin'); document.getElementById('qa-back').hidden = true; qaLoad(); return; }
   try {
-    const snap = await db.ref('config/acceso/usuarios/' + user.uid).once('value');
-    const p = qaNorm(snap.val());
-    if (!p.activo) { showToast('Su usuario está desactivado. Comuníquese con el administrador de Qualisig.', 'error'); setTimeout(() => auth.signOut(), 1800); return; }
-    QA.isAdmin = p.admin; qaApply(p);
-    db.ref('config/acceso/usuarios/' + user.uid).on('value', s => { if (QA.me && QA.me.uid === user.uid) { const q = qaNorm(s.val()); if (!q.activo) { auth.signOut(); return; } QA.isAdmin = q.admin; qaApply(q); } });
+    const ref = db.ref('config/acceso/usuarios/' + user.uid);
+    const first = qaNorm((await ref.once('value')).val());
+    if (!first.activo) { showToast('Su usuario está desactivado. Comuníquese con el administrador de Qualisig.', 'error'); setTimeout(() => auth.signOut(), 1800); return; }
+    ref.on('value', s => { if (!QA.me || QA.me.uid !== user.uid) return; const raw = s.val(); if (raw && raw.activo === false) { auth.signOut(); return; } QA.isAdmin = !!(raw && raw.admin); qaApply(raw); });
   } catch (e) { console.warn('permisos:', e); }
 });
 
@@ -16760,44 +16870,73 @@ function qaUsers() {
     .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
 }
 function qaAv(u) { return u.foto ? `<span class="qa-av"><img src="${qaEsc(u.foto)}" alt="" onerror="this.parentNode.textContent='${qaIni(u.nombre)}'"></span>` : `<span class="qa-av">${qaEsc(qaIni(u.nombre))}</span>`; }
+function qaCount(p) { let on = 0, n = 0; QA_TREE.forEach(m => m.groups.forEach(g => g.items.forEach(it => { n++; if (qaCan(p, it[0])) on++; }))); return [on, n]; }
 function qaRenderList() {
   const q = (document.getElementById('qa-q').value || '').toLowerCase().trim(), all = qaUsers();
-  const L = all.filter(u => !q || (u.nombre + ' ' + u.email).toLowerCase().includes(q));
+  const L = all.filter(u => !q || (u.nombre + ' ' + u.email + ' ' + u.cargo).toLowerCase().includes(q));
   document.getElementById('qa-n').textContent = all.length;
-  document.getElementById('qa-users').innerHTML = L.length ? L.map(u => `<button type="button" class="qa-u${u.uid === QA.sel ? ' on' : ''}" data-uid="${qaEsc(u.uid)}">${qaAv(u)}<span class="qa-ui"><b>${qaEsc(u.nombre)}</b><small>${qaEsc(u.email || u.cargo || '—')}</small></span>${!u.p.activo ? '<span class="qa-tag off">Inactivo</span>' : u.p.admin ? '<span class="qa-tag adm">Admin</span>' : ''}</button>`).join('') : '<div class="qa-empty" style="padding:30px 10px">Sin resultados</div>';
+  document.getElementById('qa-users').innerHTML = L.length ? L.map(u => { const [on, n] = qaCount(u.p.permisos);
+    const tag = !u.p.activo ? '<span class="qa-tag off">Inactivo</span>' : u.p.admin ? '<span class="qa-tag adm">Admin</span>' : on === n ? '<span class="qa-tag">Todo</span>' : `<span class="qa-tag">${on}/${n}</span>`;
+    return `<button type="button" class="qa-u${u.uid === QA.sel ? ' on' : ''}" data-uid="${qaEsc(u.uid)}">${qaAv(u)}<span class="qa-ui"><b>${qaEsc(u.nombre)}</b><small>${qaEsc(u.cargo || u.email || '—')}</small></span>${tag}</button>`; }).join('') : '<div class="qa-empty" style="padding:30px 10px">Sin resultados</div>';
 }
-document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('.qa-u'); if (b) { QA.sel = b.dataset.uid; QA.draft = JSON.parse(JSON.stringify(qaNorm(QA.acceso[QA.sel]))); qaRenderList(); qaRenderEd(); if (innerWidth <= 900) document.getElementById('qa-ed').scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
-function qaSw(group, k, title, icon, desc, disabled) {
-  const on = QA.draft[group][k];
-  return `<label class="qa-sw${disabled ? ' dis' : ''}"><input type="checkbox" data-g="${group}" data-k="${k}"${on ? ' checked' : ''}><span class="qa-si"><i class="fas ${icon}"></i></span><span class="qa-st"><b>${title}</b><small>${desc}</small></span><span class="qa-tg"></span></label>`;
-}
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('.qa-u');
+  if (b) { QA.sel = b.dataset.uid; QA.draft = JSON.parse(JSON.stringify(qaNorm(QA.acceso[QA.sel]))); qaRenderList(); qaRenderEd(); if (innerWidth <= 900) document.getElementById('qa-ed').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+  const hd = e.target.closest && e.target.closest('.qa-mh2');
+  if (hd && !e.target.closest('.qa-tgl')) { const k = hd.dataset.m; QA.open[k] = !QA.open[k]; hd.parentNode.classList.toggle('open', !!QA.open[k]); }
+  const pr = e.target.closest && e.target.closest('[data-preset]'); if (pr) qaPreset(pr.dataset.preset);
+});
+function qaTgl(key, on, dis, cls) { return `<span class="qa-tgl${cls ? ' ' + cls : ''}"><input type="checkbox" data-key="${key}"${on ? ' checked' : ''}${dis ? ' disabled' : ''} aria-label="${key}"><span class="qa-tg"></span></span>`; }
 function qaRenderEd() {
   const u = qaUsers().find(x => x.uid === QA.sel); const ed = document.getElementById('qa-ed');
   if (!u) { ed.innerHTML = '<div class="qa-empty"><i class="fas fa-user-gear"></i>Seleccione un usuario para configurar lo que puede ver y hacer.</div>'; return; }
-  const d = QA.draft, audOff = !d.modulos.auditorias, indOff = !d.modulos.indicadores;
+  const d = QA.draft, P = d.permisos, [on, n] = qaCount(P);
+  const mods = QA_TREE.map(m => {
+    const modOn = !m.tab || P['mod.' + m.k] !== false; let mo = 0, mn = 0;
+    m.groups.forEach(g => g.items.forEach(it => { mn++; if (qaCan(P, it[0])) mo++; }));
+    const groups = m.groups.map(g => {
+      const gOn = !g.k || P[g.k] !== false, gDis = !modOn;
+      const items = g.items.map(it => { const dis = !modOn || !gOn; return `<label class="qa-it${dis ? ' dis' : ''}"><span class="qa-itt"><b>${qaEsc(it[1])}</b><small>${qaEsc(it[2])}</small></span>${qaTgl(it[0], P[it[0]] !== false, dis)}</label>`; }).join('');
+      return `<div class="qa-grp${gOn ? '' : ' gOff'}"><div class="qa-gh"><span class="qa-gi"><i class="fas ${g.i || 'fa-circle'}"></i></span><b>${qaEsc(g.t)}</b>${g.k ? `<span class="qa-gl">${gOn ? 'Visible' : 'Oculto'}</span>` + qaTgl(g.k, gOn, gDis, 'sm') : ''}</div><div class="qa-items">${items}</div></div>`;
+    }).join('');
+    return `<section class="qa-mc${QA.open[m.k] ? ' open' : ''}${modOn ? '' : ' mOff'}"><div class="qa-mh2" data-m="${m.k}" role="button" tabindex="0"><span class="qa-mi"><i class="fas ${m.i}"></i></span><span class="qa-mt"><b>${qaEsc(m.t)}</b><small>${modOn ? mo + ' de ' + mn + ' permisos activos' : 'Módulo oculto para este usuario'}</small></span>${m.tab ? qaTgl('mod.' + m.k, modOn, false) : ''}<i class="fas fa-chevron-down qa-chev"></i></div><div class="qa-mbody"><p class="qa-md">${qaEsc(m.d)}</p>${groups}</div></section>`;
+  }).join('');
   ed.innerHTML = `<div class="qa-ed">
-    <div class="qa-eh">${qaAv(u)}<div class="qa-et"><h2>${qaEsc(u.nombre)}</h2><p>${qaEsc([u.cargo, u.email].filter(Boolean).join(' · ') || 'Sin datos de perfil')}</p></div></div>
-    <div class="qa-sec"><h4>Cuenta</h4><p class="qa-hint">Un usuario inactivo no puede entrar a Qualisig.</p><div class="qa-grid">
-      <label class="qa-sw"><input type="checkbox" data-g="root" data-k="activo"${d.activo ? ' checked' : ''}><span class="qa-si"><i class="fas fa-user-check"></i></span><span class="qa-st"><b>Usuario activo</b><small>Puede iniciar sesión</small></span><span class="qa-tg"></span></label>
-      <label class="qa-sw"><input type="checkbox" data-g="root" data-k="admin"${d.admin ? ' checked' : ''}><span class="qa-si"><i class="fas fa-user-shield"></i></span><span class="qa-st"><b>Administrador</b><small>Puede abrir esta configuración</small></span><span class="qa-tg"></span></label>
+    <div class="qa-eh">${qaAv(u)}<div class="qa-et"><h2>${qaEsc(u.nombre)}</h2><p>${qaEsc([u.cargo, u.email].filter(Boolean).join(' · ') || 'Sin datos de perfil')}</p></div><div class="qa-sum"><b>${on}</b><small>de ${n} permisos</small></div></div>
+    <div class="qa-sec"><h4>Cuenta</h4><div class="qa-acc">
+      <label class="qa-it"><span class="qa-itt"><b>Usuario activo</b><small>Si se apaga, no puede iniciar sesión</small></span><span class="qa-tgl"><input type="checkbox" data-root="activo"${d.activo ? ' checked' : ''}><span class="qa-tg"></span></span></label>
+      <label class="qa-it"><span class="qa-itt"><b>Administrador</b><small>Puede abrir esta configuración</small></span><span class="qa-tgl"><input type="checkbox" data-root="admin"${d.admin ? ' checked' : ''}><span class="qa-tg"></span></span></label>
     </div></div>
-    <div class="qa-sec"><h4>Módulos que ve</h4><p class="qa-hint">Los módulos apagados no aparecen en su menú.</p><div class="qa-grid">${QA_MODS.map(m => qaSw('modulos', m[0], m[1], m[2], m[3])).join('')}</div></div>
-    <div class="qa-sec"><h4>Tipos de auditoría</h4><p class="qa-hint">Dentro del módulo Auditorías.</p><div class="qa-grid">${QA_AUD.map(m => qaSw('auditorias', m[0], m[1], m[2], m[3], audOff)).join('')}</div></div>
-    <div class="qa-sec"><h4>Funciones</h4><p class="qa-hint">Lo que puede hacer dentro de los módulos.</p><div class="qa-grid">${QA_FN.map(m => qaSw('funciones', m[0], m[1], m[2], m[3], (m[0].startsWith('ind_') && indOff) || ((m[0] === 'crear') && audOff))).join('')}</div></div>
+    <div class="qa-sec"><h4>Perfil rápido</h4><p class="qa-hint">Aplica una base y luego ajuste los detalles abajo.</p><div class="qa-pres">
+      <button type="button" class="qa-pre" data-preset="todo"><i class="fas fa-unlock"></i><b>Acceso total</b><small>Ve y hace todo</small></button>
+      <button type="button" class="qa-pre" data-preset="auditor"><i class="fas fa-clipboard-user"></i><b>Auditor</b><small>Diligencia, sin borrar ni administrar</small></button>
+      <button type="button" class="qa-pre" data-preset="consulta"><i class="fas fa-eye"></i><b>Solo consulta</b><small>Ve los módulos, sin cambiar nada</small></button>
+      <button type="button" class="qa-pre" data-preset="nada"><i class="fas fa-lock"></i><b>Sin acceso</b><small>Apaga todo para empezar de cero</small></button>
+    </div></div>
+    <div class="qa-sec"><div class="qa-sh"><h4>Permisos por módulo</h4><span><button type="button" class="qa-lnk" onclick="qaExpand(true)">Abrir todo</button> · <button type="button" class="qa-lnk" onclick="qaExpand(false)">Cerrar todo</button></span></div>
+      <p class="qa-hint">Apagar un módulo o una sección oculta también todo lo que tiene adentro.</p>${mods}</div>
     <div class="qa-ef"><span class="qa-l" id="qa-state"></span>
       ${u.email ? '<button type="button" class="qa-btn" onclick="qaReset()"><i class="fas fa-key"></i>Cambiar contraseña</button>' : ''}
-      <button type="button" class="qa-btn" onclick="qaTodo()"><i class="fas fa-check-double"></i>Permitir todo</button>
       <button type="button" class="qa-btn pri" id="qa-save" onclick="qaGuardar()"><i class="fas fa-floppy-disk"></i>Guardar cambios</button>
     </div></div>`;
   qaDirty();
 }
+function qaExpand(v) { QA_TREE.forEach(m => QA.open[m.k] = v); document.querySelectorAll('.qa-mc').forEach(s => s.classList.toggle('open', v)); }
+function qaPreset(k) {
+  const P = qaAll(true);
+  if (k === 'nada') QA_KEYS.forEach(x => P[x] = false);
+  if (k === 'consulta') QA_KEYS.forEach(x => { if (!/^mod\.|^aud\.(servicio|pi|hab)$|^dash\.(servicio|pi|hab)$|^ind\.v\.|^aud\.pi\.detalle$|^dash\.evidencias$/.test(x)) P[x] = false; });
+  if (k === 'auditor') QA_KEYS.forEach(x => { if (/\.(definitivo|restaurar|respaldo)$|^ind\.(crear|activar|mant|aprobar|historialDel|v\.config|v\.aprobaciones|v\.historico)$|^iso\.reiniciar$/.test(x)) P[x] = false; });
+  QA.draft.permisos = P; if (k === 'nada') QA.draft.admin = false; qaRenderEd();
+}
 function qaDirty() { const s = document.getElementById('qa-state'); if (!s) return; const same = JSON.stringify(QA.draft) === JSON.stringify(qaNorm(QA.acceso[QA.sel])); s.textContent = same ? 'Sin cambios' : 'Cambios sin guardar'; s.style.color = same ? '' : '#B36A00'; }
 document.addEventListener('change', e => {
-  const i = e.target; if (!i.closest || !i.closest('#qa-ed') || !i.dataset.g) return;
-  if (i.dataset.g === 'root') QA.draft[i.dataset.k] = i.checked; else QA.draft[i.dataset.g][i.dataset.k] = i.checked;
-  if (i.dataset.g === 'modulos' && (i.dataset.k === 'auditorias' || i.dataset.k === 'indicadores')) qaRenderEd(); else qaDirty();
+  const i = e.target; if (!i.closest || !i.closest('#qa-ed')) return;
+  if (i.dataset.root) { QA.draft[i.dataset.root] = i.checked; qaRenderList(); qaDirty(); return; }
+  if (!i.dataset.key) return; QA.draft.permisos[i.dataset.key] = i.checked;
+  const y = window.scrollY; qaRenderEd(); window.scrollTo(0, y);
 });
-function qaTodo() { const a = QA.draft.admin; QA.draft = qaFull(); QA.draft.admin = a; qaRenderEd(); }
+document.addEventListener('keydown', e => { const hd = e.target.closest && e.target.closest('.qa-mh2'); if (hd && (e.key === 'Enter' || e.key === ' ') && e.target === hd) { e.preventDefault(); hd.click(); } });
 async function qaGuardar() {
   const b = document.getElementById('qa-save'); if (!QA.sel || !b) return;
   if (QA.sel === (QA.me && QA.me.uid) && !QA.draft.admin && !QA.configOnly && !await qsConfirm('Quitar su propio acceso', 'Si guarda, dejará de ser administrador y no podrá volver a esta configuración.', 'Guardar')) return;
@@ -16805,8 +16944,8 @@ async function qaGuardar() {
   try {
     await db.ref('config/acceso/usuarios/' + QA.sel).set(Object.assign({}, QA.draft, { updatedAt: Date.now(), updatedBy: QA.me ? QA.me.email : '' }));
     showToast('Permisos guardados. El usuario los verá de inmediato.', 'success');
-  } catch (e) { showToast('No se pudo guardar: ' + (e.code === 'PERMISSION_DENIED' ? 'revise las reglas de Firebase.' : e.message), 'error'); }
-  b.disabled = false; qaDirty();
+  } catch (e) { showToast('No se pudo guardar: ' + (/PERMISSION/i.test(e.code || e.message) ? 'revise las reglas de Firebase.' : e.message), 'error'); }
+  b.disabled = false; qaDirty(); qaRenderList();
 }
 async function qaReset() {
   const u = qaUsers().find(x => x.uid === QA.sel); if (!u || !u.email) return;
@@ -16814,6 +16953,7 @@ async function qaReset() {
   try { await auth.sendPasswordResetEmail(u.email); showToast('Correo enviado a ' + u.email, 'success'); }
   catch (e) { showToast('No se pudo enviar el correo: ' + e.message, 'error'); }
 }
+function qaTodo() { qaPreset('todo'); }
 
 /* ── Crear usuario (sin cerrar la sesión del administrador) ── */
 function qaNuevo() {
@@ -16835,12 +16975,10 @@ function qaNuevo() {
     e.preventDefault(); const err = ov.querySelector('#qa-nerr'), sb = ov.querySelector('[type=submit]');
     const nombre = ov.querySelector('#qa-nn').value.trim(), email = ov.querySelector('#qa-ne').value.trim().toLowerCase(), cargo = ov.querySelector('#qa-nc').value.trim(), pass = ov.querySelector('#qa-np').value;
     if (pass.length < 6) { err.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
-    sb.disabled = true; err.textContent = '';
-    let tmp;
+    sb.disabled = true; err.textContent = ''; let tmp;
     try {
       tmp = firebase.initializeApp(firebaseConfig, 'qa-tmp-' + Date.now());
-      const cred = await tmp.auth().createUserWithEmailAndPassword(email, pass);
-      const uid = cred.user.uid;
+      const cred = await tmp.auth().createUserWithEmailAndPassword(email, pass); const uid = cred.user.uid;
       await tmp.database().ref('perfiles/' + uid).set({ nombre, email, cargo: cargo || 'Auditor', updatedAt: Date.now() });
       await db.ref('config/acceso/usuarios/' + uid).set(Object.assign(qaFull(), { updatedAt: Date.now(), updatedBy: QA.me ? QA.me.email : '' }));
       await tmp.auth().signOut();
@@ -16852,13 +16990,12 @@ function qaNuevo() {
     } finally { sb.disabled = false; if (tmp) tmp.delete().catch(() => {}); }
   });
 }
-
-/* Acceso a la configuración para administradores dentro de Qualisig */
 document.addEventListener('DOMContentLoaded', () => {
   const nav = document.getElementById('main-nav-tabs'); if (!nav || document.getElementById('tab-config')) return;
   const b = document.createElement('button'); b.className = 'nav-tab qsp-cfg-tab'; b.id = 'tab-config'; b.type = 'button'; b.dataset.tip = 'Configuración';
   b.innerHTML = '<i class="fas fa-user-gear"></i><span>Configuración</span>'; b.onclick = qaAbrir; nav.appendChild(b);
 });
+
 </script>
 
 <script id="qs-kbd">
