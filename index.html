@@ -16790,9 +16790,11 @@ function qaNorm(raw) {
   if (f.exportar === false) { off(/exportar$/); off(/^(dash\.informe|aud\.pi\.informe)$/); }
   if (f.ind_config === false) off(/^ind\.(crear|activar|mant)$/);
   if (f.ind_alimentar === false) off(/^ind\.(alimentar|eliminarReg)$/);
-  if (raw.permisos) Object.keys(raw.permisos).forEach(k => { if (k in p) p[k] = raw.permisos[k] !== false; });
+  if (raw.permisos) Object.keys(raw.permisos).forEach(k => { const kk = k.replace(/_/g, '.'); if (kk in p) p[kk] = raw.permisos[k] !== false; else if (k in p) p[k] = raw.permisos[k] !== false; });
   return { v:2, activo:raw.activo !== false, admin:!!raw.admin, permisos:p };
 }
+/* Firebase no admite '.' en claves: se guardan con '_' */
+const qaDb = d => { const o = Object.assign({}, d), P = {}; Object.keys(d.permisos || {}).forEach(k => { P[k.replace(/\./g, '_')] = !!d.permisos[k]; }); o.permisos = P; return o; };
 /* permiso efectivo: un permiso apagado arriba (módulo o sección) apaga lo de abajo */
 function qaCan(p, key) {
   if (p[key] === false) return false;
@@ -16828,7 +16830,7 @@ function qaApply(raw) {
   if (!qaCan(P, 'aud.servicio.crear')) css += '#audit-view-servicio .btn-nueva{display:none!important}';
   if (!qaCan(P, 'aud.pi.crear')) css += '#audit-view-pi .btn-nueva{display:none!important}';
   let st = document.getElementById('qsp-css'); if (!st) { st = document.createElement('style'); st.id = 'qsp-css'; document.head.appendChild(st); }
-  st.textContent = css + '.qsp-off,html body .nav-tab.qsp-off,html body #main-nav-tabs .nav-tab.qsp-off,html body .qs-nav .nav-tab.qsp-off{display:none!important}';
+  st.textContent = css + '.qsp-off,html body .nav-tab.qsp-off,html body #main-nav-tabs .nav-tab.qsp-off,html body .qs-nav .nav-tab.qsp-off,html body .sub-tab.qsp-off{display:none!important}';
   h.classList.toggle('qsp-admin', !!(raw && raw.admin));
   const fix = (sel, list, fn) => { const a = document.querySelector(sel); if (a && a.classList.contains('qsp-off')) { const f = list.find(x => { const e = document.getElementById(x[0]); return e && !e.classList.contains('qsp-off'); }); if (f) fn(f[1]); } };
   fix('#main-nav-tabs .nav-tab.active', QA_TREE.filter(m => m.tab).map(m => [m.tab, m.k]), k => switchModule(k));
@@ -16942,7 +16944,7 @@ async function qaGuardar() {
   if (QA.sel === (QA.me && QA.me.uid) && !QA.draft.admin && !QA.configOnly && !await qsConfirm('Quitar su propio acceso', 'Si guarda, dejará de ser administrador y no podrá volver a esta configuración.', 'Guardar')) return;
   b.disabled = true;
   try {
-    await db.ref('config/acceso/usuarios/' + QA.sel).set(Object.assign({}, QA.draft, { updatedAt: Date.now(), updatedBy: QA.me ? QA.me.email : '' }));
+    await db.ref('config/acceso/usuarios/' + QA.sel).set(Object.assign(qaDb(QA.draft), { updatedAt: Date.now(), updatedBy: QA.me ? QA.me.email : '' }));
     showToast('Permisos guardados. El usuario los verá de inmediato.', 'success');
   } catch (e) { showToast('No se pudo guardar: ' + (/PERMISSION/i.test(e.code || e.message) ? 'revise las reglas de Firebase.' : e.message), 'error'); }
   b.disabled = false; qaDirty(); qaRenderList();
@@ -16980,7 +16982,7 @@ function qaNuevo() {
       tmp = firebase.initializeApp(firebaseConfig, 'qa-tmp-' + Date.now());
       const cred = await tmp.auth().createUserWithEmailAndPassword(email, pass); const uid = cred.user.uid;
       await tmp.database().ref('perfiles/' + uid).set({ nombre, email, cargo: cargo || 'Auditor', updatedAt: Date.now() });
-      await db.ref('config/acceso/usuarios/' + uid).set(Object.assign(qaFull(), { updatedAt: Date.now(), updatedBy: QA.me ? QA.me.email : '' }));
+      await db.ref('config/acceso/usuarios/' + uid).set(Object.assign(qaDb(qaFull()), { updatedAt: Date.now(), updatedBy: QA.me ? QA.me.email : '' }));
       await tmp.auth().signOut();
       showToast('Usuario creado: ' + email, 'success'); close();
       QA.sel = uid; QA.draft = qaFull(); setTimeout(() => { qaRenderList(); qaRenderEd(); }, 400);
