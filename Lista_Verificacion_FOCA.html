@@ -13,6 +13,25 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+/* Qualisig · lecturas de Firebase esperan a la sesión (reglas con auth != null) */
+(function setup(){
+  try{
+    if (window.__qsAuthWait) return;
+    if (typeof firebase === 'undefined' || !firebase.database || !firebase.auth || !firebase.database.Query) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup, { once: true }); return; }
+    window.__qsAuthWait = true;
+    var Q = firebase.database.Query.prototype, A = function(){ return firebase.auth(); }, ready = null, had = false, hooked = false;
+    function hook(){ if (hooked || !firebase.apps.length) return; hooked = true; A().onAuthStateChanged(function(u){ if (u) had = true; else if (had) setTimeout(function(){ location.reload(); }, 150); }); }
+    function waitAuth(){ hook(); if (A().currentUser) return Promise.resolve(); if (!ready) ready = new Promise(function(res){ var un = A().onAuthStateChanged(function(u){ if (u) { un(); ready = null; res(); } }); }); return ready; }
+    var on = Q.on, once = Q.once, get = Q.get;
+    Q.on = function(ev, cb, cancel, ctx){ hook(); if (A().currentUser) return on.call(this, ev, cb, cancel, ctx); var self = this; waitAuth().then(function(){ on.call(self, ev, cb, cancel, ctx); }); return cb; };
+    Q.once = function(){ var a = arguments, self = this; hook(); if (A().currentUser) return once.apply(self, a); return waitAuth().then(function(){ return once.apply(self, a); }); };
+    if (get) Q.get = function(){ var a = arguments, self = this; hook(); if (A().currentUser) return get.apply(self, a); return waitAuth().then(function(){ return get.apply(self, a); }); };
+    hook();
+  }catch(e){ console.warn('authwait', e); }
+})();
+
+</script>
 <style>
   * { box-sizing: border-box; }
   body {
