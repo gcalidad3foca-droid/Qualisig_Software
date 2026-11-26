@@ -16836,23 +16836,37 @@ function qaApply(raw) {
   fix('#main-nav-tabs .nav-tab.active', QA_TREE.filter(m => m.tab).map(m => [m.tab, m.k]), k => switchModule(k));
   fix('#module-auditorias > .nav-tabs .nav-tab.active', [['subtab-audit-servicio','servicio'],['subtab-audit-pi','pi'],['subtab-audit-hab','hab']], k => switchAuditView(k));
   fix('#module-dashboard > .nav-tabs .nav-tab.active', [['subtab-dash-servicio','servicio'],['subtab-dash-pi','pi'],['subtab-dash-hab','hab']], k => typeof switchDashView === 'function' && switchDashView(k));
+  qaReady();
 }
+/* Mientras llegan los permisos no se muestra nada: se evita ver módulos que luego se ocultan */
+function qaReady() { const h = document.documentElement; if (!h.classList.contains('qsp-wait')) return; requestAnimationFrame(() => h.classList.remove('qsp-wait')); clearTimeout(QA.waitT); }
+(function () {
+  const st = document.createElement('style'); st.id = 'qsp-wait-css';
+  st.textContent = 'html.qsp-wait #screen-dashboard>*{visibility:hidden!important}html.qsp-wait #screen-dashboard{position:relative}html.qsp-wait #screen-dashboard::after{content:"";position:fixed;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border:3px solid rgba(53,99,233,.18);border-top-color:#3563E9;border-radius:50%;animation:qspSpin .8s linear infinite;visibility:visible}@keyframes qspSpin{to{transform:rotate(360deg)}}';
+  document.head.appendChild(st);
+  document.documentElement.classList.add('qsp-wait');
+  QA.waitT = setTimeout(qaReady, 7000);
+  /* aplicar al instante los últimos permisos conocidos de este dispositivo */
+  try { const c = JSON.parse(localStorage.getItem('qsp:last') || 'null'); if (c && c.raw !== undefined) { QA.cacheUid = c.uid; try { qaApply(c.raw); } catch (e) {} } } catch (e) {}
+})();
 [['switchModule','tab-'],['switchAuditView','subtab-audit-'],['switchDashView','subtab-dash-'],['switchIndView','subtab-ind-']].forEach(([fn, pre]) => {
   if (typeof window[fn] !== 'function') return; const raw = window[fn];
   window[fn] = function (v) { const t = document.getElementById(pre + v); if (t && t.classList.contains('qsp-off')) return; return raw.apply(this, arguments); };
 });
 
 auth.onAuthStateChanged(async user => {
-  if (!user) { QA.me = null; document.documentElement.classList.remove('qsp-admin'); return; }
+  if (!user) { QA.me = null; document.documentElement.classList.remove('qsp-admin'); qaReady(); return; }
   QA.me = user;
   QA.configOnly = QA_CONFIG_EMAILS.includes(String(user.email || '').toLowerCase());
-  if (QA.configOnly) { showScreen('admin'); document.getElementById('qa-back').hidden = true; qaLoad(); return; }
+  if (QA.configOnly) { qaReady(); showScreen('admin'); document.getElementById('qa-back').hidden = true; qaLoad(); return; }
   try {
     const ref = db.ref('config/acceso/usuarios/' + user.uid);
-    const first = qaNorm((await ref.once('value')).val());
+    if (QA.cacheUid !== user.uid) { clearTimeout(QA.waitT); document.documentElement.classList.add('qsp-wait'); QA.waitT = setTimeout(qaReady, 7000); }
+    const raw0 = (await ref.once('value')).val(), first = qaNorm(raw0);
     if (!first.activo) { showToast('Su usuario está desactivado. Comuníquese con el administrador de Qualisig.', 'error'); setTimeout(() => auth.signOut(), 1800); return; }
-    ref.on('value', s => { if (!QA.me || QA.me.uid !== user.uid) return; const raw = s.val(); if (raw && raw.activo === false) { auth.signOut(); return; } QA.isAdmin = !!(raw && raw.admin); qaApply(raw); });
-  } catch (e) { console.warn('permisos:', e); }
+    QA.isAdmin = !!(raw0 && raw0.admin); qaApply(raw0);
+    ref.on('value', s => { if (!QA.me || QA.me.uid !== user.uid) return; const raw = s.val(); if (raw && raw.activo === false) { auth.signOut(); return; } QA.isAdmin = !!(raw && raw.admin); try { localStorage.setItem('qsp:last', JSON.stringify({ uid: user.uid, raw: raw || null })); } catch (e) {} qaApply(raw); });
+  } catch (e) { console.warn('permisos:', e); qaReady(); }
 });
 
 /* ── Panel de configuración ── */
