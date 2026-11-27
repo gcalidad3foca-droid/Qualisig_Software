@@ -19,11 +19,13 @@
     window.__qsAuthWait = true;
     var Q = firebase.database.Query.prototype, A = function(){ return firebase.auth(); }, ready = null, had = false, hooked = false;
     function hook(){ if (hooked || !firebase.apps.length) return; hooked = true; A().onAuthStateChanged(function(u){ if (u) had = true; else if (had) setTimeout(function(){ location.reload(); }, 150); }); }
-    function waitAuth(){ hook(); if (A().currentUser) return Promise.resolve(); if (!ready) ready = new Promise(function(res){ var un = A().onAuthStateChanged(function(u){ if (u) { un(); ready = null; res(); } }); }); return ready; }
+    /* espera solo a que Firebase termine de revisar la sesión guardada (sale enseguida aunque no haya sesión) */
+    var known = false;
+    function waitAuth(){ hook(); if (known || A().currentUser) return Promise.resolve(); if (!ready) ready = new Promise(function(res){ var done = function(){ known = true; res(); }; var un = A().onAuthStateChanged(function(){ un(); done(); }); setTimeout(done, 4000); }); return ready; }
     var on = Q.on, once = Q.once, get = Q.get;
-    Q.on = function(ev, cb, cancel, ctx){ hook(); if (A().currentUser) return on.call(this, ev, cb, cancel, ctx); var self = this; waitAuth().then(function(){ on.call(self, ev, cb, cancel, ctx); }); return cb; };
-    Q.once = function(){ var a = arguments, self = this; hook(); if (A().currentUser) return once.apply(self, a); return waitAuth().then(function(){ return once.apply(self, a); }); };
-    if (get) Q.get = function(){ var a = arguments, self = this; hook(); if (A().currentUser) return get.apply(self, a); return waitAuth().then(function(){ return get.apply(self, a); }); };
+    Q.on = function(ev, cb, cancel, ctx){ hook(); if (known || A().currentUser) return on.call(this, ev, cb, cancel, ctx); var self = this; waitAuth().then(function(){ on.call(self, ev, cb, cancel, ctx); }); return cb; };
+    Q.once = function(){ var a = arguments, self = this; hook(); if (known || A().currentUser) return once.apply(self, a); return waitAuth().then(function(){ return once.apply(self, a); }); };
+    if (get) Q.get = function(){ var a = arguments, self = this; hook(); if (known || A().currentUser) return get.apply(self, a); return waitAuth().then(function(){ return get.apply(self, a); }); };
     hook();
   }catch(e){ console.warn('authwait', e); }
 })();

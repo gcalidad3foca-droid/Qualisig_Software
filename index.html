@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<style id="qsp-wait-css">html.qsp-wait #screen-dashboard>*{visibility:hidden!important}html.qsp-wait #screen-dashboard{position:relative}html.qsp-wait #screen-dashboard::after{content:"";position:fixed;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border:3px solid rgba(53,99,233,.18);border-top-color:#3563E9;border-radius:50%;animation:qspSpin .8s linear infinite;visibility:visible}@keyframes qspSpin{to{transform:rotate(360deg)}}</style>
+<script>document.documentElement.classList.add('qsp-wait');setTimeout(function(){document.documentElement.classList.remove('qsp-wait')},9000);</script>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="manifest" href="manifest.webmanifest">
@@ -16678,6 +16681,11 @@ html.qsp-admin #tab-config{display:flex!important}
 @media (max-width:1100px){.qa-pres{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:900px){.qa-acc,.qa-items{grid-template-columns:1fr}.qa-sum b{font-size:20px}.qa-mh2{padding:12px}.qa-mbody{padding:0 12px 12px}}
 @media (max-width:420px){.qa-pres{grid-template-columns:1fr 1fr}.qa-pre{padding:12px}}
+.qa-cg{cursor:default}.qa-cg select{flex:0 0 auto;max-width:52%;padding:9px 30px 9px 12px;border:1px solid var(--q-line,#E4E9F2);border-radius:10px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2364748B' stroke-width='1.6' fill='none'/%3E%3C/svg%3E") no-repeat right 11px center;-webkit-appearance:none;appearance:none;font:inherit;font-size:13px;color:#0F1B33;cursor:pointer}
+.qa-btn.warn{border-color:#F2C46D;background:#FFF8EA;color:#8A5A00}
+.qa-tag.new{background:#FFF4DC;color:#8A5A00}
+.qa-actall{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 24px);margin:0 12px 10px;padding:10px 12px;border:1px dashed #E8B54D;border-radius:12px;background:#FFF9EC;color:#8A5A00;font:inherit;font-size:13px;font-weight:600;cursor:pointer}.qa-actall:hover{background:#FFF2D6}.qa-actall[hidden]{display:none}
+.qs-cf-box p{white-space:pre-line;max-height:50vh;overflow:auto}
 </style>
 
 <div id="screen-admin" class="screen" aria-label="Configuración de Qualisig">
@@ -16686,6 +16694,7 @@ html.qsp-admin #tab-config{display:flex!important}
     <div class="qa-tt"><b>Configuración</b><small>Usuarios, módulos y funciones</small></div>
     <div class="qa-sp"></div>
     <button class="qa-btn" id="qa-back" type="button" onclick="qaVolver()" hidden><i class="fas fa-arrow-left"></i><span>Volver a Qualisig</span></button>
+    <button class="qa-btn" id="qa-bk" type="button" onclick="qaRespaldo(this)"><i class="fas fa-database"></i><span>Respaldo</span></button>
     <button class="qa-btn pri" type="button" onclick="qaNuevo()"><i class="fas fa-user-plus"></i><span>Nuevo usuario</span></button>
     <button class="qa-btn" type="button" onclick="doLogout()" title="Cerrar sesión" aria-label="Cerrar sesión"><i class="fas fa-arrow-right-from-bracket"></i></button>
   </header>
@@ -16832,16 +16841,20 @@ function qaApply(raw) {
   let st = document.getElementById('qsp-css'); if (!st) { st = document.createElement('style'); st.id = 'qsp-css'; document.head.appendChild(st); }
   st.textContent = css + '.qsp-off,html body .nav-tab.qsp-off,html body #main-nav-tabs .nav-tab.qsp-off,html body .qs-nav .nav-tab.qsp-off,html body .sub-tab.qsp-off{display:none!important}';
   h.classList.toggle('qsp-admin', !!(raw && raw.admin));
+  const pc = document.getElementById('pf-cargo'); if (pc) { const adm = !!(raw && raw.admin); pc.disabled = !adm; pc.title = adm ? '' : 'El cargo lo asigna el administrador de Qualisig'; pc.style.opacity = adm ? '' : '.7'; }
+  qaFixActive();
+  qaReady();
+}
+function qaFixActive() {
   const fix = (sel, list, fn) => { const a = document.querySelector(sel); if (a && a.classList.contains('qsp-off')) { const f = list.find(x => { const e = document.getElementById(x[0]); return e && !e.classList.contains('qsp-off'); }); if (f) fn(f[1]); } };
   fix('#main-nav-tabs .nav-tab.active', QA_TREE.filter(m => m.tab).map(m => [m.tab, m.k]), k => switchModule(k));
   fix('#module-auditorias > .nav-tabs .nav-tab.active', [['subtab-audit-servicio','servicio'],['subtab-audit-pi','pi'],['subtab-audit-hab','hab']], k => switchAuditView(k));
   fix('#module-dashboard > .nav-tabs .nav-tab.active', [['subtab-dash-servicio','servicio'],['subtab-dash-pi','pi'],['subtab-dash-hab','hab']], k => typeof switchDashView === 'function' && switchDashView(k));
-  qaReady();
 }
 /* Mientras llegan los permisos no se muestra nada: se evita ver módulos que luego se ocultan */
-function qaReady() { const h = document.documentElement; if (!h.classList.contains('qsp-wait')) return; requestAnimationFrame(() => h.classList.remove('qsp-wait')); clearTimeout(QA.waitT); }
+function qaReady() { const h = document.documentElement; if (!h.classList.contains('qsp-wait')) return; clearTimeout(QA.readyT); QA.readyT = setTimeout(() => requestAnimationFrame(() => { try { qaFixActive(); } catch (e) {} h.classList.remove('qsp-wait'); }), 120); clearTimeout(QA.waitT); }
 (function () {
-  const st = document.createElement('style'); st.id = 'qsp-wait-css';
+  const st = document.getElementById('qsp-wait-css') || document.createElement('style'); st.id = 'qsp-wait-css';
   st.textContent = 'html.qsp-wait #screen-dashboard>*{visibility:hidden!important}html.qsp-wait #screen-dashboard{position:relative}html.qsp-wait #screen-dashboard::after{content:"";position:fixed;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border:3px solid rgba(53,99,233,.18);border-top-color:#3563E9;border-radius:50%;animation:qspSpin .8s linear infinite;visibility:visible}@keyframes qspSpin{to{transform:rotate(360deg)}}';
   document.head.appendChild(st);
   document.documentElement.classList.add('qsp-wait');
@@ -16891,13 +16904,16 @@ function qaRenderList() {
   const q = (document.getElementById('qa-q').value || '').toLowerCase().trim(), all = qaUsers();
   const L = all.filter(u => !q || (u.nombre + ' ' + u.email + ' ' + u.cargo).toLowerCase().includes(q));
   document.getElementById('qa-n').textContent = all.length;
+  const pend = all.filter(u => !QA.acceso[u.uid]); let ab = document.getElementById('qa-act');
+  if (!ab) { ab = document.createElement('button'); ab.type = 'button'; ab.id = 'qa-act'; ab.className = 'qa-actall'; ab.onclick = qaActivarTodos; document.getElementById('qa-users').before(ab); }
+  ab.hidden = !pend.length; ab.innerHTML = `<i class="fas fa-user-check"></i>Activar ${pend.length} usuario${pend.length === 1 ? '' : 's'} sin configurar`;
   document.getElementById('qa-users').innerHTML = L.length ? L.map(u => { const [on, n] = qaCount(u.p.permisos);
-    const tag = !u.p.activo ? '<span class="qa-tag off">Inactivo</span>' : u.p.admin ? '<span class="qa-tag adm">Admin</span>' : on === n ? '<span class="qa-tag">Todo</span>' : `<span class="qa-tag">${on}/${n}</span>`;
+    const tag = !QA.acceso[u.uid] ? '<span class="qa-tag new">Sin activar</span>' : !u.p.activo ? '<span class="qa-tag off">Inactivo</span>' : u.p.admin ? '<span class="qa-tag adm">Admin</span>' : on === n ? '<span class="qa-tag">Todo</span>' : `<span class="qa-tag">${on}/${n}</span>`;
     return `<button type="button" class="qa-u${u.uid === QA.sel ? ' on' : ''}" data-uid="${qaEsc(u.uid)}">${qaAv(u)}<span class="qa-ui"><b>${qaEsc(u.nombre)}</b><small>${qaEsc(u.cargo || u.email || '—')}</small></span>${tag}</button>`; }).join('') : '<div class="qa-empty" style="padding:30px 10px">Sin resultados</div>';
 }
 document.addEventListener('click', e => {
   const b = e.target.closest && e.target.closest('.qa-u');
-  if (b) { QA.sel = b.dataset.uid; QA.draft = JSON.parse(JSON.stringify(qaNorm(QA.acceso[QA.sel]))); qaRenderList(); qaRenderEd(); if (innerWidth <= 900) document.getElementById('qa-ed').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+  if (b) { QA.cargo = undefined; QA.sel = b.dataset.uid; QA.draft = JSON.parse(JSON.stringify(qaNorm(QA.acceso[QA.sel]))); qaRenderList(); qaRenderEd(); if (innerWidth <= 900) document.getElementById('qa-ed').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
   const hd = e.target.closest && e.target.closest('.qa-mh2');
   if (hd && !e.target.closest('.qa-tgl')) { const k = hd.dataset.m; QA.open[k] = !QA.open[k]; hd.parentNode.classList.toggle('open', !!QA.open[k]); }
   const pr = e.target.closest && e.target.closest('[data-preset]'); if (pr) qaPreset(pr.dataset.preset);
@@ -16922,6 +16938,7 @@ function qaRenderEd() {
     <div class="qa-sec"><h4>Cuenta</h4><div class="qa-acc">
       <label class="qa-it"><span class="qa-itt"><b>Usuario activo</b><small>Si se apaga, no puede iniciar sesión</small></span><span class="qa-tgl"><input type="checkbox" data-root="activo"${d.activo ? ' checked' : ''}><span class="qa-tg"></span></span></label>
       <label class="qa-it"><span class="qa-itt"><b>Administrador</b><small>Puede abrir esta configuración</small></span><span class="qa-tgl"><input type="checkbox" data-root="admin"${d.admin ? ' checked' : ''}><span class="qa-tg"></span></span></label>
+      <label class="qa-it qa-cg"><span class="qa-itt"><b>Cargo</b><small>Solo el administrador lo cambia. Directora de Calidad aprueba indicadores.</small></span><select id="qa-cargo">${qaCargos(qaCargoSel(u)).map(c => `<option${c === qaCargoSel(u) ? ' selected' : ''}>${qaEsc(c)}</option>`).join('')}</select></label>
     </div></div>
     <div class="qa-sec"><h4>Perfil rápido</h4><p class="qa-hint">Aplica una base y luego ajuste los detalles abajo.</p><div class="qa-pres">
       <button type="button" class="qa-pre" data-preset="todo"><i class="fas fa-unlock"></i><b>Acceso total</b><small>Ve y hace todo</small></button>
@@ -16937,6 +16954,9 @@ function qaRenderEd() {
     </div></div>`;
   qaDirty();
 }
+const QA_CARGOS = ['Directora de Calidad', 'Gestor de Calidad', 'Asistente de Calidad', 'Auditor'];
+function qaCargos(cur) { return cur && !QA_CARGOS.includes(cur) ? [cur, ...QA_CARGOS] : QA_CARGOS; }
+function qaCargoSel(u) { return QA.cargo !== undefined ? QA.cargo : (u.cargo || 'Gestor de Calidad'); }
 function qaExpand(v) { QA_TREE.forEach(m => QA.open[m.k] = v); document.querySelectorAll('.qa-mc').forEach(s => s.classList.toggle('open', v)); }
 function qaPreset(k) {
   const P = qaAll(true);
@@ -16945,9 +16965,10 @@ function qaPreset(k) {
   if (k === 'auditor') QA_KEYS.forEach(x => { if (/\.(definitivo|restaurar|respaldo)$|^ind\.(crear|activar|mant|aprobar|historialDel|v\.config|v\.aprobaciones|v\.historico)$|^iso\.reiniciar$/.test(x)) P[x] = false; });
   QA.draft.permisos = P; if (k === 'nada') QA.draft.admin = false; qaRenderEd();
 }
-function qaDirty() { const s = document.getElementById('qa-state'); if (!s) return; const same = JSON.stringify(QA.draft) === JSON.stringify(qaNorm(QA.acceso[QA.sel])); s.textContent = same ? 'Sin cambios' : 'Cambios sin guardar'; s.style.color = same ? '' : '#B36A00'; }
+function qaDirty() { const s = document.getElementById('qa-state'); if (!s) return; const pf = QA.perfiles[QA.sel] || {}, same = JSON.stringify(QA.draft) === JSON.stringify(qaNorm(QA.acceso[QA.sel])) && (QA.cargo === undefined || QA.cargo === (pf.cargo || 'Gestor de Calidad')); s.textContent = same ? 'Sin cambios' : 'Cambios sin guardar'; s.style.color = same ? '' : '#B36A00'; }
 document.addEventListener('change', e => {
   const i = e.target; if (!i.closest || !i.closest('#qa-ed')) return;
+  if (i.id === 'qa-cargo') { QA.cargo = i.value; qaDirty(); return; }
   if (i.dataset.root) { QA.draft[i.dataset.root] = i.checked; qaRenderList(); qaDirty(); return; }
   if (!i.dataset.key) return; QA.draft.permisos[i.dataset.key] = i.checked;
   const y = window.scrollY; qaRenderEd(); window.scrollTo(0, y);
@@ -16959,6 +16980,9 @@ async function qaGuardar() {
   b.disabled = true;
   try {
     await db.ref('config/acceso/usuarios/' + QA.sel).set(Object.assign(qaDb(QA.draft), { updatedAt: Date.now(), updatedBy: QA.me ? QA.me.email : '' }));
+    const pf = QA.perfiles[QA.sel] || {};
+    if (QA.cargo !== undefined && QA.cargo !== pf.cargo) await db.ref('perfiles/' + QA.sel).update({ cargo: QA.cargo, updatedAt: Date.now() });
+    QA.cargo = undefined;
     showToast('Permisos guardados. El usuario los verá de inmediato.', 'success');
   } catch (e) { showToast('No se pudo guardar: ' + (/PERMISSION/i.test(e.code || e.message) ? 'revise las reglas de Firebase.' : e.message), 'error'); }
   b.disabled = false; qaDirty(); qaRenderList();
@@ -16979,7 +17003,7 @@ function qaNuevo() {
       <div class="qa-f"><label for="qa-nn">Nombre completo</label><input id="qa-nn" required></div>
       <div class="qa-f"><label for="qa-ne">Correo</label><input id="qa-ne" type="email" required></div>
       <div class="qa-f"><label for="qa-nc">Cargo</label><input id="qa-nc" placeholder="Ej. Auditor de calidad"></div>
-      <div class="qa-f"><label for="qa-np">Contraseña temporal</label><input id="qa-np" type="text" minlength="6" required placeholder="Mínimo 6 caracteres"></div>
+      <div class="qa-f"><label for="qa-np">Contraseña temporal</label><input id="qa-np" type="text" minlength="8" required placeholder="Mínimo 8 caracteres, con letras y números"></div>
       <div class="qa-err" id="qa-nerr"></div>
     </div>
     <div class="qa-mf"><button type="button" class="qa-btn" data-x>Cancelar</button><button type="submit" class="qa-btn pri"><i class="fas fa-user-plus"></i>Crear usuario</button></div></form>`;
@@ -16990,7 +17014,7 @@ function qaNuevo() {
   ov.querySelector('form').addEventListener('submit', async e => {
     e.preventDefault(); const err = ov.querySelector('#qa-nerr'), sb = ov.querySelector('[type=submit]');
     const nombre = ov.querySelector('#qa-nn').value.trim(), email = ov.querySelector('#qa-ne').value.trim().toLowerCase(), cargo = ov.querySelector('#qa-nc').value.trim(), pass = ov.querySelector('#qa-np').value;
-    if (pass.length < 6) { err.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
+    if (pass.length < 8 || !/[a-zA-Z]/.test(pass) || !/\d/.test(pass)) { err.textContent = 'La contraseña debe tener al menos 8 caracteres, con letras y números.'; return; }
     sb.disabled = true; err.textContent = ''; let tmp;
     try {
       tmp = firebase.initializeApp(firebaseConfig, 'qa-tmp-' + Date.now());
@@ -17011,6 +17035,41 @@ document.addEventListener('DOMContentLoaded', () => {
   const b = document.createElement('button'); b.className = 'nav-tab qsp-cfg-tab'; b.id = 'tab-config'; b.type = 'button'; b.dataset.tip = 'Configuración';
   b.innerHTML = '<i class="fas fa-user-gear"></i><span>Configuración</span>'; b.onclick = qaAbrir; nav.appendChild(b);
 });
+
+/* ── Respaldo completo de la base de datos (solo administración) ── */
+const QA_NODOS = ['auditorias', 'auditorias_pi', 'habilitacion', 'capacitaciones', 'indicadores', 'indicadores_informes', 'indicadores_seguimiento', 'autoevaluacionISO', 'perfiles', 'config'];
+async function qaRespaldo(btn) {
+  btn = btn || document.getElementById('qa-bk'); if (btn) btn.disabled = true;
+  try {
+    const out = { _respaldo: { fecha: new Date().toISOString(), por: QA.me ? QA.me.email : '' } }, fallos = [];
+    await Promise.all(QA_NODOS.map(async n => { try { out[n] = (await db.ref(n).once('value')).val(); } catch (e) { fallos.push(n); } }));
+    const blob = new Blob([JSON.stringify(out)], { type: 'application/json' }), a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'qualisig-respaldo-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+    try { localStorage.setItem('qa:lastBackup', String(Date.now())); } catch (e) {}
+    showToast(fallos.length ? 'Respaldo descargado, sin: ' + fallos.join(', ') : 'Respaldo descargado (' + Math.round(blob.size / 1024) + ' KB)', fallos.length ? 'error' : 'success');
+    qaBkHint();
+  } catch (e) { showToast('No se pudo crear el respaldo: ' + e.message, 'error'); }
+  if (btn) btn.disabled = false;
+}
+function qaBkHint() {
+  const b = document.getElementById('qa-bk'); if (!b) return;
+  const t = +(localStorage.getItem('qa:lastBackup') || 0), d = t ? Math.floor((Date.now() - t) / 864e5) : null;
+  b.classList.toggle('warn', d === null || d >= 7);
+  b.title = d === null ? 'Aún no se ha descargado un respaldo en este equipo' : 'Último respaldo: hace ' + (d ? d + ' día' + (d > 1 ? 's' : '') : 'menos de un día');
+}
+document.addEventListener('DOMContentLoaded', qaBkHint); setTimeout(qaBkHint, 0);
+
+/* Usuarios que aún no tienen registro de acceso: con las reglas seguras no ven datos hasta activarlos */
+async function qaActivarTodos() {
+  const pend = qaUsers().filter(u => !QA.acceso[u.uid]); if (!pend.length) return;
+  const lista = pend.map(u => '• ' + u.nombre + (u.email ? ' (' + u.email + ')' : '')).join('\n');
+  if (!await qsConfirm('Activar usuarios', 'Quedarán activos con acceso total (luego puede ajustar cada uno). Revise que todos sean de su equipo:\n\n' + lista, 'Activar')) return;
+  const upd = {}, meta = { updatedAt: Date.now(), updatedBy: QA.me ? QA.me.email : '' };
+  pend.forEach(u => { upd['config/acceso/usuarios/' + u.uid] = Object.assign(qaDb(qaFull()), meta); });
+  try { await db.ref().update(upd); showToast(pend.length + ' usuario(s) activados', 'success'); }
+  catch (e) { showToast('No se pudo activar: ' + e.message, 'error'); }
+}
 
 </script>
 

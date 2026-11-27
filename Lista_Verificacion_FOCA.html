@@ -6589,6 +6589,116 @@ IAField.attach({
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ setTimeout(boot,0); }); else setTimeout(boot,0);
 })();
 
+/* Subida robusta de evidencias: comprime, reintenta y re-sube las fotos "Local" */
+(function(){
+  if (window.__qsUpload) return; window.__qsUpload = true;
+  var MAXS = 2200, Q = 0.84, lastErr = '';
+
+  function toBlob(dataUrl){
+    var p = dataUrl.split(','), m = /data:([^;]+)/.exec(p[0]), bin = atob(p[1]), n = bin.length, u = new Uint8Array(n);
+    for (var i = 0; i < n; i++) u[i] = bin.charCodeAt(i);
+    return new Blob([u], { type: m ? m[1] : 'image/jpeg' });
+  }
+  function compress(dataUrl){
+    return new Promise(function(res){
+      if (!/^data:image\//.test(dataUrl)) return res(null);
+      var img = new Image(), t = setTimeout(function(){ res(null); }, 20000);
+      img.onload = function(){
+        clearTimeout(t);
+        try {
+          var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, MAXS / Math.max(w, h));
+          if (!w || !h) return res(null);
+          var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+          var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+          c.toBlob(function(b){ res(b && b.size > 1000 ? b : null); }, 'image/jpeg', Q);
+        } catch(e) { res(null); }
+      };
+      img.onerror = function(){ clearTimeout(t); res(null); };
+      img.src = dataUrl;
+    });
+  }
+  async function send(body, itemId){
+    var fd = new FormData();
+    fd.append('file', body, 'evidencia.jpg');
+    fd.append('upload_preset', typeof _CLD_PRESET !== 'undefined' ? _CLD_PRESET : 'qualisig_fotos');
+    fd.append('folder', 'auditorias');
+    fd.append('public_id', String(itemId || 'ev').replace(/[^a-z0-9]/gi, '_') + '_' + Date.now());
+    var ac = window.AbortController ? new AbortController() : null, to = setTimeout(function(){ ac && ac.abort(); }, 60000);
+    try {
+      var r = await fetch(typeof _CLD_URL !== 'undefined' ? _CLD_URL : 'https://api.cloudinary.com/v1_1/dqstmx4u8/image/upload', { method: 'POST', body: fd, signal: ac ? ac.signal : undefined });
+      var txt = await r.text(), d = {}; try { d = JSON.parse(txt); } catch(e) {}
+      if (!r.ok || d.error) { var e2 = new Error((d.error && d.error.message) || ('HTTP ' + r.status)); e2.http = r.status; throw e2; }
+      return d.secure_url || null;
+    } finally { clearTimeout(to); }
+  }
+  window.uploadToCloudinary = async function(dataUrl, itemId){
+    var body = await compress(dataUrl);
+    if (!body) { try { body = toBlob(dataUrl); } catch(e) { lastErr = 'Formato de imagen no válido'; return null; } }
+    for (var a = 0; a < 3; a++) {
+      try { var u = await send(body, itemId); if (u) { lastErr = ''; return u; } }
+      catch(e) {
+        lastErr = e.http ? ('Servidor de fotos: ' + e.message) : 'Sin conexión con el servidor de fotos';
+        console.warn('Cloudinary intento ' + (a + 1) + ':', e.message || e);
+        if (e.http && e.http >= 400 && e.http < 500 && e.http !== 408 && e.http !== 429) break;
+      }
+      if (a < 2) await new Promise(function(r){ setTimeout(r, a ? 4000 : 1500); });
+    }
+    return null;
+  };
+
+  /* Mensaje claro cuando falla */
+  var _sn = window.showNotification;
+  if (typeof _sn === 'function') window.showNotification = function(m, t){
+    if (/guardada localmente/i.test(m || '')) { m = 'Foto pendiente de subir (' + (lastErr || 'sin conexión') + '). Se reintentará sola.'; t = 'info'; schedule(8000); }
+    return _sn.call(this, m, t);
+  };
+
+  /* Re-subida automática de pendientes */
+  var busy = false, timer = null;
+  function pending(){
+    var out = [];
+    try { Object.keys(evidenceStore || {}).forEach(function(k){ (evidenceStore[k] || []).forEach(function(ev, i){ if (ev && !ev.cloudUrl && !ev.uploading && /^data:image\//.test(ev.dataUrl || '')) out.push([k, i, ev]); }); }); } catch(e) {}
+    return out;
+  }
+  async function retryAll(manual){
+    if (busy) return; var list = pending(); if (!list.length) return;
+    if (navigator.onLine === false) { if (manual) _sn && _sn.call(window, 'Sin internet: la foto se subirá al recuperar la conexión', 'info'); return; }
+    busy = true; var ok = 0, touched = {};
+    try {
+      for (var j = 0; j < list.length; j++) {
+        var k = list[j][0], ev = list[j][2];
+        ev.uploading = true; if (window.currentEvidenceItem === k || (typeof currentEvidenceItem !== 'undefined' && currentEvidenceItem === k)) updateEvidencePreview();
+        var u = await window.uploadToCloudinary(ev.dataUrl, k);
+        ev.uploading = false;
+        if (u) { ev.cloudUrl = u; ok++; }
+        touched[k] = 1;
+        try { await saveEvidenceToIDB(k); } catch(e) {}
+        try { if (typeof currentEvidenceItem !== 'undefined' && currentEvidenceItem === k) updateEvidencePreview(); } catch(e) {}
+      }
+      if (ok) { try { saveToLocalStorage(); _fbFlushImmediate(); } catch(e) {} _sn && _sn.call(window, ok === 1 ? '✓ Foto pendiente subida a la nube' : '✓ ' + ok + ' fotos pendientes subidas a la nube', 'success'); }
+      else if (manual) _sn && _sn.call(window, 'No se pudo subir (' + (lastErr || 'sin conexión') + ')', 'error');
+    } finally { busy = false; }
+    if (pending().length) schedule(60000);
+  }
+  function schedule(ms){ clearTimeout(timer); timer = setTimeout(function(){ retryAll(false); }, ms); }
+  window.qsRetryEvidence = function(){ retryAll(true); };
+  window.addEventListener('online', function(){ schedule(1500); });
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden) schedule(2000); });
+  window.addEventListener('load', function(){ schedule(9000); });
+
+  /* El distintivo "Local" se puede tocar para reintentar */
+  document.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('.qs-pend');
+    if (b) { e.preventDefault(); e.stopPropagation(); retryAll(true); }
+  }, true);
+  var _up = window.updateEvidencePreview;
+  if (typeof _up === 'function') window.updateEvidencePreview = function(){
+    var r = _up.apply(this, arguments);
+    try { document.querySelectorAll('#evidence-preview .fa-phone-slash').forEach(function(i){ var d = i.parentNode; d.innerHTML = '<i class="fas fa-rotate-right" style="font-size:9px"></i> Pendiente · reintentar'; d.style.cursor = 'pointer'; d.setAttribute('role', 'button'); d.title = 'Tocar para subir de nuevo'; d.classList.add('qs-pend'); }); } catch(e) {}
+    return r;
+  };
+})();
+
 </script>
 </body>
 </html>
