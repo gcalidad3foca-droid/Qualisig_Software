@@ -5755,6 +5755,8 @@ mark{background:#FFF1B8;color:inherit;border-radius:3px;padding:0 1px}
 .gd-au-un{display:flex;gap:7px;align-items:flex-start;margin:2px 0 8px;padding:7px 10px;border-radius:10px;background:rgba(31,71,184,.07);color:#34476f;font-size:12px;line-height:1.35}.gd-au-un i{color:#1f47b8;margin-top:2px}.gd-au-un b{font-weight:700}.gd-au-un em{opacity:.7;font-style:normal}
 @media(max-width:640px){.gd-ai-h b{font-size:13.5px}.gd-ai-h b,.gd-ai-h small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}}
 
+.gd-au-fab.dock{height:42px;padding:0;justify-content:center;border-radius:13px;box-shadow:0 6px 16px -8px rgba(31,71,184,.5)}.gd-au-fab.dock.mini span{max-width:none;opacity:1}
+
 /* ══ Documentos · móvil ══ */
 .gd-dr-hd{display:none}
 @media(max-width:700px){
@@ -21098,6 +21100,11 @@ window.AAI_ITEMS={"foca":[["admisi-n-0","Verificar el saludo de bienvenida al us
       let t = 0; window.addEventListener('scroll', () => { b.classList.add('mini'); clearTimeout(t); t = setTimeout(() => b.classList.remove('mini'), 900); }, { passive: true, capture: true }); }
     const on = !!document.querySelector('#module-auditorias.active, #module-dashboard.active') && !document.querySelector('#screen-login.active, .gd-ai-ov.on');
     b.classList.toggle('on', on);
+    const sd = document.querySelector('.qs-side'), sr = sd && sd.getBoundingClientRect(), dock = !!sr && sr.width > 60 && window.innerWidth > 900;
+    b.classList.toggle('dock', dock);
+    if (dock) { let u = document.getElementById('user-fullname'); while (u && u.parentElement && u.parentElement !== sd) u = u.parentElement; const ur = u && u.getBoundingClientRect(), mini = sr.width < 140;
+      b.style.cssText = 'left:' + Math.round(sr.left + 14) + 'px;right:auto;width:' + (mini ? 44 : Math.round(sr.width - 28)) + 'px;bottom:' + Math.round(window.innerHeight - (ur && ur.top > 0 ? ur.top : window.innerHeight - 90) + 10) + 'px'; return; }
+    b.style.left = b.style.right = b.style.width = '';
     const nv = document.getElementById('main-nav-tabs'), r = nv && nv.getBoundingClientRect(), mob = window.innerWidth <= 900 && r && r.width > 0 && r.top > window.innerHeight * .5 && r.bottom > window.innerHeight - 4;
     b.style.bottom = mob ? Math.round(window.innerHeight - r.top + 12) + 'px' : '';
   }
