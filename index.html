@@ -5669,6 +5669,63 @@ mark{background:#FFF1B8;color:inherit;border-radius:3px;padding:0 1px}
 .gd-ai-th{scroll-padding-bottom:20px;mask-image:linear-gradient(to bottom,transparent 0,#000 14px);-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14px)}
 @media(prefers-reduced-motion:reduce){.gd-ai-pr .t,.gd-ai-lv.ld{animation:none}}
 
+/* ══ Asistente de auditorías ══ */
+.gd-au{width:min(600px,100vw)}
+.gd-au-fab{position:fixed;right:18px;bottom:20px;z-index:900;display:none;align-items:center;gap:8px;height:46px;padding:0 18px 0 15px;border:0;border-radius:23px;background:var(--blue);color:#fff;font:600 13.5px/1 var(--fnt,inherit);cursor:pointer;box-shadow:0 10px 24px -8px rgba(31,71,184,.55);transition:transform .15s,background .15s}
+.gd-au-fab.on{display:inline-flex}.gd-au-fab:hover{background:#18399a}.gd-au-fab:active{transform:scale(.95)}
+.gd-au-sep{width:1px;background:var(--line);margin:3px 2px;flex:none}
+.gd-au-rp{display:none;margin-top:8px}.gd-au-rp.in{display:block}
+.gd-au-s{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 12px 10px;margin:0 0 10px}
+.gd-au-s>header{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:8px}
+.gd-au-s h4{margin:0;font:700 13.5px/1.3 var(--fnt,inherit);color:var(--ink)}
+.gd-au-s header small{display:block;margin-top:2px;font-size:11.5px;color:var(--muted)}
+.gd-au-s h5{margin:10px 0 6px;font:700 11px/1 var(--fnt,inherit);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.gd-au-s h5 em{font-style:normal;color:var(--ink2);margin-left:4px}
+.gd-au-ac{display:flex;gap:4px;flex:none}
+.gd-au-ac button{width:30px;height:30px;border:1px solid var(--line);background:#fff;border-radius:8px;color:var(--ink2);cursor:pointer;font-size:12px}
+.gd-au-ac button:hover{background:var(--wash);color:var(--blue)}
+.gd-au-k{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:6px}
+.gd-au-k>div{background:var(--wash);border-radius:9px;padding:8px 10px;min-width:0}
+.gd-au-k span{display:block;font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gd-au-k b{display:block;font:700 19px/1.2 var(--fnt,inherit);color:var(--ink);margin-top:2px}
+.gd-au-k em{display:block;font-style:normal;font-size:10.5px;color:var(--muted);margin-top:1px}
+.gd-au-tr{margin-top:10px}.gd-au-sp{width:100%;height:56px;display:block}
+.gd-au-spl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-top:2px}
+.gd-au-tw{overflow-x:auto;margin:0 -2px}
+.gd-au-t{width:100%;border-collapse:collapse;font-size:12px}
+.gd-au-t th{text-align:left;font:600 10.5px/1 var(--fnt,inherit);color:var(--muted);padding:6px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+.gd-au-t th.n,.gd-au-t td.n{text-align:center}
+.gd-au-t td{padding:7px 6px;border-bottom:1px solid var(--line2,var(--line));color:var(--ink2);vertical-align:middle}
+.gd-au-t td.l{color:var(--ink);font-weight:500;min-width:110px}.gd-au-t td.t{color:var(--muted);font-size:11px}
+.gd-au-t tr.ck{cursor:pointer}.gd-au-t tr.ck:hover td{background:var(--brand-soft,#eef3ff)}
+.gd-au-t tr.ck:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+.gd-au-t tr.mo{display:none}.gd-au-s.all .gd-au-t tr.mo{display:table-row}
+.gd-au-more{display:block;width:100%;margin-top:6px;border:0;background:none;color:var(--blue);font:600 12px/1 var(--fnt,inherit);padding:8px;cursor:pointer;border-radius:8px}
+.gd-au-more:hover{background:var(--brand-soft,#eef3ff)}
+.gd-au-pb{position:relative;min-width:74px;height:20px;background:var(--wash);border-radius:6px;overflow:hidden}
+.gd-au-pb i{position:absolute;inset:0 auto 0 0;opacity:.2;border-radius:6px}
+.gd-au-pb b{position:relative;display:block;text-align:right;padding:0 7px;font:700 12px/20px var(--fnt,inherit)}
+.gd-au-lv{display:inline-block;padding:2px 8px;border-radius:10px;font:600 11px/1.5 var(--fnt,inherit)}
+.gd-au-bd{display:inline-block;min-width:22px;padding:1px 6px;border-radius:6px;font:700 11px/1.6 var(--fnt,inherit);text-align:center}
+.gd-au-t td .z{color:#cbd5e1}
+.gd-au-hb{position:relative;min-width:70px;height:18px}
+.gd-au-hb i{position:absolute;left:0;top:4px;bottom:4px;background:var(--blue);opacity:.25;border-radius:4px}
+.gd-au-hb b{position:relative;font:700 12px/18px var(--fnt,inherit);color:var(--ink);padding-left:6px}
+.gd-au-dg>div{margin-top:4px}
+.gd-au-it{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--line2,var(--line))}
+.gd-au-it .gd-au-bd{align-self:flex-start;flex:none;margin-top:1px}
+.gd-au-it p{margin:0;font-size:12.5px;line-height:1.4;color:var(--ink)}
+.gd-au-it small{display:block;margin-top:2px;font-size:11.5px;color:var(--muted);line-height:1.35}
+.gd-au-mr{display:block;padding:6px 0;color:var(--muted);font-size:11.5px}
+.gd-au-ok{margin:10px 0 2px;font-size:12.5px;color:#15803d}
+.gd-au-cs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.gd-au-cs button{border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:16px;padding:7px 12px;font:500 12px/1 var(--fnt,inherit);cursor:pointer;transition:background .15s,border-color .15s}
+.gd-au-cs button:hover{background:var(--brand-soft,#eef3ff);border-color:var(--blue);color:var(--blue)}
+.gd-au-cs button.cp{margin-left:auto;padding:7px 10px}
+.gd-ai-m.a .gd-au-rp{width:100%}
+@media(max-width:640px){.gd-au{width:100vw}.gd-au-fab{right:12px;bottom:14px;height:44px}.gd-au-fab span{display:none}.gd-au-fab{width:44px;padding:0;justify-content:center;border-radius:50%}.gd-au-s{padding:10px 9px}.gd-au-k b{font-size:17px}}
+@media(prefers-reduced-motion:reduce){.gd-au-fab{transition:none}}
+
 /* ══ Documentos · móvil ══ */
 .gd-dr-hd{display:none}
 @media(max-width:700px){
@@ -17482,7 +17539,9 @@ const QA_TREE = [
       ['aud.hab.respaldo','Copias de respaldo','Descargar o cargar archivos JSON',['habDownloadJson','habPickJson'],1],
       ['aud.hab.eliminar','Enviar a la papelera','Quitar auditorías de la lista',['habTrash'],1],
       ['aud.hab.restaurar','Restaurar de la papelera','Recuperar auditorías eliminadas',['habRestore'],1],
-      ['aud.hab.definitivo','Borrar definitivamente','Eliminar para siempre',['habDeleteForever'],1] ]} ]},
+      ['aud.hab.definitivo','Borrar definitivamente','Eliminar para siempre',['habDeleteForever'],1] ]},
+    { t:'Asistente de IA', i:'fa-wand-magic-sparkles', items:[
+      ['aud.ia.usar','Asistente de auditorías','Preguntar por resultados, hallazgos e informes en un chat',['AAI.open'],1] ]} ]},
   { k:'dashboard', t:'Dashboard', i:'fa-chart-pie', d:'Resultados, gráficas e informes', tab:'tab-dashboard', groups:[
     { t:'Vistas que puede consultar', i:'fa-eye', items:[
       ['dash.servicio','Auditoría de servicio','Resultados de FOCA y VIU',[],0,'subtab-dash-servicio'],
@@ -17570,8 +17629,8 @@ function qaCan(p, key) {
 /* ── Aplicar permisos al usuario que inicia sesión ── */
 const QA_RAW = {};
 function qaDenied() { showToast('Su usuario no tiene permiso para esta acción.', 'error'); }
-function qaGet(name) { var m = /^(ISOA|DOCS)\./.exec(name); if (m) return window[m[1]] && window[m[1]][name.slice(m[0].length)]; return window[name]; }
-function qaSet(name, fn) { var m = /^(ISOA|DOCS)\./.exec(name); if (m) { if (window[m[1]]) window[m[1]][name.slice(m[0].length)] = fn; } else window[name] = fn; }
+function qaGet(name) { var m = /^(ISOA|DOCS|AAI)\./.exec(name); if (m) return window[m[1]] && window[m[1]][name.slice(m[0].length)]; return window[name]; }
+function qaSet(name, fn) { var m = /^(ISOA|DOCS|AAI)\./.exec(name); if (m) { if (window[m[1]]) window[m[1]][name.slice(m[0].length)] = fn; } else window[name] = fn; }
 function qaApply(raw) {
   const P = (window.QA_CUR = qaNorm(raw).permisos), h = document.documentElement; let css = '';
   const show = (id, on) => { const el = document.getElementById(id); if (el) el.classList.toggle('qsp-off', !on); };
@@ -20048,6 +20107,470 @@ window.GDAI = (function(){
   }
 
   return { open: show, hide, ask, summarize, diff, describeChanges, localSummary, setChangeDesc, OPL, wordDiff, index: IX, warm };
+})();
+
+/* ══ Asistente de auditorías (chat con informes) ══
+   La IA solo entiende la pregunta y redacta el comentario; las cifras las calcula este código sobre los datos reales. */
+(function(){
+  if (window.AAI) return;
+  const $ = id => document.getElementById(id);
+  const E = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim();
+  const clip = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : s; };
+  const MES = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const MS = ['', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+  const toast = (m, t) => { try { showToast(m, t || 'info'); } catch (e) { } };
+  const rc = p => p >= 92 ? '#15803d' : p >= 85 ? '#b45309' : '#b91c1c';
+  const rl = p => p >= 92 ? 'Bajo' : p >= 85 ? 'Medio' : 'Alto';
+  const NEG = { sv: ['NC', 'CP'], pi: ['D', 'A'] }, POS = { sv: ['C'], pi: ['E', 'B'] };
+  const RES_CLR = { NC: ['#b91c1c', '#fef2f2'], CP: ['#b45309', '#fffbeb'], C: ['#15803d', '#f0fdf4'], D: ['#b91c1c', '#fef2f2'], A: ['#b45309', '#fffbeb'], B: ['#1d4ed8', '#eaf4fb'], E: ['#15803d', '#f0fdf4'], NA: ['#64748b', '#f1f5f9'] };
+  const RES_LBL = { NC: 'No conforme', CP: 'Cumple parcial', C: 'Cumple', D: 'Deficiente', A: 'Aceptable', B: 'Buena', E: 'Excelente', NA: 'N/A' };
+  const SRC_LBL = { sv: 'Auditoría de servicio', pi: 'Paciente incógnito' };
+
+  // ── Datos ─────────────────────────────────────
+  const D = { sv: null, pi: null, t: { sv: 0, pi: 0 }, p: {}, err: {} };
+  const ymd = f => { const m = String(f || '').slice(0, 10).match(/^(\d{4})-(\d{2})-(\d{2})$/); if (m) return [+m[1], +m[2], +m[3]]; const d = new Date(f); return isNaN(d) ? [0, 0, 0] : [d.getFullYear(), d.getMonth() + 1, d.getDate()]; };
+  function buildSV(aud, det){
+    const A = [], byId = new Map();
+    (aud || []).forEach(r => { const id = String(_id(r) || ''); if (!id || byId.has(id)) return; const f = _fecha(r), p = ymd(f), sede = String(_sede(r) || '').trim(); const a = { src: 'sv', id, sede, ent: _entOf(sede), fecha: f, y: p[0], m: p[1], pct: _pct(r), auditor: String(_aud(r) || '').trim() }; byId.set(id, a); A.push(a); });
+    const F = [];
+    (det || []).forEach(r => {
+      const a = byId.get(String(_gv(r, 'id', 'ID', 'id_auditoria'))); if (!a) return;
+      let res = String(_res(r) || '').toUpperCase().replace(/[^A-Z]/g, ''); if (res === 'NOAPLICA' || res === 'N') res = 'NA';
+      F.push({ aid: a.id, cat: String(_cat(r) || 'Sin categoría').trim(), mom: '', item: String(_item(r) || '').trim(), res, obs: String(_obs(r) || '').trim(), om: String(_om(r) || '').trim() });
+    });
+    return { A, F };
+  }
+  function buildPI(rows){
+    const A = [], F = [];
+    (rows || []).forEach(v => {
+      const p = ymd(v.fecha), sede = String(v.sede || '').trim(), a = { src: 'pi', id: String(v.id), sede, ent: v.institucion || _entOf(sede), fecha: v.fecha || '', y: p[0], m: p[1], pct: +v.porcentaje || 0, auditor: String(v.auditorNombre || v.auditor || v.auditorName || '').trim() };
+      A.push(a); const rs = v.respuestas || {};
+      PI_DATA.forEach(sec => sec.items.forEach(it => { const val = rs['q' + it.n]; if (val) F.push({ aid: a.id, cat: sec.nombre, mom: sec.momento, item: it.n + '. ' + it.texto, res: val, obs: '', om: '' }); }));
+    });
+    return { A, F };
+  }
+  const fresh = k => D[k] && Date.now() - D.t[k] < 8 * 60 * 1000;
+  function loadSV(force){
+    if (!force && fresh('sv')) return Promise.resolve();
+    if (D.p.sv) return D.p.sv;
+    const g = (typeof _dashData !== 'undefined' && _dashData.length && typeof _detalleData !== 'undefined' && _detalleData.length) ? { aud: _dashData, det: _detalleData } : null;
+    if (g && !force && !D.sv) { D.sv = buildSV(g.aud, g.det); D.t.sv = Date.now(); return Promise.resolve(); }
+    D.p.sv = Promise.all([fetch(APPS_SCRIPT_URL + '?sheet=AUDITORIAS').then(r => r.json()), fetch(APPS_SCRIPT_URL + '?sheet=DETALLE_AUDITORIA').then(r => r.json())])
+      .then(([a, d]) => { D.sv = buildSV((a.data || []).filter(r => _id(r)), (d.data || []).filter(r => _gv(r, 'id', 'ID', 'id_auditoria'))); D.t.sv = Date.now(); D.err.sv = 0; })
+      .catch(() => { D.err.sv = 1; }).finally(() => { D.p.sv = null; paintStatus(); });
+    return D.p.sv;
+  }
+  function loadPI(force){
+    if (!force && fresh('pi')) return Promise.resolve();
+    if (D.p.pi) return D.p.pi;
+    D.p.pi = db.ref('auditorias_pi').once('value').then(snap => { const rows = []; snap.forEach(ch => { const v = { id: ch.key, ...ch.val() }; if (!v.deletedAt && v.estado === 'completada') rows.push(v); }); D.pi = buildPI(rows); D.t.pi = Date.now(); D.err.pi = 0; })
+      .catch(() => { D.err.pi = 1; }).finally(() => { D.p.pi = null; paintStatus(); });
+    return D.p.pi;
+  }
+  const loadAll = force => { const p = Promise.all([loadSV(force), loadPI(force)]); paintStatus(); return p; };
+  const sedesAll = () => [...new Set([...(D.sv ? D.sv.A : []), ...(D.pi ? D.pi.A : [])].map(a => a.sede).filter(Boolean))].sort();
+  const catsAll = () => [...new Set([...(D.sv ? D.sv.F : []).map(f => f.cat), ...(D.pi ? D.pi.F : []).map(f => f.cat)])].filter(Boolean);
+
+  // ── Interpretar la pregunta ───────────────────
+  const S = { msgs: [], fuente: '', ent: '', busy: false, last: null, acts: [], tabs: [] };
+  const GENERIC = new Set(['foca', 'sede', 'sala', 'azul', 'mall', 'plaza', 'viu', 'de', 'la', 'el']);
+  function matchSedes(t){
+    const nt = ' ' + norm(t) + ' ', all = sedesAll(), hit = [];
+    all.forEach(s => { const ns = norm(s); const toks = ns.split(' ').filter(w => !GENERIC.has(w) && w.length >= 4 && !/^\d+$/.test(w)); if (nt.includes(' ' + ns + ' ') || (toks.length && toks.every(w => nt.includes(w)))) hit.push(s); });
+    return hit.filter(s => !hit.some(o => o !== s && norm(o).includes(norm(s)) && norm(o).split(' ').filter(w => !GENERIC.has(w) && w.length >= 4).every(w => nt.includes(w))));
+  }
+  function matchMeses(t){
+    const nt = norm(t), r = [], now = new Date();
+    MES.forEach((n, i) => { if (i && new RegExp('\\b' + norm(n) + '\\b').test(nt)) r.push(i); });
+    MS.forEach((n, i) => { if (i && !r.includes(i) && new RegExp('\\b' + norm(n) + '\\b').test(nt) && !/\b(mar|may)\b/.test(n.toLowerCase() === n ? '' : '')) r.push(i); });
+    if (/\best(e|a) mes\b/.test(nt)) r.push(now.getMonth() + 1);
+    if (/\bmes pasado|mes anterior\b/.test(nt)) r.push(now.getMonth() === 0 ? 12 : now.getMonth());
+    return [...new Set(r)];
+  }
+  function matchCat(t){
+    const nt = norm(t), cats = catsAll(); let m = null;
+    cats.forEach(c => { if (nt.includes(norm(c))) m = m || c; });
+    if (m) return m;
+    const KW = [['admision', 'ADMISIÓN'], ['prestacion', 'PRESTACIÓN DEL SERVICIO'], ['seguridad', 'SEGURIDAD DEL PACIENTE'], ['ambiente', 'AMBIENTE HUMANIZADO'], ['humaniz', 'AMBIENTE HUMANIZADO'], ['pqrs', 'PQRS'], ['experiencia', 'ATENCIÓN Y EXPERIENCIA AL USUARIO'], ['atencion al usuario', 'ATENCIÓN Y EXPERIENCIA AL USUARIO'], ['imagen', 'PROTOCOLO DE IMAGEN']];
+    for (const [k, v] of KW) if (nt.includes(k)) return v;
+    const mm = nt.match(/momento\s*([1-7])/); if (mm) return 'MOMENTO ' + mm[1];
+    return null;
+  }
+  const RESKW = [[/no conformidad|\bnc\b/, 'NC'], [/cumple parcial|parcialmente|\bcp\b/, 'CP'], [/deficien/, 'D'], [/aceptable/, 'A'], [/excelente/, 'E']];
+  function localParse(text, ctx){
+    const nt = norm(text), q = {};
+    const sd = matchSedes(text); if (sd.length) q.sedes = sd;
+    const ms = matchMeses(text); if (ms.length) q.meses = ms;
+    const y = nt.match(/\b(20\d\d)\b/); if (y) q.anio = +y[1]; else if (/\best(e|a) ano\b/.test(nt)) q.anio = new Date().getFullYear();
+    if (/\bviu\b|sala azul/.test(nt)) q.entidad = 'viu'; else if (/\bfoca\b/.test(nt) && !sd.length) q.entidad = 'foca';
+    if (/incognito|\bpi\b/.test(nt)) q.fuente = 'pi'; else if (/de servicio|auditorias? de servicio|\bservicio\b/.test(nt)) q.fuente = 'sv'; else if (/\bambas\b|las dos|ambos/.test(nt)) q.fuente = 'ambas';
+    const c = matchCat(text); if (c) q.categoria = c;
+    for (const [re, v] of RESKW) if (re.test(nt)) { q.resultado = v; break; }
+    const idm = nt.match(/\b(?:id|auditoria)\s*[:#]?\s*([a-z]{2,}[-_]?\d[\w-]*)\b/); if (idm) q.auditoria = idm[1].toUpperCase();
+    if (/hallazgo|no conformidad|oportunidad|debilidad|falla|incumpl|deficien/.test(nt)) q.op = 'hallazgos';
+    else if (/detalle|ultima auditoria|ultima de|a fondo/.test(nt)) q.op = 'detalle';
+    else if (/cumplimiento|promedio|porcentaje|puntaje|calificacion|resultado|nivel|tendencia|evolucion/.test(nt)) q.op = 'cumplimiento';
+    else if (/lista|listado|cuantas|realizadas|auditorias de|auditorias en|que auditorias/.test(nt)) q.op = 'auditorias';
+    else if (/resumen|resume|informe|panorama|balance|general/.test(nt)) q.op = 'resumen';
+    if (/por mes|mensual|cada mes|mes a mes|evolucion|tendencia/.test(nt)) q.agrupar = 'mes'; else if (/por sede|cada sede|que sede|sedes/.test(nt)) q.agrupar = 'sede'; else if (/por categoria|cada categoria|categorias/.test(nt)) q.agrupar = 'categoria'; else if (/por auditoria|cada auditoria/.test(nt)) q.agrupar = 'auditoria'; else if (/por (item|pregunta)|mas frecuentes|se repiten/.test(nt)) q.agrupar = 'item';
+    if (/peor|mas baj|menor|menos cumpl|mas hallazgos|mas problem|mas critic/.test(nt)) q.orden = 'peor'; else if (/mejor|mas alt|mayor cumpl|menos hallazgos/.test(nt)) q.orden = 'mejor';
+    const lim = nt.match(/\btop\s*(\d{1,2})\b|\blos\s+(\d{1,2})\s+(?:mas|principales)/); if (lim) q.limite = +(lim[1] || lim[2]);
+    return q;
+  }
+  const FRIENDLY = [
+    [/^(hola|holi|ola|hey|buenas|buenos dias|buen dia|buenas tardes|buenas noches|saludos|que tal|como estas|como vas|como te va|todo bien)\b/, 'hola'],
+    [/^(gracias|muchas gracias|mil gracias|genial gracias|perfecto gracias|ok gracias|listo gracias|excelente gracias)\b/, 'gracias'],
+    [/^(chao|adios|hasta luego|nos vemos|hasta pronto|bye)\b/, 'chao'],
+    [/^(ayuda|que puedes hacer|que sabes hacer|como funcionas|que haces|para que sirves|quien eres|que eres|como te uso|opciones)\b/, 'ayuda'],
+    [/^(ok|vale|listo|entendido|perfecto|genial|excelente|bien|super|dale|claro|de acuerdo)$/, 'ok']
+  ];
+  function friendly(text){
+    const nt = norm(text).replace(/[¡!¿?.,;:]/g, '').trim(); if (!nt || nt.split(' ').length > 8) return null;
+    const dataish = /auditor|hallazgo|sede|mes|resumen|informe|cumpl|categor|foca|viu|promedio|incognito/.test(nt); if (dataish && !/^(hola|buenas|buenos|hey)\b[^]*$/.test(nt)) return null;
+    if (dataish && nt.split(' ').length > 3) return null;
+    for (const [re, k] of FRIENDLY) if (re.test(nt)) return k; return null;
+  }
+  const who = () => { try { const n = (currentUser && currentUser.displayName) || ''; return n ? n.split(' ')[0] : ''; } catch (e) { return ''; } };
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  function friendlyReply(k){
+    const h = new Date().getHours(), sal = h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches', n = who();
+    if (k === 'hola') return pick([sal + (n ? ', ' + n : '') + '. Aquí estoy para lo que necesites de las auditorías. ¿Qué quieres revisar?', '¡Hola' + (n ? ', ' + n : '') + '! ¿Revisamos algún resumen, hallazgos o el cumplimiento de una sede?']);
+    if (k === 'gracias') return pick(['¡Con gusto! Si necesitas otro dato, aquí sigo.', 'Para eso estoy. ¿Algo más que revisar?']);
+    if (k === 'chao') return pick(['¡Hasta pronto! Cuando quieras volver a revisar auditorías, aquí estaré.', 'Que tengas un buen día.']);
+    if (k === 'ok') return 'Perfecto. Cuando quieras, pregúntame lo que necesites.';
+    return 'Puedo armarte informes aquí mismo con las auditorías de **servicio** y de **paciente incógnito**:\n- Resumen por mes o por sede\n- Hallazgos por auditoría, categoría o sede\n- Cumplimiento y comparación entre sedes o entre meses\n- Detalle de una auditoría\n\nPregúntame como lo dirías normalmente, por ejemplo: _"hallazgos NC de Seguridad del paciente en Alkarawi este año"_.';
+  }
+
+  async function llm(messages, o){
+    o = o || {}; const models = o.models || ['llama-3.3-70b-versatile', 'openai/gpt-oss-120b', 'llama-3.1-8b-instant'];
+    if (typeof GROQ_PROXY_URL === 'undefined' || !GROQ_PROXY_URL) throw new Error('Falta configurar la IA de Qualisig.');
+    let last = '';
+    for (const m of models) {
+      const r = await _indLlamarGroqConModelo(m, messages, o.max || 700, o.timeout || 30000, o.temp == null ? .2 : o.temp);
+      if (r.ok) { const ch = r.data && r.data.choices && r.data.choices[0], t = (ch && ch.message && ch.message.content) || ''; if (String(t).trim()) return String(t).trim(); last = 'vacío'; }
+      else { last = (r.data && r.data.error && (r.data.error.message || r.data.error)) || ('Error ' + r.status); if (r.status === 400 || r.status === 401 || r.status === 403) break; }
+    }
+    throw new Error(String(last).slice(0, 160));
+  }
+  function jsonOf(t){ const m = String(t).replace(/```json|```/g, '').match(/\{[\s\S]*\}/); if (!m) return null; try { return JSON.parse(m[0]); } catch (e) { return null; } }
+
+  async function interpret(text){
+    const loc = localParse(text), prev = S.last;
+    const sys = 'Conviertes preguntas sobre auditorías de calidad (FOCA y VIU) en JSON. Responde SOLO el JSON, sin texto.\n' +
+      'HOY: ' + new Date().toISOString().slice(0, 10) + '.\nSEDES: ' + sedesAll().join(' | ') + '\nCATEGORÍAS (servicio): ' + (CATS || []).join(' | ') + '\nMOMENTOS (paciente incógnito): ' + Object.values(PI_MOMENTOS_LABELS).join(' | ') + '\n' +
+      'Esquema: {"intencion":"consulta|saludo|gracias|despedida|ayuda|fuera_de_tema","respuesta_corta":"solo si no es consulta: 1-2 frases cordiales en español","fuente":"servicio|pi|ambas|null","op":"resumen|auditorias|cumplimiento|hallazgos|detalle","agrupar":"mes|sede|categoria|item|auditoria|null","entidad":"foca|viu|null","sedes":["nombre exacto de SEDES"],"meses":[1-12],"anio":numero|null,"categoria":"nombre exacto de CATEGORÍAS o MOMENTOS|null","resultado":"NC|CP|C|NA|D|A|B|E|null","auditoria":"id|null","orden":"peor|mejor|null","limite":numero|null}\n' +
+      'Reglas: "hallazgos"/"no conformidades"/"oportunidades de mejora"/"debilidades" → op hallazgos. "resumen"/"informe"/"panorama" → resumen. "cumplimiento"/"porcentaje"/"promedio"/"resultados" → cumplimiento. Usa agrupar cuando el usuario diga "por mes/sede/categoría/auditoría". Si es seguimiento de la pregunta anterior ("y en octubre?", "ahora por sede"), hereda los campos previos y cambia solo lo pedido. Saludos o charla breve → intencion saludo/gracias/despedida/ayuda con respuesta_corta cordial y corta. Cosas ajenas a auditorías → fuera_de_tema.' +
+      (prev ? '\nCONSULTA PREVIA: ' + JSON.stringify(prev) : '');
+    let j = null;
+    try { j = jsonOf(await llm([{ role: 'system', content: sys }, { role: 'user', content: text }], { max: 320, temp: 0, timeout: 20000 })); } catch (e) { j = null; }
+    return { j, loc, prev };
+  }
+  function resolveName(v, list){ if (!v) return null; const n = norm(v); return list.find(x => norm(x) === n) || list.find(x => norm(x).includes(n) || n.includes(norm(x))) || null; }
+  function buildQuery(text, ip, scope){
+    const { j, loc, prev } = ip, q = {};
+    const J = j || {};
+    const num = v => (v == null || v === '' || v === 'null') ? null : +v;
+    const sedes = (Array.isArray(J.sedes) ? J.sedes : []).map(s => resolveName(s, sedesAll())).filter(Boolean);
+    q.sedes = sedes.length ? sedes : (loc.sedes || []);
+    q.meses = (Array.isArray(J.meses) ? J.meses.map(Number).filter(m => m >= 1 && m <= 12) : []); if (!q.meses.length) q.meses = loc.meses || [];
+    q.anio = (num(J.anio) >= 2000 && num(J.anio) < 2100) ? num(J.anio) : (loc.anio || null);
+    q.entidad = ({ foca: 'foca', viu: 'viu' })[norm(J.entidad)] || loc.entidad || null;
+    const fu = norm(J.fuente); q.fuente = fu === 'servicio' ? 'sv' : fu === 'pi' ? 'pi' : fu === 'ambas' ? 'ambas' : (loc.fuente || null);
+    q.categoria = resolveName(J.categoria, catsAll().concat(Object.keys(PI_MOMENTOS_LABELS))) || loc.categoria || null;
+    const rs = String(J.resultado || '').toUpperCase(); q.resultado = ['NC', 'CP', 'C', 'NA', 'D', 'A', 'B', 'E'].includes(rs) ? rs : (loc.resultado || null);
+    q.auditoria = (J.auditoria && J.auditoria !== 'null') ? String(J.auditoria) : (loc.auditoria || null);
+    q.op = ['resumen', 'auditorias', 'cumplimiento', 'hallazgos', 'detalle'].includes(J.op) ? J.op : (loc.op || null);
+    q.agrupar = ['mes', 'sede', 'categoria', 'item', 'auditoria'].includes(J.agrupar) ? J.agrupar : (loc.agrupar || null);
+    q.orden = ['peor', 'mejor'].includes(J.orden) ? J.orden : (loc.orden || null);
+    q.limite = num(J.limite) > 0 ? Math.min(30, num(J.limite)) : (loc.limite || null);
+    // seguimiento sin datos propios: hereda
+    const own = q.sedes.length || q.meses.length || q.anio || q.entidad || q.fuente || q.categoria || q.resultado || q.auditoria || q.op || q.agrupar;
+    if (prev && !j && !own) return { follow: true, q: { ...prev } };
+    if (prev && (!q.op) && (q.sedes.length || q.meses.length || q.anio || q.categoria || q.entidad || q.fuente || q.resultado || q.agrupar)) { ['op', 'agrupar'].forEach(k => { if (!q[k]) q[k] = prev[k]; }); ['sedes', 'meses'].forEach(k => { if (!q[k].length && !(j && j.intencion !== 'consulta')) q[k] = prev[k] || []; }); ['anio', 'categoria', 'entidad', 'fuente', 'resultado'].forEach(k => { if (!q[k]) q[k] = prev[k] || null; }); }
+    if (!q.fuente) q.fuente = scope.fuente || 'ambas';
+    if (!q.entidad && scope.ent) q.entidad = scope.ent;
+    if (!q.op) q.op = (q.categoria || q.resultado || q.sedes.length === 1) && !q.meses.length ? 'hallazgos' : 'resumen';
+    return { q, intent: String(J.intencion || 'consulta'), short: J.respuesta_corta || '' };
+  }
+
+  // ── Motor de consultas ────────────────────────
+  const gkey = (a, g) => g === 'mes' ? a.y + '-' + String(a.m).padStart(2, '0') : g === 'sede' ? a.sede || 'Sin sede' : g === 'auditoria' ? a.id : '';
+  const glabel = (k, g, A) => { if (g === 'mes') { const p = k.split('-'); return MES[+p[1]] + ' ' + p[0]; } if (g === 'auditoria') { const a = A.find(x => x.id === k); return a ? (a.sede || 'Sin sede') + ' · ' + (a.fecha ? a.fecha.slice(0, 10) : '—') : k; } return k; };
+  const avg = a => a.length ? Math.round(a.reduce((x, y) => x + y, 0) / a.length) : 0;
+  function filtro(src, q){
+    const base = src === 'sv' ? D.sv : D.pi; if (!base) return { A: [], F: [] };
+    const sd = (q.sedes || []).map(norm);
+    const A = base.A.filter(a => (!q.entidad || a.ent === q.entidad) && (!sd.length || sd.includes(norm(a.sede))) && (!q.anio || a.y === q.anio) && (!q.meses || !q.meses.length || q.meses.includes(a.m)) && (!q.auditoria || String(a.id).toUpperCase() === String(q.auditoria).toUpperCase()));
+    const ids = new Set(A.map(a => a.id)), nc = q.categoria ? norm(q.categoria) : '';
+    const F = base.F.filter(f => ids.has(f.aid) && (!nc || norm(f.cat) === nc || norm(f.cat).includes(nc) || norm(f.mom) === nc));
+    return { A, F, ids };
+  }
+  function labelFiltros(q){
+    const L = []; if (q.entidad) L.push(q.entidad.toUpperCase()); if (q.sedes && q.sedes.length) L.push(q.sedes.length > 2 ? q.sedes.length + ' sedes' : q.sedes.join(', '));
+    if (q.meses && q.meses.length) L.push(q.meses.map(m => MES[m]).join(', ')); if (q.anio) L.push(String(q.anio)); if (q.categoria) L.push(q.categoria); if (q.resultado) L.push(RES_LBL[q.resultado] || q.resultado); return L;
+  }
+  const act = (t, q) => { S.acts.push({ t, q }); return S.acts.length - 1; };
+  const sortGrp = (rows, q, key) => { const o = q.orden; rows.sort((a, b) => o === 'mejor' ? b[key] - a[key] : o === 'peor' ? a[key] - b[key] : 0); return rows; };
+
+  function secResumen(src, A, F, q){
+    const ps = A.map(a => a.pct), av = avg(ps), neg = NEG[src], cnt = {}; neg.forEach(r => cnt[r] = F.filter(f => f.res === r).length);
+    const bySede = {}; A.forEach(a => { (bySede[a.sede || 'Sin sede'] = bySede[a.sede || 'Sin sede'] || []).push(a.pct); });
+    const sRows = Object.entries(bySede).map(([s, v]) => ({ s, n: v.length, p: avg(v) })).sort((a, b) => b.p - a.p);
+    const best = sRows[0], worst = sRows[sRows.length - 1];
+    const kp = [{ l: 'Auditorías', v: A.length, s: Object.keys(bySede).length + ' sede' + (Object.keys(bySede).length === 1 ? '' : 's') }, { l: 'Promedio', v: av + '%', c: rc(av), s: 'Riesgo ' + rl(av).toLowerCase() }];
+    neg.forEach(r => kp.push({ l: RES_LBL[r], v: cnt[r], c: RES_CLR[r][0], s: 'hallazgos' }));
+    const meses = {}; A.forEach(a => { const k = gkey(a, 'mes'); (meses[k] = meses[k] || []).push(a.pct); });
+    const mk = Object.keys(meses).sort(); const spark = mk.length > 1 ? mk.map(k => ({ l: MS[+k.split('-')[1]] + ' ' + k.slice(2, 4), v: avg(meses[k]) })) : null;
+    const rows = sRows.map(r => ({ cells: [r.s, r.n, r.p], ask: act('Hallazgos de ' + r.s, { ...q, op: 'hallazgos', agrupar: 'item', sedes: [r.s], fuente: src }) }));
+    const facts = ['Auditorías: ' + A.length, 'Promedio: ' + av + '%', neg.map(r => RES_LBL[r] + ': ' + cnt[r]).join(', '), best ? 'Mejor sede: ' + best.s + ' (' + best.p + '%)' : '', worst && sRows.length > 1 ? 'Sede más baja: ' + worst.s + ' (' + worst.p + '%)' : '', mk.length > 1 ? 'Por mes: ' + mk.map(k => MS[+k.split('-')[1]] + ' ' + k.slice(2, 4) + ' ' + avg(meses[k]) + '%').join(', ') : ''].filter(Boolean).join('\n');
+    return { src, title: 'Resumen · ' + SRC_LBL[src], kpis: kp, spark, table: { title: 'Por sede', cols: [{ l: 'Sede' }, { l: 'Aud.', t: 'num' }, { l: 'Promedio', t: 'pct' }], rows }, facts };
+  }
+  function secCumpl(src, A, F, q){
+    const g = q.agrupar || 'mes';
+    if (g === 'categoria') {
+      const m = {}; F.forEach(f => { (m[f.cat] = m[f.cat] || {})[f.res] = (m[f.cat][f.res] || 0) + 1; });
+      const neg = NEG[src], pos = POS[src], rows = Object.entries(m).map(([c, v]) => { const p = pos.reduce((s, r) => s + (v[r] || 0), 0), n = neg.reduce((s, r) => s + (v[r] || 0), 0), tot = p + n; return { c, v, p, n, pc: tot ? Math.round(p / tot * 100) : 0, tot }; });
+      sortGrp(rows, q, 'pc'); if (!q.orden) rows.sort((a, b) => a.pc - b.pc);
+      const cols = [{ l: src === 'sv' ? 'Categoría' : 'Momento' }, ...neg.map(r => ({ l: r, t: 'res', r })), { l: src === 'sv' ? '% cumple' : '% favorable', t: 'pct' }];
+      return { src, title: 'Cumplimiento por ' + (src === 'sv' ? 'categoría' : 'momento') + ' · ' + SRC_LBL[src], kpis: [{ l: 'Ítems evaluados', v: F.filter(f => f.res !== 'NA').length }, { l: 'Auditorías', v: A.length }], table: { cols, rows: rows.map(r => ({ cells: [r.c, ...neg.map(x => r.v[x] || 0), r.pc], ask: act('Hallazgos de ' + r.c, { ...q, op: 'hallazgos', agrupar: 'item', categoria: r.c, fuente: src }) })) }, facts: rows.map(r => r.c + ': ' + r.pc + '% (' + neg.map(x => x + ' ' + (r.v[x] || 0)).join(', ') + ')').join('\n') };
+    }
+    const m = {}; A.forEach(a => { (m[gkey(a, g)] = m[gkey(a, g)] || []).push(a); });
+    let rows = Object.entries(m).map(([k, v]) => ({ k, n: v.length, p: avg(v.map(a => a.pct)), mn: Math.min(...v.map(a => a.pct)), mx: Math.max(...v.map(a => a.pct)) }));
+    if (g === 'mes') rows.sort((a, b) => a.k.localeCompare(b.k)); else { rows.sort((a, b) => b.p - a.p); sortGrp(rows, q, 'p'); if (q.orden === 'peor') rows.sort((a, b) => a.p - b.p); }
+    const ps = A.map(a => a.pct), av = avg(ps);
+    const spark = g === 'mes' && rows.length > 1 ? rows.map(r => ({ l: MS[+r.k.split('-')[1]] + ' ' + r.k.slice(2, 4), v: r.p })) : null;
+    const nm = g === 'mes' ? 'Mes' : g === 'sede' ? 'Sede' : 'Auditoría';
+    return { src, title: 'Cumplimiento por ' + (g === 'mes' ? 'mes' : g === 'sede' ? 'sede' : 'auditoría') + ' · ' + SRC_LBL[src], kpis: [{ l: 'Promedio', v: av + '%', c: rc(av), s: 'Riesgo ' + rl(av).toLowerCase() }, { l: 'Auditorías', v: A.length }, { l: 'Más baja', v: Math.min(...ps) + '%', c: rc(Math.min(...ps)) }, { l: 'Más alta', v: Math.max(...ps) + '%', c: rc(Math.max(...ps)) }], spark,
+      table: { cols: [{ l: nm }, { l: 'Aud.', t: 'num' }, { l: 'Promedio', t: 'pct' }, { l: 'Nivel', t: 'lvl' }], rows: rows.map(r => ({ cells: [glabel(r.k, g, A), r.n, r.p, r.p], ask: g === 'mes' ? act('Resumen de ' + glabel(r.k, g, A), { ...q, op: 'resumen', agrupar: null, meses: [+r.k.split('-')[1]], anio: +r.k.split('-')[0], fuente: src }) : g === 'sede' ? act('Hallazgos de ' + r.k, { ...q, op: 'hallazgos', agrupar: 'item', sedes: [r.k], fuente: src }) : act('Detalle de la auditoría ' + glabel(r.k, g, A), { ...q, op: 'detalle', auditoria: r.k, fuente: src }) })) },
+      facts: rows.map(r => glabel(r.k, g, A) + ': ' + r.p + '% (' + r.n + ' aud., rango ' + r.mn + '–' + r.mx + ')').join('\n') + '\nPromedio general: ' + av + '%' };
+  }
+  function secHall(src, A, F, q){
+    const set = q.resultado && (NEG.sv.concat(NEG.pi, POS.sv, POS.pi, ['NA'])).includes(q.resultado) && ((src === 'sv' && ['NC', 'CP', 'C', 'NA'].includes(q.resultado)) || (src === 'pi' && ['D', 'A', 'B', 'E', 'NA'].includes(q.resultado))) ? [q.resultado] : NEG[src];
+    const H = F.filter(f => set.includes(f.res)), g = q.agrupar || 'item', byA = new Map(A.map(a => [a.id, a]));
+    const m = {}; H.forEach(f => { const a = byA.get(f.aid); const k = g === 'item' ? f.item : g === 'categoria' ? f.cat : gkey(a, g); const o = m[k] = m[k] || { n: {}, t: 0, sedes: new Set(), cats: new Set() }; o.n[f.res] = (o.n[f.res] || 0) + 1; o.t++; o.sedes.add(a.sede || 'Sin sede'); o.cats.add(f.cat); });
+    let rows = Object.entries(m).map(([k, o]) => ({ k, ...o }));
+    if (g === 'mes') rows.sort((a, b) => a.k.localeCompare(b.k)); else rows.sort((a, b) => q.orden === 'mejor' ? a.t - b.t : b.t - a.t);
+    if (q.limite) rows = rows.slice(0, q.limite);
+    const nm = { item: src === 'sv' ? 'Ítem' : 'Pregunta', categoria: src === 'sv' ? 'Categoría' : 'Momento', sede: 'Sede', auditoria: 'Auditoría', mes: 'Mes' }[g];
+    const cols = [{ l: nm }, ...set.map(r => ({ l: r, t: 'res', r })), { l: 'Total', t: 'bar' }]; if (g === 'item') cols.push({ l: 'Sedes', t: 'txt' });
+    const mx = Math.max(1, ...rows.map(r => r.t)), tot = H.length;
+    const trows = rows.map(r => {
+      const cells = [g === 'mes' || g === 'auditoria' ? glabel(r.k, g, A) : r.k, ...set.map(x => r.n[x] || 0), [r.t, mx]]; if (g === 'item') cells.push(r.sedes.size > 2 ? [...r.sedes].slice(0, 2).join(', ') + ' +' + (r.sedes.size - 2) : [...r.sedes].join(', '));
+      const ask = g === 'sede' ? act('Hallazgos de ' + r.k, { ...q, agrupar: 'item', sedes: [r.k] }) : g === 'categoria' ? act('Hallazgos de ' + r.k, { ...q, agrupar: 'item', categoria: r.k }) : g === 'auditoria' ? act('Detalle de la auditoría ' + glabel(r.k, g, A), { ...q, op: 'detalle', auditoria: r.k, agrupar: null }) : g === 'mes' ? act('Hallazgos de ' + glabel(r.k, g, A), { ...q, agrupar: 'item', meses: [+r.k.split('-')[1]], anio: +r.k.split('-')[0] }) : act('¿En qué sedes se repite?: ' + clip(r.k, 60), { ...q, agrupar: 'sede', categoria: null, op: 'hallazgos' });
+      return { cells, ask: g === 'item' ? null : ask };
+    });
+    const byCat = {}; H.forEach(f => { byCat[f.cat] = (byCat[f.cat] || 0) + 1; }); const top = Object.entries(byCat).sort((a, b) => b[1] - a[1]).slice(0, 3);
+    const kp = [{ l: 'Hallazgos', v: tot, c: tot ? RES_CLR[set[0]][0] : '' , s: set.map(r => RES_LBL[r]).join(' + ') }, { l: 'Auditorías', v: A.length }];
+    set.forEach(r => kp.push({ l: RES_LBL[r], v: H.filter(f => f.res === r).length, c: RES_CLR[r][0] }));
+    return { src, title: 'Hallazgos por ' + nm.toLowerCase() + ' · ' + SRC_LBL[src], kpis: kp, table: tot ? { cols, rows: trows } : null, facts: 'Hallazgos (' + set.join('+') + '): ' + tot + ' en ' + A.length + ' auditorías\n' + (top.length ? 'Categorías con más hallazgos: ' + top.map(t => t[0] + ' ' + t[1]).join(', ') + '\n' : '') + rows.slice(0, 10).map(r => clip(g === 'mes' || g === 'auditoria' ? glabel(r.k, g, A) : r.k, 90) + ': ' + r.t + (g === 'item' ? ' (' + [...r.sedes].slice(0, 3).join(', ') + ')' : '')).join('\n') };
+  }
+  function secLista(src, A, F, q){
+    const L = A.slice().sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)) || 0); const lim = q.limite || 40, sh = L.slice(0, lim);
+    return { src, title: 'Auditorías · ' + SRC_LBL[src], kpis: [{ l: 'Auditorías', v: A.length }, { l: 'Promedio', v: avg(A.map(a => a.pct)) + '%', c: rc(avg(A.map(a => a.pct))) }], table: { cols: [{ l: 'Fecha' }, { l: 'Sede' }, { l: 'Resultado', t: 'pct' }, { l: 'Auditor', t: 'txt' }], rows: sh.map(a => ({ cells: [a.fecha ? a.fecha.slice(0, 10) : '—', a.sede || '—', a.pct, a.auditor || '—'], ask: act('Detalle de la auditoría ' + (a.sede || a.id) + ' ' + (a.fecha || '').slice(0, 10), { ...q, op: 'detalle', auditoria: a.id, fuente: src }) })) }, facts: sh.slice(0, 12).map(a => (a.fecha || '').slice(0, 10) + ' · ' + a.sede + ' · ' + a.pct + '%').join('\n') + (L.length > 12 ? '\n(+' + (L.length - 12) + ' más)' : '') };
+  }
+  function secDetalle(src, A, F, q){
+    const a = q.auditoria ? A[0] : A.slice().sort((x, y) => String(y.fecha).localeCompare(String(x.fecha)))[0]; if (!a) return null;
+    const mine = F.filter(f => f.aid === a.id), neg = NEG[src], H = mine.filter(f => neg.includes(f.res)), cats = {};
+    H.forEach(f => { (cats[f.cat] = cats[f.cat] || []).push(f); });
+    const kp = [{ l: 'Resultado', v: a.pct + '%', c: rc(a.pct), s: 'Riesgo ' + rl(a.pct).toLowerCase() }, { l: 'Fecha', v: a.fecha ? a.fecha.slice(0, 10) : '—' }];
+    neg.forEach(r => kp.push({ l: RES_LBL[r], v: mine.filter(f => f.res === r).length, c: RES_CLR[r][0] }));
+    return { src, title: 'Detalle · ' + (a.sede || 'Auditoría'), sub: [a.auditor && 'Auditor: ' + a.auditor, SRC_LBL[src]].filter(Boolean).join(' · '), kpis: kp,
+      groups: Object.entries(cats).map(([c, L]) => ({ c, L: L.sort((x, y) => neg.indexOf(x.res) - neg.indexOf(y.res)) })),
+      facts: 'Auditoría ' + a.sede + ' ' + (a.fecha || '').slice(0, 10) + ' · ' + a.pct + '%' + (a.auditor ? ' · auditor ' + a.auditor : '') + '\n' + Object.entries(cats).map(([c, L]) => c + ': ' + L.length + ' hallazgos (' + L.slice(0, 3).map(f => f.res + ' ' + clip(f.item, 60)).join('; ') + ')').join('\n') };
+  }
+  function run(q){
+    const srcs = q.fuente === 'ambas' || !q.fuente ? ['sv', 'pi'] : [q.fuente], out = [];
+    srcs.forEach(src => {
+      const { A, F } = filtro(src, q); if (!A.length) return;
+      const fn = { resumen: secResumen, cumplimiento: secCumpl, hallazgos: secHall, auditorias: secLista, detalle: secDetalle }[q.op] || secResumen;
+      const s = fn(src, A, F, q); if (s) out.push(s);
+    });
+    if (q.op === 'hallazgos' && out.length > 1) { const w = out.filter(s => s.table); if (w.length) return w; }
+    return out;
+  }
+  function disponible(q){
+    const m = new Set(), y = new Set(); [D.sv, D.pi].forEach(b => b && b.A.forEach(a => { if (a.y) y.add(a.y); }));
+    const per = [...y].sort().join(', '), sd = sedesAll();
+    return 'No encontré auditorías con esos filtros' + (labelFiltros(q).length ? ' (' + labelFiltros(q).join(' · ') + ')' : '') + '.' + (per ? ' Tengo datos de ' + per + ' en ' + sd.length + ' sedes.' : '');
+  }
+
+  // ── Pintar informe ────────────────────────────
+  function spark(pts){
+    const W = 300, H = 56, p = 8, vs = pts.map(x => x.v), mn = Math.min(...vs), mx = Math.max(...vs), sp = Math.max(1, mx - mn);
+    const X = i => p + i * (W - 2 * p) / Math.max(1, pts.length - 1), Y = v => H - 14 - (v - mn) / sp * (H - 30);
+    const d = pts.map((x, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Y(x.v).toFixed(1)).join(' '), last = pts[pts.length - 1], c = rc(last.v);
+    return '<svg class="gd-au-sp" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="Tendencia mensual"><path d="' + d + ' L' + X(pts.length - 1) + ' ' + (H - 6) + ' L' + X(0) + ' ' + (H - 6) + ' Z" fill="' + c + '" opacity=".08"/><path d="' + d + '" fill="none" stroke="' + c + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      pts.map((x, i) => '<circle cx="' + X(i).toFixed(1) + '" cy="' + Y(x.v).toFixed(1) + '" r="3" fill="#fff" stroke="' + c + '" stroke-width="2"><title>' + E(x.l + ': ' + x.v + '%') + '</title></circle>').join('') + '</svg>' +
+      '<div class="gd-au-spl"><span>' + E(pts[0].l) + ' · ' + pts[0].v + '%</span><span>' + E(last.l) + ' · <b style="color:' + c + '">' + last.v + '%</b></span></div>';
+  }
+  function cell(c, v){
+    if (c.t === 'pct') { const n = +v || 0; return '<td class="p"><div class="gd-au-pb"><i style="width:' + Math.min(100, n) + '%;background:' + rc(n) + '"></i><b style="color:' + rc(n) + '">' + n + '%</b></div></td>'; }
+    if (c.t === 'lvl') return '<td><span class="gd-au-lv" style="color:' + rc(+v) + ';background:' + (+v >= 92 ? '#f0fdf4' : +v >= 85 ? '#fffbeb' : '#fef2f2') + '">' + rl(+v) + '</span></td>';
+    if (c.t === 'res') { const k = RES_CLR[c.r]; return '<td class="n">' + (v ? '<span class="gd-au-bd" style="color:' + k[0] + ';background:' + k[1] + '">' + v + '</span>' : '<span class="z">0</span>') + '</td>'; }
+    if (c.t === 'bar') { const [n, mx] = v; return '<td class="b"><div class="gd-au-hb"><i style="width:' + Math.max(6, Math.round(n / mx * 100)) + '%"></i><b>' + n + '</b></div></td>'; }
+    if (c.t === 'num') return '<td class="n">' + E(v) + '</td>';
+    return '<td class="' + (c.t === 'txt' ? 't' : 'l') + '">' + E(v) + '</td>';
+  }
+  function secHTML(s, filtros){
+    let h = '<section class="gd-au-s"><header><div><h4>' + E(s.title) + '</h4>' + (s.sub ? '<small>' + E(s.sub) + '</small>' : (filtros.length ? '<small>' + E(filtros.join(' · ')) + '</small>' : '')) + '</div><div class="gd-au-ac"><button type="button" data-view="' + s.src + '" title="Abrir en el Dashboard" aria-label="Abrir en el Dashboard"><i class="fas fa-chart-pie"></i></button>' + (s.table ? '<button type="button" data-tsv="' + (S.tabs.push(s.table) - 1) + '" title="Copiar tabla" aria-label="Copiar tabla"><i class="far fa-copy"></i></button>' : '') + '</div></header>';
+    h += '<div class="gd-au-k">' + s.kpis.map(k => '<div><span>' + E(k.l) + '</span><b' + (k.c ? ' style="color:' + k.c + '"' : '') + '>' + E(k.v) + '</b>' + (k.s ? '<em>' + E(k.s) + '</em>' : '') + '</div>').join('') + '</div>';
+    if (s.spark) h += '<div class="gd-au-tr">' + spark(s.spark) + '</div>';
+    if (s.table) {
+      const t = s.table, rows = t.rows, lim = 8;
+      h += (t.title ? '<h5>' + E(t.title) + '</h5>' : '') + '<div class="gd-au-tw"><table class="gd-au-t"><thead><tr>' + t.cols.map(c => '<th class="' + (c.t === 'num' || c.t === 'res' ? 'n' : '') + '">' + E(c.l) + '</th>').join('') + '</tr></thead><tbody>' +
+        rows.map((r, i) => '<tr' + (r.ask != null ? ' class="ck" tabindex="0" role="button" data-act="' + r.ask + '"' : '') + (i >= lim ? ' class="mo' + (r.ask != null ? ' ck' : '') + '"' : '') + '>' + r.cells.map((v, j) => cell(t.cols[j], v)).join('') + '</tr>').join('') + '</tbody></table></div>';
+      if (rows.length > lim) h += '<button type="button" class="gd-au-more" data-more="1">Ver las ' + rows.length + ' filas</button>';
+    }
+    if (s.groups) {
+      h += s.groups.length ? '<div class="gd-au-dg">' + s.groups.map(g => '<div><h5>' + E(g.c) + ' <em>' + g.L.length + '</em></h5>' + g.L.slice(0, 12).map(f => { const k = RES_CLR[f.res]; return '<div class="gd-au-it"><span class="gd-au-bd" style="color:' + k[0] + ';background:' + k[1] + '">' + f.res + '</span><div><p>' + E(clip(f.item, 160)) + '</p>' + ((f.obs || f.om) ? '<small>' + E(clip(f.obs || f.om, 200)) + '</small>' : '') + '</div></div>'; }).join('') + (g.L.length > 12 ? '<small class="gd-au-mr">+' + (g.L.length - 12) + ' más</small>' : '') + '</div>').join('') + '</div>' : '<p class="gd-au-ok"><i class="fas fa-circle-check"></i> Sin hallazgos en esta auditoría.</p>';
+    }
+    if (s.table === null || (s.table && !s.table.rows.length)) h += '<p class="gd-au-ok"><i class="fas fa-circle-check"></i> No hay hallazgos con estos filtros.</p>';
+    return h + '</section>';
+  }
+  function chipsFor(q, secs){
+    const L = [], hasSede = q.sedes && q.sedes.length;
+    if (q.op === 'resumen') { L.push(['Cumplimiento por mes', { ...q, op: 'cumplimiento', agrupar: 'mes' }], ['Hallazgos por categoría', { ...q, op: 'hallazgos', agrupar: 'categoria' }]); }
+    if (q.op === 'cumplimiento') { L.push(['Hallazgos de este grupo', { ...q, op: 'hallazgos', agrupar: 'item' }], [q.agrupar === 'sede' ? 'Ver por mes' : 'Ver por sede', { ...q, agrupar: q.agrupar === 'sede' ? 'mes' : 'sede' }]); }
+    if (q.op === 'hallazgos') { L.push([q.agrupar === 'sede' ? 'Agrupar por categoría' : 'Agrupar por sede', { ...q, agrupar: q.agrupar === 'sede' ? 'categoria' : 'sede' }], ['Cumplimiento por mes', { ...q, op: 'cumplimiento', agrupar: 'mes' }]); }
+    if (q.op === 'detalle' || q.op === 'auditorias') L.push(['Resumen general', { ...q, op: 'resumen', auditoria: null, agrupar: null }]);
+    if (hasSede) L.push(['Quitar filtro de sede', { ...q, sedes: [] }]);
+    return L.slice(0, 4).map(([t, qq]) => [t, act(t, qq)]);
+  }
+
+  // ── Panel ─────────────────────────────────────
+  let ov = null, typeRaf = 0;
+  const SUG = [
+    ['fa-chart-line', 'Cumplimiento por mes de este año', { op: 'cumplimiento', agrupar: 'mes', anio: new Date().getFullYear() }],
+    ['fa-triangle-exclamation', 'Hallazgos no conformes por categoría', { op: 'hallazgos', agrupar: 'categoria', resultado: 'NC', fuente: 'sv' }],
+    ['fa-ranking-star', '¿Qué sedes tienen el menor cumplimiento?', { op: 'cumplimiento', agrupar: 'sede', orden: 'peor' }],
+    ['fa-file-lines', 'Resumen general de las auditorías', { op: 'resumen' }]
+  ];
+  function shell(){
+    if (ov) return;
+    ov = document.createElement('div'); ov.className = 'gd-ai-ov gd-au-ov';
+    ov.innerHTML = '<div class="gd-ai-sc"></div><aside class="gd-ai gd-au" role="dialog" aria-label="Asistente de auditorías" aria-modal="true">' +
+      '<header class="gd-ai-h"><span class="gd-ai-lg"><i class="fas fa-wand-magic-sparkles"></i></span><div><b>Asistente de auditorías</b><small id="au-st">Cargando auditorías…</small></div><button class="gd-ib" data-x="new" title="Nueva conversación" aria-label="Nueva conversación"><i class="fas fa-rotate-right"></i></button><button class="gd-ib" data-x="close" title="Cerrar (Esc)" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></header>' +
+      '<div class="gd-ai-pbw" id="au-pbw"><i id="au-pb"></i></div><div class="gd-ai-sp" id="au-sp"></div><div class="gd-ai-th" id="au-th" aria-live="polite"></div>' +
+      '<form class="gd-ai-cp" id="au-cp"><textarea id="au-q" rows="1" maxlength="400" placeholder="Pregunta sobre las auditorías…" aria-label="Tu pregunta"></textarea><button type="submit" class="gd-ai-sd" title="Enviar" aria-label="Enviar"><i class="fas fa-arrow-up"></i></button></form>' +
+      '<p class="gd-ai-ft">Las cifras salen de los datos de Qualisig. La IA solo interpreta tu pregunta y comenta el resultado.</p></aside>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', e => {
+      if (e.target.classList.contains('gd-ai-sc')) return hide();
+      const x = e.target.closest('[data-x]'); if (x) { if (x.dataset.x === 'close') hide(); if (x.dataset.x === 'new') reset(); return; }
+      const sg = e.target.closest('[data-sg]'); if (sg) { const s = SUG[+sg.dataset.sg]; ask(s[1], { q: { fuente: S.fuente || 'ambas', entidad: S.ent || null, sedes: [], meses: [], ...s[2] } }); return; }
+      const ac = e.target.closest('[data-act]'); if (ac) { const a = S.acts[+ac.dataset.act]; if (a) ask(a.t, { q: a.q }); return; }
+      const ch = e.target.closest('[data-chip]'); if (ch) { const a = S.acts[+ch.dataset.chip]; if (a) ask(a.t, { q: a.q }); return; }
+      const mo = e.target.closest('[data-more]'); if (mo) { const s = mo.closest('.gd-au-s'); s.classList.toggle('all'); mo.textContent = s.classList.contains('all') ? 'Ver menos' : 'Ver todas las filas'; return; }
+      const vw = e.target.closest('[data-view]'); if (vw) { hide(); try { switchModule('dashboard'); switchDashView(vw.dataset.view === 'pi' ? 'pi' : 'servicio'); } catch (er) { } return; }
+      const tv = e.target.closest('[data-tsv]'); if (tv) { const t = S.tabs[+tv.dataset.tsv]; if (t && navigator.clipboard) navigator.clipboard.writeText([t.cols.map(c => c.l).join('\t')].concat(t.rows.map(r => r.cells.map(v => Array.isArray(v) ? v[0] : v).join('\t'))).join('\n')).then(() => toast('Tabla copiada. Pégala en Excel o en un correo.', 'success')); return; }
+      const cp = e.target.closest('[data-copy]'); if (cp) { const m = S.msgs[+cp.dataset.copy]; if (m && navigator.clipboard) navigator.clipboard.writeText(m.text).then(() => toast('Respuesta copiada', 'success')); return; }
+      const sc = e.target.closest('[data-sf],[data-se]'); if (sc) { if (sc.dataset.sf !== undefined) S.fuente = sc.dataset.sf; if (sc.dataset.se !== undefined) S.ent = S.ent === sc.dataset.se ? '' : sc.dataset.se; paintScope(); return; }
+    });
+    ov.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); hide(); } if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('tr[data-act]')) { e.preventDefault(); e.target.click(); } });
+    const q = $('au-q');
+    q.addEventListener('input', () => { q.style.height = 'auto'; q.style.height = Math.min(140, q.scrollHeight) + 'px'; });
+    q.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('au-cp').requestSubmit(); } });
+    $('au-cp').addEventListener('submit', e => { e.preventDefault(); const v = q.value.trim(); if (!v) return; q.value = ''; q.style.height = 'auto'; ask(v); });
+  }
+  function paintScope(){
+    const sp = $('au-sp'); if (!sp) return;
+    const f = [['', 'Todas'], ['sv', 'Servicio'], ['pi', 'Paciente incógnito']], en = [['foca', 'FOCA'], ['viu', 'VIU']];
+    sp.innerHTML = f.map(([k, l]) => '<button class="gd-ai-chip' + ((S.fuente || '') === k ? ' on' : '') + '" data-sf="' + k + '">' + l + '</button>').join('') + '<i class="gd-au-sep"></i>' + en.map(([k, l]) => '<button class="gd-ai-chip' + (S.ent === k ? ' on' : '') + '" data-se="' + k + '">' + l + '</button>').join('');
+    paintStatus();
+  }
+  function paintStatus(){
+    const st = $('au-st'); if (!st) return; const ld = !!(D.p.sv || D.p.pi), a = D.sv ? D.sv.A.length : 0, b = D.pi ? D.pi.A.length : 0, bar = $('au-pb'), w = $('au-pbw');
+    st.innerHTML = '<i class="gd-ai-lv' + (ld ? ' ld' : (a || b) ? ' ok' : '') + '"></i>' + (ld ? 'Cargando auditorías…' : (D.err.sv && D.err.pi) ? 'No pude cargar los datos' : (a || b) ? a + ' de servicio · ' + b + ' de paciente incógnito' : 'Sin auditorías cargadas');
+    if (w) { w.classList.toggle('on', ld); if (bar) bar.style.transform = ld ? 'scaleX(.55)' : 'scaleX(0)'; }
+  }
+  function paintEmpty(){
+    $('au-th').innerHTML = '<div class="gd-ai-em"><h3>¿Qué quieres saber?</h3><p>Te armo informes aquí mismo: resumen por mes, hallazgos por sede o categoría, cumplimiento y el detalle de cada auditoría.</p><div class="gd-ai-sg">' + SUG.map((s, n) => '<button data-sg="' + n + '"><i class="fas ' + s[0] + '"></i><span>' + E(s[1]) + '</span></button>').join('') + '</div></div>';
+  }
+  function open(o){
+    shell(); o = o || {}; ov.classList.add('on'); document.documentElement.classList.add('gd-ai-lock'); paintScope();
+    if (!S.msgs.length) paintEmpty();
+    setTimeout(() => { const q = $('au-q'); if (q) q.focus(); }, 60);
+    loadAll().then(paintStatus);
+    if (o.q) ask(o.q);
+  }
+  function hide(){ if (!ov) return; ov.classList.remove('on'); document.documentElement.classList.remove('gd-ai-lock'); cancelAnimationFrame(typeRaf); }
+  function reset(){ S.msgs = []; S.busy = false; S.last = null; S.acts = []; S.tabs = []; paintEmpty(); const q = $('au-q'); if (q) q.focus(); }
+  const th = () => $('au-th');
+  const scroll = () => { const t = th(); if (t) t.scrollTo({ top: t.scrollHeight, behavior: 'smooth' }); };
+  function md(t){
+    const esc = E(t).replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>').replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,;:]|$)/g, '$1<i>$2</i>'), out = []; let list = null;
+    const close = () => { if (list) { out.push('</ul>'); list = null; } };
+    esc.split('\n').forEach(l => { const b = l.match(/^\s*(?:[-•*])\s+(.*)$/); if (b) { if (!list) { out.push('<ul>'); list = 1; } out.push('<li>' + b[1] + '</li>'); } else if (!l.trim()) close(); else { close(); out.push('<p>' + l + '</p>'); } });
+    close(); return out.join('');
+  }
+  function reveal(bd, text, done){
+    const words = text.split(/(\s+)/), per = Math.max(2, Math.ceil(words.length / 60)); let n = 0;
+    const tick = () => { n = Math.min(words.length, n + per); bd.innerHTML = md(words.slice(0, n).join('')); if (n < words.length) { typeRaf = requestAnimationFrame(tick); const t = th(); if (t && t.scrollHeight - t.scrollTop - t.clientHeight < 140) t.scrollTop = t.scrollHeight; } else done && done(); };
+    tick();
+  }
+  function addUser(text){ const t = th(); if (!S.msgs.length) t.innerHTML = ''; S.msgs.push({ r: 'u', text }); t.insertAdjacentHTML('beforeend', '<div class="gd-ai-m u"><p>' + E(text) + '</p></div>'); }
+  function addBot(){ const el = document.createElement('div'); el.className = 'gd-ai-m a'; el.innerHTML = '<div class="gd-ai-pr"><span class="gd-ai-dots"><i></i><i></i><i></i></span><span class="t">Entendiendo tu pregunta…</span></div><div class="gd-ai-bd"></div><div class="gd-au-rp"></div><div class="gd-au-cs"></div>'; th().appendChild(el); scroll(); return el; }
+  const step = (el, t) => { const s = el.querySelector('.gd-ai-pr .t'); if (s) s.textContent = t; };
+  const done = (el) => { const p = el.querySelector('.gd-ai-pr'); if (p) p.remove(); };
+
+  async function compose(text, secs, q){
+    const facts = secs.map(s => '## ' + s.title + '\n' + s.facts).join('\n\n').slice(0, 3600);
+    const sys = 'Eres el asistente de auditorías de Qualisig (FOCA y VIU). Redacta en español, cordial y breve (máximo 5 líneas). Usa SOLO las cifras de DATOS; no inventes nada. Empieza con una frase directa que responda la pregunta y añade hasta 3 viñetas con "- " que resalten lo más relevante (el mayor y el menor, la tendencia, qué conviene atender). No repitas tablas completas: el chat ya las muestra. Escala de riesgo: 92% o más bajo, 85–91% medio, menos de 85% alto. NC = no conforme, CP = cumple parcial; en paciente incógnito E excelente, B buena, A aceptable, D deficiente.';
+    return llm([{ role: 'system', content: sys }, { role: 'user', content: 'PREGUNTA: ' + text + '\nFILTROS: ' + (labelFiltros(q).join(', ') || 'ninguno') + '\nDATOS:\n' + facts }], { max: 420, temp: .25, timeout: 30000 });
+  }
+  function localText(secs, q){
+    const s = secs[0], k = s.kpis.map(x => x.l + ' ' + x.v).join(' · ');
+    return 'Aquí tienes ' + (secs.length > 1 ? 'los resultados de ambas auditorías' : 'el resultado') + '.\n- ' + secs.map(x => x.title.split(' · ')[0] + ': ' + x.kpis.slice(0, 3).map(y => y.l.toLowerCase() + ' ' + y.v).join(', ')).join('\n- ');
+  }
+
+  async function ask(text, ov2){
+    if (S.busy) return; text = String(text || '').trim(); if (!text) return;
+    S.busy = true; addUser(text); const el = addBot(); const bd = el.querySelector('.gd-ai-bd');
+    try {
+      const fk = !ov2 && friendly(text);
+      if (fk) { done(el); const r = friendlyReply(fk); S.msgs.push({ r: 'a', text: r }); reveal(bd, r, () => { if (fk === 'hola' || fk === 'ayuda') suggestChips(el); }); return; }
+      let q, intent = 'consulta', short = '';
+      if (ov2 && ov2.q) q = { sedes: [], meses: [], ...ov2.q };
+      else {
+        const ip = await interpret(text); const b = buildQuery(text, ip, S); intent = b.intent || 'consulta';
+        if (b.follow) q = b.q; else { q = b.q; short = b.short; }
+        if (intent !== 'consulta' && intent !== 'fuera_de_tema' && short) { done(el); S.msgs.push({ r: 'a', text: short }); reveal(bd, short, () => { if (intent === 'ayuda' || intent === 'saludo') suggestChips(el); }); return; }
+        if (intent === 'fuera_de_tema') { done(el); const r = short || 'Eso se sale de lo que manejo. Puedo ayudarte con las auditorías: resúmenes por mes, hallazgos por sede o categoría y cumplimiento.'; S.msgs.push({ r: 'a', text: r }); reveal(bd, r, () => suggestChips(el)); return; }
+      }
+      step(el, 'Revisando las auditorías…'); await loadAll();
+      const need = q.fuente === 'ambas' ? (D.sv || D.pi) : (q.fuente === 'sv' ? D.sv : D.pi);
+      if (!need) { done(el); el.classList.add('err'); bd.innerHTML = '<p>No pude cargar las auditorías ahora mismo. Revisa tu conexión e inténtalo de nuevo.</p>'; S.msgs.push({ r: 'a', text: 'Error de carga', err: 1 }); return; }
+      step(el, 'Armando el informe…');
+      const secs = run(q);
+      if (!secs.length) { done(el); const r = disponible(q); S.msgs.push({ r: 'a', text: r }); reveal(bd, r, () => suggestChips(el)); return; }
+      S.last = { ...q }; delete S.last.auditoria === undefined;
+      const fl = labelFiltros(q); const rp = el.querySelector('.gd-au-rp');
+      done(el); rp.innerHTML = secs.map(s => secHTML(s, fl)).join(''); rp.classList.add('in'); scroll();
+      bd.innerHTML = '<div class="gd-ai-pr"><span class="gd-ai-dots"><i></i><i></i><i></i></span><span class="t">Redactando el resumen…</span></div>';
+      let txt; try { txt = await compose(text, secs, q); } catch (e) { txt = localText(secs, q); }
+      bd.innerHTML = ''; S.msgs.push({ r: 'a', text: txt });
+      reveal(bd, txt, () => { suggestChips(el, q, secs); scroll(); });
+    } catch (e) {
+      done(el); el.classList.add('err'); bd.innerHTML = '<p>' + E((e && e.message) || 'Algo salió mal. Inténtalo de nuevo.') + '</p>'; S.msgs.push({ r: 'a', text: 'Error', err: 1 });
+    } finally { S.busy = false; }
+  }
+  function suggestChips(el, q, secs){
+    const box = el.querySelector('.gd-au-cs'); if (!box) return;
+    const L = q ? chipsFor(q, secs) : SUG.slice(0, 3).map(s => [s[1], act(s[1], { fuente: S.fuente || 'ambas', entidad: S.ent || null, sedes: [], meses: [], ...s[2] })]);
+    box.innerHTML = L.map(([t, i]) => '<button type="button" data-chip="' + i + '">' + E(t) + '</button>').join('') + (q ? '<button type="button" class="cp" data-copy="' + (S.msgs.length - 1) + '" aria-label="Copiar comentario"><i class="far fa-copy"></i></button>' : '');
+    scroll();
+  }
+
+  // ── Botón flotante ────────────────────────────
+  function fab(){
+    let b = $('au-fab');
+    if (!b) { b = document.createElement('button'); b.id = 'au-fab'; b.type = 'button'; b.className = 'gd-au-fab'; b.setAttribute('onclick', 'AAI.open()'); b.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i><span>Asistente</span>'; document.body.appendChild(b); }
+    const on = !!document.querySelector('#module-auditorias.active, #module-dashboard.active') && !document.querySelector('#screen-login.active, .gd-ai-ov.on');
+    b.classList.toggle('on', on);
+  }
+  setInterval(fab, 700);
+  window.AAI = { open, hide, ask, reset, data: D, run, localParse, friendly };
 })();
 
 /* ══ Documentos · ayudas móviles ══ */
