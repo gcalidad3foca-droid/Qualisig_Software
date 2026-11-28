@@ -5905,6 +5905,7 @@ mark{background:#FFF1B8;color:inherit;border-radius:3px;padding:0 1px}
 </head>
 <body>
 <div id="qs-splash" aria-hidden="true"></div>
+<script>(function(){var h=0;try{for(var i=0;i<localStorage.length;i++)if(/^firebase:authUser:/.test(localStorage.key(i))){h=1;break}}catch(e){}window.QS_SESS=h;if(!h){var s=document.getElementById("qs-splash");if(s)s.parentNode.removeChild(s)}})();</script>
 
 <!-- ══ SCREEN: LOGIN ══════════════════════════ -->
 <div id="screen-login" class="screen active">
@@ -7415,7 +7416,7 @@ function showScreen(name) {
 }
 
 (function(){
-  var H = document.documentElement, S = document.getElementById('qs-splash'), raw = window.showScreen, QS = window.QS = { pending: null, entered: false, t: 0, dataOk: false };
+  var H = document.documentElement, S = document.getElementById('qs-splash'), first = true, raw = window.showScreen, QS = window.QS = { pending: null, entered: false, t: 0, dataOk: false };
   QS.splashOff = function(){ if (!S || S.__off) return; S.__off = 1; S.classList.add('off'); setTimeout(function(){ if (S.parentNode) S.parentNode.removeChild(S); }, 600); };
   setTimeout(QS.splashOff, 10000);
   function animIn(n){ var el = document.getElementById('screen-' + n); if (!el) return; el.classList.remove('qs-in'); void el.offsetWidth; el.classList.add('qs-in'); setTimeout(function(){ el.classList.remove('qs-in'); el.style.willChange = ''; }, 800); }
@@ -7423,11 +7424,11 @@ function showScreen(name) {
   function go(){
     var n = QS.pending; QS.pending = null; QS.t = 0; QS.entered = true;
     var lg = document.getElementById('screen-login'), swap = function(){ raw(n); animIn(n); QS.splashOff(); };
-    if (lg && lg.classList.contains('active') && S && S.__off) { lg.classList.add('qs-out'); setTimeout(function(){ lg.classList.remove('qs-out'); swap(); }, 280); } else swap();
+    if (lg && lg.classList.contains('active') && (!S || S.__off)) { lg.classList.add('qs-out'); setTimeout(function(){ lg.classList.remove('qs-out'); swap(); }, 280); } else swap();
   }
   function tick(){ if (!QS.pending) return; var w = Date.now() - QS.t; if (ready(w) || w > 8000) go(); else setTimeout(tick, 40); }
   window.showScreen = function(name){
-    if (name === 'login') { QS.pending = null; QS.entered = false; raw(name); var lg = document.getElementById('screen-login'); lg.classList.remove('qs-in'); void lg.offsetWidth; lg.classList.add('qs-in'); setTimeout(function(){ lg.classList.remove('qs-in'); }, 900); QS.splashOff(); if (typeof svcWarm === 'function') setTimeout(function(){ try { svcWarm(); } catch (e) {} }, 900); return; }
+    if (name === 'login') { QS.pending = null; QS.entered = false; raw(name); var lg = document.getElementById('screen-login'); if (!first && (!S || S.__off)) { lg.classList.remove('qs-in'); void lg.offsetWidth; lg.classList.add('qs-in'); setTimeout(function(){ lg.classList.remove('qs-in'); }, 900); } first = false; QS.splashOff(); if (typeof svcWarm === 'function') setTimeout(function(){ try { svcWarm(); } catch (e) {} }, 900); return; }
     if (QS.entered) { raw(name); animIn(name); return; }
     var first = !QS.pending; QS.pending = name; if (first) { QS.t = Date.now(); setTimeout(tick, 0); }
   };
