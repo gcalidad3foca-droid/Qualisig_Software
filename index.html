@@ -5756,6 +5756,8 @@ mark{background:#FFF1B8;color:inherit;border-radius:3px;padding:0 1px}
 @media(max-width:640px){.gd-ai-h b{font-size:13.5px}.gd-ai-h b,.gd-ai-h small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}}
 
 .gd-au-fab.dock{height:42px;padding:0;justify-content:center;border-radius:13px;box-shadow:0 6px 16px -8px rgba(31,71,184,.5)}.gd-au-fab.dock.mini span{max-width:none;opacity:1}
+.gd-au-fab.dock{transition:left .28s cubic-bezier(.4,0,.2,1),width .28s cubic-bezier(.4,0,.2,1),bottom .28s cubic-bezier(.4,0,.2,1),background .15s,border-radius .28s,transform .15s;overflow:hidden}.gd-au-fab.dock span{max-width:160px;transition:max-width .2s,opacity .15s;white-space:nowrap}.gd-au-fab.dock.rail{height:38px;border-radius:12px;gap:0;background:rgba(31,71,184,.1);color:#1f47b8;box-shadow:none;border:1px solid rgba(31,71,184,.18)}.gd-au-fab.dock.rail span{max-width:0;opacity:0}.gd-au-fab.dock.rail:hover{background:#1f47b8;color:#fff}.gd-au-fab.dock.rail i{font-size:15px}
+@media(max-width:900px){.gd-au-fab{right:12px;width:40px;height:40px;padding:0;gap:0;justify-content:center;border-radius:14px;background:rgba(31,71,184,.92);box-shadow:0 6px 16px -6px rgba(31,71,184,.55);opacity:.92}.gd-au-fab span{max-width:0!important;opacity:0}.gd-au-fab i{font-size:15px}.gd-au-fab.mini{opacity:.55}}
 
 /* ══ Documentos · móvil ══ */
 .gd-dr-hd{display:none}
@@ -21096,14 +21098,15 @@ window.AAI_ITEMS={"foca":[["admisi-n-0","Verificar el saludo de bienvenida al us
   // ── Botón flotante ────────────────────────────
   function fab(){
     let b = $('au-fab');
-    if (!b) { b = document.createElement('button'); b.id = 'au-fab'; b.type = 'button'; b.className = 'gd-au-fab'; b.setAttribute('aria-label', 'Preguntar a la IA'); b.setAttribute('onclick', 'AAI.open()'); b.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i><span>Preguntar a la IA</span>'; document.body.appendChild(b);
+    if (!b) { b = document.createElement('button'); b.id = 'au-fab'; b.type = 'button'; b.className = 'gd-au-fab'; b.setAttribute('aria-label', 'Preguntar a la IA'); b.title = 'Preguntar a la IA'; b.setAttribute('onclick', 'AAI.open()'); b.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i><span>Preguntar a la IA</span>'; document.body.appendChild(b);
       let t = 0; window.addEventListener('scroll', () => { b.classList.add('mini'); clearTimeout(t); t = setTimeout(() => b.classList.remove('mini'), 900); }, { passive: true, capture: true }); }
     const on = !!document.querySelector('#module-auditorias.active, #module-dashboard.active') && !document.querySelector('#screen-login.active, .gd-ai-ov.on');
     b.classList.toggle('on', on);
     const sd = document.querySelector('.qs-side'), sr = sd && sd.getBoundingClientRect(), dock = !!sr && sr.width > 60 && window.innerWidth > 900;
     b.classList.toggle('dock', dock);
-    if (dock) { let u = document.getElementById('user-fullname'); while (u && u.parentElement && u.parentElement !== sd) u = u.parentElement; const ur = u && u.getBoundingClientRect(), mini = sr.width < 140;
-      b.style.cssText = 'left:' + Math.round(sr.left + 14) + 'px;right:auto;width:' + (mini ? 44 : Math.round(sr.width - 28)) + 'px;bottom:' + Math.round(window.innerHeight - (ur && ur.top > 0 ? ur.top : window.innerHeight - 90) + 10) + 'px'; return; }
+    if (dock) { const ins = document.getElementById('qs-install'), sf = sd.querySelector('.qs-sfoot'), vis = e => { const r = e && e.getBoundingClientRect(); return r && r.height > 0 ? r.top : 1e9; }, top = Math.min(vis(ins), vis(sf), window.innerHeight - 90), mini = sr.width < 140, w = mini ? 38 : Math.round(sr.width - 28);
+      b.classList.toggle('rail', mini); b.style.left = Math.round(mini ? sr.left + (sr.width - w) / 2 : sr.left + 14) + 'px'; b.style.right = 'auto'; b.style.width = w + 'px'; b.style.bottom = Math.round(window.innerHeight - top + 10) + 'px'; return; }
+    b.classList.remove('rail');
     b.style.left = b.style.right = b.style.width = '';
     const nv = document.getElementById('main-nav-tabs'), r = nv && nv.getBoundingClientRect(), mob = window.innerWidth <= 900 && r && r.width > 0 && r.top > window.innerHeight * .5 && r.bottom > window.innerHeight - 4;
     b.style.bottom = mob ? Math.round(window.innerHeight - r.top + 12) + 'px' : '';
