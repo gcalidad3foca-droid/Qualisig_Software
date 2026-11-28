@@ -5877,6 +5877,26 @@ mark{background:#FFF1B8;color:inherit;border-radius:3px;padding:0 1px}
 #screen-dashboard.qs-in .module.active>.audit-view.active>*:nth-child(3),#screen-dashboard.qs-in .module.active>.dash-view.active>*:nth-child(3){animation-delay:.4s}
 #screen-dashboard.qs-in .module.active>.audit-view.active>*:nth-child(4),#screen-dashboard.qs-in .module.active>.dash-view.active>*:nth-child(4){animation-delay:.48s}
 #screen-dashboard.qs-in .module.active>.audit-view.active>*:nth-child(n+5),#screen-dashboard.qs-in .module.active>.dash-view.active>*:nth-child(n+5){animation-delay:.56s}
+
+#qs-lo{position:fixed;inset:0;z-index:100000;display:grid;place-items:center;padding:20px;visibility:hidden;pointer-events:none}
+#qs-lo.on{visibility:visible;pointer-events:auto}
+.qs-lo-b{position:absolute;inset:0;background:rgba(14,26,51,.38);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .28s ease}
+.qs-lo-c{position:relative;width:100%;max-width:392px;padding:28px 28px 22px;border-radius:24px;background:#fff;text-align:center;box-shadow:0 0 0 1px rgba(14,26,51,.05),0 30px 70px -24px rgba(14,26,51,.45);opacity:0;transform:translate3d(0,14px,0) scale(.97);transition:opacity .28s ease,transform .38s cubic-bezier(.22,1,.36,1)}
+#qs-lo.on .qs-lo-b{opacity:1}#qs-lo.on .qs-lo-c{opacity:1;transform:none}
+#qs-lo:not(.on) .qs-lo-c,#qs-lo:not(.on) .qs-lo-b{transition-duration:.2s}
+.qs-lo-i{display:grid;place-items:center;width:52px;height:52px;margin:0 auto 16px;border-radius:16px;background:#EAF0FE;color:#1F47B8;font-size:19px}
+.qs-lo-c h3{margin:0 0 8px;font:800 20px/1.2 var(--q-f,Inter,system-ui,sans-serif);letter-spacing:-.02em;color:#0E1A33}
+.qs-lo-c p{margin:0 0 22px;font:500 14px/1.5 var(--q-f,Inter,system-ui,sans-serif);color:#68758E}
+.qs-lo-a{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qs-lo-a button{height:44px;border-radius:99px;border:1px solid #E4E9F2;background:#fff;color:#38455F;font:700 14px var(--q-f,Inter,system-ui,sans-serif);cursor:pointer;transition:background .18s,border-color .18s,transform .15s,box-shadow .18s}
+.qs-lo-a button:hover{background:#F7F9FC}.qs-lo-a button:active{transform:scale(.97)}
+.qs-lo-a .qs-lo-y{border-color:#1F47B8;background:#1F47B8;color:#fff;box-shadow:0 8px 18px -10px rgba(31,71,184,.7)}
+.qs-lo-a .qs-lo-y:hover{background:#193A98}.qs-lo-a .qs-lo-y[disabled]{opacity:.7;pointer-events:none}
+.qs-lo-a button:focus-visible{outline:2px solid #1F47B8;outline-offset:2px}
+#qs-cover{position:fixed;inset:0;z-index:99998;background:var(--qs-login-bg);opacity:0;transition:opacity .32s cubic-bezier(.4,0,.2,1);pointer-events:all}
+#qs-cover.on{opacity:1}
+html{background:#EEF3FD}
+@media(prefers-reduced-motion:reduce){.qs-lo-b,.qs-lo-c,#qs-cover{transition:none}}
 </style>
 <style id="qa-polish">#screen-admin{--qa-card-r:20px;--qa-ctl-r:14px;--qa-gap:22px;--qa-ease:cubic-bezier(.22,1,.36,1);--qa-pad:28px;--qa-sh:0 1px 2px rgba(14,26,51,.04),0 14px 34px -22px rgba(14,26,51,.22)}
 #screen-admin .qa-top{padding:12px var(--qa-pad);gap:12px;border-bottom:1px solid var(--q-line,#E4E9F2);background:rgba(250,251,253,.86)}
@@ -7443,10 +7463,38 @@ function showScreen(name) {
   }
   function tick(){ if (!QS.pending) return; var w = Date.now() - QS.t; if (ready(w) || w > 8000) go(); else setTimeout(tick, 40); }
   window.showScreen = function(name){
-    if (name === 'login') { QS.pending = null; QS.entered = false; raw(name); var lg = document.getElementById('screen-login'); if (!first && (!S || S.__off)) { lg.classList.remove('qs-in'); void lg.offsetWidth; lg.classList.add('qs-in'); setTimeout(function(){ lg.classList.remove('qs-in'); }, 900); } first = false; QS.splashOff(); if (typeof svcWarm === 'function') setTimeout(function(){ try { svcWarm(); } catch (e) {} }, 900); return; }
+    if (name === 'login') { QS.pending = null; QS.entered = false; raw(name); var lg = document.getElementById('screen-login'); if (!first && !QS.out && (!S || S.__off)) { lg.classList.remove('qs-in'); void lg.offsetWidth; lg.classList.add('qs-in'); setTimeout(function(){ lg.classList.remove('qs-in'); }, 900); } first = false; QS.splashOff(); if (typeof svcWarm === 'function') setTimeout(function(){ try { svcWarm(); } catch (e) {} }, 900); return; }
     if (QS.entered) { raw(name); animIn(name); return; }
     var first = !QS.pending; QS.pending = name; if (first) { QS.t = Date.now(); setTimeout(tick, 0); }
   };
+})();
+/* ── Cerrar sesión: confirmación + salida sin parpadeo ── */
+(function(){
+  var QS = window.QS, dlg = null, last = null;
+  try { if (sessionStorage.getItem('qsOut')) { sessionStorage.removeItem('qsOut'); } } catch (e) {}
+  function build(){
+    dlg = document.createElement('div'); dlg.id = 'qs-lo'; dlg.setAttribute('role', 'alertdialog'); dlg.setAttribute('aria-modal', 'true'); dlg.setAttribute('aria-labelledby', 'qs-lo-t'); dlg.setAttribute('aria-describedby', 'qs-lo-d');
+    dlg.innerHTML = '<div class="qs-lo-b"></div><div class="qs-lo-c"><span class="qs-lo-i"><i class="fas fa-arrow-right-from-bracket"></i></span><h3 id="qs-lo-t">¿Cerrar sesión?</h3><p id="qs-lo-d">Saldrás de Qualisig en este dispositivo. Para volver a entrar tendrás que ingresar tu correo y contraseña.</p><div class="qs-lo-a"><button type="button" class="qs-lo-n">Cancelar</button><button type="button" class="qs-lo-y">Cerrar sesión</button></div></div>';
+    document.body.appendChild(dlg);
+    dlg.querySelector('.qs-lo-b').addEventListener('click', close); dlg.querySelector('.qs-lo-n').addEventListener('click', close); dlg.querySelector('.qs-lo-y').addEventListener('click', confirmOut);
+    dlg.addEventListener('keydown', function(e){ if (e.key === 'Escape') { e.preventDefault(); close(); } else if (e.key === 'Tab') { var b = dlg.querySelectorAll('button'), f = b[0], l = b[b.length - 1]; if (e.shiftKey && document.activeElement === f) { e.preventDefault(); l.focus(); } else if (!e.shiftKey && document.activeElement === l) { e.preventDefault(); f.focus(); } } });
+  }
+  function open(){ if (QS.out) return; if (!dlg) build(); last = document.activeElement; dlg.classList.remove('off'); void dlg.offsetWidth; dlg.classList.add('on'); setTimeout(function(){ var n = dlg.querySelector('.qs-lo-n'); if (n) n.focus({ preventScroll: true }); }, 60); }
+  function close(){ if (!dlg) return; dlg.classList.remove('on'); try { if (last && last.focus) last.focus({ preventScroll: true }); } catch (e) {} }
+  function confirmOut(){
+    var y = dlg.querySelector('.qs-lo-y'); y.disabled = true; QS.out = true;
+    try { sessionStorage.setItem('qsOut', '1'); } catch (e) {}
+    var t = document.getElementById('toast'); if (t) t.classList.remove('show');
+    var cv = document.createElement('div'); cv.id = 'qs-cover'; document.body.appendChild(cv); void cv.offsetWidth; cv.classList.add('on');
+    dlg.classList.remove('on');
+    setTimeout(function(){ try { window.__qsDoLogout(); } catch (e) { try { auth.signOut(); } catch (e2) {} } }, 320);
+    setTimeout(function(){ if (document.getElementById('qs-cover')) location.reload(); }, 4000);
+  }
+  QS.askLogout = open;
+  window.addEventListener('load', function(){
+    if (typeof window.doLogout === 'function' && !window.__qsDoLogout) { window.__qsDoLogout = window.doLogout; window.doLogout = function(){ open(); }; }
+    if (typeof window.showToast === 'function' && !window.__qsShowToast) { window.__qsShowToast = window.showToast; window.showToast = function(){ if (QS.out) return; return window.__qsShowToast.apply(this, arguments); }; }
+  });
 })();
 
 
