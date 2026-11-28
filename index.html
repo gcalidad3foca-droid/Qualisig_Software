@@ -5542,6 +5542,211 @@ body.gd-lock{overflow:hidden}
 .gd-guide span{font-size:14px;line-height:1.45;color:var(--muted)}
 .gd-empty{padding:24px 8px 8px!important}
 }
+/* ══ Asistente documental (IA) ══ */
+.gd-ai-ov{position:fixed;inset:0;z-index:9400;pointer-events:none;visibility:hidden}
+.gd-ai-ov.on{pointer-events:auto;visibility:visible}
+.gd-ai-sc{position:absolute;inset:0;background:rgba(14,26,51,.32);opacity:0;transition:opacity .25s}
+.gd-ai-ov.on .gd-ai-sc{opacity:1}
+.gd-ai{position:absolute;top:0;right:0;bottom:0;width:min(500px,100vw);background:#fff;display:flex;flex-direction:column;box-shadow:-24px 0 60px -28px rgba(14,26,51,.45);transform:translateX(28px);opacity:0;transition:transform .35s var(--ease),opacity .25s;font-family:var(--fnt)}
+.gd-ai-ov.on .gd-ai{transform:none;opacity:1}
+.gd-ai-h{display:flex;align-items:center;gap:12px;padding:16px 16px 12px 20px}
+.gd-ai-h>div{flex:1;min-width:0}.gd-ai-h b{display:block;font-size:16px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+.gd-ai-h small{display:block;font-size:12.5px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gd-ai-lg{width:38px;height:38px;border-radius:12px;background:var(--brand-soft);color:var(--blue);display:grid;place-items:center;font-size:16px;flex:none}
+.gd-ai-h .gd-ib{width:38px;height:38px}
+.gd-ai-sp{display:flex;gap:8px;padding:2px 20px 12px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line2)}
+.gd-ai-sp::-webkit-scrollbar{display:none}
+.gd-ai-chip{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 14px;border-radius:99px;border:1px solid var(--line);background:#fff;font:600 13px var(--fnt);color:var(--ink2);cursor:pointer;white-space:nowrap;flex:none;transition:background .15s,border-color .15s,color .15s}
+.gd-ai-chip:hover{background:var(--wash)}
+.gd-ai-chip.on{background:var(--brand-soft);border-color:var(--brand-line);color:var(--blue)}
+.gd-ai-chip.doc{padding-right:6px}.gd-ai-chip.doc button{border:0;background:transparent;width:22px;height:22px;border-radius:50%;cursor:pointer;color:var(--muted);display:grid;place-items:center}
+.gd-ai-chip.doc button:hover{background:rgba(14,26,51,.08)}
+.gd-ai-th{flex:1;overflow-y:auto;padding:18px 20px 8px;display:flex;flex-direction:column;gap:18px;scroll-behavior:smooth}
+.gd-ai-em{margin:auto 0;padding:8px 0 16px}
+.gd-ai-em h3{margin:0 0 6px;font-size:24px;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+.gd-ai-em p{margin:0 0 18px;font-size:14px;line-height:1.5;color:var(--muted);max-width:380px}
+.gd-ai-sg{display:grid;gap:8px}
+.gd-ai-sg button{display:flex;align-items:center;gap:12px;text-align:left;padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:#fff;font:600 14px/1.35 var(--fnt);color:var(--ink2);cursor:pointer;transition:border-color .15s,background .15s,transform .15s}
+.gd-ai-sg button:hover{border-color:var(--brand-line);background:var(--wash);transform:translateY(-1px)}
+.gd-ai-sg button i{color:var(--blue);width:18px;text-align:center;flex:none}
+.gd-ai-m{max-width:100%;animation:qsFade .3s var(--ease) backwards}
+.gd-ai-m.u{align-self:flex-end;max-width:88%}
+.gd-ai-m.u p{margin:0;padding:10px 14px;border-radius:18px 18px 4px 18px;background:var(--blue);color:#fff;font-size:14.5px;line-height:1.45;font-weight:500}
+.gd-ai-m.a{color:var(--ink);font-size:14.5px;line-height:1.6}
+.gd-ai-bd p{margin:0 0 9px}.gd-ai-bd ul,.gd-ai-bd ol{margin:0 0 9px;padding-left:20px}.gd-ai-bd li{margin:0 0 5px}
+.gd-ai-bd b{font-weight:700}
+.gd-ai-m.err .gd-ai-bd{color:#9A3B1B;background:#FFF3EC;border:1px solid #F7D3BF;border-radius:12px;padding:10px 12px}
+.gd-ai-m.err .gd-ai-bd p{margin:0}
+.gd-ai-pr{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13.5px;font-weight:600;padding:2px 0 6px}
+.gd-ai-dots{display:inline-flex;gap:4px}.gd-ai-dots i{width:6px;height:6px;border-radius:50%;background:var(--blue);opacity:.25;animation:gdAiD 1s infinite ease-in-out}
+.gd-ai-dots i:nth-child(2){animation-delay:.15s}.gd-ai-dots i:nth-child(3){animation-delay:.3s}
+@keyframes gdAiD{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+.gd-cite{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;margin:0 2px;border:0;border-radius:6px;background:var(--brand-soft);color:var(--blue);font:700 11px var(--fnt);cursor:pointer;vertical-align:1px;transition:background .15s,color .15s}
+.gd-cite:hover{background:var(--blue);color:#fff}
+.gd-ai-sr{display:none;margin-top:12px}.gd-ai-sr.on{display:block;animation:qsFade .35s var(--ease) backwards}
+.gd-ai-sr h5{margin:0 0 8px;font:700 11.5px var(--fnt);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.gd-src{border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:8px;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.gd-src.pulse{animation:gdPulse 1.2s ease}
+@keyframes gdPulse{0%{box-shadow:0 0 0 0 rgba(53,99,233,.45);border-color:var(--blue)}100%{box-shadow:0 0 0 10px rgba(53,99,233,0)}}
+.gd-src-b{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;background:transparent;text-align:left;cursor:pointer;font:500 13px/1.3 var(--fnt);color:var(--ink2)}
+.gd-src-b .n{flex:none;width:22px;height:22px;border-radius:7px;background:var(--brand-soft);color:var(--blue);display:grid;place-items:center;font:700 11.5px var(--fnt)}
+.gd-src-b .tx{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gd-src-b .tx b{font-weight:800;color:var(--ink)}
+.gd-src-b em{font-style:normal;font-size:11.5px;color:var(--muted);flex:none}
+.gd-src-b>i{font-size:11px;color:var(--muted);transition:transform .2s;flex:none}
+.gd-src.open .gd-src-b>i{transform:rotate(180deg)}
+.gd-src-x{display:none;padding:0 12px 12px 44px}.gd-src.open .gd-src-x{display:block}
+.gd-src-x small{display:block;font:700 11.5px var(--fnt);color:var(--muted);margin-bottom:4px}
+.gd-src-x p{margin:0 0 10px;font-size:13px;line-height:1.55;color:var(--ink2)}
+mark{background:#FFF1B8;color:inherit;border-radius:3px;padding:0 1px}
+.gd-src-more{margin-top:4px}.gd-src-more summary{cursor:pointer;font:600 12.5px var(--fnt);color:var(--muted);padding:6px 2px;list-style:none}
+.gd-src-more summary::-webkit-details-marker{display:none}.gd-src-more[open] summary{margin-bottom:8px}
+.gd-ai-ac{display:flex;gap:6px;margin-top:6px}
+.gd-ai-lk{border:0;background:transparent;font:600 12.5px var(--fnt);color:var(--muted);cursor:pointer;padding:6px 8px;border-radius:8px}
+.gd-ai-lk:hover{background:var(--wash);color:var(--ink)}
+.gd-ai-cp{display:flex;align-items:flex-end;gap:8px;margin:8px 16px 0;padding:6px 6px 6px 16px;border:1.5px solid var(--line);border-radius:22px;background:#fff;transition:border-color .15s,box-shadow .15s}
+.gd-ai-cp:focus-within{border-color:var(--blue);box-shadow:0 0 0 4px rgba(53,99,233,.12)}
+.gd-ai-cp textarea{flex:1;border:0;outline:0;resize:none;font:500 15px/1.45 var(--fnt);color:var(--ink);padding:8px 0;max-height:140px;background:transparent}
+.gd-ai-sd{flex:none;width:40px;height:40px;border-radius:50%;border:0;background:var(--blue);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .15s,transform .15s}
+.gd-ai-sd:hover{background:var(--blue2)}.gd-ai-sd:active{transform:scale(.92)}
+.gd-ai-ft{margin:8px 20px 14px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.4}
+.gd-ai-back{position:fixed;right:20px;bottom:76px;z-index:8100;height:44px;padding:0 18px;border:0;border-radius:99px;background:var(--blue);color:#fff;font:700 13.5px var(--fnt);display:inline-flex;align-items:center;gap:8px;cursor:pointer;box-shadow:0 14px 30px -12px rgba(31,71,184,.75);animation:qsFade .3s var(--ease) backwards}
+.gd-hl{background:#FFF1B8!important;box-shadow:0 0 0 5px #FFF1B8;border-radius:3px;animation:gdHl 6s ease forwards}
+@keyframes gdHl{0%,70%{background:#FFE98A}100%{background:transparent;box-shadow:0 0 0 5px transparent}}
+@media(max-width:640px){.gd-ai{width:100vw}.gd-ai-m.u{max-width:92%}.gd-src-x{padding-left:12px}.gd-ai-back{bottom:84px}}
+/* control de cambios con IA */
+.gd-mod.gd-ccm{max-width:680px}
+.gd-ccm .sub{margin:2px 0 14px;font-size:13.5px;color:var(--muted)}
+.gd-ccm .gd-ta{min-height:128px;font-size:14px;line-height:1.55}
+.gd-cc-st{margin-top:8px;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:8px;min-height:20px}
+.gd-cc-ls{margin-top:16px;max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:14px;background:var(--wash);padding:4px 12px}
+.gd-cc-ls h5{margin:12px 0 6px;font:700 11.5px var(--fnt);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.gd-dfi{padding:10px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.5;color:var(--ink2)}
+.gd-dfi:first-of-type{border-top:0}
+.gd-dfi .b{display:inline-block;font:800 10.5px var(--fnt);letter-spacing:.05em;padding:2px 8px;border-radius:6px;margin-right:8px}
+.gd-dfi.k-add .b{background:#DDF3E4;color:#14663F}.gd-dfi.k-del .b{background:#FFE3E0;color:#9A2B22}.gd-dfi.k-mod .b{background:#FFE9C9;color:#9A4B00}
+.gd-dfi small{color:var(--muted);font-weight:600}
+.gd-dfi .df{margin-top:4px}
+.gd-dfi ins{background:#CFEFD9;text-decoration:none;border-radius:3px;padding:0 2px}
+.gd-dfi del{background:#FFD9D5;color:#8a2b22;border-radius:3px;padding:0 2px}
+.gd-cc .it p,.gd-cc p{white-space:pre-line}
+/* ── pulido del asistente ── */
+.gd-ai-h{padding:18px 16px 14px 20px}
+.gd-ai-lg{background:linear-gradient(145deg,var(--brand-soft),#fff);border:1px solid var(--brand-line);box-shadow:0 6px 16px -10px rgba(31,71,184,.55)}
+.gd-ai-h small{display:flex;align-items:center;gap:7px}
+.gd-ai-lv{width:7px;height:7px;border-radius:50%;background:var(--line);flex:none}
+.gd-ai-lv.ok{background:#1F9D63;box-shadow:0 0 0 3px rgba(31,157,99,.16)}
+.gd-ai-lv.ld{background:var(--blue);animation:gdLd 1s infinite ease-in-out}
+@keyframes gdLd{0%,100%{box-shadow:0 0 0 0 rgba(53,99,233,.5)}50%{box-shadow:0 0 0 5px rgba(53,99,233,0)}}
+.gd-ai-pbw{height:2px;background:transparent;overflow:hidden;margin:0 20px;border-radius:2px;opacity:0;transition:opacity .25s}
+.gd-ai-pbw.on{opacity:1;background:var(--line2)}
+.gd-ai-pbw i{display:block;height:100%;background:var(--blue);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease);border-radius:2px}
+.gd-ai-sp{padding-top:12px}
+.gd-ai-em{padding-top:10px}
+.gd-ai-em::before{content:'\e2ca';font-family:'Font Awesome 6 Free','Font Awesome 5 Free';font-weight:900;display:grid;place-items:center;width:46px;height:46px;margin-bottom:16px;border-radius:14px;background:var(--brand-soft);color:var(--blue);font-size:18px}
+.gd-ai-sg button{padding:12px 14px;box-shadow:0 1px 0 rgba(14,26,51,.03)}
+.gd-ai-sg button i{width:30px;height:30px;border-radius:9px;background:var(--brand-soft);display:grid;place-items:center;font-size:13px}
+.gd-ai-sg button:hover{box-shadow:0 10px 22px -16px rgba(31,71,184,.5)}
+.gd-ai-m.u p{box-shadow:0 8px 18px -12px rgba(31,71,184,.6)}
+.gd-ai-m.a{padding-left:0}
+.gd-ai-pr .t{background:linear-gradient(90deg,var(--muted) 0,var(--ink) 50%,var(--muted) 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:gdSh 1.6s linear infinite}
+@keyframes gdSh{to{background-position:-200% 0}}
+.gd-ai-bd p:last-child{margin-bottom:0}
+.gd-ai-bd b{color:var(--ink)}
+.gd-cite{box-shadow:inset 0 0 0 1px var(--brand-line)}
+.gd-src{border-radius:14px;box-shadow:0 1px 0 rgba(14,26,51,.03)}
+.gd-src:hover{border-color:var(--brand-line)}
+.gd-src.open{border-color:var(--brand-line);box-shadow:0 12px 26px -20px rgba(31,71,184,.55)}
+.gd-src.open .gd-src-x{animation:qsFade .25s var(--ease) backwards}
+.gd-src-x p{border-left:2px solid var(--brand-line);padding-left:10px}
+.gd-ai-sr h5{display:flex;align-items:center;gap:8px}
+.gd-ai-sr h5::after{content:'';flex:1;height:1px;background:var(--line2)}
+.gd-ai-pt{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;padding:9px 12px;border-radius:12px;background:var(--wash);border:1px solid var(--line2);font-size:12.5px;color:var(--muted);animation:qsFade .3s var(--ease) backwards}
+.gd-ai-pt .c{flex:1;min-width:160px}
+.gd-ai-pt button{border:0;border-radius:99px;padding:6px 12px;background:var(--blue);color:#fff;font:700 12px var(--fnt);cursor:pointer;transition:background .15s,opacity .15s}
+.gd-ai-pt button:disabled{opacity:.4;cursor:default}
+.gd-ai-cp{margin:10px 16px 0;box-shadow:0 10px 26px -20px rgba(14,26,51,.45)}
+.gd-ai-ft{margin-bottom:max(14px,env(safe-area-inset-bottom))}
+.gd-ai-th{scroll-padding-bottom:20px;mask-image:linear-gradient(to bottom,transparent 0,#000 14px);-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14px)}
+@media(prefers-reduced-motion:reduce){.gd-ai-pr .t,.gd-ai-lv.ld{animation:none}}
+
+/* ══ Documentos · móvil ══ */
+.gd-dr-hd{display:none}
+@media(max-width:700px){
+  /* listado */
+  .gd-top{margin-bottom:14px;gap:10px}
+  .gd-top h1{font-size:26px}
+  .gd-acts{display:grid;grid-template-columns:44px auto minmax(0,1fr);gap:8px;width:100%}
+  .gd-acts .gd-ib{width:44px;height:44px}
+  .gd-acts .gd-btn{height:44px;padding:0 14px;justify-content:center;white-space:nowrap}
+  .gd-seg{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%;margin:0 -2px 14px;-webkit-overflow-scrolling:touch}
+  .gd-seg::-webkit-scrollbar{display:none}
+  .gd-seg button{flex:none;height:38px}
+  .gd-bar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-bottom:12px}
+  .gd-bar .gd-search{grid-column:1/-1}
+  .gd-bar .gd-sel,.gd-bar .gd-btn{width:100%;min-width:0;height:42px;font-size:16px;text-overflow:ellipsis}
+  .gd-bar .gd-btn{justify-content:center;font-size:14px}
+  .gd-search input,.gd-mod input,.gd-mod select,.gd-mod textarea,.gd-ta,.gd-dr textarea{font-size:16px!important}
+  /* ventanas como hoja inferior */
+  .gd-ovl{align-items:flex-end;padding:0}
+  .gd-mod,.gd-mod.wide{max-width:100%!important;border-radius:24px 24px 0 0;margin:auto 0 0;max-height:92dvh;overflow:auto;padding:22px 18px max(18px,env(safe-area-inset-bottom));animation:gdSheet .32s var(--ease) both}
+  .gd-mod.wide .l{padding:22px 18px}
+  .gd-mod .ft{position:sticky;bottom:calc(-1 * max(18px,env(safe-area-inset-bottom)));background:#fff;padding:12px 0 2px;margin-top:14px;border-top:1px solid var(--line2)}
+  .gd-mod .ft{flex-wrap:wrap}
+  .gd-mod .ft .gd-btn{flex:1 1 40%;justify-content:center;height:46px;white-space:nowrap}
+  .gd-adm{grid-template-columns:minmax(0,1fr)!important}.gd-adm>*{min-width:0}
+  .gd-adm-n{margin:0 -2px 12px}.gd-adm-n button{flex:none}
+  .gd-card{overflow-x:auto}
+  .gd-row:has(>input),.gd-row:has(>select){grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px}
+  .gd-row:has(>input)>button{grid-column:1/-1;width:100%!important;height:44px!important}
+  .gd-row:has(>input) .gd-in,.gd-row:has(>input) .gd-sel{width:100%;min-width:0;height:44px}
+  .gd-cc-ls{max-height:34dvh}
+  .gd-mod::before{content:'';display:block;width:38px;height:4px;border-radius:4px;background:var(--line);margin:-8px auto 14px}
+  /* editor */
+  .gd-tb{padding:6px 10px 4px;gap:6px 8px}
+  .gd-tb .ti small{display:flex!important;font-size:11.5px;gap:6px}
+  .gd-tb .ti small img{height:13px}
+  .gd-tb .ac{-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent);padding-right:18px}
+  .gd-tb .gd-btn{height:40px;min-width:40px}
+  .gd-guid{display:block!important;padding:0!important;min-height:0;border-bottom:1px solid var(--line2)}
+  .gd-guid .gd-steps{display:none!important}
+  .gd-guid .gd-hint{display:block;padding:6px 12px;font-size:12.5px;line-height:1.4;background:var(--wash);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .gd-guid .gd-hint i{margin-right:6px}
+  .gd-guid .gd-hint span{white-space:normal;overflow:visible;display:inline}
+  .gd-guid .gd-hint .gd-btn{display:none}
+  .gd-rtabs{padding:0 6px;gap:2px;overflow-x:auto;scrollbar-width:none}
+  .gd-rtabs::-webkit-scrollbar{display:none}
+  .gd-rtabs button{flex:none}
+  .gd-rtabs .rcol,.gd-rtabs .sp{display:none}
+  .gd-rb.col .gd-rpane{display:flex}
+  .gd-rpane{min-height:0;padding:6px 6px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  .gd-g{padding:0 8px;scroll-snap-align:start}
+  .gd-g .gn{display:none}
+  .gd-g .gb,.gd-g .gb.col{flex-direction:row;flex-wrap:nowrap;align-items:center;min-height:44px;gap:3px}
+  .gd-g .gb .row{flex:none}
+  .gd-rpane button,.gd-rpane .gd-rbn{min-width:40px;min-height:40px}
+  .gd-rpane select,.gd-rpane input{font-size:15px;min-height:40px}
+  .gd-cv{padding:8px 4px 90px}
+  .gd-sheet.fl .hd{padding-top:14px}.gd-sheet.fl .ft{padding-bottom:20px}
+  .gd-sheet.fl .gd-hd td{font-size:8px;padding:3px 3px;word-break:normal;overflow-wrap:normal;hyphens:auto}
+  .gd-sheet.fl .gd-hd .lg{padding:3px}.gd-sheet.fl .gd-hd .lg img{max-height:30px;width:auto;max-width:100%}
+  .gd-sheet.fl .gd-ft td{font-size:8px;padding:4px 4px}
+  .gd-sbar{padding:6px 10px;gap:10px}
+  .gd-sbar #gd-wc{display:inline!important}
+  .gd-sbar.fl input[type=range],.gd-sbar.fl #gd-zl{display:none}
+  .gd-fl{margin-left:auto;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--line);border-radius:99px;background:#fff;font:600 12.5px var(--fnt);color:var(--ink2);cursor:pointer;flex:none}
+  .gd-sbar .sp{display:none}
+  /* ficha / comentarios / historial a pantalla completa */
+  .gd-dr{position:fixed!important;inset:0;width:100%!important;max-width:100%;z-index:9300;border-left:0}
+  .gd-dr-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 12px 4px 18px}
+  .gd-dr-hd b{font-size:16px;font-weight:800;color:var(--ink)}
+  .gd-dr-hd button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer}
+  .gd-dr .tabs{overflow-x:auto;scrollbar-width:none}
+  .gd-dr .pn{padding:14px 16px max(20px,env(safe-area-inset-bottom))}
+  /* asistente */
+  .gd-ai-cp textarea{font-size:16px}
+}
+@keyframes gdSheet{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+
 </style>
 <style id="qs-isoicon">i.qs-iso-i::before{content:"";display:block;width:1em;height:1em;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Cpath d=%22M12.00 1.10 L12.12 1.11 L12.23 1.14 L12.35 1.19 L12.46 1.26 L12.57 1.35 L12.67 1.46 L12.77 1.57 L12.87 1.70 L12.97 1.83 L13.06 1.97 L13.14 2.11 L13.23 2.24 L13.31 2.37 L13.39 2.50 L13.47 2.61 L13.55 2.71 L13.63 2.79 L13.71 2.86 L13.80 2.92 L13.89 2.95 L13.98 2.96 L14.08 2.96 L14.19 2.95 L14.30 2.91 L14.42 2.87 L14.55 2.81 L14.68 2.74 L14.81 2.67 L14.96 2.59 L15.10 2.52 L15.25 2.44 L15.40 2.37 L15.54 2.31 L15.69 2.26 L15.83 2.23 L15.97 2.21 L16.10 2.20 L16.23 2.21 L16.34 2.24 L16.45 2.29 L16.55 2.36 L16.63 2.44 L16.70 2.55 L16.76 2.66 L16.81 2.79 L16.85 2.94 L16.88 3.09 L16.91 3.25 L16.92 3.41 L16.93 3.57 L16.94 3.74 L16.94 3.90 L16.95 4.05 L16.96 4.20 L16.97 4.34 L16.99 4.46 L17.01 4.58 L17.05 4.68 L17.10 4.76 L17.16 4.84 L17.24 4.90 L17.32 4.95 L17.42 4.99 L17.54 5.01 L17.66 5.03 L17.80 5.04 L17.95 5.05 L18.10 5.06 L18.26 5.06 L18.43 5.07 L18.59 5.08 L18.75 5.09 L18.91 5.12 L19.06 5.15 L19.21 5.19 L19.34 5.24 L19.45 5.30 L19.56 5.37 L19.64 5.45 L19.71 5.55 L19.76 5.66 L19.79 5.77 L19.80 5.90 L19.79 6.03 L19.77 6.17 L19.74 6.31 L19.69 6.46 L19.63 6.60 L19.56 6.75 L19.48 6.90 L19.41 7.04 L19.33 7.19 L19.26 7.32 L19.19 7.45 L19.13 7.58 L19.09 7.70 L19.05 7.81 L19.04 7.92 L19.04 8.02 L19.05 8.11 L19.08 8.20 L19.14 8.29 L19.21 8.37 L19.29 8.45 L19.39 8.53 L19.50 8.61 L19.63 8.69 L19.76 8.77 L19.89 8.86 L20.03 8.94 L20.17 9.03 L20.30 9.13 L20.43 9.23 L20.54 9.33 L20.65 9.43 L20.74 9.54 L20.81 9.65 L20.86 9.77 L20.89 9.88 L20.90 10.00 L20.89 10.12 L20.86 10.23 L20.81 10.35 L20.74 10.46 L20.65 10.57 L20.54 10.67 L20.43 10.77 L20.30 10.87 L20.17 10.97 L20.03 11.06 L19.89 11.14 L19.76 11.23 L19.63 11.31 L19.50 11.39 L19.39 11.47 L19.29 11.55 L19.21 11.63 L19.14 11.71 L19.08 11.80 L19.05 11.89 L19.04 11.98 L19.04 12.08 L19.05 12.19 L19.09 12.30 L19.13 12.42 L19.19 12.55 L19.26 12.68 L19.33 12.81 L19.41 12.96 L19.48 13.10 L19.56 13.25 L19.63 13.40 L19.69 13.54 L19.74 13.69 L19.77 13.83 L19.79 13.97 L19.80 14.10 L19.79 14.23 L19.76 14.34 L19.71 14.45 L19.64 14.55 L19.56 14.63 L19.45 14.70 L19.34 14.76 L19.21 14.81 L19.06 14.85 L18.91 14.88 L18.75 14.91 L18.59 14.92 L18.43 14.93 L18.26 14.94 L18.10 14.94 L17.95 14.95 L17.80 14.96 L17.66 14.97 L17.54 14.99 L17.42 15.01 L17.32 15.05 L17.24 15.10 L17.16 15.16 L17.10 15.24 L17.05 15.32 L17.01 15.42 L16.99 15.54 L16.97 15.66 L16.96 15.80 L16.95 15.95 L16.94 16.10 L16.94 16.26 L16.93 16.43 L16.92 16.59 L16.91 16.75 L16.88 16.91 L16.85 17.06 L16.81 17.21 L16.76 17.34 L16.70 17.45 L16.63 17.56 L16.55 17.64 L16.45 17.71 L16.34 17.76 L16.23 17.79 L16.10 17.80 L15.97 17.79 L15.83 17.77 L15.69 17.74 L15.54 17.69 L15.40 17.63 L15.25 17.56 L15.10 17.48 L14.96 17.41 L14.81 17.33 L14.68 17.26 L14.55 17.19 L14.42 17.13 L14.30 17.09 L14.19 17.05 L14.08 17.04 L13.98 17.04 L13.89 17.05 L13.80 17.08 L13.71 17.14 L13.63 17.21 L13.55 17.29 L13.47 17.39 L13.39 17.50 L13.31 17.63 L13.23 17.76 L13.14 17.89 L13.06 18.03 L12.97 18.17 L12.87 18.30 L12.77 18.43 L12.67 18.54 L12.57 18.65 L12.46 18.74 L12.35 18.81 L12.23 18.86 L12.12 18.89 L12.00 18.90 L11.88 18.89 L11.77 18.86 L11.65 18.81 L11.54 18.74 L11.43 18.65 L11.33 18.54 L11.23 18.43 L11.13 18.30 L11.03 18.17 L10.94 18.03 L10.86 17.89 L10.77 17.76 L10.69 17.63 L10.61 17.50 L10.53 17.39 L10.45 17.29 L10.37 17.21 L10.29 17.14 L10.20 17.08 L10.11 17.05 L10.02 17.04 L9.92 17.04 L9.81 17.05 L9.70 17.09 L9.58 17.13 L9.45 17.19 L9.32 17.26 L9.19 17.33 L9.04 17.41 L8.90 17.48 L8.75 17.56 L8.60 17.63 L8.46 17.69 L8.31 17.74 L8.17 17.77 L8.03 17.79 L7.90 17.80 L7.77 17.79 L7.66 17.76 L7.55 17.71 L7.45 17.64 L7.37 17.56 L7.30 17.45 L7.24 17.34 L7.19 17.21 L7.15 17.06 L7.12 16.91 L7.09 16.75 L7.08 16.59 L7.07 16.43 L7.06 16.26 L7.06 16.10 L7.05 15.95 L7.04 15.80 L7.03 15.66 L7.01 15.54 L6.99 15.42 L6.95 15.32 L6.90 15.24 L6.84 15.16 L6.76 15.10 L6.68 15.05 L6.58 15.01 L6.46 14.99 L6.34 14.97 L6.20 14.96 L6.05 14.95 L5.90 14.94 L5.74 14.94 L5.57 14.93 L5.41 14.92 L5.25 14.91 L5.09 14.88 L4.94 14.85 L4.79 14.81 L4.66 14.76 L4.55 14.70 L4.44 14.63 L4.36 14.55 L4.29 14.45 L4.24 14.34 L4.21 14.23 L4.20 14.10 L4.21 13.97 L4.23 13.83 L4.26 13.69 L4.31 13.54 L4.37 13.40 L4.44 13.25 L4.52 13.10 L4.59 12.96 L4.67 12.81 L4.74 12.68 L4.81 12.55 L4.87 12.42 L4.91 12.30 L4.95 12.19 L4.96 12.08 L4.96 11.98 L4.95 11.89 L4.92 11.80 L4.86 11.71 L4.79 11.63 L4.71 11.55 L4.61 11.47 L4.50 11.39 L4.37 11.31 L4.24 11.23 L4.11 11.14 L3.97 11.06 L3.83 10.97 L3.70 10.87 L3.57 10.77 L3.46 10.67 L3.35 10.57 L3.26 10.46 L3.19 10.35 L3.14 10.23 L3.11 10.12 L3.10 10.00 L3.11 9.88 L3.14 9.77 L3.19 9.65 L3.26 9.54 L3.35 9.43 L3.46 9.33 L3.57 9.23 L3.70 9.13 L3.83 9.03 L3.97 8.94 L4.11 8.86 L4.24 8.77 L4.37 8.69 L4.50 8.61 L4.61 8.53 L4.71 8.45 L4.79 8.37 L4.86 8.29 L4.92 8.20 L4.95 8.11 L4.96 8.02 L4.96 7.92 L4.95 7.81 L4.91 7.70 L4.87 7.58 L4.81 7.45 L4.74 7.32 L4.67 7.19 L4.59 7.04 L4.52 6.90 L4.44 6.75 L4.37 6.60 L4.31 6.46 L4.26 6.31 L4.23 6.17 L4.21 6.03 L4.20 5.90 L4.21 5.77 L4.24 5.66 L4.29 5.55 L4.36 5.45 L4.44 5.37 L4.55 5.30 L4.66 5.24 L4.79 5.19 L4.94 5.15 L5.09 5.12 L5.25 5.09 L5.41 5.08 L5.57 5.07 L5.74 5.06 L5.90 5.06 L6.05 5.05 L6.20 5.04 L6.34 5.03 L6.46 5.01 L6.58 4.99 L6.68 4.95 L6.76 4.90 L6.84 4.84 L6.90 4.76 L6.95 4.68 L6.99 4.58 L7.01 4.46 L7.03 4.34 L7.04 4.20 L7.05 4.05 L7.06 3.90 L7.06 3.74 L7.07 3.57 L7.08 3.41 L7.09 3.25 L7.12 3.09 L7.15 2.94 L7.19 2.79 L7.24 2.66 L7.30 2.55 L7.37 2.44 L7.45 2.36 L7.55 2.29 L7.66 2.24 L7.77 2.21 L7.90 2.20 L8.03 2.21 L8.17 2.23 L8.31 2.26 L8.46 2.31 L8.60 2.37 L8.75 2.44 L8.90 2.52 L9.04 2.59 L9.19 2.67 L9.32 2.74 L9.45 2.81 L9.58 2.87 L9.70 2.91 L9.81 2.95 L9.92 2.96 L10.02 2.96 L10.11 2.95 L10.20 2.92 L10.29 2.86 L10.37 2.79 L10.45 2.71 L10.53 2.61 L10.61 2.50 L10.69 2.37 L10.77 2.24 L10.86 2.11 L10.94 1.97 L11.03 1.83 L11.13 1.70 L11.23 1.57 L11.33 1.46 L11.43 1.35 L11.54 1.26 L11.65 1.19 L11.77 1.14 L11.88 1.11ZM12.00 15.60 L10.70 23.20 L8.80 21.50 L5.50 23.20 L7.30 15.20ZM16.70 15.20 L18.50 23.20 L15.20 21.50 L13.30 23.20 L12.00 15.60ZM10.90 13.90 L16.90 7.90 L15.40 6.40 L10.90 10.90 L8.80 8.80 L7.30 10.30Z%22/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Cpath d=%22M12.00 1.10 L12.12 1.11 L12.23 1.14 L12.35 1.19 L12.46 1.26 L12.57 1.35 L12.67 1.46 L12.77 1.57 L12.87 1.70 L12.97 1.83 L13.06 1.97 L13.14 2.11 L13.23 2.24 L13.31 2.37 L13.39 2.50 L13.47 2.61 L13.55 2.71 L13.63 2.79 L13.71 2.86 L13.80 2.92 L13.89 2.95 L13.98 2.96 L14.08 2.96 L14.19 2.95 L14.30 2.91 L14.42 2.87 L14.55 2.81 L14.68 2.74 L14.81 2.67 L14.96 2.59 L15.10 2.52 L15.25 2.44 L15.40 2.37 L15.54 2.31 L15.69 2.26 L15.83 2.23 L15.97 2.21 L16.10 2.20 L16.23 2.21 L16.34 2.24 L16.45 2.29 L16.55 2.36 L16.63 2.44 L16.70 2.55 L16.76 2.66 L16.81 2.79 L16.85 2.94 L16.88 3.09 L16.91 3.25 L16.92 3.41 L16.93 3.57 L16.94 3.74 L16.94 3.90 L16.95 4.05 L16.96 4.20 L16.97 4.34 L16.99 4.46 L17.01 4.58 L17.05 4.68 L17.10 4.76 L17.16 4.84 L17.24 4.90 L17.32 4.95 L17.42 4.99 L17.54 5.01 L17.66 5.03 L17.80 5.04 L17.95 5.05 L18.10 5.06 L18.26 5.06 L18.43 5.07 L18.59 5.08 L18.75 5.09 L18.91 5.12 L19.06 5.15 L19.21 5.19 L19.34 5.24 L19.45 5.30 L19.56 5.37 L19.64 5.45 L19.71 5.55 L19.76 5.66 L19.79 5.77 L19.80 5.90 L19.79 6.03 L19.77 6.17 L19.74 6.31 L19.69 6.46 L19.63 6.60 L19.56 6.75 L19.48 6.90 L19.41 7.04 L19.33 7.19 L19.26 7.32 L19.19 7.45 L19.13 7.58 L19.09 7.70 L19.05 7.81 L19.04 7.92 L19.04 8.02 L19.05 8.11 L19.08 8.20 L19.14 8.29 L19.21 8.37 L19.29 8.45 L19.39 8.53 L19.50 8.61 L19.63 8.69 L19.76 8.77 L19.89 8.86 L20.03 8.94 L20.17 9.03 L20.30 9.13 L20.43 9.23 L20.54 9.33 L20.65 9.43 L20.74 9.54 L20.81 9.65 L20.86 9.77 L20.89 9.88 L20.90 10.00 L20.89 10.12 L20.86 10.23 L20.81 10.35 L20.74 10.46 L20.65 10.57 L20.54 10.67 L20.43 10.77 L20.30 10.87 L20.17 10.97 L20.03 11.06 L19.89 11.14 L19.76 11.23 L19.63 11.31 L19.50 11.39 L19.39 11.47 L19.29 11.55 L19.21 11.63 L19.14 11.71 L19.08 11.80 L19.05 11.89 L19.04 11.98 L19.04 12.08 L19.05 12.19 L19.09 12.30 L19.13 12.42 L19.19 12.55 L19.26 12.68 L19.33 12.81 L19.41 12.96 L19.48 13.10 L19.56 13.25 L19.63 13.40 L19.69 13.54 L19.74 13.69 L19.77 13.83 L19.79 13.97 L19.80 14.10 L19.79 14.23 L19.76 14.34 L19.71 14.45 L19.64 14.55 L19.56 14.63 L19.45 14.70 L19.34 14.76 L19.21 14.81 L19.06 14.85 L18.91 14.88 L18.75 14.91 L18.59 14.92 L18.43 14.93 L18.26 14.94 L18.10 14.94 L17.95 14.95 L17.80 14.96 L17.66 14.97 L17.54 14.99 L17.42 15.01 L17.32 15.05 L17.24 15.10 L17.16 15.16 L17.10 15.24 L17.05 15.32 L17.01 15.42 L16.99 15.54 L16.97 15.66 L16.96 15.80 L16.95 15.95 L16.94 16.10 L16.94 16.26 L16.93 16.43 L16.92 16.59 L16.91 16.75 L16.88 16.91 L16.85 17.06 L16.81 17.21 L16.76 17.34 L16.70 17.45 L16.63 17.56 L16.55 17.64 L16.45 17.71 L16.34 17.76 L16.23 17.79 L16.10 17.80 L15.97 17.79 L15.83 17.77 L15.69 17.74 L15.54 17.69 L15.40 17.63 L15.25 17.56 L15.10 17.48 L14.96 17.41 L14.81 17.33 L14.68 17.26 L14.55 17.19 L14.42 17.13 L14.30 17.09 L14.19 17.05 L14.08 17.04 L13.98 17.04 L13.89 17.05 L13.80 17.08 L13.71 17.14 L13.63 17.21 L13.55 17.29 L13.47 17.39 L13.39 17.50 L13.31 17.63 L13.23 17.76 L13.14 17.89 L13.06 18.03 L12.97 18.17 L12.87 18.30 L12.77 18.43 L12.67 18.54 L12.57 18.65 L12.46 18.74 L12.35 18.81 L12.23 18.86 L12.12 18.89 L12.00 18.90 L11.88 18.89 L11.77 18.86 L11.65 18.81 L11.54 18.74 L11.43 18.65 L11.33 18.54 L11.23 18.43 L11.13 18.30 L11.03 18.17 L10.94 18.03 L10.86 17.89 L10.77 17.76 L10.69 17.63 L10.61 17.50 L10.53 17.39 L10.45 17.29 L10.37 17.21 L10.29 17.14 L10.20 17.08 L10.11 17.05 L10.02 17.04 L9.92 17.04 L9.81 17.05 L9.70 17.09 L9.58 17.13 L9.45 17.19 L9.32 17.26 L9.19 17.33 L9.04 17.41 L8.90 17.48 L8.75 17.56 L8.60 17.63 L8.46 17.69 L8.31 17.74 L8.17 17.77 L8.03 17.79 L7.90 17.80 L7.77 17.79 L7.66 17.76 L7.55 17.71 L7.45 17.64 L7.37 17.56 L7.30 17.45 L7.24 17.34 L7.19 17.21 L7.15 17.06 L7.12 16.91 L7.09 16.75 L7.08 16.59 L7.07 16.43 L7.06 16.26 L7.06 16.10 L7.05 15.95 L7.04 15.80 L7.03 15.66 L7.01 15.54 L6.99 15.42 L6.95 15.32 L6.90 15.24 L6.84 15.16 L6.76 15.10 L6.68 15.05 L6.58 15.01 L6.46 14.99 L6.34 14.97 L6.20 14.96 L6.05 14.95 L5.90 14.94 L5.74 14.94 L5.57 14.93 L5.41 14.92 L5.25 14.91 L5.09 14.88 L4.94 14.85 L4.79 14.81 L4.66 14.76 L4.55 14.70 L4.44 14.63 L4.36 14.55 L4.29 14.45 L4.24 14.34 L4.21 14.23 L4.20 14.10 L4.21 13.97 L4.23 13.83 L4.26 13.69 L4.31 13.54 L4.37 13.40 L4.44 13.25 L4.52 13.10 L4.59 12.96 L4.67 12.81 L4.74 12.68 L4.81 12.55 L4.87 12.42 L4.91 12.30 L4.95 12.19 L4.96 12.08 L4.96 11.98 L4.95 11.89 L4.92 11.80 L4.86 11.71 L4.79 11.63 L4.71 11.55 L4.61 11.47 L4.50 11.39 L4.37 11.31 L4.24 11.23 L4.11 11.14 L3.97 11.06 L3.83 10.97 L3.70 10.87 L3.57 10.77 L3.46 10.67 L3.35 10.57 L3.26 10.46 L3.19 10.35 L3.14 10.23 L3.11 10.12 L3.10 10.00 L3.11 9.88 L3.14 9.77 L3.19 9.65 L3.26 9.54 L3.35 9.43 L3.46 9.33 L3.57 9.23 L3.70 9.13 L3.83 9.03 L3.97 8.94 L4.11 8.86 L4.24 8.77 L4.37 8.69 L4.50 8.61 L4.61 8.53 L4.71 8.45 L4.79 8.37 L4.86 8.29 L4.92 8.20 L4.95 8.11 L4.96 8.02 L4.96 7.92 L4.95 7.81 L4.91 7.70 L4.87 7.58 L4.81 7.45 L4.74 7.32 L4.67 7.19 L4.59 7.04 L4.52 6.90 L4.44 6.75 L4.37 6.60 L4.31 6.46 L4.26 6.31 L4.23 6.17 L4.21 6.03 L4.20 5.90 L4.21 5.77 L4.24 5.66 L4.29 5.55 L4.36 5.45 L4.44 5.37 L4.55 5.30 L4.66 5.24 L4.79 5.19 L4.94 5.15 L5.09 5.12 L5.25 5.09 L5.41 5.08 L5.57 5.07 L5.74 5.06 L5.90 5.06 L6.05 5.05 L6.20 5.04 L6.34 5.03 L6.46 5.01 L6.58 4.99 L6.68 4.95 L6.76 4.90 L6.84 4.84 L6.90 4.76 L6.95 4.68 L6.99 4.58 L7.01 4.46 L7.03 4.34 L7.04 4.20 L7.05 4.05 L7.06 3.90 L7.06 3.74 L7.07 3.57 L7.08 3.41 L7.09 3.25 L7.12 3.09 L7.15 2.94 L7.19 2.79 L7.24 2.66 L7.30 2.55 L7.37 2.44 L7.45 2.36 L7.55 2.29 L7.66 2.24 L7.77 2.21 L7.90 2.20 L8.03 2.21 L8.17 2.23 L8.31 2.26 L8.46 2.31 L8.60 2.37 L8.75 2.44 L8.90 2.52 L9.04 2.59 L9.19 2.67 L9.32 2.74 L9.45 2.81 L9.58 2.87 L9.70 2.91 L9.81 2.95 L9.92 2.96 L10.02 2.96 L10.11 2.95 L10.20 2.92 L10.29 2.86 L10.37 2.79 L10.45 2.71 L10.53 2.61 L10.61 2.50 L10.69 2.37 L10.77 2.24 L10.86 2.11 L10.94 1.97 L11.03 1.83 L11.13 1.70 L11.23 1.57 L11.33 1.46 L11.43 1.35 L11.54 1.26 L11.65 1.19 L11.77 1.14 L11.88 1.11ZM12.00 15.60 L10.70 23.20 L8.80 21.50 L5.50 23.20 L7.30 15.20ZM16.70 15.20 L18.50 23.20 L15.20 21.50 L13.30 23.20 L12.00 15.60ZM10.90 13.90 L16.90 7.90 L15.40 6.40 L10.90 10.90 L8.80 8.80 L7.30 10.30Z%22/%3E%3C/svg%3E") center/contain no-repeat}.nav-tab i.qs-iso-i{font-size:19px}</style>
 </head>
@@ -9096,7 +9301,7 @@ function switchModule(name) {
   if (name === 'equipo')         renderEquipo();
   if (name === 'indicadores')    initIndicadoresModule();
   if (name === 'autoeval')       ISOA.init();
-  if (name === 'documental')     { try { DOCS.init(); } catch(e){ console.error(e); } }
+  if (name === 'documental')     { try { DOCS.init(); } catch(e){ console.error(e); } try { GDAI.warm(); } catch(e){} }
   if (name !== 'documental')     { try { DOCS.leave(); } catch(e){} }
 }
 
@@ -17232,6 +17437,7 @@ html.qsp-admin #tab-config{display:flex!important}
     <div class="qa-sp"></div>
     <button class="qa-btn" id="qa-back" type="button" onclick="qaVolver()" hidden><i class="fas fa-arrow-left"></i><span>Volver a Qualisig</span></button>
     <button class="qa-btn" id="qa-bk" type="button" onclick="qaRespaldo(this)"><i class="fas fa-database"></i><span>Respaldo</span></button>
+    <button class="qa-btn" type="button" onclick="qaGrupos()"><i class="fas fa-users-gear"></i><span>Grupos y roles</span></button>
     <button class="qa-btn pri" type="button" onclick="qaNuevo()"><i class="fas fa-user-plus"></i><span>Nuevo usuario</span></button>
     <button class="qa-btn" type="button" onclick="doLogout()" title="Cerrar sesión" aria-label="Cerrar sesión"><i class="fas fa-arrow-right-from-bracket"></i></button>
   </header>
@@ -17319,7 +17525,15 @@ const QA_TREE = [
     { t:'Acciones', i:'fa-list-check', items:[
       ['doc.crear','Crear documentos','Iniciar un documento nuevo en elaboración',['DOCS.nuevo','DOCS.crear'],0],
       ['doc.exportar','Exportar listado maestro','Descargar el listado en Excel',['DOCS.excel'],1],
-      ['doc.config','Configurar el módulo','Tipos, procesos, consecutivos y plantillas',['DOCS.addTipo','DOCS.delTipo','DOCS.addProc','DOCS.delProc','DOCS.addSub','DOCS.delSub','DOCS.setCounter','DOCS.addCounter','DOCS.editTpl','DOCS.resetTpl','DOCS.gNuevo','DOCS.gDel','DOCS.gAdd','DOCS.gQuit','DOCS.gCap','DOCS.gName'],1] ]} ]},
+      ['doc.ia','Asistente de IA: preguntar y resumir','Preguntar por los documentos y resumir un documento',['DOCS.ask'],1],
+      ['doc.iaCambios','Redactar el control de cambios con IA','Comparar con la versión anterior y proponer el texto',[],0] ]},
+    { k:'doc.cfg', t:'Configuración del módulo', i:'fa-sliders', items:[
+      ['doc.cfg.inst','Instituciones y encabezado','Crear o quitar instituciones; nombre y logo',['DOCS.addInst','DOCS.delInst'],1],
+      ['doc.cfg.tipos','Tipos de documento y abreviaturas','Crear, renombrar y quitar tipos',['DOCS.addTipo','DOCS.delTipo'],1],
+      ['doc.cfg.procesos','Procesos y subprocesos','Crear, renombrar y quitar procesos',['DOCS.addProc','DOCS.addSub','DOCS.delProc','DOCS.delSub'],1],
+      ['doc.cfg.cons','Consecutivos','Ajustar la numeración de documentos',['DOCS.setCounter','DOCS.addCounter'],1],
+      ['doc.cfg.tpl','Plantillas','Editar y restablecer plantillas',['DOCS.editTpl','DOCS.resetTpl'],1],
+      ['doc.cfg.admin','Administradores del módulo','Nombrar o quitar administradores',['DOCS.addAdmin','DOCS.rmAdmin'],1] ]} ]},
   { k:'general', t:'Herramientas generales', i:'fa-wand-magic-sparkles', d:'Funciones disponibles en varios módulos', groups:[
     { t:'Inteligencia artificial', i:'fa-wand-magic-sparkles', items:[
       ['gen.ia','Mejorar redacción con IA','Reescribir textos con ayuda de la IA',['mejorarRedaccionIA','aplicarTextoMejorado'],1] ]} ]}
@@ -17359,7 +17573,7 @@ function qaDenied() { showToast('Su usuario no tiene permiso para esta acción.'
 function qaGet(name) { var m = /^(ISOA|DOCS)\./.exec(name); if (m) return window[m[1]] && window[m[1]][name.slice(m[0].length)]; return window[name]; }
 function qaSet(name, fn) { var m = /^(ISOA|DOCS)\./.exec(name); if (m) { if (window[m[1]]) window[m[1]][name.slice(m[0].length)] = fn; } else window[name] = fn; }
 function qaApply(raw) {
-  const P = qaNorm(raw).permisos, h = document.documentElement; let css = '';
+  const P = (window.QA_CUR = qaNorm(raw).permisos), h = document.documentElement; let css = '';
   const show = (id, on) => { const el = document.getElementById(id); if (el) el.classList.toggle('qsp-off', !on); };
   QA_TREE.forEach(m => {
     if (m.tab) show(m.tab, P['mod.' + m.k] !== false);
@@ -17658,6 +17872,67 @@ async function qaActivarTodos() {
   });
 })();
 </script>
+<script id="qa-grupos">
+/* ══ Grupos y roles de Documentos (administración de Qualisig) ══ */
+const QG_CAPS = [
+  ['editar', 'Editar el contenido', 'Modificar y guardar cualquier documento en elaboración, revisión o aprobación.'],
+  ['versionar', 'Cambio de forma y nueva versión', 'Corregir la forma o crear una nueva versión de un documento activo.'],
+  ['flujo', 'Mover el flujo', 'Enviar a revisión, aprobar, devolver y activar. La firma queda a nombre de quien actúa.'],
+  ['obsoleto', 'Marcar obsoleto', 'Retirar de uso documentos activos.'],
+  ['reasignar', 'Reasignar responsables', 'Cambiar quién elabora, revisa y aprueba.']
+];
+function qaGrupos() {
+  const ov = document.createElement('div'); ov.className = 'qa-ov';
+  ov.innerHTML = '<div class="qa-mod" style="width:min(760px,100%);max-height:92vh;display:flex;flex-direction:column"><div class="qa-mh"><h3>Grupos y roles</h3><p>Módulo Documentos. Un grupo (por ejemplo, Calidad) puede trabajar sobre cualquier documento sin entrar con la cuenta de otra persona. Cada acción queda en el historial con el nombre de quien la hizo. Aplica a FOCA y a VIU.</p></div>' +
+    '<div class="qa-mb" style="overflow:auto;flex:1;min-height:0" id="qg-b"></div><div class="qa-mf"><button type="button" class="qa-btn" data-x>Cerrar</button></div></div>';
+  document.body.appendChild(ov); requestAnimationFrame(() => ov.classList.add('on'));
+  const ref = db.ref('gdoc/grupos'); let G = {}, err = '';
+  const body = ov.querySelector('#qg-b');
+  const close = () => { ref.off('value', on); ov.classList.remove('on'); setTimeout(() => ov.remove(), 250); };
+  const fail = e => { showToast('No se pudo guardar: ' + (e && e.message || e), 'error'); };
+  function render() {
+    const keep = (ov.querySelector('#qg-new') || {}).value || '';
+    const us = qaUsers(), ids = Object.keys(G).sort((a, b) => ((G[a] || {}).nombre || '').localeCompare((G[b] || {}).nombre || '', 'es'));
+    body.innerHTML = '<div style="display:flex;gap:10px"><input id="qg-new" placeholder="Nombre del nuevo grupo. Ej. Calidad" style="flex:1;height:46px;border-radius:12px;border:1px solid var(--q-line,#E4E9F2);background:var(--q-wash,#F7F9FC);padding:0 14px;font:inherit;font-size:15px;font-weight:600;outline:none"><button type="button" class="qa-btn pri" data-a="new"><i class="fas fa-plus"></i>Crear grupo</button></div>' +
+      (err ? '<div class="qa-err">' + qaEsc(err) + '</div>' : '') +
+      (ids.length ? ids.map(k => {
+        const g = G[k] || {}, mem = g.miembros || {}, perm = g.permisos || {}, memIds = Object.keys(mem);
+        const libres = us.filter(u => !mem[u.uid]);
+        return '<div class="qa-card" style="padding:16px;box-shadow:none;border:1px solid var(--q-line,#E4E9F2);display:grid;gap:12px" data-g="' + k + '">' +
+          '<div style="display:flex;gap:10px"><input data-f="nombre" value="' + qaEsc(g.nombre || '') + '" style="flex:1;height:44px;border-radius:12px;border:1px solid var(--q-line,#E4E9F2);background:#fff;padding:0 14px;font:inherit;font-size:15px;font-weight:800;outline:none"><button type="button" class="qa-btn dng" data-a="del" title="Eliminar grupo" aria-label="Eliminar grupo"><i class="fas fa-trash"></i></button></div>' +
+          '<div><div class="qa-l" style="font-weight:800;margin-bottom:8px">Integrantes (' + memIds.length + ')</div><div style="display:flex;flex-wrap:wrap;gap:8px">' +
+            (memIds.map(u => { const x = us.find(y => y.uid === u) || { uid: u, nombre: 'Usuario', foto: '' }; return '<span style="display:inline-flex;align-items:center;gap:8px;padding:5px 6px 5px 6px;border:1px solid var(--q-line,#E4E9F2);border-radius:99px;font-size:13.5px;font-weight:700">' + qaAv(x) + qaEsc(x.nombre) + '<button type="button" data-a="quit" data-u="' + u + '" aria-label="Quitar" style="border:0;background:transparent;cursor:pointer;width:24px;height:24px;border-radius:50%;color:#68758E"><i class="fas fa-xmark"></i></button></span>'; }).join('') || '<span class="qa-l">Aún no hay personas en este grupo.</span>') +
+          '</div></div>' +
+          (libres.length ? '<div style="display:flex;gap:10px"><select data-f="add" style="flex:1;height:44px;border-radius:12px;border:1px solid var(--q-line,#E4E9F2);background:#fff;padding:0 12px;font:inherit;font-size:14.5px;font-weight:600">' + libres.map(u => '<option value="' + u.uid + '">' + qaEsc(u.nombre) + '</option>').join('') + '</select><button type="button" class="qa-btn" data-a="add"><i class="fas fa-user-plus"></i>Agregar</button></div>' : '') +
+          '<div><div class="qa-l" style="font-weight:800;margin-bottom:8px">Qué puede hacer en cualquier documento</div><div style="display:grid;gap:8px">' +
+          QG_CAPS.map(c => '<label class="qa-it"><span class="qa-itt"><b>' + c[1] + '</b><small>' + c[2] + '</small></span><span class="qa-tgl"><input type="checkbox" data-cap="' + c[0] + '"' + (perm[c[0]] ? ' checked' : '') + ' aria-label="' + c[1] + '"><span class="qa-tg"></span></span></label>').join('') + '</div></div></div>';
+      }).join('') : '<div class="qa-empty" style="padding:28px 0"><i class="fas fa-users-gear"></i>Todavía no hay grupos. Crea el primero, por ejemplo «Calidad».</div>');
+    const n = ov.querySelector('#qg-new'); if (n) n.value = keep;
+  }
+  function on(s) { G = s.val() || {}; render(); }
+  ref.on('value', on, e => { err = 'No se pudieron leer los grupos: ' + e.message; render(); });
+  ov.addEventListener('click', async e => {
+    if (e.target === ov || e.target.closest('[data-x]')) return close();
+    const b = e.target.closest('[data-a]'); if (!b) return;
+    const gEl = b.closest('[data-g]'), k = gEl && gEl.dataset.g, a = b.dataset.a;
+    try {
+      if (a === 'new') { const v = ov.querySelector('#qg-new').value.trim(); if (!v) { ov.querySelector('#qg-new').focus(); return; } ov.querySelector('#qg-new').value = ''; await ref.push({ nombre: v, permisos: { editar: true, versionar: true } }); }
+      if (a === 'del' && confirm('¿Eliminar este grupo? Sus integrantes dejarán de tener esos permisos.')) await ref.child(k).remove();
+      if (a === 'quit') await ref.child(k + '/miembros/' + b.dataset.u).remove();
+      if (a === 'add') { const u = gEl.querySelector('[data-f=add]').value; if (u) await ref.child(k + '/miembros/' + u).set(true); }
+    } catch (x) { fail(x); }
+  });
+  ov.addEventListener('change', e => {
+    const gEl = e.target.closest('[data-g]'); if (!gEl) return; const k = gEl.dataset.g;
+    if (e.target.dataset.cap) ref.child(k + '/permisos/' + e.target.dataset.cap).set(e.target.checked).catch(fail);
+    else if (e.target.dataset.f === 'nombre') { const v = e.target.value.trim(); if (v) ref.child(k + '/nombre').set(v).catch(fail); else e.target.value = (G[k] || {}).nombre || ''; }
+  });
+  ov.addEventListener('keydown', e => { if (e.key === 'Escape') close(); if (e.key === 'Enter' && e.target.id === 'qg-new') { e.preventDefault(); ov.querySelector('[data-a=new]').click(); } });
+}
+
+window.qaAllow = function (k) { return !window.QA_CUR || qaCan(window.QA_CUR, k); };
+
+</script>
 <script id="gd-js">
 /* ══ Documentos · enlace con la barra del Qualisig ══ */
 window.QS=window.QS||{};
@@ -17791,8 +18066,8 @@ window.DOCS = (function(){
   const TINY_ES = 'https://cdn.jsdelivr.net/npm/tinymce-i18n@23.10.9/langs6/es.js';
   const MAMMOTH = 'https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js';
   const INSTS = {
-    foca: { c:'FOCA', nombre:'FUNDACION OFTALMOLOGICA DEL CARIBE', logo:'https://i.imgur.com/gkAallJ.png' },
-    viu:  { c:'VIU',  nombre:'VIU CLINICA OFTALMOLOGICA INTERNACIONAL', logo:'https://i.imgur.com/IitwgHx.png' }
+    foca: { c:'FOCA', oficial:true, nombre:'FUNDACION OFTALMOLOGICA DEL CARIBE', logo:'https://i.imgur.com/gkAallJ.png' },
+    viu:  { c:'VIU',  oficial:true, nombre:'VIU CLINICA OFTALMOLOGICA INTERNACIONAL', logo:'https://i.imgur.com/IitwgHx.png' }
   };
   const IK = Object.keys(INSTS);
 
@@ -17812,7 +18087,10 @@ window.DOCS = (function(){
   const CNT = i => cntBy[i || inst] || {};
   const docs = i => docsBy[i || inst] || {};
   const meta = i => ({ nombre: (CFG(i).nombre || INSTS[i].nombre), logo: (CFG(i).logo || INSTS[i].logo), c: INSTS[i].c });
-  const isAdmin = () => !!uid() && admins[uid()] === true;
+  const isAdmin = () => !!uid() && (admins[uid()] === true || !!(window.QA && window.QA.isAdmin));
+  const allow = k => typeof window.qaAllow !== 'function' || window.qaAllow(k);
+  const phLogo = c => 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#1E3C72"/><text x="32" y="39" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="' + (String(c).length > 3 ? 17 : 22) + '" fill="#fff">' + String(c).slice(0, 5) + '</text></svg>');
+  let attached = {};
   const can = cap => !!uid() && Object.keys(grupos).some(k => { const g = grupos[k] || {}; return !!(g.miembros && g.miembros[uid()] && g.permisos && g.permisos[cap]); });
   const noAdmins = () => adminsLoaded && Object.keys(admins).length === 0;
   const TS = () => firebase.database.ServerValue.TIMESTAMP;
@@ -17852,11 +18130,21 @@ window.DOCS = (function(){
     db.ref('perfiles').once('value').then(s => { users = {}; s.forEach(c => { users[c.key] = c.val(); }); schedule(); }).catch(() => {});
     db.ref('gdoc/admins').on('value', s => { admins = s.val() || {}; adminsLoaded = true; schedule(); }, onErr);
     db.ref('gdoc/grupos').on('value', s => { grupos = s.val() || {}; schedule(); }, onErr);
-    IK.forEach(i => {
-      db.ref(base(i) + '/docs').on('value', s => { docsBy[i] = s.val() || {}; dLoaded[i] = true; slow = false; denied = false; badge(); schedule(); }, onErr);
-      db.ref(base(i) + '/config').on('value', s => { cfgBy[i] = s.val() || {}; schedule(); }, onErr);
-      db.ref(base(i) + '/counters').on('value', s => { cntBy[i] = s.val() || {}; schedule(); }, onErr);
-    });
+    IK.forEach(attach);
+    db.ref('gdoc/instituciones').on('value', s => {
+      const m = s.val() || {};
+      Object.keys(INSTS).forEach(k => { if (!INSTS[k].oficial) delete INSTS[k]; });
+      Object.keys(m).forEach(k => { if (INSTS[k]) return; const x = m[k] || {}, c = String(x.c || k).replace(/[^A-Za-z0-9 ]/g, '').toUpperCase().slice(0, 8) || k.toUpperCase(); INSTS[k] = { c, nombre: String(x.nombre || c), logo: x.logo || phLogo(c) }; });
+      IK.length = 0; Object.keys(INSTS).forEach(k => IK.push(k)); IK.forEach(attach);
+      if (!INSTS[admInst]) admInst = 'foca'; if (!INSTS[inst]) inst = 'foca'; if (F.inst && !INSTS[F.inst]) F.inst = '';
+      schedule();
+    }, onErr);
+  }
+  function attach(i){
+    if (attached[i]) return; attached[i] = true; dLoaded[i] = false;
+    db.ref(base(i) + '/docs').on('value', s => { docsBy[i] = s.val() || {}; dLoaded[i] = true; slow = false; denied = false; badge(); schedule(); }, onErr);
+    db.ref(base(i) + '/config').on('value', s => { cfgBy[i] = s.val() || {}; schedule(); }, onErr);
+    db.ref(base(i) + '/counters').on('value', s => { cntBy[i] = s.val() || {}; schedule(); }, onErr);
   }
   function badge(){ QS.badge('documental', mine().length); }
   function init(){ boot(); active = true; render(); }
@@ -17868,7 +18156,7 @@ window.DOCS = (function(){
   }
   function reset(){
     IK.forEach(i => { ['docs', 'config', 'counters'].forEach(n => db.ref(base(i) + '/' + n).off()); });
-    db.ref('gdoc/admins').off(); db.ref('gdoc/grupos').off(); grupos = {}; booted = false; active = false; dLoaded = { foca:false, viu:false }; slow = false; clearTimeout(slowT);
+    db.ref('gdoc/admins').off(); db.ref('gdoc/grupos').off(); db.ref('gdoc/instituciones').off(); grupos = {}; attached = {}; Object.keys(INSTS).forEach(k => { if (!INSTS[k].oficial) delete INSTS[k]; }); IK.length = 0; Object.keys(INSTS).forEach(k => IK.push(k)); admInst = 'foca'; inst = 'foca'; booted = false; active = false; dLoaded = { foca:false, viu:false }; slow = false; clearTimeout(slowT);
     docsBy = { foca:{}, viu:{} }; cfgBy = { foca:{}, viu:{} }; cntBy = { foca:{}, viu:{} }; admins = {}; adminsLoaded = false;
     if (typeof GDS !== 'undefined') GDS.close(true);
     QS.badge('documental', 0);
@@ -17899,7 +18187,7 @@ window.DOCS = (function(){
     root.innerHTML =
       '<div class="gd-top"><div><small>Documentos</small><h1>' + ({ panel:'Control de documentos', mis:'Mis tareas', gestion:'Documentos en gestión', activos:'Documentos activos', todos:'Listado maestro', admin:'Administración' }[view]) + '</h1>' +
       '<p>' + ({ panel:'Elabora, revisa, aprueba y activa los documentos del sistema de gestión de la calidad.', mis:'Documentos que esperan una acción tuya.', gestion:'Seguimiento de lo que está en elaboración, revisión o aprobación.', activos:'Versión activa de cada documento.', todos:'Todos los documentos de FOCA y VIU, en cualquier estado.', admin:'Catálogo de tipos y procesos, consecutivos, plantillas y permisos.' }[view]) + '</p></div>' +
-      '<div class="gd-acts">' + (admOk ? '<button class="gd-ib" title="Administración" onclick="DOCS.go(\'admin\')"><i class="fas fa-sliders"></i></button>' : '') + '<button class="gd-btn pri" onclick="DOCS.nuevo()"><i class="fas fa-plus"></i> Nuevo documento</button></div></div>' +
+      '<div class="gd-acts">' + (admOk ? '<button class="gd-ib" title="Administración" onclick="DOCS.go(\'admin\')"><i class="fas fa-sliders"></i></button>' : '') + '<button class="gd-btn" onclick="DOCS.ask()"><i class="fas fa-wand-magic-sparkles"></i> Preguntar</button><button class="gd-btn pri" onclick="DOCS.nuevo()"><i class="fas fa-plus"></i> Nuevo documento</button></div></div>' +
       (view === 'admin' ? '<button class="gd-btn sm" style="margin-bottom:18px" onclick="DOCS.go(\'panel\')"><i class="fas fa-arrow-left"></i> Volver al panel</button>' :
       '<div class="gd-seg">' + tabs.map(x => '<button class="' + (view === x[0] ? 'on' : '') + '" onclick="DOCS.go(\'' + x[0] + '\')">' + x[1] + (x[2] !== undefined && x[2] !== 0 ? ' <b>' + x[2] + '</b>' : '') + '</button>').join('') + '</div>') +
       '<div id="gd-body"></div>';
@@ -18126,22 +18414,43 @@ window.DOCS = (function(){
   }
 
   // ── Administración ─────────────────────────────
-  const cset = (p, v) => db.ref(base(admInst) + '/config/' + p).set(v).catch(e => toast('Sin permiso o error: ' + e.message, 'error'));
+  const cset = (p, v) => { const k = /^tipos/.test(p) ? 'doc.cfg.tipos' : /^procesos/.test(p) ? 'doc.cfg.procesos' : /^plantillas/.test(p) ? 'doc.cfg.tpl' : 'doc.cfg.inst'; if (!allow(k)) return toast('Su usuario no tiene permiso para esta acción.', 'error'); return db.ref(base(admInst) + '/config/' + p).set(v).catch(e => toast('Sin permiso o error: ' + e.message, 'error')); };
   const ab = v => String(v || '').toUpperCase().replace(/[^A-Z0-9+]/g, '').slice(0, 6);
   function vAdmin(b){
-    const secs = [['inst', 'fa-building', 'Institución'], ['tipos', 'fa-file-lines', 'Tipos de documento'], ['procesos', 'fa-sitemap', 'Procesos'], ['cons', 'fa-hashtag', 'Consecutivos'], ['tpl', 'fa-file-pen', 'Plantillas'], ['perm', 'fa-user-shield', 'Permisos'], ['grupos', 'fa-users-gear', 'Grupos y roles']];
+    const secs = [['inst', 'fa-building', 'Institución'], ['tipos', 'fa-file-lines', 'Tipos de documento'], ['procesos', 'fa-sitemap', 'Procesos'], ['cons', 'fa-hashtag', 'Consecutivos'], ['tpl', 'fa-file-pen', 'Plantillas'], ['perm', 'fa-user-shield', 'Permisos']].filter(s => allow({ inst: 'doc.cfg.inst', tipos: 'doc.cfg.tipos', procesos: 'doc.cfg.procesos', cons: 'doc.cfg.cons', tpl: 'doc.cfg.tpl', perm: 'doc.cfg.admin' }[s[0]]));
+    if (secs.length && !secs.some(s => s[0] === admSec)) admSec = secs[0][0];
     b.innerHTML = '<div class="gd-adm"><div class="gd-adm-n">' + secs.map(s => '<button class="' + (admSec === s[0] ? 'on' : '') + '" onclick="DOCS.sec(\'' + s[0] + '\')"><i class="fas ' + s[1] + '"></i>' + s[2] + '</button>').join('') + '</div><div><div class="gd-ents">' + IK.map(k => '<button class="gd-ent" aria-pressed="' + (admInst === k) + '" onclick="DOCS.admI(\'' + k + '\')"><img src="' + E(meta(k).logo) + '" alt="' + INSTS[k].c + '"></button>').join('') + '</div><div id="gd-adm-b"></div></div></div>';
     const x = $('gd-adm-b');
     if (admSec !== 'perm' && !isAdmin()) { x.innerHTML = '<div class="gd-note warn"><i class="fas fa-lock" style="margin-top:2px"></i><div>Solo los administradores pueden modificar esta configuración. Activa tu acceso en <b>Permisos</b>.</div></div>'; return; }
-    ({ inst: aInst, tipos: aTipos, procesos: aProc, cons: aCons, tpl: aTpl, perm: aPerm, grupos: aGrupos })[admSec](x);
+    ({ inst: aInst, tipos: aTipos, procesos: aProc, cons: aCons, tpl: aTpl, perm: aPerm })[admSec](x);
   }
   function sec(s){ admSec = s; render(); }
   function admI(i){ admInst = i; ctx(i); render(); }
   const card = h => '<div class="gd-card">' + h + '</div>';
-  function aInst(x){
+  function aInst(x){ aInst0(x); x.insertAdjacentHTML('beforeend', instCard()); }
+  function instCard(){
+    const row = 'grid-template-columns:44px 90px 1fr 44px';
+    return card('<div class="gd-ch"><div><h3>Instituciones</h3><div class="cs">Cada institución tiene su propio catálogo de tipos, procesos, consecutivo y plantillas. Para quitar una debe estar sin documentos.</div></div></div>' +
+      IK.map(k => '<div class="gd-row" style="' + row + '"><span class="gd-inst"><img src="' + E(meta(k).logo) + '" alt=""></span><b>' + E(INSTS[k].c) + '</b><span>' + E(meta(k).nombre) + '</span>' + (INSTS[k].oficial ? '<span></span>' : '<button class="gd-ib" style="width:40px;height:40px" title="Quitar institución" onclick="DOCS.delInst(\'' + k + '\')"><i class="fas fa-trash"></i></button>') + '</div>').join('') +
+      '<div class="cs" style="margin:16px 0 6px;font-weight:700">Agregar institución</div><div class="gd-row" style="grid-template-columns:110px 1fr 1fr 44px"><input class="gd-in" id="gd-ni-c" placeholder="Abrev." maxlength="8"><input class="gd-in" id="gd-ni-n" placeholder="Nombre completo"><input class="gd-in" id="gd-ni-l" placeholder="URL del logo (opcional)"><button class="gd-btn pri" style="padding:0;width:40px;height:40px" title="Agregar" onclick="DOCS.addInst()"><i class="fas fa-plus"></i></button></div>');
+  }
+  function addInst(){
+    const c = $('gd-ni-c').value.trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8), n = $('gd-ni-n').value.trim(), l = $('gd-ni-l').value.trim(), id = c.toLowerCase();
+    if (!c || !n) return toast('Indica la abreviatura y el nombre', 'error');
+    if (INSTS[id] || IK.some(k => INSTS[k].c === c)) return toast('Ya existe una institución con esa abreviatura', 'error');
+    if (l && !/^https:\/\//.test(l)) return toast('El logo debe ser un enlace https://', 'error');
+    db.ref('gdoc/instituciones/' + id).set({ c, nombre: n, logo: l || '' }).then(() => { admInst = id; toast('Institución agregada', 'success'); }).catch(e => toast('Sin permiso o error: ' + e.message, 'error'));
+  }
+  async function delInst(k){
+    if (INSTS[k] && INSTS[k].oficial) return;
+    if (Object.keys(docs(k)).length) return toast('Esa institución tiene documentos; no se puede quitar.', 'error');
+    if (!confirm('¿Quitar la institución ' + INSTS[k].c + ' y su catálogo (tipos, procesos y plantillas)?')) return;
+    try { await db.ref(base(k) + '/config').remove(); await db.ref(base(k) + '/counters').remove(); await db.ref('gdoc/instituciones/' + k).remove(); admInst = 'foca'; toast('Institución quitada', 'success'); } catch (e) { toast('No se pudo quitar: ' + e.message, 'error'); }
+  }
+  function aInst0(x){
     const c = CFG(admInst);
-    x.innerHTML = card('<div class="gd-ch"><div><h3>Datos del encabezado · ' + INSTS[admInst].c + '</h3><div class="cs">Aparecen en la ficha de cada documento y en el PDF.</div></div></div><div style="max-width:560px"><div class="gd-f"><label>Nombre de la institución</label><input class="gd-in" value="' + E(c.nombre || '') + '" placeholder="' + E(INSTS[admInst].nombre) + '" onchange="DOCS.cset(\'nombre\',this.value.trim())"></div><div class="gd-f"><label>URL del logo</label><input class="gd-in" value="' + E(c.logo || '') + '" placeholder="' + E(INSTS[admInst].logo) + '" onchange="DOCS.cset(\'logo\',this.value.trim())"><small>Déjalo vacío para usar el logo predeterminado.</small></div></div>' +
-      (tipos(admInst).length ? '' : '<div class="gd-note"><i class="fas fa-circle-info" style="margin-top:2px"></i><div>Esta institución aún no tiene catálogo.<br><button class="gd-btn sm pri" style="margin-top:8px" onclick="DOCS.seedAdm()">Cargar catálogo oficial</button></div></div>'));
+    x.innerHTML = card('<div class="gd-ch"><div><h3>Datos del encabezado · ' + INSTS[admInst].c + '</h3><div class="cs">Aparecen en la ficha de cada documento y en el PDF.</div></div></div><div style="max-width:560px"><div class="gd-f"><label>Nombre de la institución</label><input class="gd-in" value="' + E(c.nombre || '') + '" placeholder="' + E(INSTS[admInst].nombre) + '" onchange="DOCS.cset(\'nombre\',this.value.trim())"></div><div class="gd-f"><label>URL del logo</label><input class="gd-in" value="' + E(c.logo || '') + '" placeholder="' + E(/^data:/.test(INSTS[admInst].logo) ? 'https://…' : INSTS[admInst].logo) + '" onchange="DOCS.cset(\'logo\',this.value.trim())"><small>Déjalo vacío para usar el logo predeterminado.</small></div></div>' +
+      (tipos(admInst).length || !INSTS[admInst].oficial ? '' : '<div class="gd-note"><i class="fas fa-circle-info" style="margin-top:2px"></i><div>Esta institución aún no tiene catálogo.<br><button class="gd-btn sm pri" style="margin-top:8px" onclick="DOCS.seedAdm()">Cargar catálogo oficial</button></div></div>'));
   }
   function seedAdm(){ if (confirm('Se cargarán los tipos de documento, procesos y subprocesos oficiales de ' + INSTS[admInst].c + '. ¿Continuar?')) seed(admInst); }
   function aTipos(x){
@@ -18209,34 +18518,14 @@ window.DOCS = (function(){
       ids.map(u => '<div class="gd-row" style="grid-template-columns:1fr 44px">' + who(uName(u)) + (isAdmin() && ids.length > 1 ? '<button class="gd-ib" style="width:40px;height:40px" onclick="DOCS.rmAdmin(\'' + u + '\')"><i class="fas fa-xmark"></i></button>' : '<span></span>') + '</div>').join('') +
       (isAdmin() ? '<div class="gd-row" style="grid-template-columns:1fr auto"><select class="gd-sel" id="gd-pa">' + Object.keys(users).filter(u => !admins[u]).map(u => '<option value="' + u + '">' + E(users[u].nombre || u) + '</option>').join('') + '</select><button class="gd-btn pri" onclick="DOCS.addAdmin()">Agregar</button></div>' : ''));
   }
-
-  // ── Grupos y roles ─────────────────────────────
-  const CAPS = [['editar', 'Editar el contenido', 'Modificar y guardar cualquier documento en elaboración, revisión o aprobación.'], ['versionar', 'Cambio de forma y nueva versión', 'Corregir la forma o crear una nueva versión de un documento activo.'], ['flujo', 'Mover el flujo', 'Enviar a revisión, aprobar, devolver y activar. La firma queda a nombre de quien actúa.'], ['obsoleto', 'Marcar obsoleto', 'Retirar de uso documentos activos.'], ['reasignar', 'Reasignar responsables', 'Cambiar quién elabora, revisa y aprueba.']];
-  function aGrupos(x){
-    const ids = Object.keys(grupos).sort((a, c) => ((grupos[a] || {}).nombre || '').localeCompare((grupos[c] || {}).nombre || ''));
-    const blk = k => { const g = grupos[k] || {}, mem = Object.keys(g.miembros || {}), perm = g.permisos || {};
-      return '<div class="gd-card" style="margin-top:14px;box-shadow:none;border:1px solid var(--line)"><div class="gd-row" style="grid-template-columns:1fr 44px"><input class="gd-in" value="' + E(g.nombre || '') + '" onchange="DOCS.gName(\'' + k + '\',this.value)"><button class="gd-ib" style="width:40px;height:40px" title="Eliminar grupo" onclick="DOCS.gDel(\'' + k + '\')"><i class="fas fa-trash"></i></button></div>' +
-        '<div class="cs" style="margin:10px 0 4px;font-weight:700">Integrantes (' + mem.length + ')</div>' +
-        (mem.map(u => '<div class="gd-row" style="grid-template-columns:1fr 44px">' + who(uName(u)) + '<button class="gd-ib" style="width:40px;height:40px" onclick="DOCS.gQuit(\'' + k + '\',\'' + u + '\')"><i class="fas fa-xmark"></i></button></div>').join('') || '<div class="cs">Aún no hay personas en este grupo.</div>') +
-        '<div class="gd-row" style="grid-template-columns:1fr auto"><select class="gd-sel" id="gd-gs-' + k + '">' + Object.keys(users).filter(u => !(g.miembros || {})[u]).sort((a, c) => (users[a].nombre || '').localeCompare(users[c].nombre || '')).map(u => '<option value="' + u + '">' + E(users[u].nombre || u) + '</option>').join('') + '</select><button class="gd-btn pri" onclick="DOCS.gAdd(\'' + k + '\')">Agregar</button></div>' +
-        '<div class="cs" style="margin:14px 0 4px;font-weight:700">Qué puede hacer en cualquier documento</div>' +
-        CAPS.map(c => '<label style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer"><input type="checkbox" style="margin-top:3px;width:18px;height:18px;flex:none" ' + (perm[c[0]] ? 'checked' : '') + ' onchange="DOCS.gCap(\'' + k + '\',\'' + c[0] + '\',this.checked)"><span><b style="font-size:14px">' + c[1] + '</b><br><span class="cs">' + c[2] + '</span></span></label>').join('') + '</div>'; };
-    x.innerHTML = card('<div class="gd-ch"><div><h3>Grupos y roles</h3><div class="cs">Un grupo (por ejemplo, Calidad) puede trabajar sobre cualquier documento sin entrar con la cuenta de otra persona. Cada acción queda en el historial con el nombre de quien la hizo. Aplica a FOCA y a VIU.</div></div><button class="gd-btn pri" onclick="DOCS.gNuevo()"><i class="fas fa-plus"></i> Nuevo grupo</button></div>' + (ids.length ? ids.map(blk).join('') : '<div class="cs" style="margin-top:14px">Todavía no hay grupos. Crea el primero, por ejemplo «Calidad».</div>'));
-  }
-  async function gNuevo(){ const r = await dlg({ title: 'Nuevo grupo', text: 'Después agregas a las personas y eliges qué puede hacer el grupo.', ok: 'Crear', fields: [{ id: 'n', label: 'Nombre del grupo', req: true, ph: 'Ej. Calidad' }] }); if (!r) return; db.ref('gdoc/grupos/' + db.ref().push().key).set({ nombre: r.n, permisos: { editar: true, versionar: true } }).catch(e => toast('Sin permiso o error: ' + e.message, 'error')); }
-  const gDel = k => { if (confirm('¿Eliminar este grupo? Sus integrantes dejarán de tener esos permisos.')) db.ref('gdoc/grupos/' + k).remove().catch(e => toast(e.message, 'error')); };
-  const gAdd = k => { const el = $('gd-gs-' + k), u = el && el.value; if (u) db.ref('gdoc/grupos/' + k + '/miembros/' + u).set(true).catch(e => toast(e.message, 'error')); };
-  const gQuit = (k, u) => db.ref('gdoc/grupos/' + k + '/miembros/' + u).remove().catch(e => toast(e.message, 'error'));
-  const gCap = (k, c, v) => db.ref('gdoc/grupos/' + k + '/permisos/' + c).set(!!v).catch(e => toast(e.message, 'error'));
-  const gName = (k, v) => { v = String(v || '').trim(); if (v) db.ref('gdoc/grupos/' + k + '/nombre').set(v).catch(e => toast(e.message, 'error')); };
   const claim = () => db.ref('gdoc/admins/' + uid()).set(true).then(() => toast('Ahora eres administrador del módulo', 'success')).catch(e => toast('No se pudo activar: ' + e.message, 'error'));
   const addAdmin = () => { const u = $('gd-pa').value; if (u) db.ref('gdoc/admins/' + u).set(true).catch(e => toast(e.message, 'error')); };
   const rmAdmin = u => { if (confirm('¿Quitar permisos de administrador?')) db.ref('gdoc/admins/' + u).remove().catch(e => toast(e.message, 'error')); };
 
   // API compartida con el estudio
-  const API = { E, $, EST, FLOW, KC, INSTS, IK, TIPOS_PLANTILLA, TINY, TINY_ES, MAMMOTH, base, CFG, docs, meta, uid, uName, me, fmt, fmtT, iso, pill, who, toast, dlg, loadScript, frameHead, frameFoot, ctx, tipos, getUsers: () => users, isAdmin, can, grupos: () => grupos, TS, setView: v => { view = v; }, rerender: render, ini, arr, admins: () => admins };
+  const API = { E, $, EST, FLOW, KC, INSTS, IK, TIPOS_PLANTILLA, TINY, TINY_ES, MAMMOTH, base, CFG, docs, meta, uid, uName, me, fmt, fmtT, iso, pill, who, toast, dlg, loadScript, frameHead, frameFoot, ctx, tipos, getUsers: () => users, isAdmin, can, allow, grupos: () => grupos, TS, setView: v => { view = v; }, rerender: render, ini, arr, admins: () => admins };
   window.GDAPI = API;
-  return { all, mine, meta, init, leave, boot, reset, go, setF, draw, render, clearF, copyCode, sort, page, excel, nuevo, cerrarNuevo, nset, crear, open, setup, sec, admI, cset, ab, addTipo, delTipo, addProc, addSub, delProc, delSub, setCounter, addCounter, editTpl, resetTpl, claim, addAdmin, rmAdmin, seedAdm, gNuevo, gDel, gAdd, gQuit, gCap, gName };
+  return { all, mine, meta, init, leave, boot, reset, go, setF, draw, render, clearF, copyCode, sort, page, excel, nuevo, cerrarNuevo, nset, crear, open, setup, sec, admI, cset, ab, addTipo, delTipo, addProc, addSub, delProc, delSub, setCounter, addCounter, editTpl, resetTpl, claim, addAdmin, rmAdmin, seedAdm, addInst, delInst, ask: o => window.GDAI && window.GDAI.open(o) };
 })();
 
 // ══════════════════════════════════════════════
@@ -18299,6 +18588,8 @@ window.GDS = (function(){
   }
 
   // ── Apertura ───────────────────────────────────
+  const flCss = sc => sc + ' td,' + sc + ' th{padding:3px 4px}';
+  const fluidOn = () => !!st && (st.fluid == null ? window.innerWidth <= 700 : st.fluid);
   const isOpen = () => !!st;
   const canEdit = () => st && !st.snapView && (st.mode === 'tpl' || st.forma || ((st.d.actual === A.uid() || A.can('editar')) && FLOW.slice(0, 3).includes(st.d.estado)));
   const canFlow = () => st && !st.snapView && st.mode !== 'tpl' && !st.forma && FLOW.slice(0, 3).includes(st.d.estado) && (st.d.actual === A.uid() || A.can('flujo'));
@@ -18309,7 +18600,7 @@ window.GDS = (function(){
     if (st) close(true, true);
     let pre = null;
     if (v === 'act' && d.estado !== 'publicado') { try { pre = (await db.ref(A.base(i) + '/snapshots/' + id).once('value')).val() || {}; } catch (e) {} }
-    st = { mode:'doc', i, id, d: { ...d }, html:null, tab:'inicio', drawer: window.innerWidth > 1500 ? 'ficha' : null, ctxTab:null, zoom:100, dirty:false, comments:{}, log:[], snaps:{}, pg:{ ...DEFPG, ...(d.page || {}) }, sig: sig(d), rcol: (()=>{try{const v = localStorage.getItem('gd_rcol'); return v === null ? window.innerHeight <= 900 : v === '1'}catch(e){return false}})(), busy:false, ed:null, refs:[] };
+    st = { mode:'doc', i, id, d: { ...d }, html:null, tab:'inicio', drawer: window.innerWidth > 1500 ? 'ficha' : null, ctxTab:null, zoom:100, dirty:false, comments:{}, log:[], snaps:{}, pg:{ ...DEFPG, ...(d.page || {}) }, sig: sig(d), rcol: window.innerWidth <= 700 ? false : (()=>{try{const v = localStorage.getItem('gd_rcol'); return v === null ? window.innerHeight <= 900 : v === '1'}catch(e){return false}})(), busy:false, ed:null, refs:[] };
     shell(); paintTop(); paintGuide(); paintRibbon(); paintDrawer(); paintFrame(); $('gd-edw').innerHTML = '<div class="vw" style="color:#8a96ab">Cargando documento…</div>';
     try {
       const b = A.base(i);
@@ -18382,7 +18673,7 @@ window.GDS = (function(){
     }
     $('gd-tb').innerHTML = '<button class="bk" data-a="close" title="Volver (Esc)"><i class="fas fa-arrow-left"></i></button><div class="ti"><small><img src="' + E(m.logo) + '" alt="">' + (st.mode === 'tpl' ? 'PLANTILLA' : E(d.codigo)) + (st.mode === 'doc' ? ' · ' + (st.snapView ? (st.snapView.n < (d.version || 0) || d.estado === 'obsoleto' ? '<span class="gd-pill" style="background:#FFE9C9;color:#9A4B00">Versión ' + pad3(st.snapView.n) + ' · desactualizada</span>' : '<span class="gd-pill" style="background:#DDF3E4;color:#14663F">Versión ' + pad3(st.snapView.n) + ' · activa</span>') : A.pill(d.estado)) : '') + '</small><b>' + E(d.titulo) + '</b></div>' +
       '<span class="sv" id="gd-sv">' + (ed ? '' : '') + '</span><div class="ac">' + wf.join('') +
-      (st.mode === 'doc' ? '<button class="gd-btn" data-a="pdf" title="Guardar como PDF"><i class="fas fa-file-pdf"></i><span>PDF</span></button><button class="gd-btn" data-a="word" title="Descargar como Word"><i class="fas fa-file-word"></i><span>Word</span></button><button class="gd-btn ' + (st.drawer ? 'soft' : '') + '" data-a="drawer" title="Ficha del documento, responsables, control de cambios y comentarios"><i class="fas fa-id-card"></i><span>Ficha' + (nc ? ' · ' + nc : '') + '</span></button>' : '') + '</div>';
+      (st.mode === 'doc' ? (A.allow('doc.ia') ? '<button class="gd-btn" data-a="ia" title="Resumen y preguntas sobre este documento"><i class="fas fa-wand-magic-sparkles"></i><span>IA</span></button>' : '') + '<button class="gd-btn" data-a="pdf" title="Guardar como PDF"><i class="fas fa-file-pdf"></i><span>PDF</span></button><button class="gd-btn" data-a="word" title="Descargar como Word"><i class="fas fa-file-word"></i><span>Word</span></button><button class="gd-btn ' + (st.drawer ? 'soft' : '') + '" data-a="drawer" title="Ficha del documento, responsables, control de cambios y comentarios"><i class="fas fa-id-card"></i><span>Ficha' + (nc ? ' · ' + nc : '') + '</span></button>' : '') + '</div>';
     setSv();
   }
   function setSv(msg, cls){ const el = $('gd-sv'); if (!el) return; el.className = 'sv ' + (cls || ''); el.textContent = msg !== undefined ? msg : (canEdit() ? (st.dirty ? 'Cambios sin guardar' : 'Todo guardado') : ''); }
@@ -18423,16 +18714,17 @@ window.GDS = (function(){
     const { w, mx } = dims(st.pg), sh = $('gd-sheet'); if (!sh) return;
     sh.style.setProperty('--pw', w + 'px'); sh.style.setProperty('--mx', mx + 'px');
     if (!st.zset && window.innerWidth < 900) { const pw = (st.pg.orient === 'landscape' ? 1123 : 794); st.zoom = Math.max(30, Math.min(100, Math.floor((window.innerWidth - 40) / pw * 100))); st.zset = 1; }
-    $('gd-zoom').style.zoom = st.zoom / 100;
+    $('gd-zoom').style.zoom = fluidOn() ? 1 : st.zoom / 100;
+    sh.classList.toggle('fl', fluidOn()); $('gd-zoom').style.width = fluidOn() ? '100%' : ''; if (fluidOn()) { sh.style.setProperty('--pw', '100%'); sh.style.setProperty('--mx', '16px'); }
     let s = $('gd-vwcss'); if (!s) { s = document.createElement('style'); s.id = 'gd-vwcss'; document.head.appendChild(s); }
-    s.textContent = docCss(st.pg, '.gd-sheet .vw');
-    if (st.ed && st.ed.getDoc) { const dc = st.ed.getDoc(); let t = dc.getElementById('gd-pg'); if (!t) { t = dc.createElement('style'); t.id = 'gd-pg'; dc.head.appendChild(t); } t.textContent = 'html{background:#fff}' + docCss(st.pg, '', mx); }
+    s.textContent = docCss(st.pg, '.gd-sheet .vw') + (fluidOn() ? flCss('.gd-sheet .vw') : '');
+    if (st.ed && st.ed.getDoc) { const dc = st.ed.getDoc(); let t = dc.getElementById('gd-pg'); if (!t) { t = dc.createElement('style'); t.id = 'gd-pg'; dc.head.appendChild(t); } t.textContent = 'html{background:#fff}' + docCss(st.pg, '', mx) + (fluidOn() ? flCss('') : ''); }
     paintStatus();
   }
   function paintStatus(){
     const el = $('gd-sbar'); if (!el) return;
     const s = SIZES[st.pg.size] || SIZES.letter;
-    el.innerHTML = '<span>' + s[2] + ' · ' + (st.pg.orient === 'landscape' ? 'horizontal' : 'vertical') + ' · márgenes ' + (MARG[st.pg.margin] || MARG.normal)[1].toLowerCase() + '</span><span id="gd-wc"></span><span class="sp"></span><i class="fas fa-magnifying-glass-minus"></i><input type="range" min="30" max="200" step="10" value="' + st.zoom + '" data-i="zoom"><i class="fas fa-magnifying-glass-plus"></i><span id="gd-zl" style="min-width:42px;text-align:right">' + st.zoom + '%</span>';
+    el.innerHTML = '<span>' + s[2] + ' · ' + (st.pg.orient === 'landscape' ? 'horizontal' : 'vertical') + ' · márgenes ' + (MARG[st.pg.margin] || MARG.normal)[1].toLowerCase() + '</span><span id="gd-wc"></span><span class="sp"></span><i class="fas fa-magnifying-glass-minus"></i><input type="range" min="30" max="200" step="10" value="' + st.zoom + '" data-i="zoom"><i class="fas fa-magnifying-glass-plus"></i><span id="gd-zl" style="min-width:42px;text-align:right">' + st.zoom + '%</span>' + (window.innerWidth <= 700 ? '<button type="button" class="gd-fl" data-a="fluid"><i class="fas ' + (fluidOn() ? 'fa-file-lines' : 'fa-mobile-screen') + '"></i> ' + (fluidOn() ? 'Vista de página' : 'Ajustar a pantalla') + '</button>' : ''); el.classList.toggle('fl', fluidOn());
     wc();
   }
   function wc(){
@@ -18803,6 +19095,7 @@ window.GDS = (function(){
     switch (a) {
       case 'close': return close();
       case 'tab': if (st.rcol) { st.rbOpen = !(st.rbOpen && st.tab === arg); } st.tab = arg; return paintRibbon();
+      case 'fluid': st.fluid = !fluidOn(); applyPage(); return;
       case 'rcol': st.rcol = !st.rcol; st.rbOpen = false; try { localStorage.setItem('gd_rcol', st.rcol ? '1' : '0'); } catch (e) {} return paintRibbon();
       case 'drawer': st.drawer = arg ? arg : (st.drawer ? null : 'ficha'); if (arg) st.dtab = arg; paintDrawer(); return paintTop();
       case 'save': return save(true);
@@ -18818,6 +19111,8 @@ window.GDS = (function(){
       case 'formacancel': return formaCancel();
       case 'formasave': return formaSave();
       case 'nuevaver': return nuevaVersion();
+      case 'ia': return window.GDAI.open({ i: st.i, id: st.id, resumen: true });
+      case 'iacambios': return iaCambios();
     }
     if (!need()) return;
     switch (a) {
@@ -19008,6 +19303,48 @@ window.GDS = (function(){
     } catch (e) { st.busy = false; toast('No se pudo crear la nueva versión: ' + e.message, 'error'); }
   }
 
+
+  async function iaCambios(){
+    if (!st || st.busy || !canEdit()) return; const d = st.d;
+    if (!d.nv || d.estado === 'publicado') return toast('Primero crea una nueva versión del documento.', 'info');
+    const base = snapFor(d.version); if (!base) return toast('No encontré la versión ' + pad3(d.version) + ' para compararla.', 'error');
+    const cur = st.ed ? st.ed.getContent() : st.html, R = window.GDAI.diff(base.html || '', cur || '');
+    if (!R.ops.length) return toast('No hay diferencias de contenido con la versión ' + pad3(d.version) + '.', 'info');
+    const info = d.codigo + ' · ' + d.titulo + '. Versión anterior ' + pad3(d.version) + ', nueva versión ' + pad3(d.nv) + '.', S_ = R.stats;
+    const ov = document.createElement('div'); ov.className = 'gd-ovl';
+    const items = R.ops.slice(0, 80).map(o => '<div class="gd-dfi k-' + o.k + '"><span class="b">' + window.GDAI.OPL[o.k] + '</span>' + (o.sec ? '<small>' + E(o.sec.length > 70 ? o.sec.slice(0, 69) + '…' : o.sec) + '</small>' : '') + '<div class="df">' + (o.k === 'mod' ? o.html : o.k === 'add' ? '<ins>' + E(o.after) + '</ins>' : '<del>' + E(o.before) + '</del>') + '</div></div>').join('');
+    const parts = [S_.mod ? S_.mod + ' modificado' + (S_.mod > 1 ? 's' : '') : '', S_.add ? S_.add + ' agregado' + (S_.add > 1 ? 's' : '') : '', S_.del ? S_.del + ' eliminado' + (S_.del > 1 ? 's' : '') : ''].filter(Boolean).join(' · ');
+    ov.innerHTML = '<div class="gd-mod gd-ccm"><h3>Control de cambios · versión ' + pad3(d.nv) + '</h3><p class="sub">Comparado con la versión ' + pad3(d.version) + ' · ' + parts + '</p>' +
+      '<div class="gd-f"><label>Texto para el control de cambios</label><textarea class="gd-ta" id="gd-cc-t" disabled placeholder="Redactando…"></textarea><div class="gd-cc-st" id="gd-cc-st"><span class="gd-ai-dots"><i></i><i></i><i></i></span> La IA está leyendo los cambios…</div></div>' +
+      '<div class="gd-cc-ls"><h5>Cambios detectados (' + R.ops.length + ')</h5>' + items + (R.ops.length > 80 ? '<div class="gd-dfi"><small>Y ' + (R.ops.length - 80) + ' cambios más.</small></div>' : '') + '</div>' +
+      '<div class="ft"><button class="gd-btn" data-x="n">Cancelar</button><button class="gd-btn" data-x="r" disabled><i class="fas fa-rotate-right"></i> Redactar de nuevo</button><button class="gd-btn pri" data-x="y" disabled>Usar este texto</button></div></div>';
+    document.body.appendChild(ov);
+    const ta = ov.querySelector('#gd-cc-t'), sd = ov.querySelector('#gd-cc-st'), by = ov.querySelector('[data-x=y]'), br = ov.querySelector('[data-x=r]');
+    const gen = async () => {
+      ta.disabled = true; by.disabled = br.disabled = true; sd.innerHTML = '<span class="gd-ai-dots"><i></i><i></i><i></i></span> La IA está leyendo los cambios…';
+      let txt, ok = true;
+      try { txt = await window.GDAI.describeChanges(R.ops, info); } catch (e) { ok = false; txt = window.GDAI.localSummary(R.ops); sd.textContent = 'La IA no respondió (' + e.message + '). Dejé un resumen automático; edítalo si quieres.'; }
+      if (!ov.isConnected) return; ta.value = txt; ta.disabled = false; by.disabled = br.disabled = false; if (ok) sd.textContent = 'Redactado con IA a partir de la comparación. Puedes editarlo antes de usarlo.'; ta.focus();
+    };
+    const close = () => ov.remove();
+    ov.onmousedown = e => { if (e.target === ov) close(); };
+    ov.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+    ov.querySelector('[data-x=n]').onclick = close; br.onclick = gen;
+    by.onclick = async () => {
+      const desc = ta.value.trim(); if (!desc || st.busy) return; st.busy = true; by.disabled = true;
+      try {
+        const b = A.base(st.i), id = st.id, p = b + '/docs/' + id, yo = A.me(), up = {}, key = Object.keys(d.cambios || {}).find(k => (d.cambios[k] || {}).version === d.nv);
+        if (key) up[p + '/cambios/' + key + '/descripcion'] = desc; else up[p + '/cambios/' + db.ref().push().key] = { version: d.nv, fecha: A.TS(), descripcion: desc, autor: yo.nombre, uid: yo.uid };
+        up[b + '/log/' + id + '/' + db.ref().push().key] = { uid: yo.uid, nombre: yo.nombre, accion: 'Control de cambios redactado', comentario: desc, fecha: A.TS() };
+        await db.ref().update(up);
+        const html0 = st.ed ? st.ed.getContent() : st.html, h2 = window.GDAI.setChangeDesc(html0, d.nv, desc) || addChangeRow(html0, A.iso(Date.now()), desc.replace(/^[-•*]\s*/gm, '• '), d.nv);
+        if (st.ed) { st.ed.setContent(h2); mark(); await save(false); } else st.html = h2;
+        st.busy = false; close(); toast('Control de cambios actualizado', 'success'); paintDrawer();
+      } catch (e) { st.busy = false; by.disabled = false; toast('No se pudo guardar: ' + e.message, 'error'); }
+    };
+    gen();
+  }
+
   const snapFor = n => pickSnap(st.snaps || {}, n);
   function pickSnap(S, n){
     const ks = Object.keys(S).filter(k => k === 'v' + n || new RegExp('^v' + n + 'f\\d+$').test(k));
@@ -19061,9 +19398,13 @@ window.GDS = (function(){
     } else {
       h = (st.log.length ? st.log.slice().reverse().map(l => '<div class="gd-lg"><b>' + E(l.accion) + '</b> · ' + E(l.nombre) + '<em>' + A.fmtT(l.fecha) + '</em>' + (l.comentario ? '<q>' + E(l.comentario) + '</q>' : '') + '</div>').join('') : '<div class="gd-empty" style="padding:26px 0">Sin movimientos.</div>');
     }
-    dr.innerHTML = '<div class="tabs">' + tabs.map(x => '<button class="' + (t === x[0] ? 'on' : '') + '" onclick="GDS.dtab(\'' + x[0] + '\')">' + x[1] + '</button>').join('') + '</div><div class="pn">' + h + '</div>';
+    dr.innerHTML = '<div class="gd-dr-hd"><b>Ficha del documento</b><button type="button" data-a="drawer" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></div><div class="tabs">' + tabs.map(x => '<button class="' + (t === x[0] ? 'on' : '') + '" onclick="GDS.dtab(\'' + x[0] + '\')">' + x[1] + '</button>').join('') + '</div><div class="pn">' + h + '</div>';
   }
   function cambiosCard(d){
+    const h = cambiosCard0(d), b = (d.nv && d.estado !== 'publicado' && canEdit() && A.allow('doc.iaCambios')) ? '<button class="gd-btn sm" data-a="iacambios" style="margin-top:10px"><i class="fas fa-wand-magic-sparkles"></i> Redactar cambios con IA</button>' : '';
+    return h ? (b ? h.replace(/<\/div>$/, b + '</div>') : h) : (b ? '<div class="gd-cc"><h4><i class="fas fa-code-branch"></i> Control de cambios</h4>' + b + '</div>' : '');
+  }
+  function cambiosCard0(d){
     const cs = Object.values(d.cambios || {}).sort((a, c) => (c.version - a.version) || (c.fecha - a.fecha)), fm = st.log.filter(l => /^Cambio de forma/.test(l.accion || '')).reverse();
     if (!cs.length && !fm.length) return '';
     return '<div class="gd-cc"><h4><i class="fas fa-code-branch"></i> Control de cambios</h4>' + cs.map(c => '<div class="it' + (d.nv === c.version && d.estado !== 'publicado' ? ' cur' : '') + '"><b>Versión ' + pad3(c.version) + '</b><em>' + A.iso(c.fecha) + (d.nv === c.version && d.estado !== 'publicado' ? ' · en proceso' : '') + '</em><p>' + E(c.descripcion) + '</p><small>' + E(c.autor || '') + '</small></div>').join('') +
@@ -19276,6 +19617,447 @@ window.GDS = (function(){
 
   return { openDoc, openTpl, tplFor, isOpen, soft, close, addComment, resolve, dtab };
 })();
+// ══════════════════════════════════════════════
+// ASISTENTE DOCUMENTAL (IA) · preguntas con citas, resumen y control de cambios
+// ══════════════════════════════════════════════
+window.GDAI = (function(){
+  const A = window.GDAPI, { E, $, INSTS, IK } = A;
+  const toast = (m, t) => A.toast(m, t || 'info');
+
+  // ── Texto ─────────────────────────────────────
+  const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const STOP = new Set(('de la que el en y a los del se las por un para con no una su al lo como mas pero sus le ya o este si porque esta entre cuando muy sin sobre tambien me hasta hay donde quien desde todo nos durante todos uno les ni contra otros ese eso ante ellos e esto antes algunos unos yo otro otras otra tanto esa estos mucho quienes nada muchos cual poco ella estar estas algunas algo mi mis tu te ti tus son es ser fue han debe deben puede pueden segun cada asi ademas').split(' '));
+  const QSTOP = new Set('documento documentos habla hablan dice dicen trata tratan dame dime resumen resume resumir explica explicame indica donde cuales cual existe existen busca buscar necesito quiero saber informacion tema temas parte partes procedimiento procedimientos manera forma hacer hace'.split(' '));
+  const stem = t => { if (t.length > 6 && t.endsWith('mente')) t = t.slice(0, -5); if (t.endsWith('ciones')) t = t.slice(0, -4); else if (t.endsWith('es') && t.length > 5) t = t.slice(0, -2); else if (t.endsWith('s') && t.length > 3) t = t.slice(0, -1); if (t.length > 4 && /[aoe]$/.test(t)) t = t.slice(0, -1); return t; };
+  const toks = (s, q) => norm(s).split(/[^a-z0-9ñ]+/).filter(t => (t.length >= 3 || /^\d+$/.test(t)) && !STOP.has(t) && !(q && QSTOP.has(t))).map(stem);
+  const plain = s => String(s || '').replace(/\s+/g, ' ').trim();
+  const clip = (s, n) => { s = plain(s); return s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : s; };
+
+  // ── HTML → bloques de texto (con su sección) ──
+  const BLOCK = /^(P|LI|BLOCKQUOTE|PRE|DIV|UL|OL|TABLE|THEAD|TBODY|TFOOT|SECTION|ARTICLE|H[1-6])$/;
+  function blocks(html){
+    const doc = new DOMParser().parseFromString('<body>' + (html || '') + '</body>', 'text/html'), out = []; let sec = '';
+    doc.body.querySelectorAll('script,style,img,svg').forEach(n => n.remove());
+    const h = [...doc.body.querySelectorAll('h1,h2,h3,h4')].find(x => /CONTROL DE CAMBIOS/i.test(x.textContent));
+    if (h) { let n = h.nextElementSibling; while (n && !/^H[1-4]$/.test(n.nodeName)) { const nx = n.nextElementSibling; n.remove(); n = nx; } h.remove(); }
+    (function walk(n){
+      for (const c of n.children) {
+        const tag = c.nodeName;
+        if (/^H[1-6]$/.test(tag)) { const t = plain(c.textContent); if (t) { sec = t; out.push({ t, sec, h: true }); } continue; }
+        if (tag === 'TR') { const t = plain([...c.children].map(x => plain(x.textContent)).filter(Boolean).join(' | ')); if (t) out.push({ t, sec, row: true }); continue; }
+        if ([...c.children].some(x => BLOCK.test(x.nodeName))) { walk(c); continue; }
+        const t = plain(c.textContent); if (t) out.push({ t, sec });
+      }
+    })(doc.body);
+    if (!out.length) { const t = plain(doc.body.textContent); if (t) out.push({ t, sec: '' }); }
+    return out;
+  }
+  function chunksOf(bl, max){
+    const out = []; let cur = null;
+    const flush = () => { if (cur && cur.text.trim()) out.push(cur); cur = null; };
+    bl.forEach(b => {
+      if (b.h) { flush(); cur = { sec: b.t, text: b.t }; return; }
+      if (!cur) cur = { sec: b.sec || '', text: '' };
+      if (cur.text.length + b.t.length > max && cur.text.length > 200) { const s = cur.sec; flush(); cur = { sec: s, text: '' }; }
+      cur.text += (cur.text ? '\n' : '') + b.t;
+    });
+    flush(); return out;
+  }
+
+  // ── Índice (se construye una vez por sesión y se actualiza por documento) ──
+  const IX = { docs: new Map(), loading: null, N: 0, df: new Map(), avg: 1 };
+  const keyOf = (i, id) => i + '/' + id;
+  const activeDocs = () => { const L = []; IK.forEach(i => Object.entries(A.docs(i) || {}).forEach(([id, d]) => { if (d && d.estado === 'publicado') L.push({ i, id, d }); })); return L; };
+  const verOf = d => d.version ? String(d.version).padStart(3, '0') : '—';
+  function indexDoc(i, id, d, html){
+    html = String(html || '').replace(/<img\b[^>]*>/gi, ' ').replace(/data:[a-z]+\/[a-z0-9.+-]+;base64,[A-Za-z0-9+\/=]+/gi, '');
+    const meta = [d.codigo, d.titulo, d.tipoNombre, d.procesoNombre, d.subNombre].filter(Boolean).join(' ');
+    const mt = toks(meta), ch = chunksOf(blocks(html), 950).map(c => {
+      const tf = new Map(), add = (arr, w) => arr.forEach(t => tf.set(t, (tf.get(t) || 0) + w));
+      add(toks(c.text), 1); add(toks(c.sec), 2); add(mt, 1.5);
+      let len = 0; tf.forEach(v => { len += v; });
+      return { ...c, tf, len: Math.max(len, 1) };
+    });
+    IX.docs.set(keyOf(i, id), { i, id, codigo: d.codigo, titulo: d.titulo, version: d.version, stamp: (d.actualizado || 0) + '|' + (d.version || 0), tipo: d.tipoNombre || '', proceso: d.procesoNombre || '', ch, text: blocks(html).map(b => b.t).join('\n'), mt: new Set(mt) });
+  }
+  function recount(){
+    IX.df = new Map(); let n = 0, L = 0;
+    IX.docs.forEach(x => x.ch.forEach(c => { n++; L += c.len; c.tf.forEach((_, t) => IX.df.set(t, (IX.df.get(t) || 0) + 1)); }));
+    IX.N = n; IX.avg = n ? L / n : 1;
+  }
+  // Lectura inteligente: cola con prioridad (documento/institución del alcance → coincidencia con la pregunta → más recientes),
+  // varios lectores en paralelo, índice utilizable mientras se sigue leyendo, y sin releer lo que no cambió.
+  const stampOf = d => (d.actualizado || 0) + '|' + (d.version || 0);
+  const isStale = x => { const o = IX.docs.get(keyOf(x.i, x.id)); return !o || o.stamp !== stampOf(x.d); };
+  const staleList = sc => activeDocs().filter(isStale).filter(x => !sc || ((!sc.inst || x.i === sc.inst) && (!sc.key || keyOf(x.i, x.id) === sc.key)));
+  const Q = [], DEF = new Map(); let workers = 0, doneN = 0, totalN = 0, CONC = 3;
+  const tick = () => new Promise(r => setTimeout(r, 0));
+  IX.onp = null;
+  const emit = () => { try { IX.onp && IX.onp(doneN, totalN); } catch (e) { } };
+  function prioOf(x, o){
+    let p = 0; const k = keyOf(x.i, x.id);
+    if (o.key && k === o.key) p += 1e6; if (o.inst && x.i === o.inst) p += 1e4;
+    if (o.qt && o.qt.length) { const set = new Set(toks([x.d.codigo, x.d.titulo, x.d.tipoNombre, x.d.procesoNombre, x.d.subNombre].filter(Boolean).join(' '))); o.qt.forEach(t => { if (set.has(t)) p += 50; }); }
+    return p + (x.d.fechaPub || x.d.actualizado || 0) / 1e14;
+  }
+  function pump(){
+    while (workers < CONC && Q.length) {
+      workers++;
+      (async () => {
+        while (Q.length) {
+          const x = Q.shift(), k = keyOf(x.i, x.id);
+          try { const sn = await db.ref(A.base(x.i) + '/content/' + x.id).once('value'); indexDoc(x.i, x.id, x.d, sn.val() || ''); } catch (e) { }
+          doneN++; if (doneN % 5 === 0) recount();
+          const df = DEF.get(k); DEF.delete(k); df && df.res(); emit(); await tick();
+        }
+        if (--workers === 0) { recount(); emit(); doneN = totalN = 0; CONC = 3; emit(); }
+      })();
+    }
+  }
+  // o: { qt, inst, key, wait (cuántos documentos prioritarios esperar; por defecto todos), urgent }
+  async function ensureIndex(o){
+    o = o || {};
+    const act = activeDocs(), live = new Set(act.map(x => keyOf(x.i, x.id)));
+    [...IX.docs.keys()].forEach(k => { if (!live.has(k)) IX.docs.delete(k); });
+    const st = staleList(); if (!st.length) { recount(); return 0; }
+    if (o.urgent) CONC = 8;
+    st.forEach(x => { const k = keyOf(x.i, x.id); if (!DEF.has(k)) { let res; const p = new Promise(r => { res = r; }); DEF.set(k, { p, res }); Q.push(x); totalN++; } });
+    Q.sort((a, b) => prioOf(b, o) - prioOf(a, o));
+    pump();
+    const rel = st.filter(x => (!o.inst || x.i === o.inst) && (!o.key || keyOf(x.i, x.id) === o.key)).sort((a, b) => prioOf(b, o) - prioOf(a, o));
+    const need = rel.slice(0, o.wait == null ? rel.length : o.wait).map(x => DEF.get(keyOf(x.i, x.id))).filter(Boolean).map(d => d.p);
+    await Promise.all(need); recount();
+    return staleList(o.key || o.inst ? { inst: o.inst, key: o.key } : null).length;
+  }
+  function warm(n){
+    n = n || 0; try { if (A.allow && !A.allow('doc.ia')) return; } catch (e) { return; }
+    if (!activeDocs().length) { if (n < 8) setTimeout(() => warm(n + 1), 1500); return; }
+    if (!staleList().length) return;
+    const go = () => ensureIndex({ wait: 0 }); window.requestIdleCallback ? requestIdleCallback(go, { timeout: 4000 }) : setTimeout(go, 1500);
+  }
+
+  // ── Búsqueda BM25 ─────────────────────────────
+  const CODE = /\b([a-z]{1,4}(?:[-\/][a-z0-9]{1,6})+-\d{1,4})\b/gi;
+  function search(q, o){
+    o = o || {}; const qt = [...new Set(toks(q, true))], codes = (String(q).match(CODE) || []).map(x => norm(x).replace(/\s/g, ''));
+    const K1 = 1.4, B = .72, res = [];
+    IX.docs.forEach(dx => {
+      if (o.inst && dx.i !== o.inst) return; if (o.key && keyOf(dx.i, dx.id) !== o.key) return;
+      const byCode = codes.length && codes.includes(norm(dx.codigo || '').replace(/\s/g, ''));
+      dx.ch.forEach((c, n) => {
+        let s = 0;
+        qt.forEach(t => { const f = c.tf.get(t); if (!f) return; const df = IX.df.get(t) || 1, idf = Math.log(1 + (IX.N - df + .5) / (df + .5)); s += idf * (f * (K1 + 1)) / (f + K1 * (1 - B + B * c.len / IX.avg)); });
+        if (byCode) s += 6 + (n === 0 ? 2 : 0);
+        if (s > 0 || o.key) res.push({ dx, c, n, s: o.key && s <= 0 ? .01 : s });
+      });
+    });
+    res.sort((a, b) => b.s - a.s);
+    const per = new Map(), out = [];
+    for (const r of res) { const k = keyOf(r.dx.i, r.dx.id), n = per.get(k) || 0; if (n >= (o.key ? 8 : 3)) continue; per.set(k, n + 1); out.push(r); if (out.length >= (o.max || 7)) break; }
+    return { hits: out, terms: qt };
+  }
+
+  // ── Cliente de IA (el mismo proxy y modelos de «Mejorar con IA») ──
+  async function llm(messages, o){
+    o = o || {}; const models = o.models || ['llama-3.3-70b-versatile', 'openai/gpt-oss-120b', 'llama-3.1-8b-instant'];
+    if (typeof GROQ_PROXY_URL === 'undefined' || !GROQ_PROXY_URL) throw new Error('Falta configurar la IA de Qualisig.');
+    let last = '';
+    for (const m of models) {
+      const r = await _indLlamarGroqConModelo(m, messages, o.max || 900, o.timeout || 45000, o.temp == null ? .2 : o.temp);
+      if (r.ok) { const ch = r.data && r.data.choices && r.data.choices[0], t = _indLimpiarSalidaIA(ch && ch.message && ch.message.content); if (t) return t; last = 'La IA no devolvió texto.'; }
+      else { last = (r.data && r.data.error && (r.data.error.message || r.data.error)) || ('Error ' + r.status); if (r.status === 400 || r.status === 401 || r.status === 403) break; }
+    }
+    throw new Error(/rate|limit|429|capacity|ocupad/i.test(String(last)) ? 'El servicio de IA está ocupado. Intenta de nuevo en unos segundos.' : String(last).slice(0, 160));
+  }
+
+  // ── Markdown mínimo y citas ───────────────────
+  function md(t, cites){
+    const esc = E(t).replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>').replace(/(^|[\s(])_([^_\n]+)_(?=[\s).,;:]|$)/g, '$1<i>$2</i>');
+    const cite = s => s.replace(/\[(\d{1,2})\]/g, (m, n) => cites && cites[+n] ? '<button class="gd-cite" data-n="' + n + '" title="' + E(cites[+n].dx.codigo + ' · ' + cites[+n].dx.titulo) + '">' + n + '</button>' : '');
+    const out = []; let list = null;
+    const close = () => { if (list) { out.push('</' + list + '>'); list = null; } };
+    esc.split('\n').forEach(l => {
+      const b = l.match(/^\s*(?:[-•*]|\d+[.)])\s+(.*)$/), ord = /^\s*\d+[.)]\s/.test(l);
+      if (b) { const k = ord ? 'ol' : 'ul'; if (list !== k) { close(); out.push('<' + k + '>'); list = k; } out.push('<li>' + cite(b[1]) + '</li>'); }
+      else if (!l.trim()) { close(); }
+      else { close(); out.push('<p>' + cite(l) + '</p>'); }
+    });
+    close(); return out.join('');
+  }
+  const hi = (text, terms) => {
+    const T = new Set(terms); let out = '';
+    String(text).split(/(\s+)/).forEach(w => { const n = norm(w).replace(/[^a-z0-9ñ]/g, ''); out += n && n.length >= 3 && T.has(stem(n)) ? '<mark>' + E(w) + '</mark>' : E(w); });
+    return out;
+  };
+
+  // ══ Panel del asistente ═══════════════════════
+  const S = { msgs: [], inst: '', doc: null, busy: false, prog: null };
+  let ov = null, typeRaf = 0;
+  const SUG = [
+    ['fa-magnifying-glass', '¿Qué documento habla sobre el lavado de manos?'],
+    ['fa-file-lines', 'Resume el documento más reciente de mi área'],
+    ['fa-user-check', '¿Quién aprueba los documentos y cada cuánto se revisan?'],
+    ['fa-triangle-exclamation', '¿Qué dice el sistema sobre eventos adversos?']
+  ];
+  const docLabel = k => { const dx = IX.docs.get(k); const d = (A.docs(k.split('/')[0]) || {})[k.split('/')[1]]; return dx ? dx.codigo + ' · ' + dx.titulo : d ? d.codigo + ' · ' + d.titulo : k; };
+
+  function shell(){
+    if (ov) return;
+    ov = document.createElement('div'); ov.className = 'gd-ai-ov';
+    ov.innerHTML = '<div class="gd-ai-sc"></div><aside class="gd-ai" role="dialog" aria-label="Asistente documental" aria-modal="true">' +
+      '<header class="gd-ai-h"><span class="gd-ai-lg"><i class="fas fa-wand-magic-sparkles"></i></span><div><b>Asistente documental</b><small id="gd-ai-st">Pregunta sobre tus documentos activos</small></div><button class="gd-ib" data-x="new" title="Nueva conversación" aria-label="Nueva conversación"><i class="fas fa-rotate-right"></i></button><button class="gd-ib" data-x="close" title="Cerrar (Esc)" aria-label="Cerrar"><i class="fas fa-xmark"></i></button></header>' +
+      '<div class="gd-ai-pbw"><i id="gd-ai-pb"></i></div><div class="gd-ai-sp" id="gd-ai-sp"></div><div class="gd-ai-th" id="gd-ai-th" aria-live="polite"></div>' +
+      '<form class="gd-ai-cp" id="gd-ai-cp"><textarea id="gd-ai-q" rows="1" maxlength="500" placeholder="Pregunta algo sobre los documentos…" aria-label="Tu pregunta"></textarea><button type="submit" class="gd-ai-sd" title="Enviar" aria-label="Enviar"><i class="fas fa-arrow-up"></i></button></form>' +
+      '<p class="gd-ai-ft">La IA responde solo con el texto de los documentos activos. Verifica en el documento antes de aplicar.</p></aside>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', e => {
+      if (e.target.classList.contains('gd-ai-sc')) return hide();
+      const x = e.target.closest('[data-x]'); if (x) { if (x.dataset.x === 'close') hide(); if (x.dataset.x === 'new') reset(); return; }
+      const sg = e.target.closest('[data-sg]'); if (sg) { ask(SUG[+sg.dataset.sg][1]); return; }
+      const ct = e.target.closest('.gd-cite'); if (ct) { const m = ct.closest('.gd-ai-m'); const card = m && m.querySelector('.gd-src[data-n="' + ct.dataset.n + '"]'); if (card) { card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); card.classList.remove('pulse'); void card.offsetWidth; card.classList.add('pulse'); } return; }
+      const ra = e.target.closest('[data-reask]'); if (ra && !ra.disabled) { const t = ra.dataset.reask; ra.closest('.gd-ai-pt').remove(); ask(t); return; }
+      const op = e.target.closest('[data-open]'); if (op) { openSource(op.dataset.open, op.dataset.hl); return; }
+      const cp = e.target.closest('[data-copy]'); if (cp) { const m = S.msgs[+cp.dataset.copy]; if (m && navigator.clipboard) navigator.clipboard.writeText(m.text).then(() => toast('Respuesta copiada', 'success')); return; }
+      const sc = e.target.closest('[data-scope]'); if (sc) { const v = sc.dataset.scope; if (v === 'doc-off') S.doc = null; else { S.doc = null; S.inst = v === 'all' ? '' : v; } paintScope(); return; }
+      const ex = e.target.closest('.gd-src-b'); if (ex) { ex.closest('.gd-src').classList.toggle('open'); return; }
+    });
+    const q = $('gd-ai-q');
+    q.addEventListener('input', () => { q.style.height = 'auto'; q.style.height = Math.min(140, q.scrollHeight) + 'px'; });
+    q.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('gd-ai-cp').requestSubmit(); } });
+    $('gd-ai-cp').addEventListener('submit', e => { e.preventDefault(); const v = q.value.trim(); if (!v) return; q.value = ''; q.style.height = 'auto'; ask(v); });
+    IX.onp = (a, b) => { S.prog = a < b ? [a, b] : null; paintScope(); updPart(); if (S.cur && S.cur._wait && S.prog) step(S.cur, 'Leyendo documentos ' + a + ' de ' + b + '…'); };
+    ov.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); hide(); } });
+  }
+  function paintScope(){
+    const sp = $('gd-ai-sp'); if (!sp) return;
+    if (S.doc) { sp.innerHTML = '<span class="gd-ai-chip on doc"><i class="fas fa-file-lines"></i>' + E(clip(docLabel(S.doc), 44)) + '<button data-scope="doc-off" aria-label="Quitar filtro de documento"><i class="fas fa-xmark"></i></button></span>'; }
+    else sp.innerHTML = '<button class="gd-ai-chip' + (!S.inst ? ' on' : '') + '" data-scope="all">Todas</button>' + IK.map(i => '<button class="gd-ai-chip' + (S.inst === i ? ' on' : '') + '" data-scope="' + i + '">' + E(INSTS[i].c) + '</button>').join('');
+    const n = IX.docs.size, st = $('gd-ai-st'), pb = $('gd-ai-pb'), tot = n + (S.prog ? S.prog[1] - S.prog[0] : 0);
+    st.innerHTML = '<i class="gd-ai-lv' + (S.prog ? ' ld' : n ? ' ok' : '') + '"></i>' + (S.prog ? 'Leyendo documentos · ' + S.prog[0] + ' de ' + S.prog[1] : n ? n + ' documento' + (n === 1 ? '' : 's') + ' activo' + (n === 1 ? '' : 's') + ' listo' + (n === 1 ? '' : 's') : 'Pregunta sobre tus documentos activos');
+    if (pb) { pb.style.transform = 'scaleX(' + (S.prog ? Math.max(.04, S.prog[0] / S.prog[1]) : 0) + ')'; pb.parentNode.classList.toggle('on', !!S.prog); }
+  }
+  function paintEmpty(){
+    $('gd-ai-th').innerHTML = '<div class="gd-ai-em"><h3>¿Qué quieres saber?</h3><p>Busco en el texto de los documentos activos y te muestro de dónde sale cada respuesta.</p><div class="gd-ai-sg">' + SUG.map((s, n) => '<button data-sg="' + n + '"><i class="fas ' + s[0] + '"></i><span>' + E(s[1]) + '</span></button>').join('') + '</div></div>';
+  }
+  function show(o){
+    shell(); o = o || {};
+    if (o.i && o.id) { S.doc = keyOf(o.i, o.id); S.inst = ''; }
+    else if (o.inst !== undefined) { S.inst = o.inst; S.doc = null; }
+    clearBack(); ov.classList.add('on'); document.documentElement.classList.add('gd-ai-lock'); paintScope();
+    if (!S.msgs.length || o.fresh) { if (o.fresh) S.msgs = []; paintEmpty(); }
+    setTimeout(() => { const q = $('gd-ai-q'); if (q && !o.resumen) q.focus(); }, 60);
+    if (staleList().length) ensureIndex({ inst: S.inst, key: S.doc, wait: 0, urgent: true });
+    if (o.resumen && o.i) summarize(o.i, o.id);
+  }
+  function hide(){ if (!ov) return; ov.classList.remove('on'); document.documentElement.classList.remove('gd-ai-lock'); cancelAnimationFrame(typeRaf); }
+  function reset(){ S.msgs = []; S.busy = false; paintEmpty(); const q = $('gd-ai-q'); if (q) q.focus(); }
+  function clearBack(){ const b = document.getElementById('gd-ai-back'); if (b) b.remove(); }
+  function backPill(){
+    clearBack(); const b = document.createElement('button'); b.id = 'gd-ai-back'; b.className = 'gd-ai-back'; b.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Volver al asistente'; b.onclick = () => show(); document.body.appendChild(b);
+    const t = setInterval(() => { if (!document.querySelector('.gd-st') || (ov && ov.classList.contains('on'))) { clearInterval(t); clearBack(); } }, 600);
+  }
+
+  // ── Conversación ──────────────────────────────
+  function thread(){ return $('gd-ai-th'); }
+  function addUser(text){
+    const th = thread(); if (!S.msgs.length) th.innerHTML = '';
+    S.msgs.push({ r: 'u', text });
+    th.insertAdjacentHTML('beforeend', '<div class="gd-ai-m u"><p>' + E(text) + '</p></div>');
+  }
+  function addBot(){
+    const th = thread(), el = document.createElement('div'); el.className = 'gd-ai-m a'; el.innerHTML = '<div class="gd-ai-pr"><span class="gd-ai-dots"><i></i><i></i><i></i></span><span class="t">Buscando…</span></div><div class="gd-ai-bd"></div><div class="gd-ai-sr"></div>';
+    th.appendChild(el); scroll(); return el;
+  }
+  const scroll = () => { const th = thread(); if (th) th.scrollTo({ top: th.scrollHeight, behavior: 'smooth' }); };
+  const step = (el, t) => { const s = el.querySelector('.gd-ai-pr .t'); if (s) s.textContent = t; };
+  function reveal(el, text, cites, done){
+    const bd = el.querySelector('.gd-ai-bd'), words = text.split(/(\s+)/), per = Math.max(2, Math.ceil(words.length / 70)); let n = 0;
+    el.querySelector('.gd-ai-pr').remove();
+    const tick = () => { n = Math.min(words.length, n + per); bd.innerHTML = md(words.slice(0, n).join(''), cites); if (n < words.length) { typeRaf = requestAnimationFrame(tick); const th = thread(); if (th && th.scrollHeight - th.scrollTop - th.clientHeight < 140) th.scrollTop = th.scrollHeight; } else done && done(); };
+    tick();
+  }
+  function srcCards(el, cites, used, terms){
+    const sr = el.querySelector('.gd-ai-sr'), nums = Object.keys(cites).map(Number), cited = nums.filter(n => used.has(n)), rest = nums.filter(n => !used.has(n));
+    const card = n => { const h = cites[n], d = h.dx; return '<div class="gd-src" data-n="' + n + '"><button class="gd-src-b" type="button" aria-label="Ver fragmento"><span class="n">' + n + '</span><span class="tx"><b>' + E(d.codigo) + '</b> · ' + E(d.titulo) + '</span><em>v' + verOf(d) + ' · ' + E(INSTS[d.i] ? INSTS[d.i].c : d.i) + '</em><i class="fas fa-chevron-down"></i></button>' +
+      '<div class="gd-src-x">' + (h.c.sec ? '<small>' + E(clip(h.c.sec, 90)) + '</small>' : '') + '<p>' + hi(clip(h.c.text.replace(/\n/g, ' '), 420), terms) + '</p><button class="gd-btn sm" data-open="' + keyOf(d.i, d.id) + '" data-hl="' + E(clip(h.c.text.split('\n').slice(h.c.sec && h.c.text.startsWith(h.c.sec) ? 1 : 0)[0] || h.c.text, 70)) + '"><i class="fas fa-arrow-up-right-from-square"></i> Abrir en el documento</button></div></div>'; };
+    sr.innerHTML = (cited.length ? '<h5>Fuentes</h5>' + cited.map(card).join('') : '') + (rest.length ? '<details class="gd-src-more"><summary>También revisé ' + rest.length + ' fragmento' + (rest.length === 1 ? '' : 's') + '</summary>' + rest.map(card).join('') + '</details>' : '');
+    sr.classList.add('on');
+  }
+  function partNote(el){
+    const p = el._part; if (!p) return; const left = staleList(p.sc).length;
+    if (!left) return;
+    el.insertAdjacentHTML('beforeend', '<div class="gd-ai-pt" data-total="' + p.total + '" data-sc="' + E((p.sc.inst || '') + '|' + (p.sc.key || '')) + '"><span class="c"></span><button type="button" data-reask="' + E(p.q) + '" disabled>Buscar en todos</button></div>'); updPart();
+  }
+  function updPart(){
+    document.querySelectorAll('.gd-ai-pt').forEach(n => {
+      const [inst, key] = (n.dataset.sc || '|').split('|'), left = staleList({ inst, key }).length, tot = +n.dataset.total, b = n.querySelector('button'), c = n.querySelector('.c');
+      if (left) { c.textContent = 'Busqué en ' + Math.max(0, tot - left) + ' de ' + tot + ' documentos · sigo leyendo el resto'; b.disabled = true; }
+      else { c.textContent = 'Ya leí los ' + tot + ' documentos'; b.disabled = false; }
+    });
+  }
+  function foot(el, idx){
+    el.insertAdjacentHTML('beforeend', '<div class="gd-ai-ac"><button class="gd-ai-lk" data-copy="' + idx + '"><i class="fas fa-copy"></i> Copiar</button></div>');
+    scroll();
+  }
+  const ctxMsgs = () => { const L = S.msgs.filter(m => !m.err).slice(-7, -1), out = []; L.forEach(m => out.push({ role: m.r === 'u' ? 'user' : 'assistant', content: clip(m.text, 700) })); return out; };
+
+  async function ask(q){
+    if (S.busy) return; q = String(q || '').trim(); if (!q) return;
+    shell(); S.busy = true; addUser(q); const el = addBot(), idx = S.msgs.length;
+    try {
+      let part = null;
+      if (staleList().length) {
+        step(el, 'Preparando los documentos…'); S.cur = el; el._wait = true;
+        const sc = { inst: S.inst, key: S.doc }, left = await ensureIndex({ qt: [...new Set(toks(q, true))], inst: S.inst, key: S.doc, wait: 40, urgent: true });
+        el._wait = false;
+        if (left) part = { q, total: activeDocs().filter(x => (!sc.inst || x.i === sc.inst) && (!sc.key || keyOf(x.i, x.id) === sc.key)).length, left, sc };
+      }
+      el._part = part;
+      if (!IX.docs.size) { finish(el, 'Todavía no hay documentos activos para consultar. Cuando se active el primero, podrás preguntar aquí.', {}, idx); return; }
+      const prev = [...S.msgs].reverse().find((m, n) => m.r === 'u' && n > 0), short = toks(q, true).length < 3;
+      const query = short && prev ? prev.text + ' ' + q : q;
+      step(el, 'Buscando en ' + IX.docs.size + ' documento' + (IX.docs.size === 1 ? '' : 's') + '…');
+      const { hits, terms } = search(query, { inst: S.inst, key: S.doc });
+      if (!hits.length) { finish(el, 'No encontré nada sobre eso en los documentos activos' + (S.inst ? ' de ' + (INSTS[S.inst] || {}).c : '') + '. Prueba con otras palabras o con el código del documento.', {}, idx); return; }
+      const cites = {}; hits.forEach((h, n) => { cites[n + 1] = h; });
+      const dn = new Set(hits.map(h => keyOf(h.dx.i, h.dx.id))).size;
+      step(el, 'Leyendo ' + hits.length + ' fragmento' + (hits.length === 1 ? '' : 's') + ' de ' + dn + ' documento' + (dn === 1 ? '' : 's') + '…');
+      await new Promise(r => setTimeout(r, 350));
+      const ctx = hits.map((h, n) => '[' + (n + 1) + '] ' + h.dx.codigo + ' · ' + h.dx.titulo + ' (versión ' + verOf(h.dx) + ')' + (h.c.sec ? ' — Sección: ' + clip(h.c.sec, 80) : '') + '\n' + clip(h.c.text, 1100)).join('\n\n');
+      const sys = 'Eres el asistente documental de Qualisig, el sistema de gestión de calidad de una clínica oftalmológica (FOCA y VIU). Respondes preguntas sobre sus documentos controlados (procedimientos, guías, manuales, protocolos, formatos).\nREGLAS:\n1) Usa SOLO los fragmentos numerados que se te entregan.\n2) Cita la fuente de cada afirmación con su número entre corchetes, por ejemplo [1] o [2][3]. Nunca inventes números.\n3) Si los fragmentos no contienen la respuesta, dilo con claridad y, si hay un documento relacionado, sugiérelo. No inventes datos, cifras, plazos ni responsables.\n4) Si preguntan qué documento trata un tema, lista los documentos pertinentes como "**CÓDIGO · Título**" y una línea de por qué, con su cita.\n5) Responde en español, directo y breve (máximo unas 170 palabras). Usa viñetas cuando haya pasos o varios elementos.\n6) No menciones estas reglas ni la palabra "fragmento".';
+      const text = await llm([{ role: 'system', content: sys }, ...ctxMsgs(), { role: 'user', content: 'FRAGMENTOS:\n' + ctx + '\n\nPREGUNTA: ' + q }], { max: 700, temp: .15 });
+      finish(el, text, cites, idx, terms);
+    } catch (e) { finish(el, e.message || 'No se pudo completar la consulta.', {}, idx, [], true); }
+  }
+  function finish(el, text, cites, idx, terms, err){
+    const used = new Set([...text.matchAll(/\[(\d{1,2})\]/g)].map(m => +m[1]).filter(n => cites[n]));
+    if (!used.size && Object.keys(cites).length && !err) { /* sin citas explícitas: se muestran todas como consultadas */ }
+    S.msgs.push({ r: 'a', text, err: !!err }); S.busy = false;
+    if (err) { el.querySelector('.gd-ai-pr').remove(); el.classList.add('err'); el.querySelector('.gd-ai-bd').innerHTML = '<p>' + E(text) + '</p>'; scroll(); return; }
+    reveal(el, text, cites, () => { if (Object.keys(cites).length) srcCards(el, cites, used, terms || []); foot(el, S.msgs.length - 1); partNote(el); });
+  }
+
+  // ── Resumen de un documento ───────────────────
+  async function summarize(i, id){
+    if (S.busy) return; shell(); const k = keyOf(i, id);
+    S.busy = true; addUser('Resume este documento'); const el = addBot(); const idx = S.msgs.length;
+    try {
+      step(el, 'Leyendo el documento…');
+      let dx = IX.docs.get(k);
+      if (!dx) { const d = (A.docs(i) || {})[id], s = await db.ref(A.base(i) + '/content/' + id).once('value'); if (d) { indexDoc(i, id, d, s.val() || ''); dx = IX.docs.get(k); } }
+      if (!dx || !dx.text.trim()) { finish(el, 'Este documento todavía no tiene contenido para resumir.', {}, idx); return; }
+      let body = dx.text; if (body.length > 11000) { const per = Math.max(260, Math.floor(11000 / dx.ch.length)); body = dx.ch.map(c => clip(c.text.replace(/\n/g, ' '), per)).join('\n'); }
+      step(el, 'Redactando el resumen…');
+      const sys = 'Resumes documentos de un sistema de gestión de calidad de una clínica para personal que no los ha leído. Usa SOLO el texto entregado. Responde en español con esta estructura exacta:\n**Para qué sirve** (1-2 frases)\n**A quién aplica** (1 frase; omite si no se indica)\n**Puntos clave** (3 a 6 viñetas con "- ")\n**Responsables y registros** (viñetas; omite si no aparecen)\nNo inventes nada. Máximo 220 palabras.';
+      const text = await llm([{ role: 'system', content: sys }, { role: 'user', content: dx.codigo + ' · ' + dx.titulo + ' (versión ' + verOf(dx) + ')\n\n' + body }], { max: 800, temp: .2 });
+      const cites = { 1: { dx, c: { sec: '', text: dx.ch[0] ? dx.ch[0].text : '' }, n: 0, s: 1 } };
+      finishDoc(el, text, dx, idx);
+    } catch (e) { finish(el, e.message || 'No se pudo resumir.', {}, idx, [], true); }
+  }
+  function finishDoc(el, text, dx, idx){
+    S.msgs.push({ r: 'a', text }); S.busy = false;
+    reveal(el, text, {}, () => {
+      el.querySelector('.gd-ai-sr').innerHTML = '<h5>Documento</h5><div class="gd-src open"><div class="gd-src-x" style="display:block"><button class="gd-btn sm" data-open="' + keyOf(dx.i, dx.id) + '" data-hl=""><i class="fas fa-arrow-up-right-from-square"></i> Abrir ' + E(dx.codigo) + '</button></div></div>';
+      el.querySelector('.gd-ai-sr').classList.add('on'); foot(el, S.msgs.length - 1);
+    });
+  }
+
+  // ── Abrir una fuente y resaltar el pasaje ─────
+  function openSource(k, hl){
+    const [i, id] = k.split('/'); hide();
+    window.DOCS.open(i, id);
+    if (document.querySelector('.gd-st')) backPill();
+    let tries = 0;
+    const t = setInterval(() => {
+      tries++; const vw = document.querySelector('.gd-sheet .vw'); backPillMaybe();
+      if (vw && vw.textContent.length > 20) {
+        clearInterval(t); backPill(); if (!hl) return;
+        const key = norm(plain(hl)).slice(0, 48); if (!key) return;
+        const els = [...vw.querySelectorAll('p,li,td,th,h1,h2,h3,h4,h5,h6,blockquote,div')].filter(x => !x.querySelector('p,li,td,th,div,h1,h2,h3,h4')).find(x => norm(plain(x.textContent)).includes(key));
+        if (els) { els.classList.add('gd-hl'); els.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => els.classList.remove('gd-hl'), 6000); }
+      } else if (tries > 40) clearInterval(t);
+    }, 150);
+  }
+  const backPillMaybe = () => {};
+
+  // ══ Comparación de versiones (control de cambios) ══
+  function lcsOps(a, b){
+    const n = a.length, m = b.length; let s = 0; while (s < n && s < m && a[s] === b[s]) s++;
+    let e = 0; while (e < n - s && e < m - s && a[n - 1 - e] === b[m - 1 - e]) e++;
+    const A1 = a.slice(s, n - e), B1 = b.slice(s, m - e), x = A1.length, y = B1.length, ops = [];
+    for (let i = 0; i < s; i++) ops.push(['=', a[i], b[i]]);
+    if (x * y > 5e6) { A1.forEach(v => ops.push(['-', v])); B1.forEach(v => ops.push(['+', v])); }
+    else {
+      const W = y + 1, T = new Uint16Array((x + 1) * W);
+      for (let i = x - 1; i >= 0; i--) for (let j = y - 1; j >= 0; j--) T[i * W + j] = A1[i] === B1[j] ? T[(i + 1) * W + j + 1] + 1 : Math.max(T[(i + 1) * W + j], T[i * W + j + 1]);
+      let i = 0, j = 0;
+      while (i < x && j < y) { if (A1[i] === B1[j]) { ops.push(['=', A1[i], B1[j]]); i++; j++; } else if (T[(i + 1) * W + j] >= T[i * W + j + 1]) ops.push(['-', A1[i++]]); else ops.push(['+', B1[j++]]); }
+      while (i < x) ops.push(['-', A1[i++]]); while (j < y) ops.push(['+', B1[j++]]);
+    }
+    for (let i = n - e; i < n; i++) ops.push(['=', a[i], b[i - n + m]]);
+    return ops;
+  }
+  const sim = (p, q) => { const A_ = new Set(toks(p)), B_ = new Set(toks(q)); if (!A_.size || !B_.size) return 0; let c = 0; A_.forEach(t => { if (B_.has(t)) c++; }); return c / (A_.size + B_.size - c); };
+  function wordDiff(p, q){
+    const a = plain(p).split(' '), b = plain(q).split(' ');
+    if (a.length * b.length > 4e6) return '<del>' + E(p) + '</del> <ins>' + E(q) + '</ins>';
+    const ops = lcsOps(a.map(norm), b.map(norm)); let ia = 0, ib = 0, out = '', mode = '', buf = '';
+    const fl = () => { if (buf) { out += mode === '-' ? '<del>' + E(buf.trim()) + '</del> ' : mode === '+' ? '<ins>' + E(buf.trim()) + '</ins> ' : E(buf); } buf = ''; };
+    ops.forEach(([t]) => { const w = t === '+' ? b[ib++] : (t === '-' ? a[ia++] : (ia++, b[ib++])); if (t !== mode) { fl(); mode = t; } buf += w + ' '; });
+    fl(); return out.trim();
+  }
+  function diff(oldHtml, newHtml){
+    const ob = blocks(oldHtml).filter(b => !b.h || true), nb = blocks(newHtml);
+    const ops = lcsOps(ob.map(b => norm(b.t)), nb.map(b => norm(b.t))), res = [];
+    let i = 0, oi = 0, ni = 0;
+    while (i < ops.length) {
+      if (ops[i][0] === '=') { oi++; ni++; i++; continue; }
+      const dels = [], adds = [];
+      while (i < ops.length && ops[i][0] !== '=') { if (ops[i][0] === '-') dels.push(ob[oi++]); else adds.push(nb[ni++]); i++; }
+      const used = new Set();
+      adds.forEach(a => {
+        let best = -1, bs = .3; dels.forEach((d, k) => { if (used.has(k)) return; const s = sim(d.t, a.t); if (s > bs) { bs = s; best = k; } });
+        if (best >= 0) { used.add(best); res.push({ k: 'mod', sec: a.sec || dels[best].sec, before: dels[best].t, after: a.t, html: wordDiff(dels[best].t, a.t) }); }
+        else res.push({ k: 'add', sec: a.sec, after: a.t, head: !!a.h });
+      });
+      dels.forEach((d, k) => { if (!used.has(k)) res.push({ k: 'del', sec: d.sec, before: d.t, head: !!d.h }); });
+    }
+    const st = { add: res.filter(r => r.k === 'add').length, del: res.filter(r => r.k === 'del').length, mod: res.filter(r => r.k === 'mod').length };
+    return { ops: res, stats: st };
+  }
+  const OPL = { add: 'AGREGADO', del: 'ELIMINADO', mod: 'MODIFICADO' };
+  function localSummary(ops){
+    const L = []; const q = t => '«' + clip(t, 70) + '»';
+    ops.filter(o => !(o.k === 'mod' && sim(o.before, o.after) > .9)).slice(0, 6).forEach(o => { const s = o.sec ? ' (' + clip(o.sec, 40) + ')' : ''; L.push('- ' + (o.k === 'add' ? 'Se agrega ' + q(o.after) : o.k === 'del' ? 'Se elimina ' + q(o.before) : 'Se actualiza ' + q(o.before) + ' → ' + q(o.after)) + s); });
+    const rest = ops.length - L.length; if (rest > 0 && L.length) L.push('- Otros ' + rest + ' ajustes menores de redacción y formato');
+    return L.length ? L.join('\n') : '- Ajustes menores de redacción y formato';
+  }
+  async function describeChanges(ops, info){
+    const list = ops.slice(0, 45).map((o, n) => (n + 1) + '. [' + OPL[o.k] + ']' + (o.sec ? ' Sección «' + clip(o.sec, 70) + '»' : '') + (o.before ? '\n   Antes: ' + clip(o.before, 260) : '') + (o.after ? '\n   Ahora: ' + clip(o.after, 260) : '')).join('\n') + (ops.length > 45 ? '\n(y ' + (ops.length - 45) + ' cambios menores más)' : '');
+    const sys = 'Redactas la descripción para la tabla de CONTROL DE CAMBIOS de un documento controlado de un sistema de gestión de calidad. Recibes la lista de cambios entre la versión anterior y la nueva.\nREGLAS:\n- Entre 1 y 6 viñetas, cada una en UNA sola línea, comenzando con "- ".\n- Empieza cada viñeta con "Se agrega", "Se actualiza", "Se elimina", "Se modifica" o "Se ajusta", y menciona la sección, paso o tema cuando se vea.\n- Agrupa los cambios parecidos en una sola viñeta.\n- Usa solo lo que aparece en la lista; no inventes motivos ni interpretes.\n- Si todo son correcciones menores de ortografía o redacción, dilo en una sola viñeta.\n- Responde únicamente con las viñetas.';
+    const t = await llm([{ role: 'system', content: sys }, { role: 'user', content: info + '\n\nCAMBIOS:\n' + list }], { max: 500, temp: .1 });
+    const lines = t.split('\n').map(l => l.trim()).filter(l => /^[-•*]\s/.test(l)).map(l => '- ' + l.replace(/^[-•*]\s+/, ''));
+    return lines.length ? lines.join('\n') : t;
+  }
+  function setChangeDesc(html, nv, desc){
+    const box = document.createElement('div'); box.innerHTML = html;
+    const pad = String(nv).padStart(3, '0'), cell = '• ';
+    const lines = String(desc).split('\n').map(l => l.replace(/^[-•*]\s*/, '').trim()).filter(Boolean), h = lines.length > 1 ? lines.map(l => cell + E(l)).join('<br>') : E(lines[0] || '');
+    let done = false; box.querySelectorAll('tr').forEach(tr => { const c = [...tr.children]; if (!done && c.length >= 3 && plain(c[c.length - 1].textContent) === pad) { c[1].innerHTML = h; done = true; } });
+    return done ? box.innerHTML : null;
+  }
+
+  return { open: show, hide, ask, summarize, diff, describeChanges, localSummary, setChangeDesc, OPL, wordDiff, index: IX, warm };
+})();
+
+/* ══ Documentos · ayudas móviles ══ */
+(function(){
+  if (window.__gdMob) return; window.__gdMob = 1;
+  const root = () => document.getElementById('gd-root'); let t = 0;
+  const fix = () => { const b = document.querySelector('#gd-root .gd-seg button.on'); if (b && window.innerWidth <= 900) { const s = b.parentNode; s.scrollTo({ left: b.offsetLeft - (s.clientWidth - b.offsetWidth) / 2, behavior: 'smooth' }); } };
+  const iv = setInterval(() => { const r = root(); if (!r) return; clearInterval(iv); new MutationObserver(() => { clearTimeout(t); t = setTimeout(fix, 60); }).observe(r, { childList: true, subtree: true }); }, 700);
+})();
+
 </script>
 </body>
 </html>
