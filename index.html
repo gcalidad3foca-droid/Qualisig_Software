@@ -5852,11 +5852,7 @@ mark{background:#FFF1B8;color:inherit;border-radius:3px;padding:0 1px}
 #qs-splash{position:fixed;inset:0;z-index:99999;background:var(--qs-login-bg);transition:opacity .32s cubic-bezier(.4,0,.2,1);contain:strict}
 #qs-splash.off{opacity:0;pointer-events:none}
 @keyframes qsIn{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:none}}
-@keyframes qsCard{from{opacity:0;transform:translate3d(0,14px,0) scale(.985)}to{opacity:1;transform:none}}
-#screen-login.qs-in .login-card{animation:qsCard .65s cubic-bezier(.22,1,.36,1) both}
-#screen-login.qs-out{opacity:0;transform:scale(1.012);transition:opacity .28s cubic-bezier(.4,0,1,1),transform .28s cubic-bezier(.4,0,1,1)}
-@media(prefers-reduced-motion:reduce){.screen.qs-in,#screen-dashboard.qs-in .qs-side,#screen-dashboard.qs-in .qs-nav>*,#screen-dashboard.qs-in .dash-body>.module.active>*,#screen-dashboard.qs-in .dash-body>.module.active>.audit-view.active>*,#screen-dashboard.qs-in .dash-body>.module.active>.dash-view.active>*,#screen-login.qs-in .login-card{animation:none}#screen-login.qs-out{transition:none}#qs-splash{transition:none}}
-#screen-login{background:var(--qs-login-bg)!important}
+@media(prefers-reduced-motion:reduce){.screen.qs-in,#screen-dashboard.qs-in .qs-side,#screen-dashboard.qs-in .qs-nav>*,#screen-dashboard.qs-in .dash-body>.module.active>*,#screen-dashboard.qs-in .dash-body>.module.active>.audit-view.active>*,#screen-dashboard.qs-in .dash-body>.module.active>.dash-view.active>*,#screen-login{background:var(--qs-login-bg)!important}
 #screen-login::before{background:radial-gradient(60% 50% at 18% 12%,rgba(53,99,233,.13) 0%,transparent 70%),radial-gradient(55% 50% at 88% 92%,rgba(31,71,184,.10) 0%,transparent 70%)!important}
 #screen-login .login-card{box-shadow:0 0 0 1px rgba(31,71,184,.06),0 2px 6px rgba(14,26,51,.04),0 40px 80px -36px rgba(31,71,184,.34)!important}
 
@@ -5897,6 +5893,16 @@ mark{background:#FFF1B8;color:inherit;border-radius:3px;padding:0 1px}
 #qs-cover.on{opacity:1}
 html{background:#EEF3FD}
 @media(prefers-reduced-motion:reduce){.qs-lo-b,.qs-lo-c,#qs-cover{transition:none}}
+
+@keyframes qsCard{from{opacity:0;transform:translate3d(0,22px,0) scale(.975)}to{opacity:1;transform:none}}
+@keyframes qsLg{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:none}}
+#screen-login .login-card{animation:qsCard .9s cubic-bezier(.22,1,.36,1) .05s both!important;will-change:transform,opacity}
+#screen-login .login-card>*{animation:qsLg .7s cubic-bezier(.22,1,.36,1) both}
+#screen-login .login-card>*:nth-child(1){animation-delay:.18s}#screen-login .login-card>*:nth-child(2){animation-delay:.24s}#screen-login .login-card>*:nth-child(3){animation-delay:.28s}#screen-login .login-card>*:nth-child(4){animation-delay:.3s}#screen-login .login-card>*:nth-child(5){animation-delay:.34s}#screen-login .login-card>*:nth-child(6){animation-delay:.4s}#screen-login .login-card>*:nth-child(7){animation-delay:.46s}#screen-login .login-card>*:nth-child(8){animation-delay:.5s}#screen-login .login-card>*:nth-child(n+9){animation-delay:.54s}
+#screen-login.qs-out .login-card{opacity:0;transform:translate3d(0,-14px,0) scale(.98);transition:opacity .34s cubic-bezier(.4,0,1,1),transform .4s cubic-bezier(.4,0,1,1);animation:none!important}
+#screen-login.qs-out .login-card>*{animation:none}
+#screen-login.qs-out{opacity:0;transition:opacity .32s ease .16s}
+@media(prefers-reduced-motion:reduce){#screen-login .login-card,#screen-login .login-card>*{animation:none!important}#screen-login.qs-out,#screen-login.qs-out .login-card{transition:none}}
 </style>
 <style id="qa-polish">#screen-admin{--qa-card-r:20px;--qa-ctl-r:14px;--qa-gap:22px;--qa-ease:cubic-bezier(.22,1,.36,1);--qa-pad:28px;--qa-sh:0 1px 2px rgba(14,26,51,.04),0 14px 34px -22px rgba(14,26,51,.22)}
 #screen-admin .qa-top{padding:12px var(--qa-pad);gap:12px;border-bottom:1px solid var(--q-line,#E4E9F2);background:rgba(250,251,253,.86)}
@@ -7422,7 +7428,7 @@ auth.onAuthStateChanged(user => {
 });
 
 function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s => { if (s.id !== 'screen-' + name) s.classList.remove('active'); });
   document.getElementById('screen-' + name).classList.add('active');
   // Reset login form state when returning to login screen
   if (name === 'login') {
@@ -7459,11 +7465,11 @@ function showScreen(name) {
   function go(){
     var n = QS.pending; QS.pending = null; QS.t = 0; QS.entered = true;
     var lg = document.getElementById('screen-login'), swap = function(){ raw(n); animIn(n); QS.splashOff(); };
-    if (lg && lg.classList.contains('active') && (!S || S.__off)) { lg.classList.add('qs-out'); setTimeout(function(){ lg.classList.remove('qs-out'); swap(); }, 280); } else swap();
+    if (lg && lg.classList.contains('active') && (!S || S.__off)) { lg.classList.add('qs-out'); setTimeout(function(){ swap(); lg.classList.remove('qs-out'); }, 500); } else swap();
   }
   function tick(){ if (!QS.pending) return; var w = Date.now() - QS.t; if (ready(w) || w > 8000) go(); else setTimeout(tick, 40); }
   window.showScreen = function(name){
-    if (name === 'login') { QS.pending = null; QS.entered = false; raw(name); var lg = document.getElementById('screen-login'); if (!first && !QS.out && (!S || S.__off)) { lg.classList.remove('qs-in'); void lg.offsetWidth; lg.classList.add('qs-in'); setTimeout(function(){ lg.classList.remove('qs-in'); }, 900); } first = false; QS.splashOff(); if (typeof svcWarm === 'function') setTimeout(function(){ try { svcWarm(); } catch (e) {} }, 900); return; }
+    if (name === 'login') { QS.pending = null; QS.entered = false; raw(name); var lg = document.getElementById('screen-login'); first = false; QS.splashOff(); if (typeof svcWarm === 'function') setTimeout(function(){ try { svcWarm(); } catch (e) {} }, 900); return; }
     if (QS.entered) { raw(name); animIn(name); return; }
     var first = !QS.pending; QS.pending = name; if (first) { QS.t = Date.now(); setTimeout(tick, 0); }
   };
