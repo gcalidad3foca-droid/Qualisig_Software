@@ -1,7 +1,7 @@
 /* Qualisig · service worker: permite instalar la app y abrirla rápido.
    Las páginas se buscan primero en internet (siempre ves la última versión) y,
    si no hay conexión, se usa la copia guardada. Firebase y la IA nunca se guardan. */
-const VERSION = 'qualisig-2026-11-28s';
+const VERSION = 'qualisig-2026-11-28t';
 const SHELL = ['./', './index.html', './Lista_Habilitacion_3100.html', './Lista_Verificacion_FOCA.html', './Lista_Verificacion_VIU.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 const STATIC = /(^|\.)(cdnjs\.cloudflare\.com|fonts\.googleapis\.com|fonts\.gstatic\.com|cdn\.jsdelivr\.net|unpkg\.com)$/;
 const SKIP = /(firebaseio\.com|firebasedatabase\.app|identitytoolkit|securetoken|googleapis\.com\/(identitytoolkit|token)|workers\.dev|google-analytics|gstatic\.com\/firebasejs)/;
