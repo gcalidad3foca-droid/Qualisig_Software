@@ -5852,7 +5852,7 @@ mark{background:#FFF1B8;color:inherit;border-radius:3px;padding:0 1px}
 #qs-splash{position:fixed;inset:0;z-index:99999;background:var(--qs-login-bg);transition:opacity .32s cubic-bezier(.4,0,.2,1);contain:strict}
 #qs-splash.off{opacity:0;pointer-events:none}
 @keyframes qsIn{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:none}}
-@media(prefers-reduced-motion:reduce){.screen.qs-in,#screen-dashboard.qs-in .qs-side,#screen-dashboard.qs-in .qs-nav>*,#screen-dashboard.qs-in .dash-body>.module.active>*,#screen-dashboard.qs-in .dash-body>.module.active>.audit-view.active>*,#screen-dashboard.qs-in .dash-body>.module.active>.dash-view.active>*,#screen-login{background:var(--qs-login-bg)!important}
+@media(prefers-reduced-motion:reduce){.screen.qs-in,#screen-dashboard.qs-in .qs-side,#screen-dashboard.qs-in .qs-nav>.nav-tab,#screen-dashboard.qs-in .dash-body>.module.active>*,#screen-dashboard.qs-in .dash-body>.module.active>.audit-view.active>*,#screen-dashboard.qs-in .dash-body>.module.active>.dash-view.active>*,#screen-login{background:var(--qs-login-bg)!important}
 #screen-login::before{background:radial-gradient(60% 50% at 18% 12%,rgba(53,99,233,.13) 0%,transparent 70%),radial-gradient(55% 50% at 88% 92%,rgba(31,71,184,.10) 0%,transparent 70%)!important}
 #screen-login .login-card{box-shadow:0 0 0 1px rgba(31,71,184,.06),0 2px 6px rgba(14,26,51,.04),0 40px 80px -36px rgba(31,71,184,.34)!important}
 
@@ -5863,10 +5863,9 @@ mark{background:#FFF1B8;color:inherit;border-radius:3px;padding:0 1px}
 @keyframes qsRise{from{opacity:0;transform:translate3d(0,22px,0)}to{opacity:1;transform:none}}
 .screen.qs-in{animation:qsFade .45s ease both}
 #screen-dashboard.qs-in .qs-side{animation:qsSide .85s cubic-bezier(.22,1,.36,1) .05s both}
-#screen-dashboard.qs-in .qs-nav>*{animation:qsItem .7s cubic-bezier(.22,1,.36,1) both}
-#screen-dashboard.qs-in .qs-nav>*:nth-child(2){animation-delay:.2s}#screen-dashboard.qs-in .qs-nav>*:nth-child(3){animation-delay:.26s}#screen-dashboard.qs-in .qs-nav>*:nth-child(4){animation-delay:.32s}#screen-dashboard.qs-in .qs-nav>*:nth-child(5){animation-delay:.38s}#screen-dashboard.qs-in .qs-nav>*:nth-child(6){animation-delay:.44s}#screen-dashboard.qs-in .qs-nav>*:nth-child(7){animation-delay:.5s}
+#screen-dashboard.qs-in .qs-nav>.nav-tab{animation:qsItem .7s cubic-bezier(.22,1,.36,1) both}
+#screen-dashboard.qs-in .qs-nav>.nav-tab:nth-child(2){animation-delay:.2s}#screen-dashboard.qs-in .qs-nav>.nav-tab:nth-child(3){animation-delay:.26s}#screen-dashboard.qs-in .qs-nav>.nav-tab:nth-child(4){animation-delay:.32s}#screen-dashboard.qs-in .qs-nav>.nav-tab:nth-child(5){animation-delay:.38s}#screen-dashboard.qs-in .qs-nav>.nav-tab:nth-child(6){animation-delay:.44s}#screen-dashboard.qs-in .qs-nav>.nav-tab:nth-child(7){animation-delay:.5s}
 #screen-dashboard.qs-in .dash-body>.module.active>.nav-tabs,#screen-dashboard.qs-in .dash-body>.module.active>*:not(.nav-tabs):not(.audit-view):not(.dash-view):not(.gd-au-chip){animation:qsRise .85s cubic-bezier(.22,1,.36,1) .16s both}
-#screen-dashboard.qs-in .dash-body>.module.active>.audit-view.active,#screen-dashboard.qs-in .dash-body>.module.active>.dash-view.active{animation:none}
 #screen-dashboard.qs-in .dash-body>.module.active>.audit-view.active>*,#screen-dashboard.qs-in .dash-body>.module.active>.dash-view.active>*{animation:qsRise .85s cubic-bezier(.22,1,.36,1) both}
 #screen-dashboard.qs-in .module.active>.audit-view.active>*:nth-child(1),#screen-dashboard.qs-in .module.active>.dash-view.active>*:nth-child(1){animation-delay:.24s}
 #screen-dashboard.qs-in .module.active>.audit-view.active>*:nth-child(2),#screen-dashboard.qs-in .module.active>.dash-view.active>*:nth-child(2){animation-delay:.32s}
@@ -5903,6 +5902,7 @@ html{background:#EEF3FD}
 #screen-login.qs-out .login-card>*{animation:none}
 #screen-login.qs-out{opacity:0;transition:opacity .32s ease .16s}
 @media(prefers-reduced-motion:reduce){#screen-login .login-card,#screen-login .login-card>*{animation:none!important}#screen-login.qs-out,#screen-login.qs-out .login-card{transition:none}}
+#screen-dashboard.qs-in .qs-nav>.qs-nav-ind{animation:qsFade .5s ease .3s both}
 </style>
 <style id="qa-polish">#screen-admin{--qa-card-r:20px;--qa-ctl-r:14px;--qa-gap:22px;--qa-ease:cubic-bezier(.22,1,.36,1);--qa-pad:28px;--qa-sh:0 1px 2px rgba(14,26,51,.04),0 14px 34px -22px rgba(14,26,51,.22)}
 #screen-admin .qa-top{padding:12px var(--qa-pad);gap:12px;border-bottom:1px solid var(--q-line,#E4E9F2);background:rgba(250,251,253,.86)}
